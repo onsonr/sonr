@@ -6,8 +6,6 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"github.com/onsonr/sonr/pkg/common"
-	"github.com/onsonr/sonr/pkg/common/session/cookie"
-	"github.com/onsonr/sonr/pkg/common/session/header"
 	"github.com/onsonr/sonr/pkg/gateway/config"
 	"github.com/onsonr/sonr/pkg/vault/types"
 )
@@ -37,15 +35,15 @@ func WebNodeMiddleware(config *types.Config) echo.MiddlewareFunc {
 }
 
 func injectConfig(c echo.Context, config *types.Config) error {
-	header.Write(c, header.SonrAPIURL, config.SonrApiUrl)
-	header.Write(c, header.SonrRPCURL, config.SonrRpcUrl)
+	common.HeaderWrite(c, common.SonrAPIURL, config.SonrApiUrl)
+	common.HeaderWrite(c, common.SonrRPCURL, config.SonrRpcUrl)
 
-	cookie.Write(c, cookie.SonrAddress, config.MotrAddress)
+	common.WriteCookie(c, common.SonrAddress, config.MotrAddress)
 	schemaBz, err := json.Marshal(config.VaultSchema)
 	if err != nil {
 		return err
 	}
-	cookie.WriteBytes(c, cookie.VaultSchema, schemaBz)
+	common.WriteCookieBytes(c, common.VaultSchema, schemaBz)
 	return nil
 }
 
@@ -55,7 +53,7 @@ func injectSession(c echo.Context, role common.PeerRole) *HTTPContext {
 		return initHTTPContext(nil)
 	}
 
-	cookie.Write(c, cookie.SessionRole, role.String())
+	common.WriteCookie(c, common.SessionRole, role.String())
 
 	// Continue even if there are errors, just ensure we have valid session data
 	if err := loadOrGenKsuid(c); err != nil {
@@ -70,15 +68,15 @@ func injectSession(c echo.Context, role common.PeerRole) *HTTPContext {
 
 // HasAuthorization checks if the request has an authorization header
 func HasAuthorization(c echo.Context) bool {
-	return header.Exists(c, header.Authorization)
+	return common.HeaderExists(c, common.Authorization)
 }
 
 // HasUserHandle checks if the request has a user handle cookie
 func HasUserHandle(c echo.Context) bool {
-	return cookie.Exists(c, cookie.UserHandle)
+	return common.CookieExists(c, common.UserHandle)
 }
 
 // HasVaultAddress checks if the request has a vault address cookie
 func HasVaultAddress(c echo.Context) bool {
-	return cookie.Exists(c, cookie.SonrAddress)
+	return common.CookieExists(c, common.SonrAddress)
 }

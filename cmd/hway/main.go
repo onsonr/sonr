@@ -9,7 +9,6 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/onsonr/sonr/pkg/common/signer"
 	"github.com/onsonr/sonr/pkg/gateway"
 	"github.com/onsonr/sonr/pkg/gateway/config"
 )
@@ -27,7 +26,6 @@ func setupServer(env config.Env) (*echo.Echo, error) {
 	e.IPExtractor = echo.ExtractIPDirect()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	e.Use(signer.Middleware())
 	gateway.RegisterRoutes(e, env)
 	return e, nil
 }

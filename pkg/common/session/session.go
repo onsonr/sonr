@@ -7,7 +7,6 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"github.com/onsonr/sonr/pkg/common"
-	"github.com/onsonr/sonr/pkg/common/session/cookie"
 )
 
 // HTTPContext is the context for HTTP endpoints.
@@ -48,7 +47,7 @@ func initHTTPContext(c echo.Context) *HTTPContext {
 
 	cc := &HTTPContext{
 		Context: c,
-		role:    common.PeerRole(cookie.ReadUnsafe(c, cookie.SessionRole)),
+		role:    common.PeerRole(common.ReadCookieUnsafe(c, common.SessionRole)),
 		id:      id,
 		chal:    chal,
 		bn:      bn,

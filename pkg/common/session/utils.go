@@ -10,8 +10,6 @@ import (
 	"github.com/segmentio/ksuid"
 
 	"github.com/onsonr/sonr/pkg/common"
-	"github.com/onsonr/sonr/pkg/common/session/cookie"
-	"github.com/onsonr/sonr/pkg/common/session/header"
 )
 
 const kWebAuthnTimeout = 6000
@@ -35,11 +33,11 @@ func loadOrGenChallenge(c echo.Context) error {
 	}
 
 	// Check if there is a session challenge cookie
-	if !cookie.Exists(c, cookie.SessionChallenge) {
+	if !common.CookieExists(c, common.SessionChallenge) {
 		chalRaw = genChal()
-		cookie.WriteBytes(c, cookie.SessionChallenge, chalRaw)
+		common.WriteCookieBytes(c, common.SessionChallenge, chalRaw)
 	} else {
-		chalRaw, err = cookie.ReadBytes(c, cookie.SessionChallenge)
+		chalRaw, err = common.ReadCookieBytes(c, common.SessionChallenge)
 		if err != nil {
 			return err
 		}
@@ -65,15 +63,15 @@ func loadOrGenKsuid(c echo.Context) error {
 	}
 
 	// Attempt to read the session ID from the "session" cookie
-	if ok := cookie.Exists(c, cookie.SessionID); !ok {
+	if ok := common.CookieExists(c, common.SessionID); !ok {
 		sessionID = genKsuid()
 	} else {
-		sessionID, err = cookie.Read(c, cookie.SessionID)
+		sessionID, err = common.ReadCookie(c, common.SessionID)
 		if err != nil {
 			sessionID = genKsuid()
 		}
 	}
-	cookie.Write(c, cookie.SessionID, sessionID)
+	common.WriteCookie(c, common.SessionID, sessionID)
 	return nil
 }
 
@@ -83,22 +81,22 @@ func loadOrGenKsuid(c echo.Context) error {
 
 func extractPeerInfo(c echo.Context) (string, string) {
 	var chal protocol.URLEncodedBase64
-	id, _ := cookie.Read(c, cookie.SessionID)
-	chalRaw, _ := cookie.ReadBytes(c, cookie.SessionChallenge)
+	id, _ := common.ReadCookie(c, common.SessionID)
+	chalRaw, _ := common.ReadCookieBytes(c, common.SessionChallenge)
 	chal.UnmarshalJSON(chalRaw)
 
 	return id, common.Base64Encode(chal)
 }
 
 func extractBrowserInfo(c echo.Context) (string, string) {
-	secCHUA := header.Read(c, header.UserAgent)
+	secCHUA := common.HeaderRead(c, common.UserAgent)
 
-	// If header is empty, return empty BrowserInfo
+	// If common.is empty, return empty BrowserInfo
 	if secCHUA == "" {
 		return "N/A", "-1"
 	}
 
-	// Split the header into individual browser entries
+	// Split the common.into individual browser entries
 	var (
 		name string
 		ver  string
