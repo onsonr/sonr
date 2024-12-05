@@ -10,6 +10,7 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	"github.com/ipfs/go-cid"
+	"github.com/onsonr/sonr/pkg/common/ipfs"
 )
 
 // ErrTokenNotFound is returned by stores that cannot find an access token
@@ -138,4 +139,14 @@ func (st *memTokenStore) toRawTokens() RawTokens {
 	}
 	sort.Sort(toks)
 	return toks
+}
+
+// TODO: Implement IPFS CID Bytes resolver, and TokenStore
+
+// ipfsTokenStore is a token store that uses IPFS to store tokens. It uses the memory store as a cache
+// for CID strings to be used as keys for retrieving tokens.
+type ipfsTokenStore struct {
+	sync.Mutex
+	ipfs  ipfs.Client
+	cache map[string]string
 }
