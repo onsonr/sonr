@@ -87,3 +87,64 @@ func (a AttenuationPreset) Equals(b AttenuationPreset) bool {
 func (a AttenuationPreset) String() string {
 	return string(a)
 }
+
+// NewAttenuationFromPreset creates an AttenuationConstructorFunc for the given preset
+func NewAttenuationFromPreset(preset AttenuationPreset) AttenuationConstructorFunc {
+	return func(v map[string]interface{}) (Attenuation, error) {
+		// Extract capability and resource from map
+		capStr, ok := v["cap"].(string)
+		if !ok {
+			return nil, fmt.Errorf("missing or invalid capability in attenuation data")
+		}
+		
+		resType, ok := v["type"].(string)
+		if !ok {
+			return nil, fmt.Errorf("missing or invalid resource type in attenuation data")
+		}
+		
+		path, ok := v["path"].(string)
+		if !ok {
+			path = "/" // Default path if not specified
+		}
+
+		// Create capability from preset
+		cap := preset.NewCap(capability.Capability(capStr))
+		if cap == nil {
+			return nil, fmt.Errorf("invalid capability %s for preset %s", capStr, preset)
+		}
+
+		// Create resource
+		resource := NewResource(resourcetype.ResourceType(resType), path)
+
+		return Attenuation{
+			Cap: cap,
+			Rsc: resource,
+		}, nil
+	}
+}
+
+// GetPresetConstructor returns the appropriate AttenuationConstructorFunc for a given type
+func GetPresetConstructor(attType string) (AttenuationConstructorFunc, error) {
+	preset := AttenuationPreset(attType)
+	switch preset {
+	case PresetSmartAccount, PresetService, PresetVault:
+		return NewAttenuationFromPreset(preset), nil
+	default:
+		return nil, fmt.Errorf("unknown attenuation preset: %s", attType)
+	}
+}
+
+// ParseAttenuationData parses raw attenuation data into a structured format
+func ParseAttenuationData(data map[string]interface{}) (AttenuationPreset, map[string]interface{}, error) {
+	typeRaw, ok := data["preset"]
+	if !ok {
+		return "", nil, fmt.Errorf("missing preset type in attenuation data")
+	}
+
+	presetType, ok := typeRaw.(string)
+	if !ok {
+		return "", nil, fmt.Errorf("invalid preset type format")
+	}
+
+	return AttenuationPreset(presetType), data, nil
+}
