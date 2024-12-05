@@ -1,6 +1,8 @@
 package ucan
 
 import (
+	"fmt"
+
 	"github.com/onsonr/sonr/crypto/ucan/attns/capability"
 	"github.com/onsonr/sonr/crypto/ucan/attns/policytype"
 	"github.com/onsonr/sonr/crypto/ucan/attns/resourcetype"
@@ -94,14 +96,14 @@ func NewAttenuationFromPreset(preset AttenuationPreset) AttenuationConstructorFu
 		// Extract capability and resource from map
 		capStr, ok := v["cap"].(string)
 		if !ok {
-			return nil, fmt.Errorf("missing or invalid capability in attenuation data")
+			return EmptyAttenuation, fmt.Errorf("missing or invalid capability in attenuation data")
 		}
-		
+
 		resType, ok := v["type"].(string)
 		if !ok {
-			return nil, fmt.Errorf("missing or invalid resource type in attenuation data")
+			return EmptyAttenuation, fmt.Errorf("missing or invalid resource type in attenuation data")
 		}
-		
+
 		path, ok := v["path"].(string)
 		if !ok {
 			path = "/" // Default path if not specified
@@ -110,7 +112,7 @@ func NewAttenuationFromPreset(preset AttenuationPreset) AttenuationConstructorFu
 		// Create capability from preset
 		cap := preset.NewCap(capability.Capability(capStr))
 		if cap == nil {
-			return nil, fmt.Errorf("invalid capability %s for preset %s", capStr, preset)
+			return EmptyAttenuation, fmt.Errorf("invalid capability %s for preset %s", capStr, preset)
 		}
 
 		// Create resource
