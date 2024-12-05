@@ -11,7 +11,7 @@ import (
 )
 
 // UCANMiddleware returns middleware to validate UCANMiddleware tokens
-func UCANMiddleware(ipfs ipfs.Client, parser *ucan.TokenParser) echo.MiddlewareFunc {
+func Middleware(ipfs ipfs.Client, parser *ucan.TokenParser) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			ctx := ProducerContext{

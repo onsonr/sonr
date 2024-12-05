@@ -9,6 +9,8 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/onsonr/sonr/pkg/common/ipfs"
+	"github.com/onsonr/sonr/pkg/common/producer"
 	"github.com/onsonr/sonr/pkg/gateway"
 	"github.com/onsonr/sonr/pkg/gateway/config"
 )
@@ -22,10 +24,15 @@ func loadConfig() (config.Env, error) {
 
 // setupServer sets up the server
 func setupServer(env config.Env) (*echo.Echo, error) {
+	ipc, err := ipfs.NewClient()
+	if err != nil {
+		return nil, err
+	}
 	e := echo.New()
 	e.IPExtractor = echo.ExtractIPDirect()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.Use(producer.Middleware(ipc, nil))
 	gateway.RegisterRoutes(e, env)
 	return e, nil
 }
