@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/libp2p/go-libp2p-core/crypto"
+	"github.com/libp2p/go-libp2p/core/crypto"
 	mb "github.com/multiformats/go-multibase"
 	varint "github.com/multiformats/go-varint"
 )

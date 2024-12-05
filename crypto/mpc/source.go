@@ -18,7 +18,6 @@ type KeyshareSource interface {
 	Issuer() string
 	ChainCode() ([]byte, error)
 	OriginToken() (*Token, error)
-	PublicKey() PublicKey
 	SignData(data []byte) ([]byte, error)
 	VerifyData(data []byte, sig []byte) (bool, error)
 	UCANParser() *didkey.TokenParser
@@ -58,11 +57,6 @@ func (k ucanKeyshare) ChainCode() ([]byte, error) {
 	hash := blake3.Sum256(sig)
 	// Return the first 32 bytes of the hash
 	return hash[:32], nil
-}
-
-// PublicKey returns the public key of the keyshare
-func (k ucanKeyshare) PublicKey() PublicKey {
-	return createPublicKey(k.valShare.PublicKey, "secp256k1")
 }
 
 // DefaultOriginToken returns a default token with the keyshare's issuer as the audience
