@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/go-webauthn/webauthn/protocol"
@@ -9,7 +8,6 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/pkg/common"
-	"github.com/onsonr/sonr/pkg/common/cookie"
 	"github.com/onsonr/sonr/pkg/common/response"
 	"github.com/onsonr/sonr/pkg/common/session"
 	"github.com/onsonr/sonr/pkg/gateway/config"
@@ -30,9 +28,6 @@ func HandleRegisterStart(c echo.Context) error {
 	if firstName == "" || lastName == "" || handle == "" {
 		return response.RedirectLanding(c)
 	}
-
-	cookie.Write(c, cookie.UserName, fmt.Sprintf("%s %s", firstName, lastName))
-	cookie.Write(c, cookie.UserHandle, handle)
 
 	ks, err := mpc.NewKeyset()
 	if err != nil {

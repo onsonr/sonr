@@ -2,8 +2,8 @@ package session
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/pkg/common/cookie"
-	"github.com/onsonr/sonr/pkg/common/header"
+	"github.com/onsonr/sonr/pkg/common/session/cookie"
+	"github.com/onsonr/sonr/pkg/common/session/header"
 )
 
 // TODO: Returns fixed chain ID for testing.

@@ -6,8 +6,8 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"github.com/onsonr/sonr/pkg/common"
-	"github.com/onsonr/sonr/pkg/common/cookie"
-	"github.com/onsonr/sonr/pkg/common/header"
+	"github.com/onsonr/sonr/pkg/common/session/cookie"
+	"github.com/onsonr/sonr/pkg/common/session/header"
 	"github.com/onsonr/sonr/pkg/gateway/config"
 	"github.com/onsonr/sonr/pkg/vault/types"
 )
