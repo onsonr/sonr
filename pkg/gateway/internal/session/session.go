@@ -14,42 +14,53 @@ import (
 
 const kWebAuthnTimeout = 6000
 
+// HTTPContext is the context for HTTP endpoints.
+type HTTPContext struct {
+	echo.Context
+	role common.PeerRole
+	id   string
+	chal string
+	bn   string
+	bv   string
+}
+
+// initHTTPContext loads the headers from the request.
+func initHTTPContext(c echo.Context) *HTTPContext {
+	if c == nil {
+		return &HTTPContext{}
+	}
+
+	id, chal := extractPeerInfo(c)
+	bn, bv := extractBrowserInfo(c)
+
+	cc := &HTTPContext{
+		Context: c,
+		role:    common.PeerRole(common.ReadCookieUnsafe(c, common.SessionRole)),
+		id:      id,
+		chal:    chal,
+		bn:      bn,
+		bv:      bv,
+	}
+
+	// Set the session data in both contexts
+	return cc
+}
+
+func (s *HTTPContext) ID() string {
+	return s.id
+}
+
+func (s *HTTPContext) BrowserName() string {
+	return s.bn
+}
+
+func (s *HTTPContext) BrowserVersion() string {
+	return s.bv
+}
+
 // ╭───────────────────────────────────────────────────────────╮
 // │                       Initialization                      │
 // ╰───────────────────────────────────────────────────────────╯
-
-func loadOrGenChallenge(c echo.Context) error {
-	var (
-		chal    protocol.URLEncodedBase64
-		chalRaw []byte
-		err     error
-	)
-
-	// Setup genChal function
-	genChal := func() []byte {
-		ch, _ := protocol.CreateChallenge()
-		bz, _ := ch.MarshalJSON()
-		return bz
-	}
-
-	// Check if there is a session challenge cookie
-	if !common.CookieExists(c, common.SessionChallenge) {
-		chalRaw = genChal()
-		common.WriteCookieBytes(c, common.SessionChallenge, chalRaw)
-	} else {
-		chalRaw, err = common.ReadCookieBytes(c, common.SessionChallenge)
-		if err != nil {
-			return err
-		}
-	}
-
-	// Attempt to read the session challenge from the "session" cookie
-	err = chal.UnmarshalJSON(chalRaw)
-	if err != nil {
-		return err
-	}
-	return nil
-}
 
 func loadOrGenKsuid(c echo.Context) error {
 	var (

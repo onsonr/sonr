@@ -1,9 +1,33 @@
 package session
 
 import (
+	"net/http"
+
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/common"
 )
+
+type contextKey string
+
+// Context keys
+const (
+	DataContextKey contextKey = "http_session_data"
+)
+
+type SessionCtx interface {
+	ID() string
+	BrowserName() string
+	BrowserVersion() string
+}
+
+// Get returns the session.Context from the echo context.
+func Get(c echo.Context) (SessionCtx, error) {
+	ctx, ok := c.(*HTTPContext)
+	if !ok {
+		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Session Context not found")
+	}
+	return ctx, nil
+}
 
 // TODO: Returns fixed chain ID for testing.
 func GetChainID(c echo.Context) string {

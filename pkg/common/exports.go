@@ -2,28 +2,7 @@ package common
 
 import (
 	"encoding/base64"
-	"net/http"
-
-	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/crypto/didkey"
-	"github.com/onsonr/sonr/pkg/common/ipfs"
 )
-
-var (
-	ErrInvalidCredentials = echo.NewHTTPError(http.StatusUnauthorized, "Invalid credentials")
-	ErrInvalidSubject     = echo.NewHTTPError(http.StatusBadRequest, "Invalid subject")
-	ErrInvalidUser        = echo.NewHTTPError(http.StatusBadRequest, "Invalid user")
-
-	ErrUserAlreadyExists = echo.NewHTTPError(http.StatusConflict, "User already exists")
-	ErrUserNotFound      = echo.NewHTTPError(http.StatusNotFound, "User not found")
-)
-
-type SessionCtx interface {
-	ID() string
-	Challenge() string
-	BrowserName() string
-	BrowserVersion() string
-}
 
 type LargeBlob struct {
 	Support string `json:"support"`
@@ -64,9 +43,3 @@ func Base64Encode(data []byte) string {
 func Base64Decode(data string) ([]byte, error) {
 	return base64.RawURLEncoding.DecodeString(data)
 }
-
-// IPFSClient is an alias for the IPFS HTTP API
-type IPFSClient = ipfs.Client
-
-// UCANParser is an alias for the didkey.TokenParser
-type UCANParser = *didkey.TokenParser

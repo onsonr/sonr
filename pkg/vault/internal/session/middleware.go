@@ -2,26 +2,38 @@ package session
 
 import (
 	"encoding/json"
+	"net/http"
 
 	"github.com/labstack/echo/v4"
 
 	"github.com/onsonr/sonr/pkg/common"
-	"github.com/onsonr/sonr/pkg/gateway/config"
 	"github.com/onsonr/sonr/pkg/vault/types"
 )
 
-// GatewayMiddleware establishes a Session Cookie.
-func GatewayMiddleware(env config.Env) echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			cc := injectSession(c, common.RoleHway)
-			return next(cc)
-		}
+type SessionCtx interface {
+	ID() string
+	BrowserName() string
+	BrowserVersion() string
+}
+
+type contextKey string
+
+// Context keys
+const (
+	DataContextKey contextKey = "http_session_data"
+)
+
+// Get returns the session.Context from the echo context.
+func Get(c echo.Context) (SessionCtx, error) {
+	ctx, ok := c.(*HTTPContext)
+	if !ok {
+		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Session Context not found")
 	}
+	return ctx, nil
 }
 
 // WebNodeMiddleware establishes a Session Cookie.
-func WebNodeMiddleware(config *types.Config) echo.MiddlewareFunc {
+func Middleware(config *types.Config) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			err := injectConfig(c, config)
@@ -59,10 +71,6 @@ func injectSession(c echo.Context, role common.PeerRole) *HTTPContext {
 	if err := loadOrGenKsuid(c); err != nil {
 		// Log error but continue
 	}
-	if err := loadOrGenChallenge(c); err != nil {
-		// Log error but continue
-	}
-
 	return initHTTPContext(c)
 }
 

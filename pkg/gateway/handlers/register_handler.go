@@ -3,15 +3,16 @@ package handlers
 import (
 	"net/http"
 
+	"github.com/cosmos/btcutil/bech32"
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/pkg/common"
 	"github.com/onsonr/sonr/pkg/common/response"
-	"github.com/onsonr/sonr/pkg/common/session"
 	"github.com/onsonr/sonr/pkg/gateway/config"
 	"github.com/onsonr/sonr/pkg/gateway/internal/pages/register"
+	"github.com/onsonr/sonr/pkg/gateway/internal/session"
 )
 
 func HandleRegisterView(env config.Env) echo.HandlerFunc {
@@ -33,7 +34,11 @@ func HandleRegisterStart(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	req := getLinkCredentialRequest(c, ks.Address(), handle, ks.UserJSON())
+	adr, err := bech32.Encode("idx", ks.Val().GetPublicKey())
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	req := getLinkCredentialRequest(c, adr, handle, ks.UserJSON())
 	return response.TemplEcho(c, register.LinkCredentialView(req))
 }
 

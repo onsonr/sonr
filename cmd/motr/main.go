@@ -9,7 +9,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/cmd/motr/internal"
-	"github.com/onsonr/sonr/pkg/common/ucan/controller"
+	"github.com/onsonr/sonr/pkg/common/controller"
 	"github.com/onsonr/sonr/pkg/vault"
 	"github.com/onsonr/sonr/pkg/vault/types"
 )

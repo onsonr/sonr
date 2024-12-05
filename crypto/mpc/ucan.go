@@ -1,3 +1,4 @@
+// go:build jwx_es256k
 package mpc
 
 import (

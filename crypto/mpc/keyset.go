@@ -16,7 +16,6 @@ type (
 )
 
 type Keyset interface {
-	Address() string
 	Val() *ValKeyshare
 	ValJSON() string
 	User() *UserKeyshare
@@ -26,11 +25,6 @@ type Keyset interface {
 type keyset struct {
 	val  *ValKeyshare
 	user *UserKeyshare
-}
-
-func (k keyset) Address() string {
-	bech32Addr, _ := bech32.ConvertAndEncode("idx", k.val.PublicKey)
-	return bech32Addr
 }
 
 func (k keyset) Val() *ValKeyshare {
