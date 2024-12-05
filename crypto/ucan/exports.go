@@ -51,14 +51,14 @@ func NewResource(resType resourcetype.ResourceType, path string) Resource {
 type AttenuationPreset string
 
 const (
-	// AttentuationSmartAccount represents the smart account attenuation
-	AttentuationSmartAccount = AttenuationPreset("smart_account")
+	// PresetSmartAccount represents the smart account attenuation
+	PresetSmartAccount = AttenuationPreset("smart_account")
 
-	// AttentuationService represents the service attenuation
-	AttentuationService = AttenuationPreset("service")
+	// PresetService represents the service attenuation
+	PresetService = AttenuationPreset("service")
 
-	// AttentuationVault represents the vault attenuation
-	AttentuationVault = AttenuationPreset("vault")
+	// PresetVault represents the vault attenuation
+	PresetVault = AttenuationPreset("vault")
 )
 
 // Cap returns the capability for the given AttenuationPreset
@@ -70,9 +70,9 @@ func (a AttenuationPreset) NewCap(c capability.Capability) Capability {
 func (a AttenuationPreset) GetCapabilities() NestedCapabilities {
 	var caps []string
 	switch a {
-	case AttentuationSmartAccount:
+	case PresetSmartAccount:
 		caps = SmartAccountCapabilities()
-	case AttentuationVault:
+	case PresetVault:
 		caps = VaultCapabilities()
 	}
 	return NewNestedCapabilities(caps...)
