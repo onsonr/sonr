@@ -8,11 +8,11 @@ import (
 	"strings"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/crypto/mpc"
+	"github.com/onsonr/sonr/crypto/ucan/spec"
 )
 
 // UCANMiddleware returns middleware to validate UCANMiddleware tokens
-func UCANMiddleware(source mpc.KeyshareSource, opts ...Option) echo.MiddlewareFunc {
+func UCANMiddleware(source spec.KeyshareSource, opts ...Option) echo.MiddlewareFunc {
 	c := DefaultControllerConfig
 	for _, opt := range opts {
 		opt(&c)

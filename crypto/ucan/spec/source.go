@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/onsonr/sonr/crypto/didkey"
 	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/crypto/ucan"
+	"github.com/onsonr/sonr/crypto/ucan/didkey"
 	"github.com/onsonr/sonr/x/dwn/types/attns"
 	"lukechampine.com/blake3"
 )
@@ -21,7 +21,7 @@ type KeyshareSource interface {
 	OriginToken() (*Token, error)
 	SignData(data []byte) ([]byte, error)
 	VerifyData(data []byte, sig []byte) (bool, error)
-	UCANParser() *didkey.TokenParser
+	UCANParser() *ucan.TokenParser
 }
 
 func NewSource(ks mpc.Keyset) (KeyshareSource, error) {
@@ -92,7 +92,7 @@ func (k ucanKeyshare) VerifyData(data []byte, sig []byte) (bool, error) {
 }
 
 // TokenParser returns a token parser that can be used to parse tokens
-func (k ucanKeyshare) UCANParser() *didkey.TokenParser {
+func (k ucanKeyshare) UCANParser() *ucan.TokenParser {
 	caps := attns.AttentuationSmartAccount.GetCapabilities()
 	ac := func(m map[string]interface{}) (ucan.Attenuation, error) {
 		var (
@@ -119,7 +119,7 @@ func (k ucanKeyshare) UCANParser() *didkey.TokenParser {
 	}
 
 	store := ucan.NewMemTokenStore()
-	return didkey.NewTokenParser(ac, customDIDPubKeyResolver{}, store.(ucan.CIDBytesResolver))
+	return ucan.NewTokenParser(ac, customDIDPubKeyResolver{}, store.(ucan.CIDBytesResolver))
 }
 
 // customDIDPubKeyResolver implements the DIDPubKeyResolver interface without
