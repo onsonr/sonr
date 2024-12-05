@@ -10,7 +10,7 @@ type Client interface {
 	Pin(cid string) error
 	Unpin(cid string) error
 	Publish(cid string, name string) (string, error)
-	LsFolder(path string) ([]string, error)
+	Ls(cid string) ([]string, error)
 }
 
 type File interface {
