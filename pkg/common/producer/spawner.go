@@ -1,27 +1,18 @@
 package producer
 
-//
-// import (
-// 	"errors"
-// 	"fmt"
-//
-// 	"github.com/labstack/echo/v4"
-// 	"github.com/onsonr/sonr/crypto/mpc"
-// )
-//
-// func NewKeyset(c echo.Context) (mpc.Keyset, error) {
-// 	cc, ok := c.(*SignerContext)
-// 	if !ok {
-// 		return nil, errors.New("not an SignerContext")
-// 	}
-// 	ks, err := mpc.NewKeyset()
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	cc.keyset = ks
-// 	cc.hasKeyset = true
-// 	return ks, nil
-// }
+import (
+	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/crypto/mpc"
+)
+
+func NewKeyset(c echo.Context) (mpc.Keyset, error) {
+	ks, err := mpc.NewKeyset()
+	if err != nil {
+		return nil, err
+	}
+	return ks, nil
+}
+
 //
 // func GetKeyset(c echo.Context) (mpc.Keyset, error) {
 // 	cc, ok := c.(*SignerContext)

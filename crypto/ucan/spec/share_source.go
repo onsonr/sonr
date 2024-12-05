@@ -7,7 +7,6 @@ import (
 
 	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/crypto/ucan"
-	"github.com/onsonr/sonr/crypto/ucan/attns"
 	"github.com/onsonr/sonr/crypto/ucan/didkey"
 	"lukechampine.com/blake3"
 )
@@ -62,7 +61,7 @@ func (k ucanKeyshare) ChainCode() ([]byte, error) {
 
 // DefaultOriginToken returns a default token with the keyshare's issuer as the audience
 func (k ucanKeyshare) OriginToken() (*Token, error) {
-	att := attns.CreateSmartAccountAttenuations(k.addr)
+	att := ucan.NewSmartAccount(k.addr)
 	zero := time.Time{}
 	return k.NewOriginToken(k.issuerDID, att, nil, zero, zero)
 }
@@ -93,7 +92,7 @@ func (k ucanKeyshare) VerifyData(data []byte, sig []byte) (bool, error) {
 
 // TokenParser returns a token parser that can be used to parse tokens
 func (k ucanKeyshare) UCANParser() *ucan.TokenParser {
-	caps := attns.AttentuationSmartAccount.GetCapabilities()
+	caps := ucan.AttentuationSmartAccount.GetCapabilities()
 	ac := func(m map[string]interface{}) (ucan.Attenuation, error) {
 		var (
 			cap string

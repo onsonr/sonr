@@ -24,6 +24,8 @@ const (
 	CAPRECOVER      Capability = "CAP_RECOVER"
 	CAPSOCIAL       Capability = "CAP_SOCIAL"
 	CAPVOTE         Capability = "CAP_VOTE"
+	CAPRESOLVER     Capability = "CAP_RESOLVER"
+	CAPPRODUCER     Capability = "CAP_PRODUCER"
 )
 
 // String returns the string representation of Capability
@@ -66,6 +68,10 @@ func (rcv *Capability) UnmarshalBinary(data []byte) error {
 		*rcv = CAPSOCIAL
 	case "CAP_VOTE":
 		*rcv = CAPVOTE
+	case "CAP_RESOLVER":
+		*rcv = CAPRESOLVER
+	case "CAP_PRODUCER":
+		*rcv = CAPPRODUCER
 	default:
 		return fmt.Errorf(`illegal: "%s" is not a valid Capability`, str)
 	}
