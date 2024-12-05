@@ -11,7 +11,7 @@ import templruntime "github.com/a-h/templ/runtime"
 import "github.com/onsonr/sonr/pkg/styles/layout"
 
 // Form is a standard form styled like a card
-func Form(action string, method string, submit templ.Component, progress string) templ.Component {
+func Form(action string, method string, submit templ.Component, progress string, enableCancel bool) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -54,7 +54,7 @@ func Form(action string, method string, submit templ.Component, progress string)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><sl-card class=\"card-form gap-4\"><div slot=\"header\"><div class=\"w-full py-1\"><sl-progress-bar value=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><sl-card class=\"card-form gap-4 max-w-lg\"><div slot=\"header\"><div class=\"w-full py-1\"><sl-progress-bar value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -75,9 +75,15 @@ func Form(action string, method string, submit templ.Component, progress string)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div slot=\"footer\"><sl-button hx-get=\"/\" outline>Cancel</sl-button>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div slot=\"footer\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
+		}
+		if enableCancel {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-button href=\"/\" outline size=\"large\"><sl-icon slot=\"prefix\" name=\"arrow-left\" library=\"sonr\"></sl-icon> Cancel</sl-button>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
 		}
 		templ_7745c5c3_Err = submit.Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
@@ -159,7 +165,7 @@ func HandleInput() templ.Component {
 			templ_7745c5c3_Var7 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-input name=\"handle\" placeholder=\"thoughtdiff\" type=\"text\" label=\"Handle\" minlength=\"4\" maxlength=\"12\" required><div slot=\"prefix\"><div style=\"color: #ffffff; font-size: 24px\"><sl-icon name=\"at-sign\" library=\"sonr\"></sl-icon></div></div></sl-input>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-input name=\"handle\" placeholder=\"thoughtdiff\" type=\"text\" label=\"Handle\" minlength=\"4\" maxlength=\"12\" required><div slot=\"prefix\"><sl-icon name=\"at-sign\" library=\"sonr\"></sl-icon></div></sl-input>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -195,7 +201,7 @@ func CodeInput(id string) templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(id)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/styles/form/form.templ`, Line: 50, Col: 18}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/styles/form/form.templ`, Line: 51, Col: 18}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
@@ -235,7 +241,7 @@ func PasskeyInput(id string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-button type=\"submit\" outline><sl-icon slot=\"prefix\" class=\"text-neutral-500\" library=\"sonr\" name=\"passkey\"></sl-icon> Create PassKey</sl-button>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-button type=\"submit\" outline size=\"large\"><sl-icon slot=\"prefix\" name=\"fingerprint\"></sl-icon> Create PassKey <sl-icon slot=\"suffix\" name=\"chevron-right\"></sl-icon></sl-button>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -264,20 +270,20 @@ func Submit(text string) templ.Component {
 			templ_7745c5c3_Var11 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-button type=\"submit\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-button type=\"submit\" size=\"large\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/styles/form/form.templ`, Line: 64, Col: 8}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/styles/form/form.templ`, Line: 66, Col: 8}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</sl-button>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <sl-icon slot=\"suffix\" name=\"arrow-right\" library=\"sonr\"></sl-icon></sl-button>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

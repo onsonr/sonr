@@ -23,8 +23,14 @@ func HandleRegisterStart(c echo.Context) error {
 	firstName := c.FormValue("first_name")
 	lastName := c.FormValue("last_name")
 	handle := c.FormValue("handle")
+
+	if firstName == "" || lastName == "" || handle == "" {
+		return response.RedirectLanding(c)
+	}
+
 	cookie.Write(c, cookie.UserName, fmt.Sprintf("%s %s", firstName, lastName))
 	cookie.Write(c, cookie.UserHandle, handle)
+
 	ks, err := mpc.NewKeyset()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())

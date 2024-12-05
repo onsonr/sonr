@@ -1,5 +1,7 @@
 package layout
 
+import "fmt"
+
 const (
 	PublicOrigin = "https://cdn.sonr.id"
 )
@@ -11,38 +13,43 @@ var (
 	htmxHandle   = templ.NewOnceHandle()
 )
 
-templ Styles() {
+templ Nebula(version string) {
+	<link
+		rel="stylesheet"
+		media="(prefers-color-scheme:light)"
+		href={ jsDelivrURL("@onsonr/nebula", version, "cdn/themes/light.css") }
+	/>
+	<link
+		rel="stylesheet"
+		media="(prefers-color-scheme:dark)"
+		href={ jsDelivrURL("@onsonr/nebula", version, "cdn/themes/dark.css") }
+		onload="document.documentElement.classList.add('sl-theme-dark');"
+	/>
+	<script type="module" src={ jsDelivrURL("@onsonr/nebula", version, "cdn/shoelace-autoloader.js") }></script>
+}
+
+templ Tailwind() {
 	<script src="https://cdn.tailwindcss.com?plugins=typography,aspect-ratio,line-clamp,container-queries"></script>
 	<script src="https://kit.fontawesome.com/9909219bb5.js" crossorigin="anonymous"></script>
 }
 
 templ Alpine() {
-	<script src={ "https://cdn.sonr.id/js/alpine-focus.min.js" } defer></script>
-	<script src={ "https://cdn.sonr.id/js/alpine.min.js" } defer></script>
+	<script src={ jsDelivrURL("alpinejs", "3.14.6", "dist/cdn.min.js") }></script>
+	<script src={ jsDelivrURL("@alpinejs/focus", "3.14.6", "dist/cdn.min.js") }></script>
 }
 
 templ Dexie() {
-	<script src={ "https://cdn.sonr.id/js/dexie.min.js" }></script>
+	<script src={ jsDelivrURL("dexie", "4.0.10", "dist/dexie.min.js") }></script>
+	<script src={ jsDelivrURL("dexie-export-import", "4.1.4", "dist/dexie-export-import.min.js") }></script>
 }
 
 templ Htmx() {
-	<script src={ "https://cdn.sonr.id/js/htmx.min.js" }></script>
-	<script src="https://unpkg.com/htmx-ext-include-vals@2.0.0/include-vals.js"></script>
-	<script src="https://unpkg.com/htmx-ext-path-params@2.0.0/path-params.js"></script>
-	<script src="https://unpkg.com/htmx-ext-alpine-morph@2.0.0/alpine-morph.js"></script>
+	<script src={ jsDelivrURL("htmx.org", "1.9.12", "dist/htmx.min.js") }></script>
+	<script src={ jsDelivrURL("htmx-ext-include-vals", "2.0.0", "include-vals.min.js") }></script>
+	<script src={ jsDelivrURL("htmx-ext-path-params", "2.0.0", "path-params.min.js") }></script>
+	<script src={ jsDelivrURL("htmx-ext-alpine-morph", "2.0.0", "alpine-morph.min.js") }></script>
 }
 
-templ Shoelace() {
-	<link
-		rel="stylesheet"
-		media="(prefers-color-scheme:light)"
-		href="https://styles.sonr.id/themes/light.css"
-	/>
-	<link
-		rel="stylesheet"
-		media="(prefers-color-scheme:dark)"
-		href="https://styles.sonr.id/themes/dark.css"
-		onload="document.documentElement.classList.add('sl-theme-dark');"
-	/>
-	<script type="module" src="https://styles.sonr.id/shoelace-autoloader.js"></script>
+func jsDelivrURL(pkg string, version string, path string) string {
+	return fmt.Sprintf("https://cdn.jsdelivr.net/npm/%s@%s/%s", pkg, version, path)
 }

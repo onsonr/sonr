@@ -10,6 +10,8 @@ import (
 type Env interface {
 	GetServePort() int
 
+	GetConfigDir() string
+
 	GetSqliteFile() string
 
 	GetChainId() string
@@ -28,6 +30,8 @@ var _ Env = (*EnvImpl)(nil)
 type EnvImpl struct {
 	ServePort int `pkl:"servePort"`
 
+	ConfigDir string `pkl:"configDir"`
+
 	SqliteFile string `pkl:"sqliteFile"`
 
 	ChainId string `pkl:"chainId"`
@@ -43,6 +47,10 @@ type EnvImpl struct {
 
 func (rcv *EnvImpl) GetServePort() int {
 	return rcv.ServePort
+}
+
+func (rcv *EnvImpl) GetConfigDir() string {
+	return rcv.ConfigDir
 }
 
 func (rcv *EnvImpl) GetSqliteFile() string {

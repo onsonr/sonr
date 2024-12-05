@@ -112,6 +112,9 @@ draw-deps:
 	@goviz -i ./cmd/sonrd -d 2 | dot -Tpng -o dependency-graph.png
 
 clean:
+	rm -rf .out
+	rm -rf build
+	rm -rf hway.db
 	rm -rf pkg/nebula/node_modules
 	rm -rf snapcraft-local.yaml build/
 
@@ -326,12 +329,12 @@ hway-serve: hway-build
 ###############################################################################
 ###                                     help                                ###
 ###############################################################################
-.PHONY: deploy-buf deploy-cdn
+.PHONY: deploy-buf deploy-pkl
 
 deploy-buf:
 	cd ./proto && bunx buf dep update && bunx buf build && bunx buf push
 
-deploy-cdn: 
+deploy-pkl: 
 	sh ./scripts/upload_cdn.sh
 
 
