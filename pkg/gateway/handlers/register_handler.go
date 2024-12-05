@@ -12,11 +12,14 @@ import (
 	"github.com/onsonr/sonr/pkg/common/cookie"
 	"github.com/onsonr/sonr/pkg/common/response"
 	"github.com/onsonr/sonr/pkg/common/session"
+	"github.com/onsonr/sonr/pkg/gateway/config"
 	"github.com/onsonr/sonr/pkg/gateway/internal/pages/register"
 )
 
-func HandleRegisterView(c echo.Context) error {
-	return response.TemplEcho(c, register.ProfileFormView())
+func HandleRegisterView(env config.Env) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		return response.TemplEcho(c, register.ProfileFormView(env.GetTurnstileSiteKey()))
+	}
 }
 
 func HandleRegisterStart(c echo.Context) error {

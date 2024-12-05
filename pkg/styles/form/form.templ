@@ -14,7 +14,7 @@ templ Form(action string, method string, submit templ.Component, progress string
 			{ children... }
 			<div slot="footer">
 				if enableCancel {
-					<sl-button href="/" outline size="large">
+					<sl-button href="/" outline size="small">
 						<sl-icon slot="prefix" name="arrow-left" library="sonr"></sl-icon>
 						Cancel
 					</sl-button>
@@ -54,15 +54,22 @@ templ CodeInput(id string) {
 // Hidden input and button which calls a javascript function to generate a passkey
 templ PasskeyInput(id string) {
 	@CredentialsScripts()
-	<sl-button type="submit" outline size="large">
-		<sl-icon slot="prefix" name="fingerprint"></sl-icon>
+	<sl-button type="submit" size="large" pill style="width: 100%;">
+		<sl-icon slot="prefix" name="passkey" library="sonr" style="font-size: 20px;"></sl-icon>
 		Create PassKey
-		<sl-icon slot="suffix" name="chevron-right"></sl-icon>
+		<sl-icon slot="suffix" name="arrow-right" library="sonr" style="font-size: 20px;"></sl-icon>
 	</sl-button>
 }
 
+templ TurnstileWidget(sitekey string) {
+	if sitekey != "" {
+		<br/>
+		<div class="cf-turnstile" data-sitekey={ sitekey }></div>
+	}
+}
+
 templ Submit(text string) {
-	<sl-button type="submit" size="large">
+	<sl-button type="submit" size="small">
 		{ text }
 		<sl-icon slot="suffix" name="arrow-right" library="sonr"></sl-icon>
 	</sl-button>

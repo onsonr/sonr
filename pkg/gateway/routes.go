@@ -27,7 +27,7 @@ func RegisterRoutes(e *echo.Echo, env config.Env) {
 
 	// Register routes
 	e.GET("/", handlers.HandleIndex)
-	e.GET("/register", handlers.HandleRegisterView)
+	e.GET("/register", handlers.HandleRegisterView(env))
 	e.POST("/register/start", handlers.HandleRegisterStart)
 	e.POST("/register/finish", handlers.HandleRegisterFinish)
 }

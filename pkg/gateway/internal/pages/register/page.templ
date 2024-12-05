@@ -7,7 +7,7 @@ import (
 	"github.com/onsonr/sonr/pkg/styles/text"
 )
 
-templ ProfileFormView() {
+templ ProfileFormView(turnstileSiteKey string) {
 	@layout.Root("Sonr.ID") {
 		@layout.Container() {
 			@text.Header("Create a Profile", "Enter some basic information about yourself.")
@@ -16,6 +16,7 @@ templ ProfileFormView() {
 				@form.NameInput()
 				<br/>
 				@form.HandleInput()
+				@form.TurnstileWidget(turnstileSiteKey)
 			}
 		}
 	}
