@@ -49,7 +49,7 @@ func main() {
 
 	e := echo.New()
 	e.Use(internal.WasmContextMiddleware)
-	e.Use(controller.UCANMiddleware(nil))
+	e.Use(controller.Middleware(nil))
 	vault.RegisterRoutes(e, config)
 	internal.ServeFetch(e)
 }

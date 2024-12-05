@@ -11,8 +11,8 @@ import (
 	"github.com/onsonr/sonr/crypto/ucan/spec"
 )
 
-// UCANMiddleware returns middleware to validate UCANMiddleware tokens
-func UCANMiddleware(source spec.KeyshareSource, opts ...Option) echo.MiddlewareFunc {
+// Middleware returns middleware to validate Middleware tokens
+func Middleware(source spec.KeyshareSource, opts ...Option) echo.MiddlewareFunc {
 	c := DefaultControllerConfig
 	for _, opt := range opts {
 		opt(&c)
