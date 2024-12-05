@@ -1,4 +1,4 @@
-package jwt
+package controller
 
 import (
 	"fmt"
@@ -8,27 +8,27 @@ import (
 	"github.com/onsonr/sonr/crypto/mpc"
 )
 
-// UCAN returns middleware to validate UCAN tokens
-func UCAN(source mpc.KeyshareSource, opts ...Option) echo.MiddlewareFunc {
-	c := DefaultUCANConfig
+// UCANMiddleware returns middleware to validate UCANMiddleware tokens
+func UCANMiddleware(source mpc.KeyshareSource, opts ...Option) echo.MiddlewareFunc {
+	c := DefaultControllerConfig
 	for _, opt := range opts {
 		opt(&c)
 	}
 	c.KeySource = source
-	return UCANWithConfig(c)
+	return initWithConfig(c)
 }
 
-// UCANWithConfig returns UCAN middleware with custom config
-func UCANWithConfig(config UCANConfig) echo.MiddlewareFunc {
+// initWithConfig returns UCAN middleware with custom config
+func initWithConfig(config ControllerConfig) echo.MiddlewareFunc {
 	// Defaults
 	if config.Skipper == nil {
-		config.Skipper = DefaultUCANConfig.Skipper
+		config.Skipper = DefaultControllerConfig.Skipper
 	}
 	if config.TokenLookup == "" {
-		config.TokenLookup = DefaultUCANConfig.TokenLookup
+		config.TokenLookup = DefaultControllerConfig.TokenLookup
 	}
 	if config.AuthScheme == "" {
-		config.AuthScheme = DefaultUCANConfig.AuthScheme
+		config.AuthScheme = DefaultControllerConfig.AuthScheme
 	}
 
 	// Initialize

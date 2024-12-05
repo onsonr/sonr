@@ -4,8 +4,9 @@ import (
 	"encoding/base64"
 	"net/http"
 
-	"github.com/ipfs/kubo/client/rpc"
 	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/crypto/didkey"
+	"github.com/onsonr/sonr/pkg/common/ipfs"
 )
 
 var (
@@ -65,4 +66,7 @@ func Base64Decode(data string) ([]byte, error) {
 }
 
 // IPFSClient is an alias for the IPFS HTTP API
-type IPFSClient = *rpc.HttpApi
+type IPFSClient = ipfs.Client
+
+// UCANParser is an alias for the didkey.TokenParser
+type UCANParser = *didkey.TokenParser

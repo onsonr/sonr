@@ -1,12 +1,12 @@
-package jwt
+package controller
 
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/crypto/mpc"
 )
 
-// UCANConfig defines the configuration for UCAN middleware
-type UCANConfig struct {
+// ControllerConfig defines the configuration for UCAN middleware
+type ControllerConfig struct {
 	// Skipper defines a function to skip middleware
 	Skipper func(c echo.Context) bool
 
@@ -28,30 +28,30 @@ type UCANConfig struct {
 	AuthScheme string
 }
 
-// DefaultUCANConfig is the default UCAN middleware config
-var DefaultUCANConfig = UCANConfig{
+// DefaultControllerConfig is the default UCAN middleware config
+var DefaultControllerConfig = ControllerConfig{
 	Skipper:     nil,
 	TokenLookup: "header:Authorization",
 	AuthScheme:  "Bearer",
 }
 
-type Option func(c *UCANConfig)
+type Option func(c *ControllerConfig)
 
 func WithSkipper(skipper func(c echo.Context) bool) Option {
-	return func(c *UCANConfig) {
+	return func(c *ControllerConfig) {
 		c.Skipper = skipper
 	}
 }
 
 func WithAuthScheme(scheme string) Option {
-	return func(c *UCANConfig) {
+	return func(c *ControllerConfig) {
 		c.AuthScheme = scheme
 	}
 }
 
 // WithTokenLookup sets the token lookup strategy
 func WithTokenLookup(lookup string) Option {
-	return func(c *UCANConfig) {
+	return func(c *ControllerConfig) {
 		c.TokenLookup = lookup
 	}
 }
