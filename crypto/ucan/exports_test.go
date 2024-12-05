@@ -16,8 +16,8 @@ func TestAttenuationPresetConstructor(t *testing.T) {
 			name: "valid smart account attenuation",
 			data: map[string]interface{}{
 				"preset": "smart_account",
-				"cap":    "CAPOWNER",
-				"type":   "RESACCOUNT",
+				"cap":    string(CapOwner),
+				"type":   string(ResAccount),
 				"path":   "/accounts/123",
 			},
 			wantErr: false,
@@ -26,8 +26,8 @@ func TestAttenuationPresetConstructor(t *testing.T) {
 			name: "valid vault attenuation",
 			data: map[string]interface{}{
 				"preset": "vault",
-				"cap":    "CAPOPERATOR",
-				"type":   "RESVAULT",
+				"cap":    string(CapOperator),
+				"type":   string(ResVault),
 				"path":   "/vaults/456",
 			},
 			wantErr: false,

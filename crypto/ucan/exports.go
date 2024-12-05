@@ -8,6 +8,8 @@ import (
 	"github.com/onsonr/sonr/crypto/ucan/attns/resourcetype"
 )
 
+var EmptyAttenuation = Attenuation{}
+
 const (
 	// Owner
 	CapOwner    = capability.CAPOWNER
