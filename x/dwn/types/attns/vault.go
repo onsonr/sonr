@@ -3,10 +3,10 @@ package attns
 import (
 	"fmt"
 
+	"github.com/onsonr/sonr/crypto/ucan"
 	"github.com/onsonr/sonr/x/dwn/types/attns/capability"
 	"github.com/onsonr/sonr/x/dwn/types/attns/policytype"
 	"github.com/onsonr/sonr/x/dwn/types/attns/resourcetype"
-	"github.com/ucan-wg/go-ucan"
 )
 
 // CreateVaultAttenuations creates default attenuations for a smart account

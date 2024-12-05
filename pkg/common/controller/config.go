@@ -2,7 +2,7 @@ package controller
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/crypto/mpc"
+	"github.com/onsonr/sonr/crypto/ucan/spec"
 )
 
 // ControllerConfig defines the configuration for UCAN middleware
@@ -11,7 +11,7 @@ type ControllerConfig struct {
 	Skipper func(c echo.Context) bool
 
 	// KeySource provides the source for validating UCANs
-	KeySource mpc.KeyshareSource
+	KeySource spec.KeyshareSource
 
 	// TokenLookup is a string in the form of "<source>:<name>" that is used
 	// to extract token from the request.

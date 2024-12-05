@@ -3,9 +3,9 @@ package attns
 import (
 	"fmt"
 
+	"github.com/onsonr/sonr/crypto/ucan"
 	"github.com/onsonr/sonr/x/dwn/types/attns/capability"
 	"github.com/onsonr/sonr/x/dwn/types/attns/policytype"
-	"github.com/ucan-wg/go-ucan"
 )
 
 // CreateSmartAccountAttenuations creates default attenuations for a smart account

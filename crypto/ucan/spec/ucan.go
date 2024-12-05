@@ -1,12 +1,14 @@
 // go:build jwx_es256k
-package mpc
+package spec
 
 import (
 	"fmt"
 	"time"
 
+	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/golang-jwt/jwt"
-	"github.com/ucan-wg/go-ucan"
+	"github.com/onsonr/sonr/crypto/mpc"
+	"github.com/onsonr/sonr/crypto/ucan"
 )
 
 type (
@@ -28,8 +30,8 @@ var (
 )
 
 type ucanKeyshare struct {
-	userShare *UserKeyshare
-	valShare  *ValKeyshare
+	userShare *mpc.UserKeyshare
+	valShare  *mpc.ValKeyshare
 
 	addr      string
 	issuerDID string
@@ -93,4 +95,20 @@ func (k ucanKeyshare) newToken(audienceDID string, prf []Proof, att Attenuations
 		Facts:        fct,
 		Proofs:       prf,
 	}, nil
+}
+
+func ComputeIssuerDID(pk []byte) (string, string, error) {
+	addr, err := ComputeSonrAddr(pk)
+	if err != nil {
+		return "", "", err
+	}
+	return fmt.Sprintf("did:sonr:%s", addr), addr, nil
+}
+
+func ComputeSonrAddr(pk []byte) (string, error) {
+	sonrAddr, err := bech32.ConvertAndEncode("idx", pk)
+	if err != nil {
+		return "", err
+	}
+	return sonrAddr, nil
 }
