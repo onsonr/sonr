@@ -6,8 +6,6 @@ import (
 	"math/big"
 
 	"github.com/cosmos/cosmos-sdk/types/bech32"
-	"github.com/ipfs/boxo/files"
-	"github.com/ipfs/kubo/client/rpc"
 	"github.com/onsonr/sonr/crypto/core/curves"
 	"github.com/onsonr/sonr/crypto/core/protocol"
 	"golang.org/x/crypto/sha3"
@@ -15,8 +13,6 @@ import (
 
 type (
 	ExportedKeyset = []byte
-	IPFSClient     = *rpc.HttpApi
-	File           = files.File
 )
 
 type Keyset interface {
