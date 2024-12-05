@@ -334,7 +334,7 @@ deploy-buf:
 	cd ./proto && bunx buf dep update && bunx buf build && bunx buf push
 
 deploy-pkl: 
-	sh ./scripts/upload_cdn.sh
+	sh ./.github/scripts/upload_cdn.sh
 
 
 ###############################################################################
