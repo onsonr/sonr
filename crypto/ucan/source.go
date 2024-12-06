@@ -1,4 +1,4 @@
-package spec
+package ucan
 
 import (
 	"context"
@@ -6,13 +6,12 @@ import (
 	"time"
 
 	"github.com/onsonr/sonr/crypto/mpc"
-	"github.com/onsonr/sonr/crypto/ucan"
 	"github.com/onsonr/sonr/crypto/ucan/didkey"
 	"lukechampine.com/blake3"
 )
 
 type KeyshareSource interface {
-	ucan.Source
+	Source
 
 	Address() string
 	Issuer() string
@@ -20,10 +19,10 @@ type KeyshareSource interface {
 	OriginToken() (*Token, error)
 	SignData(data []byte) ([]byte, error)
 	VerifyData(data []byte, sig []byte) (bool, error)
-	UCANParser() *ucan.TokenParser
+	UCANParser() *TokenParser
 }
 
-func NewSource(ks mpc.Keyset) (KeyshareSource, error) {
+func NewKeyshareSource(ks mpc.Keyset) (KeyshareSource, error) {
 	val := ks.Val()
 	user := ks.User()
 	iss, addr, err := ComputeIssuerDID(val.GetPublicKey())
@@ -61,7 +60,7 @@ func (k ucanKeyshare) ChainCode() ([]byte, error) {
 
 // DefaultOriginToken returns a default token with the keyshare's issuer as the audience
 func (k ucanKeyshare) OriginToken() (*Token, error) {
-	att := ucan.NewSmartAccount(k.addr)
+	att := NewSmartAccount(k.addr)
 	zero := time.Time{}
 	return k.NewOriginToken(k.issuerDID, att, nil, zero, zero)
 }
@@ -91,34 +90,34 @@ func (k ucanKeyshare) VerifyData(data []byte, sig []byte) (bool, error) {
 }
 
 // TokenParser returns a token parser that can be used to parse tokens
-func (k ucanKeyshare) UCANParser() *ucan.TokenParser {
-	caps := ucan.AccountPermissions.GetCapabilities()
-	ac := func(m map[string]interface{}) (ucan.Attenuation, error) {
+func (k ucanKeyshare) UCANParser() *TokenParser {
+	caps := AccountPermissions.GetCapabilities()
+	ac := func(m map[string]interface{}) (Attenuation, error) {
 		var (
 			cap string
-			rsc ucan.Resource
+			rsc Resource
 		)
 		for key, vali := range m {
 			val, ok := vali.(string)
 			if !ok {
-				return ucan.Attenuation{}, fmt.Errorf(`expected attenuation value to be a string`)
+				return Attenuation{}, fmt.Errorf(`expected attenuation value to be a string`)
 			}
 
-			if key == ucan.CapKey {
+			if key == CapKey {
 				cap = val
 			} else {
-				rsc = ucan.NewStringLengthResource(key, val)
+				rsc = NewStringLengthResource(key, val)
 			}
 		}
 
-		return ucan.Attenuation{
+		return Attenuation{
 			Rsc: rsc,
 			Cap: caps.Cap(cap),
 		}, nil
 	}
 
-	store := ucan.NewMemTokenStore()
-	return ucan.NewTokenParser(ac, customDIDPubKeyResolver{}, store.(ucan.CIDBytesResolver))
+	store := NewMemTokenStore()
+	return NewTokenParser(ac, customDIDPubKeyResolver{}, store.(CIDBytesResolver))
 }
 
 // customDIDPubKeyResolver implements the DIDPubKeyResolver interface without
