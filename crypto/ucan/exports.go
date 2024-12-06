@@ -42,11 +42,13 @@ const (
 	ResVault       = resourcetype.RESVAULT
 	ResIPFS        = resourcetype.RESIPFS
 	ResIPNS        = resourcetype.RESIPNS
+	ResKeyShare    = resourcetype.RESKEYSHARE
 
 	// PolicyTypes
 	PolicyThreshold = policytype.POLICYTHRESHOLD
 	PolicyTimelock  = policytype.POLICYTIMELOCK
 	PolicyWhitelist = policytype.POLICYWHITELIST
+	PolicyKeyShare  = policytype.POLICYKEYGEN
 )
 
 // NewVaultResource creates a new resource identifier
@@ -58,14 +60,14 @@ func NewResource(resType resourcetype.ResourceType, path string) Resource {
 type Permissions string
 
 const (
-	// PermissionsSmartAccount represents the smart account attenuation
-	PermissionsSmartAccount = Permissions("smart_account")
+	// AccountPermissions represents the smart account attenuation
+	AccountPermissions = Permissions("account")
 
-	// PermissionsService represents the service attenuation
-	PermissionsService = Permissions("service")
+	// ServicePermissions represents the service attenuation
+	ServicePermissions = Permissions("service")
 
-	// PermissonsVault represents the vault attenuation
-	PermissonsVault = Permissions("vault")
+	// VaultPermissions represents the vault attenuation
+	VaultPermissions = Permissions("vault")
 )
 
 // Cap returns the capability for the given AttenuationPreset
@@ -77,9 +79,9 @@ func (a Permissions) NewCap(c capability.Capability) Capability {
 func (a Permissions) GetCapabilities() NestedCapabilities {
 	var caps []string
 	switch a {
-	case PermissionsSmartAccount:
+	case AccountPermissions:
 		caps = SmartAccountCapabilities()
-	case PermissonsVault:
+	case VaultPermissions:
 		caps = VaultCapabilities()
 	}
 	return NewNestedCapabilities(caps...)
@@ -139,7 +141,7 @@ func NewAttenuationFromPreset(preset Permissions) AttenuationConstructorFunc {
 func GetPresetConstructor(attType string) (AttenuationConstructorFunc, error) {
 	preset := Permissions(attType)
 	switch preset {
-	case PermissionsSmartAccount, PermissionsService, PermissonsVault:
+	case AccountPermissions, ServicePermissions, VaultPermissions:
 		return NewAttenuationFromPreset(preset), nil
 	default:
 		return nil, fmt.Errorf("unknown attenuation preset: %s", attType)

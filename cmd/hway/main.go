@@ -33,7 +33,7 @@ func setupServer(env config.Env) (*echo.Echo, error) {
 	e.IPExtractor = echo.ExtractIPDirect()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	e.Use(producer.Middleware(ipc, ucan.PermissionsService))
+	e.Use(producer.Middleware(ipc, ucan.ServicePermissions))
 	gateway.RegisterRoutes(e, env)
 	return e, nil
 }

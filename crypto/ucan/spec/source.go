@@ -92,7 +92,7 @@ func (k ucanKeyshare) VerifyData(data []byte, sig []byte) (bool, error) {
 
 // TokenParser returns a token parser that can be used to parse tokens
 func (k ucanKeyshare) UCANParser() *ucan.TokenParser {
-	caps := ucan.PermissionsSmartAccount.GetCapabilities()
+	caps := ucan.AccountPermissions.GetCapabilities()
 	ac := func(m map[string]interface{}) (ucan.Attenuation, error) {
 		var (
 			cap string
