@@ -1,6 +1,6 @@
 site_name: Sonr Docs
 site_description: Sonr is a decentralized identity network built on the Cosmos-sdk. It has early origins as a peer-to-peer file sharing network, but has since evolved into a platform for decentralized authentication and authorization. The early lessons taught from our file sharing roots are used as our theology for building the Sonr Blockchain.
-site_url: https://docs.sonr.io
+site_url: https://onsonr.dev
 theme:
   name: material
   features:
