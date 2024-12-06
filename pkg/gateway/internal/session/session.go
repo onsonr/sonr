@@ -1,6 +1,9 @@
 package session
 
-import "github.com/labstack/echo/v4"
+import (
+	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/pkg/gateway/internal/database"
+)
 
 // ╭───────────────────────────────────────────────────────╮
 // │                  DB Setter Functions                  │
@@ -155,11 +158,11 @@ func HandleExists(c echo.Context, handle string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	
+
 	var count int64
 	if err := sess.db.Model(&database.Session{}).Where("user_handle = ?", handle).Count(&count).Error; err != nil {
 		return false, err
 	}
-	
+
 	return count > 0, nil
 }
