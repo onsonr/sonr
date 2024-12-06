@@ -1,29 +1,5 @@
 # User Controlled Authorization Network (UCAN) Specification
 
-## Version 1.0.0-rc.1
-
-## Editors
-
-- [Brooklyn Zelenka], [Witchcraft Software]
-
-## Authors
-
-- [Irakli Gozalishvili], [Protocol Labs]
-- [Daniel Holmgren], [Bluesky]
-- [Philipp Krüger], [number zero]
-- [Brooklyn Zelenka], [Witchcraft Software]
-
-## Sub-Specifications
-
-- [UCAN Delegation][delegation]
-- [UCAN Invocation][invocation]
-- [UCAN Promise][promise]
-- [UCAN Revocation][revocation]
-
-## Language
-
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [BCP 14] when, and only when, they appear in all capitals, as shown here.
-
 # Abstract
 
 User-Controlled Authorization Network (UCAN) is a [trustless], secure, [local-first], user-originated, distributed authorization scheme. This document provides a high level overview of the components of the system, concepts, and motivation. Exact formats are given in [sub-specifications].
