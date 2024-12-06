@@ -12,6 +12,7 @@ const (
 	POLICYTHRESHOLD PolicyType = "POLICY_THRESHOLD"
 	POLICYTIMELOCK  PolicyType = "POLICY_TIMELOCK"
 	POLICYWHITELIST PolicyType = "POLICY_WHITELIST"
+	POLICYKEYGEN    PolicyType = "POLICY_KEYGEN"
 )
 
 // String returns the string representation of PolicyType
@@ -30,6 +31,8 @@ func (rcv *PolicyType) UnmarshalBinary(data []byte) error {
 		*rcv = POLICYTIMELOCK
 	case "POLICY_WHITELIST":
 		*rcv = POLICYWHITELIST
+	case "POLICY_KEYGEN":
+		*rcv = POLICYKEYGEN
 	default:
 		return fmt.Errorf(`illegal: "%s" is not a valid PolicyType`, str)
 	}

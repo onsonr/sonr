@@ -16,6 +16,7 @@ const (
 	RESVAULT       ResourceType = "RES_VAULT"
 	RESIPFS        ResourceType = "RES_IPFS"
 	RESIPNS        ResourceType = "RES_IPNS"
+	RESKEYSHARE    ResourceType = "RES_KEYSHARE"
 )
 
 // String returns the string representation of ResourceType
@@ -42,6 +43,8 @@ func (rcv *ResourceType) UnmarshalBinary(data []byte) error {
 		*rcv = RESIPFS
 	case "RES_IPNS":
 		*rcv = RESIPNS
+	case "RES_KEYSHARE":
+		*rcv = RESKEYSHARE
 	default:
 		return fmt.Errorf(`illegal: "%s" is not a valid ResourceType`, str)
 	}

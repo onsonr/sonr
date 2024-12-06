@@ -112,10 +112,11 @@ draw-deps:
 	@goviz -i ./cmd/sonrd -d 2 | dot -Tpng -o dependency-graph.png
 
 clean:
+	rm -rf .aider*
+	rm -rf static
 	rm -rf .out
 	rm -rf build
 	rm -rf hway.db
-	rm -rf pkg/nebula/node_modules
 	rm -rf snapcraft-local.yaml build/
 
 distclean: clean
