@@ -4,120 +4,83 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/go-webauthn/webauthn/protocol"
-	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 	"github.com/labstack/echo/v4"
 	"github.com/segmentio/ksuid"
+	"gorm.io/gorm"
 
 	"github.com/onsonr/sonr/pkg/common"
+	"github.com/onsonr/sonr/pkg/gateway/internal/database"
 )
-
-const kWebAuthnTimeout = 6000
 
 // HTTPContext is the context for HTTP endpoints.
 type HTTPContext struct {
 	echo.Context
-	role common.PeerRole
-	id   string
-	chal string
-	bn   string
-	bv   string
+	db   *gorm.DB
+	sess *database.Session
 }
 
-// initHTTPContext loads the headers from the request.
-func initHTTPContext(c echo.Context) *HTTPContext {
-	if c == nil {
-		return &HTTPContext{}
-	}
-
-	id, chal := extractPeerInfo(c)
-	bn, bv := extractBrowserInfo(c)
-
-	cc := &HTTPContext{
+// NewHTTPContext creates a new session context
+func NewHTTPContext(c echo.Context, db *gorm.DB) *HTTPContext {
+	return &HTTPContext{
 		Context: c,
-		role:    common.PeerRole(common.ReadCookieUnsafe(c, common.SessionRole)),
-		id:      id,
-		chal:    chal,
-		bn:      bn,
-		bv:      bv,
+		db:      db,
 	}
-
-	// Set the session data in both contexts
-	return cc
 }
 
-func (s *HTTPContext) ID() string {
-	return s.id
+// Session returns the current session
+func (s *HTTPContext) Session() *database.Session {
+	return s.sess
 }
 
-func (s *HTTPContext) BrowserName() string {
-	return s.bn
-}
-
-func (s *HTTPContext) BrowserVersion() string {
-	return s.bv
-}
-
-// ╭───────────────────────────────────────────────────────────╮
-// │                       Initialization                      │
-// ╰───────────────────────────────────────────────────────────╯
-
-func loadOrGenKsuid(c echo.Context) error {
-	var (
-		sessionID string
-		err       error
-	)
-
-	// Setup genKsuid function
-	genKsuid := func() string {
-		return ksuid.New().String()
-	}
-
-	// Attempt to read the session ID from the "session" cookie
-	if ok := common.CookieExists(c, common.SessionID); !ok {
-		sessionID = genKsuid()
-	} else {
-		sessionID, err = common.ReadCookie(c, common.SessionID)
-		if err != nil {
-			sessionID = genKsuid()
+// InitSession initializes or loads an existing session
+func (s *HTTPContext) InitSession() error {
+	sessionID := s.getOrCreateSessionID()
+	
+	// Try to load existing session
+	var sess database.Session
+	result := s.db.Where("id = ?", sessionID).First(&sess)
+	if result.Error != nil {
+		// Create new session if not found
+		bn, bv := extractBrowserInfo(s.Context)
+		sess = database.Session{
+			ID:             sessionID,
+			BrowserName:    bn,
+			BrowserVersion: bv,
+		}
+		if err := s.db.Create(&sess).Error; err != nil {
+			return err
 		}
 	}
-	common.WriteCookie(c, common.SessionID, sessionID)
+	
+	s.sess = &sess
 	return nil
 }
 
-// ╭───────────────────────────────────────────────────────────╮
-// │                       Extraction                          │
-// ╰───────────────────────────────────────────────────────────╯
-
-func extractPeerInfo(c echo.Context) (string, string) {
-	var chal protocol.URLEncodedBase64
-	id, _ := common.ReadCookie(c, common.SessionID)
-	chalRaw, _ := common.ReadCookieBytes(c, common.SessionChallenge)
-	chal.UnmarshalJSON(chalRaw)
-
-	return id, common.Base64Encode(chal)
+func (s *HTTPContext) getOrCreateSessionID() string {
+	if ok := common.CookieExists(s.Context, common.SessionID); !ok {
+		sessionID := ksuid.New().String()
+		common.WriteCookie(s.Context, common.SessionID, sessionID)
+		return sessionID
+	}
+	
+	sessionID, err := common.ReadCookie(s.Context, common.SessionID)
+	if err != nil {
+		sessionID = ksuid.New().String()
+		common.WriteCookie(s.Context, common.SessionID, sessionID)
+	}
+	return sessionID
 }
 
 func extractBrowserInfo(c echo.Context) (string, string) {
-	secCHUA := common.HeaderRead(c, common.UserAgent)
-
-	// If common.is empty, return empty BrowserInfo
-	if secCHUA == "" {
+	userAgent := common.HeaderRead(c, common.UserAgent)
+	if userAgent == "" {
 		return "N/A", "-1"
 	}
 
-	// Split the common.into individual browser entries
-	var (
-		name string
-		ver  string
-	)
-	entries := strings.Split(strings.TrimSpace(secCHUA), ",")
+	var name, ver string
+	entries := strings.Split(strings.TrimSpace(userAgent), ",")
 	for _, entry := range entries {
-		// Remove leading/trailing spaces and quotes
 		entry = strings.TrimSpace(entry)
-
-		// Use regex to extract the browser name and version
 		re := regexp.MustCompile(`"([^"]+)";v="([^"]+)"`)
 		matches := re.FindStringSubmatch(entry)
 
@@ -125,60 +88,13 @@ func extractBrowserInfo(c echo.Context) (string, string) {
 			browserName := matches[1]
 			version := matches[2]
 
-			// Skip "Not A;Brand"
-			if !validBrowser(browserName) {
-				continue
+			if browserName != common.BrowserNameUnknown.String() && 
+			   browserName != common.BrowserNameChromium.String() {
+				name = browserName
+				ver = version
+				break
 			}
-
-			// Store the first valid browser info as fallback
-			name = browserName
-			ver = version
 		}
 	}
 	return name, ver
-}
-
-func validBrowser(name string) bool {
-	return name != common.BrowserNameUnknown.String() && name != common.BrowserNameChromium.String()
-}
-
-// ╭───────────────────────────────────────────────────────────╮
-// │                        Authentication                     │
-// ╰───────────────────────────────────────────────────────────╯
-
-func buildUserEntity(userID string) protocol.UserEntity {
-	return protocol.UserEntity{
-		ID: userID,
-	}
-}
-
-// returns the base options for registering a new user without challenge or user entity.
-func baseRegisterOptions() *protocol.PublicKeyCredentialCreationOptions {
-	return &protocol.PublicKeyCredentialCreationOptions{
-		Timeout:     kWebAuthnTimeout,
-		Attestation: protocol.PreferDirectAttestation,
-		AuthenticatorSelection: protocol.AuthenticatorSelection{
-			AuthenticatorAttachment: "platform",
-			ResidentKey:             protocol.ResidentKeyRequirementPreferred,
-			UserVerification:        "preferred",
-		},
-		Parameters: []protocol.CredentialParameter{
-			{
-				Type:      "public-key",
-				Algorithm: webauthncose.AlgES256,
-			},
-			{
-				Type:      "public-key",
-				Algorithm: webauthncose.AlgES256K,
-			},
-			{
-				Type:      "public-key",
-				Algorithm: webauthncose.AlgEdDSA,
-			},
-		},
-	}
-}
-
-func formatAuth(ucanCID string) string {
-	return "Bearer " + ucanCID
 }
