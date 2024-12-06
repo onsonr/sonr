@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
 )
 
 var (
@@ -16,22 +17,24 @@ var (
 )
 
 type Session struct {
-	ID               string `json:"id"`
+	gorm.Model
+	ID               string `json:"id" gorm:"primaryKey"`
 	BrowserName      string `json:"browserName"`
 	BrowserVersion   string `json:"browserVersion"`
 	UserArchitecture string `json:"userArchitecture"`
 	Platform         string `json:"platform"`
 	PlatformVersion  string `json:"platformVersion"`
 	DeviceModel      string `json:"deviceModel"`
-	UserHandle       string `json:"userHandle"`
+	UserHandle       string `json:"userHandle" gorm:"unique;index"`
 	FirstName        string `json:"firstName"`
 	LastInitial      string `json:"lastInitial"`
 	VaultAddress     string `json:"vaultAddress"`
 }
 
 type User struct {
+	gorm.Model
 	Address   string `json:"address"`
-	Handle    string `json:"handle"`
+	Handle    string `json:"handle" gorm:"unique;index"`
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
 	VaultCID  string `json:"vaultCID"`

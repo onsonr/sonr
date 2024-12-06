@@ -148,3 +148,18 @@ func GetVaultAddress(c echo.Context) (string, error) {
 	}
 	return sess.Session().VaultAddress, nil
 }
+
+// HandleExists checks if a handle already exists in any session
+func HandleExists(c echo.Context, handle string) (bool, error) {
+	sess, err := Get(c)
+	if err != nil {
+		return false, err
+	}
+	
+	var count int64
+	if err := sess.db.Model(&database.Session{}).Where("user_handle = ?", handle).Count(&count).Error; err != nil {
+		return false, err
+	}
+	
+	return count > 0, nil
+}
