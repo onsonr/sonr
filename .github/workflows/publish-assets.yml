@@ -1,4 +1,4 @@
-name: Upload Public Assets
+name: Publish Versioned Assets
 on:
   push:
     branches:
@@ -23,74 +23,3 @@ jobs:
         with:
           input: proto
           buf_token: ${{ secrets.BUF_TOKEN }}
-
-  buf_push_thirdparty:
-    name: Publish to buf.build/onsonr/thirdparty
-    runs-on: ubuntu-latest
-    steps:
-      # Run `git checkout`
-      - uses: actions/checkout@v3
-      # Install the `buf` CLI
-      - uses: bufbuild/buf-setup-action@v1
-      # Push only the Input in `proto` to the BSR
-      - uses: bufbuild/buf-push-action@v1
-        continue-on-error: true
-        with:
-          input: third_party/proto
-          buf_token: ${{ secrets.BUF_TOKEN }}
-
-  upload_motr_dwn:
-    runs-on: ubuntu-latest
-    name: Publish to configs.sonr.id
-    steps:
-      - name: checkout
-        uses: actions/checkout@v4
-
-      - uses: actions/setup-go@v5
-        with:
-          go-version: "1.23"
-          check-latest: true
-
-      - name: Setup go-task / task / taskfile
-        uses: rnorton5432/setup-task@v1
-
-      - name: Build DWN WASM
-        run: task dwn:build
-
-      - name: Upload WASM to R2
-        continue-on-error: true
-        uses: ryand56/r2-upload-action@latest
-        with:
-          r2-account-id: ${{ secrets.R2_ACCOUNT_ID }}
-          r2-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
-          r2-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          r2-bucket: nebula
-          source-dir: ./build/app.wasm
-          destination-dir: wasm
-
-      - name: Upload SW JS to R2
-        continue-on-error: true
-        uses: ryand56/r2-upload-action@latest
-        with:
-          r2-account-id: ${{ secrets.R2_ACCOUNT_ID }}
-          r2-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
-          r2-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          r2-bucket: nebula
-          source-dir: ./pkg/motr/static/sw.js
-          destination-dir: js
-
-  upload_nebula_cdn:
-    runs-on: ubuntu-latest
-    name: Publish to cdn.sonr.id
-    steps:
-      - name: checkout
-        uses: actions/checkout@v4
-      - name: Upload to R2
-        uses: ryand56/r2-upload-action@latest
-        with:
-          r2-account-id: ${{ secrets.R2_ACCOUNT_ID }}
-          r2-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
-          r2-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          r2-bucket: nebula
-          source-dir: pkg/nebula/assets
-          destination-dir: .
