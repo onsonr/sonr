@@ -30,7 +30,7 @@ var (
 	jsWasmHTTP   = jsGlobal.Get("wasmhttp")
 )
 
-// serveFetch serves HTTP requests with optimized handler management
+// ServeFetch serves HTTP requests with optimized handler management
 func ServeFetch(handler http.Handler) func() {
 	h := handler
 	if h == nil {

@@ -21,7 +21,7 @@ import (
 	"github.com/onsonr/sonr/crypto/tecdsa/dklsv1/dkg"
 )
 
-// GenerationAndDeal produces private key material for alice and bob which they can later use in signing.
+// GenerateAndDeal produces private key material for alice and bob which they can later use in signing.
 // Running actual DKG is ALWAYS recommended over using this function, as this function breaks the security guarantees of DKG.
 // only use this function if you have a very good reason to.
 func GenerateAndDeal(curve *curves.Curve) (*dkg.AliceOutput, *dkg.BobOutput, error) {
