@@ -42,7 +42,7 @@ func GenerateRSA() (crypto.PrivKey, DID, error) {
 	return priv, did, err
 }
 
-// GenerateEd25519 generates a Secp256k1 private key and the matching DID.
+// GenerateSecp256k1 generates a Secp256k1 private key and the matching DID.
 func GenerateSecp256k1() (crypto.PrivKey, DID, error) {
 	priv, pub, err := crypto.GenerateSecp256k1Key(rand.Reader)
 	if err != nil {
