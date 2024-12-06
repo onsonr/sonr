@@ -80,6 +80,16 @@ func (v *ValKeyshare) String() string {
 	return v.encoded
 }
 
+// PublicKey returns the uncompressed public key (65 bytes)
+func (v *ValKeyshare) PublicKey() []byte {
+	return v.UncompressedPublicKey()
+}
+
+// CompressedPublicKey returns the compressed public key (33 bytes)
+func (v *ValKeyshare) CompressedPublicKey() []byte {
+	return v.BaseKeyshare.CompressedPublicKey()
+}
+
 type UserKeyshare struct {
 	BaseKeyshare
 	encoded string
@@ -116,6 +126,16 @@ func (u *UserKeyshare) SignFunc(msg []byte) (SignFunc, error) {
 
 func (u *UserKeyshare) String() string {
 	return u.encoded
+}
+
+// PublicKey returns the uncompressed public key (65 bytes)
+func (u *UserKeyshare) PublicKey() []byte {
+	return u.UncompressedPublicKey()
+}
+
+// CompressedPublicKey returns the compressed public key (33 bytes)
+func (u *UserKeyshare) CompressedPublicKey() []byte {
+	return u.BaseKeyshare.CompressedPublicKey()
 }
 
 func encodeMessage(m *protocol.Message) (string, error) {
