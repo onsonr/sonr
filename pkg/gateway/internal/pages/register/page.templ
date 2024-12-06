@@ -1,0 +1,48 @@
+package register
+
+import (
+	"github.com/onsonr/sonr/pkg/styles/details"
+	"github.com/onsonr/sonr/pkg/styles/form"
+	"github.com/onsonr/sonr/pkg/styles/layout"
+	"github.com/onsonr/sonr/pkg/styles/text"
+)
+
+templ ProfileFormView(turnstileSiteKey string) {
+	@layout.Root("Sonr.ID") {
+		@layout.Container() {
+			@text.Header("Create a Profile", "Enter some basic information about yourself.")
+			<br/>
+			@form.Form("/register/start", "POST", form.Submit("Continue"), "25", true) {
+				@form.NameInput()
+				<br/>
+				@form.HandleInput()
+				@form.TurnstileWidget(turnstileSiteKey)
+			}
+		}
+	}
+}
+
+templ LinkCredentialView(req LinkCredentialRequest) {
+	@layout.Root("Sonr.ID") {
+		@layout.Container() {
+			@text.Header("Link a PassKey", "This will be used to login to your vault.")
+			<br/>
+			@form.Form("/register/finish", "POST", form.PasskeyInput("passkey"), "65", false) {
+				@details.PropertyList() {
+					@details.Property("Address", req.Address, "wallet")
+					@details.Property("Handle", req.Handle, "at-sign")
+					@details.Property("Platform", req.Platform, "device-iphone")
+					@details.Property("Model", req.DeviceModel, "laptop")
+				}
+			}
+		}
+	}
+}
+
+templ LoadingVaultView() {
+	@layout.Root("Sonr.ID") {
+		@layout.Container() {
+			@text.Header("Loading Vault", "This will be used to login to your vault.")
+		}
+	}
+}

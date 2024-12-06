@@ -1,0 +1,41 @@
+package layout
+
+// Columns is a component that renders a flex container with a gap of 3 and a max width of 100%
+templ Columns() {
+	<div class="flex flex-col h-full w-full gap-3 md:gap-6 md:flex-row">
+		{ children... }
+	</div>
+}
+
+templ Container() {
+	<div id="container" class="flex fixed inset-0 z-[99] w-screen h-screen">
+		<div class="relative flex flex-wrap items-center w-full h-full px-8">
+			<div class="relative w-full max-w-sm mx-auto lg:mb-0">
+				<div class="flex flex-col items-center justify-center h-full">
+					{ children... }
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+// Rows is a component that renders a flex container with a gap of 2 and a max width of 100%
+templ Rows() {
+	<div class="flex flex-row w-full gap-2 md:gap-4 max-w-fit">
+		{ children... }
+	</div>
+}
+
+// Spacer is a component that renders a <br/> tag
+templ Spacer() {
+	<br/>
+}
+
+templ Separator(text string) {
+	<div class="relative py-6">
+		<div class="absolute inset-0 flex items-center"><span class="w-full border-t"></span></div>
+		<div class="relative flex justify-center text-xs uppercase">
+			<span class="px-2 text-neutral-500">{ text }</span>
+		</div>
+	</div>
+}

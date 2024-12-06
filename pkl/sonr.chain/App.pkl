@@ -1,0 +1,89 @@
+open module sonr.chain.App
+
+import "package://pkg.pkl-lang.org/pkl-pantry/pkl.toml@1.0.0#/toml.pkl"
+
+class Chain {
+  `minimum-gas-prices`: String = "0stake"
+  `query-gas-limit`: String = "0"
+  pruning: String = "default"
+  `pruning-keep-recent`: String = "0"
+  `pruning-interval`: String = "0"
+  `halt-height`: Int = 0
+  `halt-time`: Int = 0
+  `min-retain-blocks`: Int = 0
+  `inter-block-cache`: Boolean = true
+  `index-events`: Listing<String> = new {}
+  `iavl-cache-size`: Int = 781250
+  `iavl-disable-fastnode`: Boolean = false
+  `app-db-backend`: String = ""
+  telemetry: Telemetry = new {}
+  api: Api = new {}
+  grpc: Grpc = new {}
+  `grpc-web`: GrpcWeb = new {}
+  `state-sync`: StateSync = new {}
+  streaming: Streaming = new {}
+  mempool: Mempool = new {}
+}
+
+class Telemetry {
+  `service-name`: String = ""
+  enabled: Boolean = true
+  `enable-hostname`: Boolean = false
+  `enable-hostname-label`: Boolean = false
+  `enable-service-label`: Boolean = false
+  `prometheus-retention-time`: Int = 60
+  `global-labels`: Listing<Listing<String>> = new {
+    new {
+      "chain_id"
+      "chain-NKlMbx"
+    }
+  }
+  `metrics-sink`: String = ""
+  `statsd-addr`: String = ""
+  `datadog-hostname`: String = ""
+}
+
+class Api {
+  enable: Boolean = true
+  swagger: Boolean = false
+  address: String = "tcp://0.0.0.0:1317"
+  `max-open-connections`: Int = 1000
+  `rpc-read-timeout`: Int = 10
+  `rpc-write-timeout`: Int = 0
+  `rpc-max-body-bytes`: Int = 1000000
+  `enabled-unsafe-cors`: Boolean = false
+}
+
+class Grpc {
+  enable: Boolean = true
+  address: String = "0.0.0.0:9090"
+  `max-recv-msg-size`: String = "10485760"
+  `max-send-msg-size`: String = "2147483647"
+}
+
+class GrpcWeb {
+  enable: Boolean = true
+}
+
+class StateSync {
+  `snapshot-interval`: Int = 0
+  `snapshot-keep-recent`: Int = 2
+}
+
+class Streaming {
+  abci: Abci = new {}
+}
+
+class Abci {
+  keys: Listing<String> = new {}
+  plugin: String = ""
+  `stop-node-on-err`: Boolean = true
+}
+
+class Mempool {
+  `max-txs`: Int = 5000
+}
+
+output {
+  renderer = new toml.Renderer {}
+}

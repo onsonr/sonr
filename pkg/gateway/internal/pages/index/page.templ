@@ -1,0 +1,36 @@
+package index
+
+import (
+	"github.com/onsonr/sonr/pkg/styles/layout"
+	"github.com/onsonr/sonr/pkg/styles/text"
+)
+
+templ InitialView() {
+	@layout.Root("Welcome | Sonr.ID") {
+		@layout.Container() {
+			@text.Header("Sonr.ID", "The decentralized identity layer for the web.")
+			<div class="pt-3 flex flex-col items-center justify-center h-full">
+				<sl-button hx-target="#container" hx-get="/register" type="button">
+					<sl-icon slot="prefix" library="sonr" name="sonr"></sl-icon>
+					Get Started
+					<sl-icon slot="suffix" library="sonr" name="arrow-right"></sl-icon>
+				</sl-button>
+			</div>
+		}
+	}
+}
+
+templ ReturningView() {
+	@layout.Root("Login | Sonr.ID") {
+		@layout.Container() {
+			@text.Header("Welcome Back!", "Continue with your existing Sonr.ID.")
+			<div class="pt-3 flex flex-col items-center justify-center h-full">
+				<sl-button hx-target="#container" hx-get="/register" type="button">
+					<sl-icon slot="prefix" library="sonr" name="sonr"></sl-icon>
+					Log back in
+					<sl-icon slot="suffix" library="sonr" name="arrow-right"></sl-icon>
+				</sl-button>
+			</div>
+		}
+	}
+}

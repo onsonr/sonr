@@ -94,7 +94,6 @@ endif
 
 install: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/sonrd
-	go install -mod=readonly $(BUILD_FLAGS) ./cmd/hway
 
 ########################################
 ### Tools & dependencies
@@ -113,7 +112,11 @@ draw-deps:
 	@goviz -i ./cmd/sonrd -d 2 | dot -Tpng -o dependency-graph.png
 
 clean:
-	rm -rf pkg/nebula/node_modules
+	rm -rf .aider*
+	rm -rf static
+	rm -rf .out
+	rm -rf build
+	rm -rf hway.db
 	rm -rf snapcraft-local.yaml build/
 
 distclean: clean
@@ -263,6 +266,9 @@ ictest-tokenfactory:
 ###                                    testnet                              ###
 ###############################################################################
 
+setup-ipfs:
+	./scripts/ipfs_config.sh
+
 setup-testnet: mod-tidy is-localic-installed install local-image set-testnet-configs setup-testnet-keys
 
 # Run this before testnet keys are added
@@ -289,26 +295,48 @@ sh-testnet: mod-tidy
 
 .PHONY: setup-testnet set-testnet-configs testnet testnet-basic sh-testnet
 
-
 ###############################################################################
-###                             custom generation                           ###
+###                                generation                               ###
 ###############################################################################
-
-.PHONY: templ-gen pkl-gen
-
-assets-gen:
-	@echo "(assets) Generating gateway cloudflare workers assets"
-	go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go -o ./cmd/hway/build
-
-templ-gen:
-	@echo "(templ) Generating templ files"
-	templ generate
+.PHONY: pkl-gen tailwind-gen templ-gen
 
 pkl-gen:
-	@echo "(pkl) Building PKL"
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/DWN.pkl
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/ORM.pkl
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/Txns.pkl
+	go install github.com/apple/pkl-go/cmd/pkl-gen-go@latest
+	pkl-gen-go pkl/sonr.motr/ATN.pkl
+	pkl-gen-go pkl/sonr.hway/Env.pkl
+	pkl-gen-go pkl/sonr.motr/DWN.pkl
+	pkl-gen-go pkl/sonr.hway/ORM.pkl
+
+templ-gen:
+	@go install github.com/a-h/templ/cmd/templ@latest
+	templ generate
+
+
+###############################################################################
+###                             custom builds                               ###
+###############################################################################
+.PHONY: motr-build hway-build hway-serve
+
+motr-build:
+	GOOS=js GOARCH=wasm go build -o static/wasm/app.wasm ./cmd/motr/main.go
+
+hway-build: templ-gen
+	go build -o build/hway ./cmd/hway/main.go
+
+hway-serve: hway-build
+	./build/hway
+
+###############################################################################
+###                                     help                                ###
+###############################################################################
+.PHONY: deploy-buf deploy-pkl
+
+deploy-buf:
+	cd ./proto && bunx buf dep update && bunx buf build && bunx buf push
+
+deploy-pkl: 
+	sh ./.github/scripts/upload_cdn.sh
+
 
 ###############################################################################
 ###                                     help                                ###

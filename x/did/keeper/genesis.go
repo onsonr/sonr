@@ -4,11 +4,23 @@ import (
 	"context"
 
 	"cosmossdk.io/log"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/onsonr/sonr/x/did/types"
 )
 
+//	func (k Keeper) ResolveController(ctx sdk.Context, did string) (controller.ControllerI, error) {
+//		ct, err := k.OrmDB.ControllerTable().GetByDid(ctx, did)
+//		if err != nil {
+//			return nil, err
+//		}
+//		c, err := controller.LoadFromTableEntry(ctx, ct)
+//		if err != nil {
+//			return nil, err
+//		}
+//		return c, nil
+//	}
+//
 // Logger returns the logger
 func (k Keeper) Logger() log.Logger {
 	return k.logger

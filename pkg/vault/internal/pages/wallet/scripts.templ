@@ -1,0 +1,107 @@
+package wallet
+
+var paymentsHandle = templ.NewOnceHandle()
+
+// Base payments script template
+templ PaymentsScripts() {
+	@paymentsHandle.Once() {
+		<script type="text/javascript">
+            // Check if Payment Request API is supported
+            function isPaymentRequestSupported() {
+                return window.PaymentRequest !== undefined;
+            }
+
+            // Create and show payment request
+            async function showPaymentRequest(request) {
+                try {
+                    const paymentMethods = request.methodData;
+                    const details = request.details;
+                    const options = request.options || {};
+
+                    const paymentRequest = new PaymentRequest(
+                        paymentMethods,
+                        details,
+                        options
+                    );
+
+                    // Handle shipping address changes if shipping is requested
+                    if (options.requestShipping) {
+                        paymentRequest.addEventListener('shippingaddresschange', event => {
+                            event.updateWith(Promise.resolve(details));
+                        });
+                    }
+
+                    // Handle shipping option changes
+                    if (details.shippingOptions && details.shippingOptions.length > 0) {
+                        paymentRequest.addEventListener('shippingoptionchange', event => {
+                            event.updateWith(Promise.resolve(details));
+                        });
+                    }
+
+                    const response = await paymentRequest.show();
+                    
+                    // Create response object
+                    const result = {
+                        methodName: response.methodName,
+                        details: response.details,
+                    };
+
+                    if (options.requestPayerName) {
+                        result.payerName = response.payerName;
+                    }
+                    if (options.requestPayerEmail) {
+                        result.payerEmail = response.payerEmail;
+                    }
+                    if (options.requestPayerPhone) {
+                        result.payerPhone = response.payerPhone;
+                    }
+                    if (options.requestShipping) {
+                        result.shippingAddress = response.shippingAddress;
+                        result.shippingOption = response.shippingOption;
+                    }
+
+                    // Complete the payment
+                    await response.complete('success');
+
+                    // Dispatch success event
+                    window.dispatchEvent(new CustomEvent('paymentComplete', {
+                        detail: result
+                    }));
+
+                } catch (err) {
+                    // Dispatch error event
+                    window.dispatchEvent(new CustomEvent('paymentError', {
+                        detail: err.message
+                    }));
+                }
+            }
+
+            // Abort payment request
+            function abortPaymentRequest() {
+                if (window.currentPaymentRequest) {
+                    window.currentPaymentRequest.abort();
+                }
+            }
+        </script>
+	}
+}
+
+// StartPayment for initiating payment request
+templ StartPayment(request PaymentRequest) {
+	@PaymentsScripts()
+	<script>
+        (async () => {
+            try {
+                if (!isPaymentRequestSupported()) {
+                    throw new Error("Payment Request API is not supported in this browser");
+                }
+                const request = { templ.JSONString(request) };
+                await showPaymentRequest(request);
+            } catch (err) {
+                window.dispatchEvent(new CustomEvent('paymentError', {
+                    detail: err.message
+                }));
+            }
+        })();
+    </script>
+}

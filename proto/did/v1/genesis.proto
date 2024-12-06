@@ -9,8 +9,20 @@ option go_package = "github.com/onsonr/sonr/x/did/types";
 // GenesisState defines the module genesis state
 message GenesisState {
   // Params defines all the parameters of the module.
-  Params params = 1 [ (gogoproto.nullable) = false ];
+  Params params = 1 [(gogoproto.nullable) = false];
 }
+
+// Document defines a DID document
+message Document {
+  string id = 1;
+  string controller = 2; // The DID of the controller
+  repeated string authentication = 3;
+  repeated string assertion_method = 4;
+  repeated string capability_delegation = 5;
+  repeated string capability_invocation = 6;
+  repeated string service = 7;
+}
+
 
 // Params defines the set of module parameters.
 message Params {
@@ -20,52 +32,5 @@ message Params {
 
   // Whitelisted Assets
 
-  // Whitelisted Key Types
-  map<string, KeyInfo> allowed_public_keys = 2;
-
-  // ConveyancePreference defines the conveyance preference
-  string conveyance_preference = 3;
-
-  // AttestationFormats defines the attestation formats
-  repeated string attestation_formats = 4;
 }
 
-// KeyInfo defines information for accepted PubKey types
-message KeyInfo {
-  string role = 1;
-  string algorithm = 2; // e.g., "ES256", "EdDSA", "ES256K"
-  string encoding = 3;  // e.g., "hex", "base64", "multibase"
-  string curve = 4;     // e.g., "P256", "P384", "P521", "X25519", "X448",
-  // "Ed25519", "Ed448", "secp256k1"
-}
-
-message Keyshares {
-  string validator_cid = 1;
-  string user_cid = 2;
-  int64 last_updated_block = 3;
-}
-
-// PubKey defines a public key for a did
-message PubKey {
-  string role = 1;
-  string key_type = 2;
-  RawKey raw_key = 3;
-  JSONWebKey jwk = 4;
-}
-
-// JWK represents a JSON Web Key
-message JSONWebKey {
-  string kty = 1; // Key Type
-  string crv = 2; // Curve (for EC and OKP keys)
-  string x = 3;   // X coordinate (for EC and OKP keys)
-  string y = 4;   // Y coordinate (for EC keys)
-  string n = 5;   // Modulus (for RSA keys)
-  string e = 6;   // Exponent (for RSA keys)
-}
-
-message RawKey {
-  string algorithm = 1;
-  string encoding = 2;
-  string curve = 3;
-  bytes key = 4;
-}

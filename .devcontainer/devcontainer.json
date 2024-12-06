@@ -4,11 +4,6 @@
     "dockerfile": "./Dockerfile",
     "context": ".."
   },
-  "features": {
-    "ghcr.io/devcontainers/features/sshd:1": {
-      "version": "latest"
-    }
-  },
   "customizations": {
     "vscode": {
       "settings": {},
@@ -17,5 +12,78 @@
       ]
     }
   },
-  "remoteUser": "devbox"
-}
+  "remoteUser": "devbox",
+  "forwardPorts": [
+    1317,
+    26657,
+    9090,
+    3000,
+    80,
+    5000
+  ],
+  "portsAttributes": {
+    "1317": {
+      "label": "sonr-api",
+      "onAutoForward": "notify"
+    },
+    "26657": {
+      "label": "sonr-rpc",
+      "onAutoForward": "notify"
+    },
+    "9090": {
+      "label": "sonr-grpc",
+      "onAutoForward": "silent"
+    },
+    "3000": {
+      "label": "hway-frontend",
+      "onAutoForward": "silent"
+    },
+    "80": {
+      "label": "ipfs-gateway",
+      "onAutoForward": "silent"
+    },
+    "5000": {
+      "label": "ipfs-api",
+      "onAutoForward": "silent"
+    }
+  },
+  "features": {
+    "ghcr.io/michidk/devcontainers-features/bun:1": {
+      "version": "latest"
+    },
+    "ghcr.io/cirolosapio/devcontainers-features/alpine-ohmyzsh:0": {
+      "version": "latest"
+    },
+    "ghcr.io/guiyomh/features/golangci-lint:0": {
+      "version": "latest"
+    },
+    "ghcr.io/meaningful-ooo/devcontainer-features/homebrew:2": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/go:1": {
+      "version": "latest",
+      "go": "1.23"
+    },
+    "ghcr.io/devcontainers/features/rust:1": {
+      "version": "latest",
+      "rust": "1.73"
+    },
+    "ghcr.io/jpawlowski/devcontainer-features/codespaces-dotfiles:1": {
+      "version": "latest"
+    },
+    "ghcr.io/duduribeiro/devcontainer-features/neovim:1": {
+      "version": "latest"
+    },
+    "ghcr.io/dlouwers/devcontainer-features/devbox:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/sshd:1": {
+      "version": "latest"
+    }
+  }

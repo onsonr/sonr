@@ -10,16 +10,10 @@ This directory contains the protobuf definitions for the Sonr blockchain.
 
 The `did` directory contains the protobuf definitions for the DID module.
 
-### `macaroon`
+### `dwn`
 
-The `macaroon` directory contains the protobuf definitions for the Macaroon module.
+The `dwn` directory contains the protobuf definitions for the Vault module.
 
-### `service`
+### `svc`
 
 The `service` directory contains the protobuf definitions for the Service module.
-
-### `vault`
-
-The `vault` directory contains the protobuf definitions for the Vault module.
-
-### `buf.gen.gogo.yaml`

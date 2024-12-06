@@ -1,0 +1,15 @@
+package button
+
+templ Primary(href string, text string) {
+	<div>
+		<div class="btn cursor-pointer text-zinc-100 bg-zinc-900 hover:bg-zinc-800 w-full shadow" hx-swap="afterend" hx-get={ href }>
+			{ text }
+		</div>
+	</div>
+}
+
+templ Secondary(href string, text string) {
+	<div>
+		<div x-on:click="toast('Default Toast Notification', 'default', '', 'top-center')" class="btn cursor-pointer text-zinc-600 bg-white hover:text-zinc-900 w-full shadow">{ text }</div>
+	</div>
+}

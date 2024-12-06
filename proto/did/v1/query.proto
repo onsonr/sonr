@@ -18,11 +18,6 @@ service Query {
     option (google.api.http).get = "/did/v1/{did}";
   }
 
-  // Sign signs a message with the DID document
-  rpc Sign(QuerySignRequest) returns (QuerySignResponse) {
-    option (google.api.http).post = "/did/v1/{did}/sign";
-  }
-
   // Verify verifies a message with the DID document
   rpc Verify(QueryVerifyRequest) returns (QueryVerifyResponse) {
     option (google.api.http).post = "/did/v1/{did}/verify";
@@ -78,15 +73,4 @@ message QueryVerifyRequest {
 message QueryVerifyResponse {
   // valid is the validity of the signature
   bool valid = 1;
-}
-
-// Document defines a DID document
-message Document {
-  string id = 1;
-  string controller = 2; // The DID of the controller
-  repeated string authentication = 3;
-  repeated string assertion_method = 4;
-  repeated string capability_delegation = 5;
-  repeated string capability_invocation = 6;
-  repeated string service = 7;
 }

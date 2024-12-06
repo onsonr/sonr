@@ -1,0 +1,55 @@
+# https://taskfile.dev
+
+version: "3"
+
+vars:
+  GREETING: Hello, World!
+
+tasks:
+  init:sonrd:
+    cmds:
+      - sonrd init {{.NODE_NAME}} --chain-id {{.CHAIN_ID}} --home {{.HOME}}
+
+  init:ipfs:
+    cmds:
+      - ipfs init
+
+  init:hway:
+    cmds:
+      - sonrd hway init {{.NODE_NAME}} --home {{.HOME}}
+
+  start:sonrd:
+    cmds:
+      - sonrd start --home {{.HOME}}
+
+  start:ipfs:
+    cmds:
+      - ipfs daemon
+
+  start:hway:
+    cmds:
+      - sonrd hway start --home {{.HOME}}
+
+  stop:sonrd:
+    cmds:
+      - sonrd stop
+
+  stop:ipfs:
+    cmds:
+      - ipfs daemon stop
+
+  stop:hway:
+    cmds:
+      - sonrd hway stop
+
+  clean:sonrd:
+    cmds:
+      - rm -rf {{.HOME}}
+
+  clean:ipfs:
+    cmds:
+      - rm -rf ~/.ipfs
+
+  clean:hway:
+    cmds:
+      - rm -rf {{.HOME}}/data/hway

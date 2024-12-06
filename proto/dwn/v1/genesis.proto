@@ -1,0 +1,69 @@
+syntax = "proto3";
+package dwn.v1;
+
+import "gogoproto/gogo.proto";
+import "amino/amino.proto";
+
+option go_package = "github.com/onsonr/sonr/x/dwn/types";
+
+// GenesisState defines the module genesis state
+message GenesisState {
+  // Params defines all the parameters of the module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+// Params defines the set of module parameters.
+message Params {
+  option (amino.name) = "vault/params";
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_stringer) = false;
+
+  // Whitelisted Key Types
+  map<string, KeyInfo> allowed_public_keys = 1;
+
+  // ConveyancePreference defines the conveyance preference
+  string conveyance_preference = 2;
+
+  // AttestationFormats defines the attestation formats
+  repeated string attestation_formats = 3;
+  Schema schema = 4;
+  repeated string allowed_operators = 5;
+}
+
+// Capability reprensents the available capabilities of a decentralized web node
+message Capability {
+  string name = 1;
+  string parent = 2;
+  string description = 3;
+  repeated string resources = 4;
+}
+
+// KeyInfo defines information for accepted PubKey types
+message KeyInfo {
+  string role = 1;
+  string algorithm = 2; // e.g., "ES256", "EdDSA", "ES256K"
+  string encoding = 3; // e.g., "hex", "base64", "multibase"
+  string curve = 4; // e.g., "P256", "P384", "P521", "X25519", "X448",
+  // "Ed25519", "Ed448", "secp256k1"
+}
+
+// Resource reprensents the available resources of a decentralized web node
+message Resource {
+  string kind = 1;
+  string template = 2;
+}
+
+// Schema is the Database Model for Decentralized Web Nodes
+message Schema {
+  int32 version = 1;
+  string account = 2;
+  string asset = 3;
+  string chain = 4;
+  string credential = 5;
+  string did = 6;
+  string jwk = 7;
+  string grant = 8;
+  string keyshare = 9;
+  string profile = 10;
+}
+

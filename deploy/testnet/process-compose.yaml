@@ -1,0 +1,29 @@
+version: "0.6"
+
+processes:
+  ipfs:
+    namespace: testnet
+    command: "devbox run ipfs"
+    background: true
+    availability:
+      restart: never
+      max_restarts: 0
+
+  sonr:
+    namespace: testnet
+    background: true
+    command: "devbox run sonr"
+    restart: never
+    max_restarts: 1
+    depends:
+      - ipfs
+
+  hway:
+    namespace: testnet
+    background: true
+    command: "devbox run hway"
+    restart: never
+    max_restarts: 1
+    depends:
+      - ipfs
+      - sonr
