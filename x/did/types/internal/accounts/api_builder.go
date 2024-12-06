@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/onsonr/sonr/pkg/core/transaction"
+	"github.com/onsonr/sonr/pkg/chain/transaction"
 )
 
 var (

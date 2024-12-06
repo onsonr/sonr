@@ -1,6 +1,8 @@
 # Binaries
 .data
 schemas
+*.db
+tools-stamp
 *.exe
 *.exe~
 *.dll

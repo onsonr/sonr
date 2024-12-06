@@ -1,0 +1,175 @@
+package form
+
+import "github.com/go-webauthn/webauthn/protocol"
+
+var credentialsHandle = templ.NewOnceHandle()
+
+// Base credentials script template
+templ CredentialsScripts() {
+	@credentialsHandle.Once() {
+		<script type="text/javascript">
+            // Check if WebAuthn is supported
+            async function isWebAuthnSupported() {
+                return window.PublicKeyCredential !== undefined;
+            }
+
+            // Create credentials
+            async function createCredential(options) {
+                try {
+                    const publicKey = {
+                        challenge: base64URLDecode(options.challenge),
+                        rp: {
+                            name: options.rpName,
+                            id: options.rpId,
+                        },
+                        user: {
+                            id: base64URLDecode(options.userId),
+                            name: options.userName,
+                            displayName: options.userDisplayName,
+                        },
+                        pubKeyCredParams: [{alg: -7, type: "public-key"}],
+                        timeout: options.timeout || 60000,
+                        attestation: options.attestationType || "none",
+                    };
+                    
+                    const credential = await navigator.credentials.create({
+                        publicKey: publicKey
+                    });
+                    
+                    return {
+                        id: credential.id,
+                        rawId: arrayBufferToBase64URL(credential.rawId),
+                        type: credential.type,
+                        response: {
+                            attestationObject: arrayBufferToBase64URL(credential.response.attestationObject),
+                            clientDataJSON: arrayBufferToBase64URL(credential.response.clientDataJSON),
+                        }
+                    };
+                } catch (err) {
+                    console.error('Error creating credential:', err);
+                    throw err;
+                }
+            }
+
+            // Get credentials
+            async function getCredential(options) {
+                try {
+                    const publicKey = {
+                        challenge: base64URLDecode(options.challenge),
+                        rpId: options.rpId,
+                        timeout: options.timeout || 60000,
+                        userVerification: options.userVerification || "preferred",
+                    };
+
+                    if (options.allowCredentials) {
+                        publicKey.allowCredentials = options.allowCredentials.map(cred => ({
+                            type: cred.type,
+                            id: base64URLDecode(cred.id),
+                        }));
+                    }
+
+                    const assertion = await navigator.credentials.get({
+                        publicKey: publicKey
+                    });
+
+                    return {
+                        id: assertion.id,
+                        rawId: arrayBufferToBase64URL(assertion.rawId),
+                        type: assertion.type,
+                        response: {
+                            authenticatorData: arrayBufferToBase64URL(assertion.response.authenticatorData),
+                            clientDataJSON: arrayBufferToBase64URL(assertion.response.clientDataJSON),
+                            signature: arrayBufferToBase64URL(assertion.response.signature),
+                            userHandle: assertion.response.userHandle ? arrayBufferToBase64URL(assertion.response.userHandle) : null
+                        }
+                    };
+                } catch (err) {
+                    console.error('Error getting credential:', err);
+                    throw err;
+                }
+            }
+
+            // Utility functions for base64URL encoding/decoding
+            function base64URLDecode(base64url) {
+                const padding = '='.repeat((4 - base64url.length % 4) % 4);
+                const base64 = (base64url + padding)
+                    .replace(/\-/g, '+')
+                    .replace(/_/g, '/');
+                const rawData = window.atob(base64);
+                const array = new Uint8Array(rawData.length);
+                for (let i = 0; i < rawData.length; i++) {
+                    array[i] = rawData.charCodeAt(i);
+                }
+                return array.buffer;
+            }
+
+            function arrayBufferToBase64URL(buffer) {
+                let binary = '';
+                const bytes = new Uint8Array(buffer);
+                for (let i = 0; i < bytes.byteLength; i++) {
+                    binary += String.fromCharCode(bytes[i]);
+                }
+                const base64 = window.btoa(binary);
+                return base64
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_')
+                    .replace(/=/g, '');
+            }
+        </script>
+	}
+}
+
+script CreatePasskey(id string) {
+    function createPasskey(id) {
+         const passkey = document.getElementById(id);
+         passkey.value = window.crypto.getRandomValues(new Uint8Array(32)).join('');
+    }
+}
+
+// Template for creating credentials
+templ CreateCredential(options *protocol.PublicKeyCredentialCreationOptions) {
+	@CredentialsScripts()
+	<script>
+        (async () => {
+            try {
+                if (!await isWebAuthnSupported()) {
+                    throw new Error("WebAuthn is not supported in this browser");
+                }
+                const options = { templ.JSONString(options) };
+                const credential = await createCredential(options);
+                // Dispatch event with credential data
+                window.dispatchEvent(new CustomEvent('credentialCreated', {
+                    detail: credential
+                }));
+            } catch (err) {
+                window.dispatchEvent(new CustomEvent('credentialError', {
+                    detail: err.message
+                }));
+            }
+        })();
+    </script>
+}
+
+// Template for getting credentials
+templ GetCredential(options *protocol.PublicKeyCredentialRequestOptions) {
+	@CredentialsScripts()
+	<script>
+        (async () => {
+            try {
+                if (!await isWebAuthnSupported()) {
+                    throw new Error("WebAuthn is not supported in this browser");
+                }
+                const options = { templ.JSONString(options) };
+                const credential = await getCredential(options);
+                // Dispatch event with credential data
+                window.dispatchEvent(new CustomEvent('credentialRetrieved', {
+                    detail: credential
+                }));
+            } catch (err) {
+                window.dispatchEvent(new CustomEvent('credentialError', {
+                    detail: err.message
+                }));
+            }
+        })();
+    </script>
+}

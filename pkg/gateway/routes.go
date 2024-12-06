@@ -1,23 +1,25 @@
+// Package gateway provides the default routes for the Sonr hway.
 package gateway
 
 import (
-	"net/http"
-
 	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/pkg/common/response"
+	"github.com/onsonr/sonr/pkg/gateway/config"
 	"github.com/onsonr/sonr/pkg/gateway/handlers"
+	"github.com/onsonr/sonr/pkg/gateway/internal/database"
+	"github.com/onsonr/sonr/pkg/gateway/internal/session"
 )
 
-func RegisterRoutes(e *echo.Echo) {
+func RegisterRoutes(e *echo.Echo, env config.Env) {
 	// Custom error handler for gateway
-	e.HTTPErrorHandler = func(err error, c echo.Context) {
-		if he, ok := err.(*echo.HTTPError); ok {
-			// Log the error if needed
-			c.Logger().Errorf("Gateway error: %v", he.Message)
-		}
-		// Redirect to main site
-		c.Redirect(http.StatusFound, "http://localhost:3000")
-	}
-	e.POST("/spawn", handlers.SpawnVault)
-	e.POST("/pin", handlers.PinVault)
-	e.POST("/publish", handlers.PublishVault)
+	e.HTTPErrorHandler = response.RedirectOnError("http://localhost:3000")
+
+	// Inject session middleware
+	e.Use(session.Middleware(env))
+	e.Use(database.Middleware(env))
+	// Register routes
+	e.GET("/", handlers.HandleIndex)
+	e.GET("/register", handlers.HandleRegisterView(env))
+	e.POST("/register/start", handlers.HandleRegisterStart)
+	e.POST("/register/finish", handlers.HandleRegisterFinish)
 }

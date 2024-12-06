@@ -8,7 +8,7 @@ import (
 	"cosmossdk.io/core/store"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/onsonr/sonr/pkg/core/transaction"
+	"github.com/onsonr/sonr/pkg/chain/transaction"
 	"github.com/onsonr/sonr/x/did/types/internal/prefixstore"
 )
 

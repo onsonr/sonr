@@ -1,0 +1,75 @@
+package layout
+
+type (
+	Alignment   templ.Attributes
+	ScreenWidth templ.Attributes
+)
+
+var (
+	AlignCenter = Alignment{
+		"class": "flex items-center justify-center",
+	}
+	AlignEnd = Alignment{
+		"class": "flex items-end justify-center",
+	}
+	MaxWidthSmall = ScreenWidth{
+		"class": "max-w-screen-sm",
+	}
+	MaxWidthMedium = ScreenWidth{
+		"class": "max-w-screen-md",
+	}
+	MaxWidthFull = ScreenWidth{
+		"class": "w-full",
+	}
+)
+
+// Layout is a component that renders the general layout of the application
+templ Root(title string) {
+	<!DOCTYPE html>
+	<html lang="en">
+		@Head(title, "0.0.7")
+		<body class="flex items-center justify-center h-full lg:p-24 md:16 p-4 no-scrollbar">
+			<main class="flex-row items-center justify-center mx-auto w-fit max-w-screen-sm gap-y-3">
+				{ children... }
+			</main>
+		</body>
+	</html>
+}
+
+templ Head(title string, nebulaVersion string) {
+	<head>
+		@Turnstile()
+		@Tailwind()
+		@Alpine()
+		@Htmx()
+		@Dexie()
+		@Nebula(nebulaVersion)
+		<meta charset="UTF-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<title>{ title }</title>
+		<!-- Sets the status bar style to transparent -->
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+		<link rel="icon" type="image/png" href="https://cdn.sonr.id/favicon.png"/>
+		{ children... }
+	</head>
+}
+
+templ Body(align Alignment, screenWidth ScreenWidth) {
+	<body class="flex items-center justify-center h-full lg:p-24 md:16 p-4 no-scrollbar">
+		<main class="flex-row items-center justify-center mx-auto w-fit max-w-screen-sm gap-y-3">
+			{ children... }
+		</main>
+	</body>
+}
+
+func Clsx(attrs ...templ.Attributes) templ.Attributes {
+	merged := templ.Attributes{}
+	for _, attr := range attrs {
+		for k, v := range attr {
+			merged[k] = v
+		}
+	}
+	return merged
+}

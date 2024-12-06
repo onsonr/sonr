@@ -6,8 +6,6 @@ import (
 	"math/big"
 
 	"github.com/cosmos/cosmos-sdk/types/bech32"
-	"github.com/ipfs/boxo/files"
-	"github.com/ipfs/kubo/client/rpc"
 	"github.com/onsonr/sonr/crypto/core/curves"
 	"github.com/onsonr/sonr/crypto/core/protocol"
 	"golang.org/x/crypto/sha3"
@@ -15,14 +13,13 @@ import (
 
 type (
 	ExportedKeyset = []byte
-	IPFSClient     = *rpc.HttpApi
-	File           = files.File
 )
 
 type Keyset interface {
 	Val() *ValKeyshare
+	ValJSON() string
 	User() *UserKeyshare
-	Export(client IPFSClient, secret []byte) (ExportedKeyset, error)
+	UserJSON() string
 }
 
 type keyset struct {
@@ -36,6 +33,14 @@ func (k keyset) Val() *ValKeyshare {
 
 func (k keyset) User() *UserKeyshare {
 	return k.user
+}
+
+func (k keyset) ValJSON() string {
+	return k.val.String()
+}
+
+func (k keyset) UserJSON() string {
+	return k.user.String()
 }
 
 func ComputeIssuerDID(pk []byte) (string, string, error) {
@@ -55,7 +60,7 @@ func ComputeSonrAddr(pk []byte) (string, error) {
 }
 
 // For DKG bob starts first. For refresh and sign, Alice starts first.
-func runIteratedProtocol(firstParty protocol.Iterator, secondParty protocol.Iterator) (error, error) {
+func RunProtocol(firstParty protocol.Iterator, secondParty protocol.Iterator) (error, error) {
 	var (
 		message *protocol.Message
 		aErr    error

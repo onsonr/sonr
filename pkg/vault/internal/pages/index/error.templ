@@ -1,0 +1,29 @@
+package index
+
+import "github.com/onsonr/sonr/pkg/styles/layout"
+
+templ NoWebauthnErrorView() {
+	@layout.Root("Sonr.ID") {
+		<div class="flex fixed inset-0 z-[99] w-screen h-screen bg-white">
+			<div class="relative flex flex-wrap items-center w-full h-full px-8">
+				<div class="relative w-full max-w-sm mx-auto lg:mb-0">
+					<div class="flex flex-col items-center justify-center h-full">
+						<div class="flex flex-col items-center justify-center h-full">
+							<h1 class="text-3xl font-bold text-zinc-900 mb-4">
+								No WebAuthn Devices
+							</h1>
+							<p class="text-lg text-zinc-500">
+								You don't have any WebAuthn devices connected to your computer.
+							</p>
+						</div>
+						<div class="flex flex-col items-center justify-center h-full">
+							<button class="btn btn-sm text-zinc-100 bg-zinc-900 hover:bg-zinc-800 w-full shadow">
+								Get Started
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+}

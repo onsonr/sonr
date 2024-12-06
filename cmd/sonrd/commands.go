@@ -34,6 +34,7 @@ import (
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 )
 
+// TODO: Load this from PKL
 // initCometBFTConfig helps to override default CometBFT Config values.
 // return cmtcfg.DefaultConfig if no custom configuration is required for the application.
 func initCometBFTConfig() *cmtcfg.Config {
@@ -46,12 +47,13 @@ func initCometBFTConfig() *cmtcfg.Config {
 	return cfg
 }
 
+// TODO: Load this from PKL
 // initAppConfig helps to override default appConfig template and configs.
 // return "", nil if no custom configuration is required for the application.
 func initAppConfig() (string, interface{}) {
 	// The following code snippet is just for reference.
 
-	type CustomAppConfig struct {
+	type SonrAppConfig struct {
 		serverconfig.Config
 	}
 
@@ -73,7 +75,7 @@ func initAppConfig() (string, interface{}) {
 	srvCfg.MinGasPrices = "0stake"
 	// srvCfg.BaseConfig.IAVLDisableFastNode = true // disable fastnode by default
 
-	customAppConfig := CustomAppConfig{
+	customAppConfig := SonrAppConfig{
 		Config: *srvCfg,
 	}
 

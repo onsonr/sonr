@@ -15,7 +15,7 @@ func NewKeyset() (Keyset, error) {
 	curve := curves.K256()
 	valKs := dklsv1.NewAliceDkg(curve, protocol.Version1)
 	userKs := dklsv1.NewBobDkg(curve, protocol.Version1)
-	aErr, bErr := runIteratedProtocol(userKs, valKs)
+	aErr, bErr := RunProtocol(userKs, valKs)
 	if err := checkIteratedErrors(aErr, bErr); err != nil {
 		return nil, err
 	}
@@ -38,9 +38,9 @@ func NewKeyset() (Keyset, error) {
 	return keyset{val: valShare, user: userShare}, nil
 }
 
-// RunSignProtocol runs the MPC signing protocol
-func RunSignProtocol(signFuncVal SignFunc, signFuncUser SignFunc) (Signature, error) {
-	aErr, bErr := runIteratedProtocol(signFuncVal, signFuncUser)
+// ExecuteSigning runs the MPC signing protocol
+func ExecuteSigning(signFuncVal SignFunc, signFuncUser SignFunc) (Signature, error) {
+	aErr, bErr := RunProtocol(signFuncVal, signFuncUser)
 	if err := checkIteratedErrors(aErr, bErr); err != nil {
 		return nil, err
 	}
@@ -51,9 +51,9 @@ func RunSignProtocol(signFuncVal SignFunc, signFuncUser SignFunc) (Signature, er
 	return dklsv1.DecodeSignature(out)
 }
 
-// RunRefreshProtocol runs the MPC refresh protocol
-func RunRefreshProtocol(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc) (Keyset, error) {
-	aErr, bErr := runIteratedProtocol(refreshFuncVal, refreshFuncUser)
+// ExecuteRefresh runs the MPC refresh protocol
+func ExecuteRefresh(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc) (Keyset, error) {
+	aErr, bErr := RunProtocol(refreshFuncVal, refreshFuncUser)
 	if err := checkIteratedErrors(aErr, bErr); err != nil {
 		return nil, err
 	}

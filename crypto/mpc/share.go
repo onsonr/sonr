@@ -1,8 +1,6 @@
 package mpc
 
 import (
-	"crypto/ecdsa"
-	"encoding/json"
 	"errors"
 
 	"github.com/onsonr/sonr/crypto/core/curves"
@@ -45,58 +43,28 @@ type SignFunc interface {
 }
 
 type ValKeyshare struct {
-	Message   Message `json:"message"`
-	Role      int     `json:"role"` // 1 for validator, 2 for user
-	PublicKey []byte  `json:"public-key"`
+	BaseKeyshare
+	encoded string
 }
 
-func NewValKeyshare(msg Message) (*ValKeyshare, error) {
+func NewValKeyshare(msg *protocol.Message) (*ValKeyshare, error) {
+	encoded, err := protocol.EncodeMessage(msg)
+	if err != nil {
+		return nil, err
+	}
 	valShare, err := dklsv1.DecodeAliceDkgResult(msg)
 	if err != nil {
 		return nil, err
 	}
 	return &ValKeyshare{
-		Message:   msg,
-		Role:      1,
-		PublicKey: valShare.PublicKey.ToAffineUncompressed(),
+		BaseKeyshare: BaseKeyshare{
+			Message:            msg,
+			Role:               1,
+			UncompressedPubKey: valShare.PublicKey.ToAffineUncompressed(),
+			CompressedPubKey:   valShare.PublicKey.ToAffineCompressed(),
+		},
+		encoded: encoded,
 	}, nil
-}
-
-func (v *ValKeyshare) GetPayloads() map[string][]byte {
-	return v.Message.Payloads
-}
-
-func (v *ValKeyshare) GetMetadata() map[string]string {
-	return v.Message.Metadata
-}
-
-func (v *ValKeyshare) GetPublicKey() []byte {
-	return v.PublicKey
-}
-
-func (v *ValKeyshare) GetProtocol() string {
-	return v.Message.Protocol
-}
-
-func (v *ValKeyshare) GetRole() int32 {
-	return int32(v.Role)
-}
-
-func (v *ValKeyshare) GetVersion() uint32 {
-	return uint32(v.Message.Version)
-}
-
-func (v *ValKeyshare) ECDSAPublicKey() (*ecdsa.PublicKey, error) {
-	return ComputeEcdsaPublicKey(v.PublicKey)
-}
-
-func (v *ValKeyshare) ExtractMessage() *protocol.Message {
-	return &protocol.Message{
-		Payloads: v.GetPayloads(),
-		Metadata: v.GetMetadata(),
-		Protocol: v.GetProtocol(),
-		Version:  uint(v.GetVersion()),
-	}
 }
 
 func (v *ValKeyshare) RefreshFunc() (RefreshFunc, error) {
@@ -109,63 +77,43 @@ func (v *ValKeyshare) SignFunc(msg []byte) (SignFunc, error) {
 	return dklsv1.NewAliceSign(curve, sha3.New256(), msg, v.ExtractMessage(), protocol.Version1)
 }
 
-func (v *ValKeyshare) Marshal() ([]byte, error) {
-	return json.Marshal(v.Message)
+func (v *ValKeyshare) String() string {
+	return v.encoded
+}
+
+// PublicKey returns the uncompressed public key (65 bytes)
+func (v *ValKeyshare) PublicKey() []byte {
+	return v.BaseKeyshare.UncompressedPubKey
+}
+
+// CompressedPublicKey returns the compressed public key (33 bytes)
+func (v *ValKeyshare) CompressedPublicKey() []byte {
+	return v.BaseKeyshare.CompressedPubKey
 }
 
 type UserKeyshare struct {
-	Message   Message `json:"message"` // BobOutput
-	Role      int     `json:"role"`    // 2 for user, 1 for validator
-	PublicKey []byte  `json:"public-key"`
+	BaseKeyshare
+	encoded string
 }
 
-func NewUserKeyshare(msg Message) (*UserKeyshare, error) {
+func NewUserKeyshare(msg *protocol.Message) (*UserKeyshare, error) {
+	encoded, err := protocol.EncodeMessage(msg)
+	if err != nil {
+		return nil, err
+	}
 	out, err := dklsv1.DecodeBobDkgResult(msg)
 	if err != nil {
 		return nil, err
 	}
 	return &UserKeyshare{
-		Message:   msg,
-		Role:      2,
-		PublicKey: out.PublicKey.ToAffineUncompressed(),
+		BaseKeyshare: BaseKeyshare{
+			Message:            msg,
+			Role:               2,
+			UncompressedPubKey: out.PublicKey.ToAffineUncompressed(),
+			CompressedPubKey:   out.PublicKey.ToAffineCompressed(),
+		},
+		encoded: encoded,
 	}, nil
-}
-
-func (u *UserKeyshare) GetPayloads() map[string][]byte {
-	return u.Message.Payloads
-}
-
-func (u *UserKeyshare) GetMetadata() map[string]string {
-	return u.Message.Metadata
-}
-
-func (u *UserKeyshare) GetPublicKey() []byte {
-	return u.PublicKey
-}
-
-func (u *UserKeyshare) GetProtocol() string {
-	return u.Message.Protocol
-}
-
-func (u *UserKeyshare) GetRole() int32 {
-	return int32(u.Role)
-}
-
-func (u *UserKeyshare) GetVersion() uint32 {
-	return uint32(u.Message.Version)
-}
-
-func (u *UserKeyshare) ECDSAPublicKey() (*ecdsa.PublicKey, error) {
-	return ComputeEcdsaPublicKey(u.PublicKey)
-}
-
-func (u *UserKeyshare) ExtractMessage() *protocol.Message {
-	return &protocol.Message{
-		Payloads: u.GetPayloads(),
-		Metadata: u.GetMetadata(),
-		Protocol: u.GetProtocol(),
-		Version:  uint(u.GetVersion()),
-	}
 }
 
 func (u *UserKeyshare) RefreshFunc() (RefreshFunc, error) {
@@ -178,10 +126,24 @@ func (u *UserKeyshare) SignFunc(msg []byte) (SignFunc, error) {
 	return dklsv1.NewBobSign(curve, sha3.New256(), msg, u.ExtractMessage(), protocol.Version1)
 }
 
-func (u *UserKeyshare) Marshal() ([]byte, error) {
-	jsonBytes, err := json.Marshal(u.Message)
-	if err != nil {
-		return nil, err
-	}
-	return jsonBytes, nil
+func (u *UserKeyshare) String() string {
+	return u.encoded
+}
+
+// PublicKey returns the uncompressed public key (65 bytes)
+func (u *UserKeyshare) PublicKey() []byte {
+	return u.BaseKeyshare.UncompressedPubKey
+}
+
+// CompressedPublicKey returns the compressed public key (33 bytes)
+func (u *UserKeyshare) CompressedPublicKey() []byte {
+	return u.BaseKeyshare.CompressedPubKey
+}
+
+func encodeMessage(m *protocol.Message) (string, error) {
+	return protocol.EncodeMessage(m)
+}
+
+func decodeMessage(s string) (*protocol.Message, error) {
+	return protocol.DecodeMessage(s)
 }

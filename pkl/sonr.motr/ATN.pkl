@@ -1,4 +1,4 @@
-@go.Package { name = "github.com/onsonr/sonr/x/dwn/types/attns" }
+@go.Package { name = "github.com/onsonr/sonr/crypto/ucan/attns" }
 
 module sonr.motr.ATN
 
@@ -24,10 +24,10 @@ import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
 //        └─ VAULT
 
 
-typealias Capability = "CAP_OWNER"|"CAP_OPERATOR"|"CAP_OBSERVER"|"CAP_AUTHENTICATE"|"CAP_AUTHORIZE"|"CAP_DELEGATE"|"CAP_INVOKE"|"CAP_EXECUTE"|"CAP_PROPOSE"|"CAP_SIGN"|"CAP_SET_POLICY"|"CAP_SET_THRESHOLD"|"CAP_RECOVER"|"CAP_SOCIAL"|"CAP_VOTE"
+typealias Capability = "CAP_OWNER"|"CAP_OPERATOR"|"CAP_OBSERVER"|"CAP_AUTHENTICATE"|"CAP_AUTHORIZE"|"CAP_DELEGATE"|"CAP_INVOKE"|"CAP_EXECUTE"|"CAP_PROPOSE"|"CAP_SIGN"|"CAP_SET_POLICY"|"CAP_SET_THRESHOLD"|"CAP_RECOVER"|"CAP_SOCIAL"|"CAP_VOTE" | "CAP_RESOLVER" | "CAP_PRODUCER"
 
-typealias ResourceType = "RES_ACCOUNT"|"RES_TRANSACTION"|"RES_POLICY"|"RES_RECOVERY"|"RES_VAULT"
+typealias ResourceType = "RES_ACCOUNT"|"RES_TRANSACTION"|"RES_POLICY"|"RES_RECOVERY"|"RES_VAULT" | "RES_IPFS" | "RES_IPNS" | "RES_KEYSHARE"
 
-typealias PolicyType = "POLICY_THRESHOLD"|"POLICY_TIMELOCK"|"POLICY_WHITELIST"
+typealias PolicyType = "POLICY_THRESHOLD"|"POLICY_TIMELOCK"|"POLICY_WHITELIST" | "POLICY_KEYGEN"
 
 

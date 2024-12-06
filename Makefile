@@ -94,7 +94,6 @@ endif
 
 install: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/sonrd
-	go install -mod=readonly $(BUILD_FLAGS) ./cmd/hway
 
 ########################################
 ### Tools & dependencies
@@ -113,7 +112,11 @@ draw-deps:
 	@goviz -i ./cmd/sonrd -d 2 | dot -Tpng -o dependency-graph.png
 
 clean:
-	rm -rf pkg/nebula/node_modules
+	rm -rf .aider*
+	rm -rf static
+	rm -rf .out
+	rm -rf build
+	rm -rf hway.db
 	rm -rf snapcraft-local.yaml build/
 
 distclean: clean
@@ -300,13 +303,9 @@ sh-testnet: mod-tidy
 pkl-gen:
 	go install github.com/apple/pkl-go/cmd/pkl-gen-go@latest
 	pkl-gen-go pkl/sonr.motr/ATN.pkl
-	pkl-gen-go pkl/sonr.hway/Ctx.pkl
-	pkl-gen-go pkl/sonr.hway/Gate.pkl
+	pkl-gen-go pkl/sonr.hway/Env.pkl
 	pkl-gen-go pkl/sonr.motr/DWN.pkl
 	pkl-gen-go pkl/sonr.hway/ORM.pkl
-
-tailwind-gen:
-	sh ./scripts/tailwindgen.sh
 
 templ-gen:
 	@go install github.com/a-h/templ/cmd/templ@latest
@@ -321,20 +320,22 @@ templ-gen:
 motr-build:
 	GOOS=js GOARCH=wasm go build -o static/wasm/app.wasm ./cmd/motr/main.go
 
-hway-build: styles-gen templ-gen
+hway-build: templ-gen
 	go build -o build/hway ./cmd/hway/main.go
 
+hway-serve: hway-build
+	./build/hway
 
 ###############################################################################
 ###                                     help                                ###
 ###############################################################################
-.PHONY: deploy-buf deploy-cdn
+.PHONY: deploy-buf deploy-pkl
 
 deploy-buf:
 	cd ./proto && bunx buf dep update && bunx buf build && bunx buf push
 
-deploy-cdn: 
-	sh ./scripts/upload_cdn.sh
+deploy-pkl: 
+	sh ./.github/scripts/upload_cdn.sh
 
 
 ###############################################################################

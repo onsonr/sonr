@@ -1,2 +1,55 @@
-open module matrix.net.AppService
+module matrix.net.AppService
 
+class Config {
+  /// Unique identifier for the homeserver
+  id: String
+  
+  /// Application service token
+  as_token: String
+  
+  /// Homeserver token
+  hs_token: String
+  
+  /// Namespace configuration for rooms, users, and aliases
+  namespaces: Namespaces
+  
+  /// Local part of the sender
+  sender_localpart: String
+  
+  /// Bridge URL endpoint
+  url: String
+  
+  /// Whether rate limiting is enabled
+  rate_limited: Boolean
+  
+  /// MSC2409 push ephemeral setting
+  deSorunomeMsc2409Push_ephemeral: Boolean
+  
+  /// Push ephemeral setting
+  push_ephemeral: Boolean
+  
+  /// MSC3202 setting
+  orgMatrixMsc3202: Boolean
+}
+
+
+/// Configuration for Matrix namespaces
+class Namespaces {
+  /// Room namespace configurations
+  rooms: List<RegexRule> = List()
+  
+  /// User namespace configurations
+  users: List<RegexRule>
+  
+  /// Alias namespace configurations
+  aliases: List<RegexRule>
+}
+
+/// Regex rule configuration for namespaces
+class RegexRule {
+  /// Regular expression pattern
+  regex: String
+  
+  /// Whether this rule is exclusive
+  exclusive: Boolean = false
+}
