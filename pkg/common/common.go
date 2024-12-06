@@ -4,6 +4,10 @@ import (
 	"encoding/base64"
 )
 
+type Payment struct {
+	IsPayment bool `json:"isPayment"`
+}
+
 type LargeBlob struct {
 	Support string `json:"support"`
 	Write   string `json:"write"`

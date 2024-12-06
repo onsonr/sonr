@@ -16,6 +16,15 @@ var (
 	ErrUserNotFound      = echo.NewHTTPError(http.StatusNotFound, "User not found")
 )
 
+type User struct {
+	gorm.Model
+	Address     string `json:"address" gorm:"unique;index"`
+	Handle      string `json:"handle" gorm:"unique;index"`
+	FirstName   string `json:"firstName"`
+	LastInitial string `json:"lastInitial"`
+	VaultCID    string `json:"vaultCID" gorm:"unique;index"`
+}
+
 type Session struct {
 	gorm.Model
 	ID               string `json:"id" gorm:"primaryKey"`
@@ -28,14 +37,5 @@ type Session struct {
 	UserHandle       string `json:"userHandle" gorm:"unique;index"`
 	FirstName        string `json:"firstName"`
 	LastInitial      string `json:"lastInitial"`
-	VaultAddress     string `json:"vaultAddress"`
-}
-
-type User struct {
-	gorm.Model
-	Address   string `json:"address"`
-	Handle    string `json:"handle" gorm:"unique;index"`
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	VaultCID  string `json:"vaultCID"`
+	VaultAddress     string `json:"vaultAddress" gorm:"unique;index"`
 }

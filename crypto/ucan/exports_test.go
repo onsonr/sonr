@@ -15,7 +15,7 @@ func TestAttenuationPresetConstructor(t *testing.T) {
 		{
 			name: "valid smart account attenuation",
 			data: map[string]interface{}{
-				"preset": "account",
+				"preset": "smart_account",
 				"cap":    string(CapOwner),
 				"type":   string(ResAccount),
 				"path":   "/accounts/123",
