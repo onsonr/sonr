@@ -42,6 +42,36 @@ type SignFunc interface {
 	protocol.Iterator
 }
 
+type BaseKeyshare struct {
+	Message   *protocol.Message 
+	Role      Role
+	PublicKey []byte
+}
+
+func (b *BaseKeyshare) CompressedPublicKey() []byte {
+	if len(b.PublicKey) == 33 {
+		return b.PublicKey
+	}
+	// Convert uncompressed to compressed
+	point, err := ComputeEcPoint(b.PublicKey)
+	if err != nil {
+		return nil
+	}
+	return point.ToCompressed()
+}
+
+func (b *BaseKeyshare) UncompressedPublicKey() []byte {
+	if len(b.PublicKey) == 65 {
+		return b.PublicKey
+	}
+	// Convert compressed to uncompressed
+	point, err := ComputeEcPoint(append([]byte{0x04}, b.PublicKey[1:]...))
+	if err != nil {
+		return nil
+	}
+	return point.ToAffineUncompressed()
+}
+
 type ValKeyshare struct {
 	BaseKeyshare
 	encoded string
