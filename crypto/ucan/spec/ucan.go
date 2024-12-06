@@ -97,6 +97,7 @@ func (k ucanKeyshare) newToken(audienceDID string, prf []Proof, att Attenuations
 	}, nil
 }
 
+// ComputeIssuerDID computes the issuer DID from a public key
 func ComputeIssuerDID(pk []byte) (string, string, error) {
 	addr, err := ComputeSonrAddr(pk)
 	if err != nil {
@@ -105,6 +106,7 @@ func ComputeIssuerDID(pk []byte) (string, string, error) {
 	return fmt.Sprintf("did:sonr:%s", addr), addr, nil
 }
 
+// ComputeSonrAddr computes the Sonr address from a public key
 func ComputeSonrAddr(pk []byte) (string, error) {
 	sonrAddr, err := bech32.ConvertAndEncode("idx", pk)
 	if err != nil {

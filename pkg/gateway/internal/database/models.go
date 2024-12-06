@@ -18,11 +18,11 @@ var (
 
 type User struct {
 	gorm.Model
-	Address     string `json:"address" gorm:"unique;index"`
-	Handle      string `json:"handle" gorm:"unique;index"`
+	Address     string `json:"address"`
+	Handle      string `json:"handle"`
 	FirstName   string `json:"firstName"`
 	LastInitial string `json:"lastInitial"`
-	VaultCID    string `json:"vaultCID" gorm:"unique;index"`
+	VaultCID    string `json:"vaultCID"`
 }
 
 type Session struct {
@@ -37,5 +37,5 @@ type Session struct {
 	UserHandle       string `json:"userHandle" gorm:"unique;index"`
 	FirstName        string `json:"firstName"`
 	LastInitial      string `json:"lastInitial"`
-	VaultAddress     string `json:"vaultAddress" gorm:"unique;index"`
+	VaultAddress     string `json:"vaultAddress"`
 }
