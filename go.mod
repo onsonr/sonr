@@ -93,7 +93,6 @@ require (
 	github.com/strangelove-ventures/poa v0.50.0
 	github.com/strangelove-ventures/tokenfactory v0.50.0
 	github.com/stretchr/testify v1.10.0
-	github.com/ucan-wg/go-ucan v0.7.0
 	golang.org/x/crypto v0.30.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20241007155032-5fefd90f89a9
 	google.golang.org/grpc v1.67.1
@@ -251,7 +250,6 @@ require (
 	github.com/libp2p/go-cidranger v1.1.0 // indirect
 	github.com/libp2p/go-flow-metrics v0.2.0 // indirect
 	github.com/libp2p/go-libp2p-asn-util v0.4.1 // indirect
-	github.com/libp2p/go-libp2p-core v0.20.1 // indirect
 	github.com/libp2p/go-libp2p-kad-dht v0.28.1 // indirect
 	github.com/libp2p/go-libp2p-kbucket v0.6.4 // indirect
 	github.com/libp2p/go-libp2p-record v0.2.0 // indirect
