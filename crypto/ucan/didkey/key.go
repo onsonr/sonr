@@ -94,7 +94,11 @@ func (id ID) VerifyKey() (interface{}, error) {
 	case crypto.Ed25519:
 		return ed25519.PublicKey(rawPubBytes), nil
 	case crypto.Secp256k1:
-		return rawPubBytes, nil
+		// Handle both compressed and uncompressed Secp256k1 public keys
+		if len(rawPubBytes) == 65 || len(rawPubBytes) == 33 {
+			return rawPubBytes, nil
+		}
+		return nil, fmt.Errorf("invalid Secp256k1 public key length: %d", len(rawPubBytes))
 	default:
 		return nil, fmt.Errorf("unrecognized Public Key type: %s", id.PubKey.Type())
 	}
@@ -137,9 +141,14 @@ func Parse(keystr string) (ID, error) {
 		}
 		return ID{pub}, nil
 	case MulticodecKindSecp256k1PubKey:
-		pub, err := crypto.UnmarshalSecp256k1PublicKey(data[n:])
+		// Handle both compressed and uncompressed formats
+		keyData := data[n:]
+		if len(keyData) != 33 && len(keyData) != 65 {
+			return id, fmt.Errorf("invalid Secp256k1 public key length: %d", len(keyData))
+		}
+		pub, err := crypto.UnmarshalSecp256k1PublicKey(keyData)
 		if err != nil {
-			return id, err
+			return id, fmt.Errorf("failed to unmarshal Secp256k1 key: %w", err)
 		}
 		return ID{pub}, nil
 	}
