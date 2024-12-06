@@ -42,36 +42,6 @@ type SignFunc interface {
 	protocol.Iterator
 }
 
-type BaseKeyshare struct {
-	Message   *protocol.Message 
-	Role      Role
-	PublicKey []byte
-}
-
-func (b *BaseKeyshare) CompressedPublicKey() []byte {
-	if len(b.PublicKey) == 33 {
-		return b.PublicKey
-	}
-	// Convert uncompressed to compressed
-	point, err := ComputeEcPoint(b.PublicKey)
-	if err != nil {
-		return nil
-	}
-	return point.ToCompressed()
-}
-
-func (b *BaseKeyshare) UncompressedPublicKey() []byte {
-	if len(b.PublicKey) == 65 {
-		return b.PublicKey
-	}
-	// Convert compressed to uncompressed
-	point, err := ComputeEcPoint(append([]byte{0x04}, b.PublicKey[1:]...))
-	if err != nil {
-		return nil
-	}
-	return point.ToAffineUncompressed()
-}
-
 type ValKeyshare struct {
 	BaseKeyshare
 	encoded string
@@ -88,9 +58,10 @@ func NewValKeyshare(msg *protocol.Message) (*ValKeyshare, error) {
 	}
 	return &ValKeyshare{
 		BaseKeyshare: BaseKeyshare{
-			Message:   msg,
-			Role:      1,
-			PublicKey: valShare.PublicKey.ToAffineUncompressed(),
+			Message:            msg,
+			Role:               1,
+			UncompressedPubKey: valShare.PublicKey.ToAffineUncompressed(),
+			CompressedPubKey:   valShare.PublicKey.ToAffineCompressed(),
 		},
 		encoded: encoded,
 	}, nil
@@ -112,12 +83,12 @@ func (v *ValKeyshare) String() string {
 
 // PublicKey returns the uncompressed public key (65 bytes)
 func (v *ValKeyshare) PublicKey() []byte {
-	return v.UncompressedPublicKey()
+	return v.BaseKeyshare.UncompressedPubKey
 }
 
 // CompressedPublicKey returns the compressed public key (33 bytes)
 func (v *ValKeyshare) CompressedPublicKey() []byte {
-	return v.BaseKeyshare.CompressedPublicKey()
+	return v.BaseKeyshare.CompressedPubKey
 }
 
 type UserKeyshare struct {
@@ -136,9 +107,10 @@ func NewUserKeyshare(msg *protocol.Message) (*UserKeyshare, error) {
 	}
 	return &UserKeyshare{
 		BaseKeyshare: BaseKeyshare{
-			Message:   msg,
-			Role:      2,
-			PublicKey: out.PublicKey.ToAffineUncompressed(),
+			Message:            msg,
+			Role:               2,
+			UncompressedPubKey: out.PublicKey.ToAffineUncompressed(),
+			CompressedPubKey:   out.PublicKey.ToAffineCompressed(),
 		},
 		encoded: encoded,
 	}, nil
@@ -160,12 +132,12 @@ func (u *UserKeyshare) String() string {
 
 // PublicKey returns the uncompressed public key (65 bytes)
 func (u *UserKeyshare) PublicKey() []byte {
-	return u.UncompressedPublicKey()
+	return u.BaseKeyshare.UncompressedPubKey
 }
 
 // CompressedPublicKey returns the compressed public key (33 bytes)
 func (u *UserKeyshare) CompressedPublicKey() []byte {
-	return u.BaseKeyshare.CompressedPublicKey()
+	return u.BaseKeyshare.CompressedPubKey
 }
 
 func encodeMessage(m *protocol.Message) (string, error) {

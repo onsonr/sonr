@@ -23,9 +23,10 @@ type Keyshare interface {
 
 // BaseKeyshare contains common fields and methods for both validator and user keyshares
 type BaseKeyshare struct {
-	Message   *protocol.Message `json:"message"`
-	Role      int               `json:"role"`
-	PublicKey []byte            `json:"public_key"`
+	Message            *protocol.Message `json:"message"`
+	Role               int               `json:"role"`
+	UncompressedPubKey []byte            `json:"public_key"`
+	CompressedPubKey   []byte            `json:"compressed_public_key"`
 }
 
 func (b *BaseKeyshare) GetPayloads() map[string][]byte {
@@ -37,7 +38,7 @@ func (b *BaseKeyshare) GetMetadata() map[string]string {
 }
 
 func (b *BaseKeyshare) GetPublicKey() []byte {
-	return b.PublicKey
+	return b.UncompressedPubKey
 }
 
 func (b *BaseKeyshare) GetProtocol() string {
@@ -53,7 +54,7 @@ func (b *BaseKeyshare) GetVersion() uint32 {
 }
 
 func (b *BaseKeyshare) ECDSAPublicKey() (*ecdsa.PublicKey, error) {
-	return ComputeEcdsaPublicKey(b.PublicKey)
+	return ComputeEcdsaPublicKey(b.UncompressedPubKey)
 }
 
 func (b *BaseKeyshare) ExtractMessage() *protocol.Message {

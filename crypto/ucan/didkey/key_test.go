@@ -1,7 +1,11 @@
 package didkey
 
 import (
+	"log"
 	"testing"
+
+	"github.com/libp2p/go-libp2p/core/crypto"
+	"github.com/onsonr/sonr/crypto/mpc"
 )
 
 func TestID_Parse(t *testing.T) {
@@ -35,7 +39,7 @@ func TestID_FromMPCKey(t *testing.T) {
 	}
 
 	// Get public key from validator share
-	pubKey := ks.Val().PublicKey
+	pubKey := ks.Val().PublicKey()
 	if len(pubKey) != 65 {
 		t.Fatalf("expected 65-byte uncompressed public key, got %d bytes", len(pubKey))
 	}
@@ -51,6 +55,7 @@ func TestID_FromMPCKey(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to create DID Key ID: %v", err)
 	}
+	log.Printf("%s\n", id.String())
 
 	// Verify the key can be parsed back
 	parsed, err := Parse(id.String())
@@ -60,7 +65,7 @@ func TestID_FromMPCKey(t *testing.T) {
 
 	// Verify the parsed key matches original
 	if parsed.String() != id.String() {
-		t.Errorf("parsed key doesn't match original.\nwant: %q\ngot:  %q", 
+		t.Errorf("parsed key doesn't match original.\nwant: %q\ngot:  %q",
 			id.String(), parsed.String())
 	}
 

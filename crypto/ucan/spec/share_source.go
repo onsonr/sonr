@@ -87,12 +87,12 @@ func (k ucanKeyshare) SignData(data []byte) ([]byte, error) {
 }
 
 func (k ucanKeyshare) VerifyData(data []byte, sig []byte) (bool, error) {
-	return mpc.VerifySignature(k.userShare.PublicKey, data, sig)
+	return mpc.VerifySignature(k.userShare.PublicKey(), data, sig)
 }
 
 // TokenParser returns a token parser that can be used to parse tokens
 func (k ucanKeyshare) UCANParser() *ucan.TokenParser {
-	caps := ucan.AttentuationSmartAccount.GetCapabilities()
+	caps := ucan.PermissionsSmartAccount.GetCapabilities()
 	ac := func(m map[string]interface{}) (ucan.Attenuation, error) {
 		var (
 			cap string
