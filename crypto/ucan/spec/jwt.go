@@ -1,4 +1,4 @@
-package ucan
+package spec
 
 import (
 	"crypto/sha256"
