@@ -1,5 +1,12 @@
 package webauth
 
+import (
+	"github.com/go-webauthn/webauthn/protocol"
+	"github.com/go-webauthn/webauthn/protocol/webauthncose"
+	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/pkg/common"
+)
+
 func buildRegisterOptions(user protocol.UserEntity, blob common.LargeBlob, service protocol.RelyingPartyEntity) protocol.PublicKeyCredentialCreationOptions {
 	return protocol.PublicKeyCredentialCreationOptions{
 		Timeout:     10000,
