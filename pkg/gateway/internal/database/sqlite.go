@@ -32,5 +32,12 @@ func formatDBPath(path string) string {
 	if home == "" {
 		home = "."
 	}
-	return filepath.Join(home, ".config", "hway", path)
+	
+	configDir := filepath.Join(home, ".config", "hway")
+	if err := os.MkdirAll(configDir, 0755); err != nil {
+		// If we can't create the directory, fall back to current directory
+		return path
+	}
+	
+	return filepath.Join(configDir, path)
 }
