@@ -1,4 +1,4 @@
-package clients
+package resolver
 
 import (
 	bankv1beta1 "cosmossdk.io/api/cosmos/bank/v1beta1"

@@ -25,24 +25,30 @@ func HandleIndex(c echo.Context) error {
 
 // Initial users have no authorization, user handle, or vault address
 func isInitial(c echo.Context) bool {
-	noAuth := !session.HasAuthorization(c)
-	noUserHandle := !session.HasUserHandle(c)
-	noVaultAddress := !session.HasVaultAddress(c)
-	return noUserHandle && noVaultAddress && noAuth
+	sess, err := session.Get(c)
+	if err != nil {
+		return false
+	}
+	data := sess.Session()
+	return data.UserHandle == "" && data.VaultAddress == ""
 }
 
 // Expired users have either a user handle or vault address
 func isExpired(c echo.Context) bool {
-	noAuth := !session.HasAuthorization(c)
-	hasUserHandle := session.HasUserHandle(c)
-	hasVaultAddress := session.HasVaultAddress(c)
-	return noAuth && hasUserHandle || noAuth && hasVaultAddress
+	sess, err := session.Get(c)
+	if err != nil {
+		return false
+	}
+	data := sess.Session()
+	return data.UserHandle != "" || data.VaultAddress != ""
 }
 
 // Returning users have a valid authorization, and either a user handle or vault address
 func isReturning(c echo.Context) bool {
-	hasAuth := session.HasAuthorization(c)
-	hasUserHandle := session.HasUserHandle(c)
-	hasVaultAddress := session.HasVaultAddress(c)
-	return hasAuth && (hasUserHandle || hasVaultAddress)
+	sess, err := session.Get(c)
+	if err != nil {
+		return false
+	}
+	data := sess.Session()
+	return data.UserHandle != "" && data.VaultAddress != ""
 }

@@ -1,4 +1,4 @@
-package clients
+package resolver
 
 import (
 	"net/http"

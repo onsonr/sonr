@@ -11,16 +11,31 @@ Sonr is a decentralized identity network built on the Cosmos-sdk. It has early o
 7. [Self-Custody](./concepts/Self-Custody.md)
 8. [Consumer Launch](./concepts/Consumer-Launch.md)
 
-## Commands
+## Principles
 
-- `mkdocs new [dir-name]` - Create a new project.
-- `mkdocs serve` - Start the live-reloading docs server.
-- `mkdocs build` - Build the documentation site.
-- `mkdocs -h` - Print help message and exit.
+1. Bitcoin is digital gold
+2. Blockchains are programmable databases with functional operations
+3. Staking is essentially a savings account
+4. The Sonr Network conducts all operations in the $SNR token
+5. Service Delegation subsidizes user wallet operations.
+6. Cryptocurrency has the potential to break the software innovation ceiling
 
-## Project layout
+## The Problem
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+Centralized identity has led to internet monopolies abusing your trust and privacy.
+
+## The Solution
+
+A peer-to-peer system for decentralized personal identity with Authentication and Authorization capabilities.
+
+## What is Sonr?
+
+A privacy preserving, identity system managed by user controlled decentralized vaults which have the flexibility of
+software wallets with the security of hardware wallets.
+
+## The End Goal
+
+A Data sharing economy where human-specific information has intrinsic value. Services are incentivized to act in
+good faith in order to obtain quality user data.
+
+## How do we do it?

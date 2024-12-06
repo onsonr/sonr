@@ -60,14 +60,15 @@ func getLinkCredentialRequest(c echo.Context, addr string, handle string, userKS
 			RegisterOptions: buildRegisterOptions(buildUserEntity(addr, handle), buildLargeBlob(userKSJSON), buildServiceEntity(c)),
 		}
 	}
+	data := cc.Session()
 	usr := buildUserEntity(addr, handle)
 	blob := buildLargeBlob(userKSJSON)
 	service := buildServiceEntity(c)
 
 	return register.LinkCredentialRequest{
-		Platform:        cc.BrowserName(),
-		Handle:          handle,
-		DeviceModel:     cc.BrowserVersion(),
+		Platform:        data.BrowserName,
+		Handle:          data.UserHandle,
+		DeviceModel:     data.BrowserVersion,
 		Address:         addr,
 		RegisterOptions: buildRegisterOptions(usr, blob, service),
 	}
