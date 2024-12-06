@@ -1,3 +1,38 @@
+## v0.5.19 (2024-12-06)
+
+### Feat
+
+- add support for parent field and resources list in Capability message
+- add fast reflection methods for Capability and Resource
+- add gum package and update devbox configuration
+- add new button components and layout improvements
+
+### Fix
+
+- adjust fullscreen modal close button margin
+- update devbox lockfile
+- resolve rendering issue in login modal
+
+### Refactor
+
+- rename accaddr package to address
+- Update Credential table to match WebAuthn Credential Descriptor
+- Deployment setup
+- migrate build system from Taskfile to Makefile
+- rename Assertion to Account and update related code
+- remove unused TUI components
+- Move IPFS interaction functions to common package
+- remove dependency on DWN.pkl
+- remove unused dependencies and simplify module imports
+- Rename x/vault -> x/dwn and x/service -> x/svc
+- move resolver formatter to services package
+- remove web documentation
+- update devbox configuration and scripts
+- rename layout component to root
+- refactor authentication pages into their own modules
+- update templ version to v0.2.778 and remove unused air config
+- move signer implementation to mpc package
+
 ## v0.5.18 (2024-11-06)
 
 ## v0.5.17 (2024-11-05)
