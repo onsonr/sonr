@@ -4,22 +4,8 @@ import (
 	"crypto/ecdsa"
 
 	"github.com/onsonr/sonr/crypto/core/protocol"
+	"github.com/onsonr/sonr/crypto/tecdsa/dklsv1/dkg"
 )
-
-// Keyshare represents the common interface for both validator and user keyshares
-type Keyshare interface {
-	GetPayloads() map[string][]byte
-	GetMetadata() map[string]string
-	GetPublicKey() []byte
-	GetProtocol() string
-	GetRole() int32
-	GetVersion() uint32
-	ECDSAPublicKey() (*ecdsa.PublicKey, error)
-	ExtractMessage() *protocol.Message
-	RefreshFunc() (RefreshFunc, error)
-	SignFunc(msg []byte) (SignFunc, error)
-	Marshal() (string, error)
-}
 
 // BaseKeyshare contains common fields and methods for both validator and user keyshares
 type BaseKeyshare struct {
@@ -27,6 +13,24 @@ type BaseKeyshare struct {
 	Role               int               `json:"role"`
 	UncompressedPubKey []byte            `json:"public_key"`
 	CompressedPubKey   []byte            `json:"compressed_public_key"`
+}
+
+func initFromAlice(aliceOut *dkg.AliceOutput, originalMsg *protocol.Message) BaseKeyshare {
+	return BaseKeyshare{
+		Message:            originalMsg,
+		Role:               1,
+		UncompressedPubKey: aliceOut.PublicKey.ToAffineUncompressed(),
+		CompressedPubKey:   aliceOut.PublicKey.ToAffineCompressed(),
+	}
+}
+
+func initFromBob(bobOut *dkg.BobOutput, originalMsg *protocol.Message) BaseKeyshare {
+	return BaseKeyshare{
+		Message:            originalMsg,
+		Role:               2,
+		UncompressedPubKey: bobOut.PublicKey.ToAffineUncompressed(),
+		CompressedPubKey:   bobOut.PublicKey.ToAffineCompressed(),
+	}
 }
 
 func (b *BaseKeyshare) GetPayloads() map[string][]byte {

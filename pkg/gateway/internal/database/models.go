@@ -34,7 +34,7 @@ type Session struct {
 	Platform         string `json:"platform"`
 	PlatformVersion  string `json:"platformVersion"`
 	DeviceModel      string `json:"deviceModel"`
-	UserHandle       string `json:"userHandle" gorm:"unique;index"`
+	UserHandle       string `json:"userHandle"`
 	FirstName        string `json:"firstName"`
 	LastInitial      string `json:"lastInitial"`
 	VaultAddress     string `json:"vaultAddress"`

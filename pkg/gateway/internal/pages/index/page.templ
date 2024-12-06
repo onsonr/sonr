@@ -10,7 +10,7 @@ templ InitialView() {
 		@layout.Container() {
 			@text.Header("Sonr.ID", "The decentralized identity layer for the web.")
 			<div class="pt-3 flex flex-col items-center justify-center h-full">
-				<sl-button hx-target="#container" hx-get="/register" type="button">
+				<sl-button hx-target="#container" hx-get="/register" hx-push-url="/register" type="button">
 					<sl-icon slot="prefix" library="sonr" name="sonr"></sl-icon>
 					Get Started
 					<sl-icon slot="suffix" library="sonr" name="arrow-right"></sl-icon>

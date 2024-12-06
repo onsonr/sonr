@@ -35,7 +35,11 @@ func NewKeyset() (Keyset, error) {
 	if err != nil {
 		return nil, err
 	}
-	return keyset{val: valShare, user: userShare}, nil
+	addr, err := computeSonrAddr(valShare.CompressedPublicKey())
+	if err != nil {
+		return nil, err
+	}
+	return keyset{val: valShare, user: userShare, addr: addr}, nil
 }
 
 // ExecuteSigning runs the MPC signing protocol
@@ -73,7 +77,11 @@ func ExecuteRefresh(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc) (Ke
 	if err != nil {
 		return nil, err
 	}
-	return keyset{val: valShare, user: userShare}, nil
+	addr, err := computeSonrAddr(valShare.CompressedPublicKey())
+	if err != nil {
+		return nil, err
+	}
+	return keyset{val: valShare, user: userShare, addr: addr}, nil
 }
 
 // SerializeSecp256k1Signature serializes an ECDSA signature into a byte slice

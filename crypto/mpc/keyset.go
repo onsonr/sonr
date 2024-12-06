@@ -16,6 +16,7 @@ type (
 )
 
 type Keyset interface {
+	Address() string
 	Val() *ValKeyshare
 	ValJSON() string
 	User() *UserKeyshare
@@ -25,6 +26,11 @@ type Keyset interface {
 type keyset struct {
 	val  *ValKeyshare
 	user *UserKeyshare
+	addr string
+}
+
+func (k keyset) Address() string {
+	return k.addr
 }
 
 func (k keyset) Val() *ValKeyshare {

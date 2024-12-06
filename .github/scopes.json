@@ -1,0 +1,182 @@
+[
+  {
+    "name": "app/base",
+    "path": "app",
+    "docs": []
+  },
+  {
+    "name": "cmd/hway",
+    "path": "cmd/hway",
+    "docs": []
+  },
+  {
+    "name": "cmd/motr",
+    "path": "cmd/motr",
+    "docs": []
+  },
+  {
+    "name": "cmd/sonrd",
+    "path": "cmd/sonrd",
+    "docs": []
+  },
+  {
+    "name": "crypto/accumulator",
+    "path": "crypto/accumulator",
+    "docs": []
+  },
+  {
+    "name": "crypto/address",
+    "path": "crypto/address",
+    "docs": []
+  },
+  {
+    "name": "crypto/didkey",
+    "path": "crypto/didkey",
+    "docs": []
+  },
+  {
+    "name": "crypto/mpc",
+    "path": "crypto/mpc",
+    "docs": []
+  },
+  {
+    "name": "common/auth",
+    "path": "pkg/common/auth",
+    "docs": []
+  },
+  {
+    "name": "common/cookie",
+    "path": "pkg/common/cookie",
+    "docs": []
+  },
+  {
+    "name": "common/header",
+    "path": "pkg/common/header",
+    "docs": []
+  },
+  {
+    "name": "common/models",
+    "path": "pkg/common/models",
+    "docs": []
+  },
+  {
+    "name": "common/request",
+    "path": "pkg/common/request",
+    "docs": []
+  },
+  {
+    "name": "common/response",
+    "path": "pkg/common/response",
+    "docs": []
+  },
+  {
+    "name": "common/session",
+    "path": "pkg/common/session",
+    "docs": []
+  },
+  {
+    "name": "gateway/embed",
+    "path": "pkg/gateway/embed",
+    "docs": []
+  },
+  {
+    "name": "gateway/handlers",
+    "path": "pkg/gateway/handlers",
+    "docs": []
+  },
+  {
+    "name": "gateway/middleware",
+    "path": "pkg/gateway/middleware",
+    "docs": []
+  },
+  {
+    "name": "gateway/routes",
+    "path": "pkg/gateway/routes",
+    "docs": []
+  },
+  {
+    "name": "vault/handlers",
+    "path": "pkg/vault/handlers",
+    "docs": []
+  },
+  {
+    "name": "vault/middleware",
+    "path": "pkg/vault/middleware",
+    "docs": []
+  },
+  {
+    "name": "vault/routes",
+    "path": "pkg/vault/routes",
+    "docs": []
+  },
+  {
+    "name": "webui/landing",
+    "path": "pkg/webui/landing",
+    "docs": []
+  },
+  {
+    "name": "webui/styles",
+    "path": "pkg/webui/styles",
+    "docs": []
+  },
+  {
+    "name": "pki/ipfs.net",
+    "path": "pki/ipfs.net",
+    "docs": []
+  },
+  {
+    "name": "pki/matrix.net",
+    "path": "pki/matrix.net",
+    "docs": []
+  },
+  {
+    "name": "pki/sonr.chain",
+    "path": "pki/sonr.chain",
+    "docs": []
+  },
+  {
+    "name": "pki/sonr.hway",
+    "path": "pki/sonr.hway",
+    "docs": []
+  },
+  {
+    "name": "pki/sonr.motr",
+    "path": "pki/sonr.motr",
+    "docs": []
+  },
+  {
+    "name": "proto/did",
+    "path": "proto/did",
+    "docs": []
+  },
+  {
+    "name": "proto/dwn",
+    "path": "proto/dwn",
+    "docs": []
+  },
+  {
+    "name": "proto/svc",
+    "path": "proto/svc",
+    "docs": []
+  },
+  {
+    "name": "x/did",
+    "path": "x/did",
+    "docs": []
+  },
+  {
+    "name": "x/dwn",
+    "path": "x/dwn",
+    "docs": []
+  },
+  {
+    "name": "x/svc",
+    "path": "x/svc",
+    "docs": []
+  },
+  {
+    "name": "ci/cd",
+    "path": "deploy",
+    "docs": []
+  }
+]
