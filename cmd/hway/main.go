@@ -9,6 +9,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/onsonr/sonr/crypto/ucan"
 	"github.com/onsonr/sonr/pkg/common/ipfs"
 	"github.com/onsonr/sonr/pkg/common/producer"
 	"github.com/onsonr/sonr/pkg/gateway"
@@ -32,7 +33,7 @@ func setupServer(env config.Env) (*echo.Echo, error) {
 	e.IPExtractor = echo.ExtractIPDirect()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	e.Use(producer.Middleware(ipc, nil))
+	e.Use(producer.Middleware(ipc, ucan.PermissionsService))
 	gateway.RegisterRoutes(e, env)
 	return e, nil
 }

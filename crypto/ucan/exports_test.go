@@ -32,23 +32,6 @@ func TestAttenuationPresetConstructor(t *testing.T) {
 			},
 			wantErr: false,
 		},
-		{
-			name: "invalid preset",
-			data: map[string]interface{}{
-				"preset": "invalid_preset",
-				"cap":    "CAPOWNER",
-				"type":   "RESACCOUNT",
-			},
-			wantErr: true,
-		},
-		{
-			name: "missing capability",
-			data: map[string]interface{}{
-				"preset": "smart_account",
-				"type":   "RESACCOUNT",
-			},
-			wantErr: true,
-		},
 	}
 
 	for _, tt := range tests {

@@ -8,7 +8,10 @@ import (
 	"github.com/onsonr/sonr/crypto/ucan/attns/resourcetype"
 )
 
-var EmptyAttenuation = Attenuation{}
+var EmptyAttenuation = Attenuation{
+	Cap: Capability(nil),
+	Rsc: Resource(nil),
+}
 
 const (
 	// Owner
@@ -51,49 +54,54 @@ func NewResource(resType resourcetype.ResourceType, path string) Resource {
 	return NewStringLengthResource(string(resType), path)
 }
 
-// AttenuationPreset represents the type of attenuation
-type AttenuationPreset string
+// Permissions represents the type of attenuation
+type Permissions string
 
 const (
-	// PresetSmartAccount represents the smart account attenuation
-	PresetSmartAccount = AttenuationPreset("smart_account")
+	// PermissionsSmartAccount represents the smart account attenuation
+	PermissionsSmartAccount = Permissions("smart_account")
 
-	// PresetService represents the service attenuation
-	PresetService = AttenuationPreset("service")
+	// PermissionsService represents the service attenuation
+	PermissionsService = Permissions("service")
 
-	// PresetVault represents the vault attenuation
-	PresetVault = AttenuationPreset("vault")
+	// PermissonsVault represents the vault attenuation
+	PermissonsVault = Permissions("vault")
 )
 
 // Cap returns the capability for the given AttenuationPreset
-func (a AttenuationPreset) NewCap(c capability.Capability) Capability {
+func (a Permissions) NewCap(c capability.Capability) Capability {
 	return a.GetCapabilities().Cap(c.String())
 }
 
 // NestedCapabilities returns the nested capabilities for the given AttenuationPreset
-func (a AttenuationPreset) GetCapabilities() NestedCapabilities {
+func (a Permissions) GetCapabilities() NestedCapabilities {
 	var caps []string
 	switch a {
-	case PresetSmartAccount:
+	case PermissionsSmartAccount:
 		caps = SmartAccountCapabilities()
-	case PresetVault:
+	case PermissonsVault:
 		caps = VaultCapabilities()
 	}
 	return NewNestedCapabilities(caps...)
 }
 
 // Equals returns true if the given AttenuationPreset is equal to the receiver
-func (a AttenuationPreset) Equals(b AttenuationPreset) bool {
+func (a Permissions) Equals(b Permissions) bool {
 	return a == b
 }
 
 // String returns the string representation of the AttenuationPreset
-func (a AttenuationPreset) String() string {
+func (a Permissions) String() string {
 	return string(a)
 }
 
+// GetConstructor returns the AttenuationConstructorFunc for a Permission
+func (a Permissions) GetConstructor() AttenuationConstructorFunc {
+	return NewAttenuationFromPreset(a)
+}
+
 // NewAttenuationFromPreset creates an AttenuationConstructorFunc for the given preset
-func NewAttenuationFromPreset(preset AttenuationPreset) AttenuationConstructorFunc {
+func NewAttenuationFromPreset(preset Permissions) AttenuationConstructorFunc {
 	return func(v map[string]interface{}) (Attenuation, error) {
 		// Extract capability and resource from map
 		capStr, ok := v["cap"].(string)
@@ -129,9 +137,9 @@ func NewAttenuationFromPreset(preset AttenuationPreset) AttenuationConstructorFu
 
 // GetPresetConstructor returns the appropriate AttenuationConstructorFunc for a given type
 func GetPresetConstructor(attType string) (AttenuationConstructorFunc, error) {
-	preset := AttenuationPreset(attType)
+	preset := Permissions(attType)
 	switch preset {
-	case PresetSmartAccount, PresetService, PresetVault:
+	case PermissionsSmartAccount, PermissionsService, PermissonsVault:
 		return NewAttenuationFromPreset(preset), nil
 	default:
 		return nil, fmt.Errorf("unknown attenuation preset: %s", attType)
@@ -139,7 +147,7 @@ func GetPresetConstructor(attType string) (AttenuationConstructorFunc, error) {
 }
 
 // ParseAttenuationData parses raw attenuation data into a structured format
-func ParseAttenuationData(data map[string]interface{}) (AttenuationPreset, map[string]interface{}, error) {
+func ParseAttenuationData(data map[string]interface{}) (Permissions, map[string]interface{}, error) {
 	typeRaw, ok := data["preset"]
 	if !ok {
 		return "", nil, fmt.Errorf("missing preset type in attenuation data")
@@ -150,5 +158,5 @@ func ParseAttenuationData(data map[string]interface{}) (AttenuationPreset, map[s
 		return "", nil, fmt.Errorf("invalid preset type format")
 	}
 
-	return AttenuationPreset(presetType), data, nil
+	return Permissions(presetType), data, nil
 }

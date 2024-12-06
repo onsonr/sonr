@@ -12,7 +12,7 @@ import (
 func NewSmartAccount(
 	accountAddr string,
 ) Attenuations {
-	caps := PresetSmartAccount.GetCapabilities()
+	caps := PermissionsSmartAccount.GetCapabilities()
 	return Attenuations{
 		// Owner capabilities
 		{Cap: caps.Cap(CapOwner.String()), Rsc: NewResource(ResAccount, accountAddr)},
@@ -33,7 +33,7 @@ func NewSmartAccountPolicy(
 	accountAddr string,
 	policyType policytype.PolicyType,
 ) Attenuations {
-	caps := PresetSmartAccount.GetCapabilities()
+	caps := PermissionsSmartAccount.GetCapabilities()
 	return Attenuations{
 		{
 			Cap: caps.Cap(capability.CAPSETPOLICY.String()),
@@ -65,7 +65,7 @@ func SmartAccountCapabilities() []string {
 func NewService(
 	origin string,
 ) Attenuations {
-	caps := PresetService.GetCapabilities()
+	caps := PermissionsService.GetCapabilities()
 	return Attenuations{
 		// Owner capabilities
 		{Cap: caps.Cap(capability.CAPOWNER.String()), Rsc: NewResource(resourcetype.RESACCOUNT, origin)},
@@ -99,7 +99,7 @@ func ServiceCapabilities() []string {
 func NewVault(
 	accountAddr string,
 ) Attenuations {
-	caps := PresetVault.GetCapabilities()
+	caps := PermissonsVault.GetCapabilities()
 	return Attenuations{
 		// Owner capabilities
 		{Cap: caps.Cap(capability.CAPOWNER.String()), Rsc: NewResource(resourcetype.RESACCOUNT, accountAddr)},
@@ -120,7 +120,7 @@ func NewVaultPolicy(
 	accountAddr string,
 	policyType policytype.PolicyType,
 ) Attenuations {
-	caps := PresetVault.GetCapabilities()
+	caps := PermissonsVault.GetCapabilities()
 	return Attenuations{
 		{
 			Cap: caps.Cap(capability.CAPSETPOLICY.String()),

@@ -10,6 +10,7 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	"github.com/ipfs/go-cid"
+	"github.com/onsonr/sonr/crypto/ucan/didkey"
 	"github.com/onsonr/sonr/pkg/common/ipfs"
 )
 
@@ -29,6 +30,12 @@ type TokenStore interface {
 	RawToken(ctx context.Context, key string) (rawToken string, err error)
 	DeleteToken(ctx context.Context, key string) (err error)
 	ListTokens(ctx context.Context, offset, limit int) (results []RawToken, err error)
+}
+
+type IPFSTokenStore interface {
+	TokenStore
+	ResolveCIDBytes(ctx context.Context, id cid.Cid) ([]byte, error)
+	ResolveDIDKey(ctx context.Context, did string) (didkey.ID, error)
 }
 
 // RawToken is a struct that binds a key to a raw token string
@@ -141,8 +148,6 @@ func (st *memTokenStore) toRawTokens() RawTokens {
 	return toks
 }
 
-// TODO: Implement IPFS CID Bytes resolver, and TokenStore
-
 // ipfsTokenStore is a token store that uses IPFS to store tokens. It uses the memory store as a cache
 // for CID strings to be used as keys for retrieving tokens.
 type ipfsTokenStore struct {
@@ -152,7 +157,7 @@ type ipfsTokenStore struct {
 }
 
 // NewIPFSTokenStore creates a new IPFS-backed token store
-func NewIPFSTokenStore(ipfsClient ipfs.Client) TokenStore {
+func NewIPFSTokenStore(ipfsClient ipfs.Client) IPFSTokenStore {
 	return &ipfsTokenStore{
 		ipfs:  ipfsClient,
 		cache: make(map[string]string),
@@ -256,4 +261,12 @@ func (st *ipfsTokenStore) ResolveCIDBytes(ctx context.Context, id cid.Cid) ([]by
 		return nil, fmt.Errorf("failed to resolve CID bytes: %w", err)
 	}
 	return data, nil
+}
+
+func (st *ipfsTokenStore) ResolveDIDKey(ctx context.Context, did string) (didkey.ID, error) {
+	id, err := didkey.Parse(did)
+	if err != nil {
+		return didkey.ID{}, fmt.Errorf("failed to parse DID: %w", err)
+	}
+	return id, nil
 }

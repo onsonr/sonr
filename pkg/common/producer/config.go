@@ -11,6 +11,9 @@ type ProducerContext struct {
 	// TokenParser is the attentuations assigned to the producer service
 	TokenParser *ucan.TokenParser
 
+	// TokenStore is the token store used to store and retrieve tokens
+	TokenStore ucan.IPFSTokenStore
+
 	// IPFSClient is the IPFS client used to resolve the UCAN
 	IPFSClient ipfs.Client
 }
