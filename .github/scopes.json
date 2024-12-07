@@ -1,0 +1,189 @@
+[
+  {
+    "name": "cosmos/sdk",
+    "path": "app",
+    "docs": [
+      "https://docs.cosmos.network/v0.50/build/building-modules/module-manager",
+      "https://docs.cosmos.network/v0.50/build/building-modules/messages-and-queries",
+      "https://docs.cosmos.network/v0.50/build/building-modules/msg-services",
+      "https://docs.cosmos.network/v0.50/build/building-modules/query-services",
+      "https://docs.cosmos.network/v0.50/build/building-modules/depinject"
+    ]
+  },
+  {
+    "name": "cosmos/ibc",
+    "path": "app",
+    "docs": [
+      "https://ibc.cosmos.network/v8/apps/interchain-accounts/overview/",
+      "https://ibc.cosmos.network/v8/apps/transfer/overview/",
+      "https://docs.osmosis.zone/osmosis-core/asset-info/",
+      "https://docs.osmosis.zone/osmosis-core/modules/tokenfactory",
+      "https://docs.noble.xyz/cctp/mint",
+      "https://docs.noble.xyz/cctp/mint_forward",
+      "https://docs.evmos.org/protocol/modules/erc20",
+      "https://docs.nomic.io/nbtc"
+    ]
+  },
+  {
+    "name": "crypto/mpc",
+    "path": "crypto/mpc",
+    "docs": [
+      "https://csrc.nist.gov/CSRC/media/Events/NTCW19/papers/paper-DKLS.pdf"
+    ]
+  },
+  {
+    "name": "crypto/ucan",
+    "path": "crypto/ucan",
+    "docs": [
+      "https://raw.githubusercontent.com/ucan-wg/spec/refs/heads/main/README.md"
+    ]
+  },
+  {
+    "name": "crypto/zkp",
+    "path": "crypto/accumulator",
+    "docs": [
+      "https://eprint.iacr.org/2021/1672.pdf"
+    ]
+  },
+  {
+    "name": "gateway/handlers",
+    "path": "pkg/gateway/handlers",
+    "docs": [
+      "https://echo.labstack.com/docs/cookbook/sse",
+      "https://echo.labstack.com/docs/cookbook/websocket",
+      "https://echo.labstack.com/docs/cookbook/subdomain"
+    ]
+  },
+  {
+    "name": "gateway/database",
+    "path": "pkg/gateway/internal/database",
+    "docs": [
+      "https://docs.tigerbeetle.com/coding/data-modeling",
+      "https://docs.tigerbeetle.com/coding/two-phase-transfers",
+      "https://docs.tigerbeetle.com/coding/reliable-transaction-submission",
+      "https://docs.tigerbeetle.com/coding/recipes/currency-exchange",
+      "https://docs.tigerbeetle.com/coding/recipes/balance-conditional-transfers",
+      "https://docs.tigerbeetle.com/reference/account",
+      "https://docs.tigerbeetle.com/reference/transfer",
+      "https://docs.substreams.dev/documentation/consume/packages",
+      "https://docs.substreams.dev/documentation/consume/sql/deployable-services/local-service",
+      "https://docs.substreams.dev/tutorials/cosmos/injective/foundational"
+    ]
+  },
+  {
+    "name": "vault/handlers",
+    "path": "pkg/vault/handlers",
+    "docs": [
+      "https://echo.labstack.com/docs/cookbook/jwt",
+      "https://echo.labstack.com/docs/middleware/secure",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API"
+    ]
+  },
+  {
+    "name": "vault/database",
+    "path": "pkg/vault/internal/database",
+    "docs": [
+      "https://dexie.org/docs/ExportImport/dexie-export-import",
+      "https://dexie.org/docs/API-Reference#quick-reference",
+      "https://templ.guide/syntax-and-usage/script-templates"
+    ]
+  },
+  {
+    "name": "pkl/ipfs",
+    "path": "pkl/ipfs.net",
+    "docs": [
+      "https://github.com/ipfs/kubo/blob/master/docs/config.md",
+      "https://pkl-lang.org/main/current/language-reference/index.html"
+    ]
+  },
+  {
+    "name": "pkl/matrix",
+    "path": "pkl/matrix.net",
+    "docs": [
+      "https://element-hq.github.io/synapse/latest/usage/configuration/config_documentation.html",
+      "https://pkl-lang.org/main/current/language-reference/index.html"
+    ]
+  },
+  {
+    "name": "pkl/chain",
+    "path": "pkl/sonr.chain",
+    "docs": [
+      "https://tutorials.cosmos.network/tutorials/9-path-to-prod/5-network.html",
+      "https://tutorials.cosmos.network/tutorials/9-path-to-prod/4-genesis.html",
+      "https://pkl-lang.org/main/current/language-reference/index.html",
+      "https://docs.cosmos.network/v0.50/user/run-node/run-testnet"
+    ]
+  },
+  {
+    "name": "pkl/hway",
+    "path": "pkl/sonr.hway",
+    "docs": [
+      "https://pkl-lang.org/main/current/language-reference/index.html"
+    ]
+  },
+  {
+    "name": "pkl/motr",
+    "path": "pkl/sonr.motr",
+    "docs": [
+      "https://pkl-lang.org/main/current/language-reference/index.html",
+      "https://web.dev/learn/pwa/service-workers/",
+      "https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API"
+    ]
+  },
+  {
+    "name": "x/did",
+    "path": "proto/did",
+    "docs": [
+      "https://docs.cosmos.network/v0.50/build/packages/orm",
+      "https://docs.cosmos.network/v0.50/build/building-modules/protobuf-annotations",
+      "https://docs.cosmos.network/v0.50/build/modules/auth",
+      "https://docs.cosmos.network/v0.50/build/packages/collections",
+      "https://docs.cosmos.network/v0.50/build/modules/bank"
+    ]
+  },
+  {
+    "name": "x/dwn",
+    "path": "proto/dwn",
+    "docs": [
+      "https://docs.cosmos.network/v0.50/build/building-modules/protobuf-annotations",
+      "https://docs.cosmos.network/v0.50/build/packages/orm",
+      "https://docs.cosmos.network/v0.50/build/modules/authz",
+      "https://docs.cosmos.network/v0.50/build/packages/collections",
+      "https://docs.cosmos.network/v0.50/build/modules/gov",
+      "https://docs.cosmos.network/v0.50/build/modules/staking"
+    ]
+  },
+  {
+    "name": "x/svc",
+    "path": "proto/svc",
+    "docs": [
+      "https://docs.cosmos.network/v0.50/build/packages/collections",
+      "https://docs.cosmos.network/v0.50/build/building-modules/protobuf-annotations",
+      "https://docs.cosmos.network/v0.50/build/packages/orm",
+      "https://docs.cosmos.network/v0.50/build/modules/group",
+      "https://docs.cosmos.network/v0.50/build/modules/nft"
+    ]
+  },
+  {
+    "name": "repo/ci-cd",
+    "path": "deploy",
+    "docs": [
+      "https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions",
+      "https://docs.cosmos.network/v0.50/build/tooling/cosmovisor",
+      "https://f1bonacc1.github.io/process-compose/configuration/",
+      "https://docs.nomic.io/network/ibc-relayer",
+      "https://www.jetify.com/docs/devbox",
+      "https://taskfile.dev/reference/cli",
+      "https://taskfile.dev/reference/schema",
+      "https://taskfile.dev/reference/templating/"
+    ]
+  },
+  {
+    "name": "repo/docs",
+    "path": "docs",
+    "docs": [
+      "https://squidfunk.github.io/mkdocs-material/reference/",
+      "https://github.com/mkdocs/catalog/blob/main/README.md"
+    ]
+  }
+]

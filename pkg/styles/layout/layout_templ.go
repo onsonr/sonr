@@ -57,7 +57,7 @@ func Root(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = Head(title, "0.0.7").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = Head(title, "0.0.11").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -1,0 +1,11 @@
+<div style="text-align: center;">
+
+# Page Not Found
+
+![A UFO takes one of the little worker monsters](/assets/images/undraw-taken.svg)
+
+The page you were looking for couldn't be found.
+
+Press [[/]] to search, or [head back to the homepage](/).
+
+</div>

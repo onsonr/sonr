@@ -3,7 +3,6 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/cosmos/btcutil/bech32"
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 	"github.com/labstack/echo/v4"
@@ -22,23 +21,14 @@ func HandleRegisterView(env config.Env) echo.HandlerFunc {
 }
 
 func HandleRegisterStart(c echo.Context) error {
-	firstName := c.FormValue("first_name")
-	lastName := c.FormValue("last_name")
 	handle := c.FormValue("handle")
-
-	if firstName == "" || lastName == "" || handle == "" {
-		return response.RedirectLanding(c)
-	}
 
 	ks, err := mpc.NewKeyset()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	adr, err := bech32.Encode("idx", ks.Val().GetPublicKey())
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-	}
-	req := getLinkCredentialRequest(c, adr, handle, ks.UserJSON())
+
+	req := getLinkCredentialRequest(c, ks.Address(), handle, ks.UserJSON())
 	return response.TemplEcho(c, register.LinkCredentialView(req))
 }
 
@@ -60,14 +50,15 @@ func getLinkCredentialRequest(c echo.Context, addr string, handle string, userKS
 			RegisterOptions: buildRegisterOptions(buildUserEntity(addr, handle), buildLargeBlob(userKSJSON), buildServiceEntity(c)),
 		}
 	}
+	data := cc.Session()
 	usr := buildUserEntity(addr, handle)
 	blob := buildLargeBlob(userKSJSON)
 	service := buildServiceEntity(c)
 
 	return register.LinkCredentialRequest{
-		Platform:        cc.BrowserName(),
-		Handle:          handle,
-		DeviceModel:     cc.BrowserVersion(),
+		Platform:        data.BrowserName,
+		Handle:          data.UserHandle,
+		DeviceModel:     data.BrowserVersion,
 		Address:         addr,
 		RegisterOptions: buildRegisterOptions(usr, blob, service),
 	}

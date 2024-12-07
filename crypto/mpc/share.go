@@ -3,6 +3,7 @@ package mpc
 import (
 	"errors"
 
+	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/onsonr/sonr/crypto/core/curves"
 	"github.com/onsonr/sonr/crypto/core/protocol"
 	"github.com/onsonr/sonr/crypto/tecdsa/dklsv1"
@@ -47,7 +48,16 @@ type ValKeyshare struct {
 	encoded string
 }
 
+func computeSonrAddr(pk []byte) (string, error) {
+	sonrAddr, err := bech32.ConvertAndEncode("idx", pk)
+	if err != nil {
+		return "", err
+	}
+	return sonrAddr, nil
+}
+
 func NewValKeyshare(msg *protocol.Message) (*ValKeyshare, error) {
+	vks := new(ValKeyshare)
 	encoded, err := protocol.EncodeMessage(msg)
 	if err != nil {
 		return nil, err
@@ -56,15 +66,10 @@ func NewValKeyshare(msg *protocol.Message) (*ValKeyshare, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &ValKeyshare{
-		BaseKeyshare: BaseKeyshare{
-			Message:            msg,
-			Role:               1,
-			UncompressedPubKey: valShare.PublicKey.ToAffineUncompressed(),
-			CompressedPubKey:   valShare.PublicKey.ToAffineCompressed(),
-		},
-		encoded: encoded,
-	}, nil
+
+	vks.BaseKeyshare = initFromAlice(valShare, msg)
+	vks.encoded = encoded
+	return vks, nil
 }
 
 func (v *ValKeyshare) RefreshFunc() (RefreshFunc, error) {
@@ -83,12 +88,12 @@ func (v *ValKeyshare) String() string {
 
 // PublicKey returns the uncompressed public key (65 bytes)
 func (v *ValKeyshare) PublicKey() []byte {
-	return v.BaseKeyshare.UncompressedPubKey
+	return v.UncompressedPubKey
 }
 
 // CompressedPublicKey returns the compressed public key (33 bytes)
 func (v *ValKeyshare) CompressedPublicKey() []byte {
-	return v.BaseKeyshare.CompressedPubKey
+	return v.CompressedPubKey
 }
 
 type UserKeyshare struct {
@@ -97,6 +102,7 @@ type UserKeyshare struct {
 }
 
 func NewUserKeyshare(msg *protocol.Message) (*UserKeyshare, error) {
+	uks := new(UserKeyshare)
 	encoded, err := protocol.EncodeMessage(msg)
 	if err != nil {
 		return nil, err
@@ -105,15 +111,10 @@ func NewUserKeyshare(msg *protocol.Message) (*UserKeyshare, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &UserKeyshare{
-		BaseKeyshare: BaseKeyshare{
-			Message:            msg,
-			Role:               2,
-			UncompressedPubKey: out.PublicKey.ToAffineUncompressed(),
-			CompressedPubKey:   out.PublicKey.ToAffineCompressed(),
-		},
-		encoded: encoded,
-	}, nil
+
+	uks.BaseKeyshare = initFromBob(out, msg)
+	uks.encoded = encoded
+	return uks, nil
 }
 
 func (u *UserKeyshare) RefreshFunc() (RefreshFunc, error) {
@@ -132,12 +133,12 @@ func (u *UserKeyshare) String() string {
 
 // PublicKey returns the uncompressed public key (65 bytes)
 func (u *UserKeyshare) PublicKey() []byte {
-	return u.BaseKeyshare.UncompressedPubKey
+	return u.UncompressedPubKey
 }
 
 // CompressedPublicKey returns the compressed public key (33 bytes)
 func (u *UserKeyshare) CompressedPublicKey() []byte {
-	return u.BaseKeyshare.CompressedPubKey
+	return u.CompressedPubKey
 }
 
 func encodeMessage(m *protocol.Message) (string, error) {
