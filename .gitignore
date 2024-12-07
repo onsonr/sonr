@@ -60,6 +60,10 @@ override.tf.json
 .terraformrc
 terraform.rc
 
+Taskfile.yml
+
+!deploy/**/Taskfile.yml
+
 # Misc
 .DS_Store
 .tmp/
