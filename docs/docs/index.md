@@ -39,3 +39,9 @@ A Data sharing economy where human-specific information has intrinsic value. Ser
 good faith in order to obtain quality user data.
 
 ## How do we do it?
+
+Provide Internet Citizens with a robust easy to use WebVault which features a crypto wallet, passkey authenticator, and encrypted messages. The WebVault serves as a wrapper over every sensitive intent-based user interaction. The Smart blockchain is responsible for keeping a record of where WebVaults are located, when authorization activity occurs, and which services are allowed over what permissions.
+
+## The User Incentive
+
+Data is the byproduct of currency exchange in the Information age. Meaning services pay other services for user data or profits in order to enrich their database with complete user personas.
