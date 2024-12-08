@@ -8,10 +8,9 @@ import (
 )
 
 templ ProfileFormView(turnstileSiteKey string) {
-	@layout.Root("Sonr.ID") {
+	@layout.Root("New Profile | Sonr.ID") {
 		@layout.Container() {
 			@text.Header("Create a Profile", "Enter some basic information about yourself.")
-			<br/>
 			@form.Form("/register/start", "POST", form.Submit("Continue"), "25", true) {
 				@form.NameInput()
 				<br/>
@@ -23,10 +22,9 @@ templ ProfileFormView(turnstileSiteKey string) {
 }
 
 templ LinkCredentialView(req LinkCredentialRequest) {
-	@layout.Root("Sonr.ID") {
+	@layout.Root("Register | Sonr.ID") {
 		@layout.Container() {
 			@text.Header("Link a PassKey", "This will be used to login to your vault.")
-			<br/>
 			@form.Form("/register/finish", "POST", form.PasskeyInput("passkey"), "65", false) {
 				@details.PropertyList() {
 					@details.Property("Address", req.Address, "wallet")
@@ -40,7 +38,7 @@ templ LinkCredentialView(req LinkCredentialRequest) {
 }
 
 templ LoadingVaultView() {
-	@layout.Root("Sonr.ID") {
+	@layout.Root("Loading... | Sonr.ID") {
 		@layout.Container() {
 			@text.Header("Loading Vault", "This will be used to login to your vault.")
 		}
