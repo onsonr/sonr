@@ -4,25 +4,43 @@
     "path": "app",
     "docs": [
       {
-        "keywords": [],
+        "keywords": [
+          "module",
+          "cosmos"
+        ],
         "url": "https://docs.cosmos.network/v0.50/build/building-modules/module-manager"
       },
       {
-        "keywords": [],
+        "keywords": [
+          "protobuf",
+          "cosmos"
+        ],
         "url": "https://docs.cosmos.network/v0.50/build/building-modules/messages-and-queries"
       },
       {
-        "keywords": [],
+        "keywords": [
+          "rpc",
+          "protobuf",
+          "service",
+          "cosmos"
+        ],
         "url": "https://docs.cosmos.network/v0.50/build/building-modules/msg-services"
       },
       {
         "keywords": [
+          "protobuf",
+          "rpc",
+          "cosmos",
           "query"
         ],
         "url": "https://docs.cosmos.network/v0.50/build/building-modules/query-services"
       },
       {
-        "keywords": [],
+        "keywords": [
+          "cosmos",
+          "depinject",
+          "sdk"
+        ],
         "url": "https://docs.cosmos.network/v0.50/build/building-modules/depinject"
       }
     ]
@@ -32,7 +50,11 @@
     "path": "app",
     "docs": [
       {
-        "keywords": [],
+        "keywords": [
+          "cosmos",
+          "interchain",
+          "accounts"
+        ],
         "url": "https://ibc.cosmos.network/v8/apps/interchain-accounts/overview/"
       },
       {
@@ -49,7 +71,10 @@
       },
       {
         "keywords": [
-          "usdc"
+          "usdc",
+          "mint",
+          "cosmos",
+          "noble"
         ],
         "url": "https://docs.noble.xyz/cctp/mint"
       },
@@ -74,7 +99,12 @@
     "path": "crypto/mpc",
     "docs": [
       {
-        "keywords": [],
+        "keywords": [
+          "mpc",
+          "wallet",
+          "security",
+          "advanced cryptography"
+        ],
         "url": "https://csrc.nist.gov/CSRC/media/Events/NTCW19/papers/paper-DKLS.pdf"
       }
     ]
