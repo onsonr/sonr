@@ -28,7 +28,9 @@
     "ACC1_MNEMONIC": "$(skate get ACC1_MNEMONIC)",
     "TUNNEL_TOKEN": "$(skate get CLOUDFLARE_TUNNEL_TOKEN)",
     "TURNSTILE_SITE_KEY": "$(skate get TURNSTILE_SITE_KEY)",
-    "TEMPL_EXPERIMENT": "rawgo"
+    "TEMPL_EXPERIMENT": "rawgo",
+    "PC_NO_SERVER": "true",
+    "PC_LOG_FILE": "./sonr.log"
   },
   "shell": {
     "scripts": {
@@ -37,11 +39,19 @@
         "gum spin --title='Building Motr WASM' -- make motr-build",
         "gum spin --title='Uploading to Bucket' -- make deploy-cdn"
       ],
-      "devnet": [
-        "process-compose up -f deploy/devnet/process-compose.yaml --no-server --detached --log-file ./sonr.log --hide-disabled"
+      "devnet:start": [
+        "process-compose up -f deploy/devnet/process-compose.yaml --detached --hide-disabled"
       ],
-      "testnet": [
-        "process-compose run -f deploy/testnet/process-compose.yaml --no-server --detached --log-file ./sonr.log --hide-disabled"
+      "devnet:attach": ["cd deploy/devnet", "process-compose attach"],
+      "devnet:stop": ["cd deploy/devnet", "process-compose down "],
+      "testnet:start": [
+        "process-compose up -f deploy/testnet/process-compose.yaml --detached --hide-disabled"
+      ],
+      "testnet:stop": [
+        "process-compose down -f deploy/testnet/process-compose.yaml --remove-orphans"
+      ],
+      "testnet:restart": [
+        "process-compose restart -f deploy/testnet/process-compose.yaml --remove-orphans"
       ]
     }
   }

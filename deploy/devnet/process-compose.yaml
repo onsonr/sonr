@@ -3,16 +3,12 @@ version: "0.6"
 processes:
   sonr:
     namespace: devnet
-    background: true
     command: "make sh-testnet"
-    restart: never
     max_restarts: 1
 
   hway:
     namespace: devnet
-    background: true
     command: "./build/hway"
-    restart: never
     max_restarts: 1
     depends:
       - sonr
