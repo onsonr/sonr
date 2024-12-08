@@ -37,8 +37,12 @@
         "gum spin --title='Building Motr WASM' -- make motr-build",
         "gum spin --title='Uploading to Bucket' -- make deploy-cdn"
       ],
-      "devnet": ["process-compose up -f deploy/devnet/process-compose.yaml"],
-      "testnet": ["process-compose run -f deploy/testnet/process-compose.yaml"]
+      "devnet": [
+        "process-compose up -f deploy/devnet/process-compose.yaml --no-server --detached --log-file ./sonr.log --hide-disabled"
+      ],
+      "testnet": [
+        "process-compose run -f deploy/testnet/process-compose.yaml --no-server --detached --log-file ./sonr.log --hide-disabled"
+      ]
     }
   }
 }
