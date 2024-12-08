@@ -1,8 +1,7 @@
 name: Publish Docs via GitHub Pages
 on:
   push:
-    branches:
-      - master
+
 permissions:
   contents: write
 jobs:
