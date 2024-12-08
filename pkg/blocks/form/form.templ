@@ -1,0 +1,76 @@
+package form
+
+import "github.com/onsonr/sonr/pkg/blocks/layout"
+
+// Form is a standard form styled like a card
+templ Form(action string, method string, submit templ.Component, progress string, enableCancel bool) {
+	<form action={ templ.SafeURL(action) } method={ method }>
+		<sl-card class="card-form gap-4 max-w-lg">
+			<div slot="header">
+				<div class="w-full py-1">
+					<sl-progress-bar value={ progress }></sl-progress-bar>
+				</div>
+			</div>
+			{ children... }
+			<div slot="footer">
+				if enableCancel {
+					<sl-button href="/" outline>
+						<sl-icon slot="prefix" name="arrow-left" library="sonr"></sl-icon>
+						Cancel
+					</sl-button>
+				}
+				@submit
+			</div>
+			<style>
+  		.card-form [slot='footer'] {
+    		display: flex;
+    		justify-content: space-between;
+    		align-items: center;
+  		}
+		</style>
+		</sl-card>
+	</form>
+}
+
+templ NameInput() {
+	@layout.Rows() {
+		<sl-input name="first_name" placeholder="Steve" type="text" label="First Name" required autofocus></sl-input>
+		<sl-input name="last_name" placeholder="J" maxlength="1" type="text" label="Last Initial"></sl-input>
+	}
+}
+
+templ HandleInput() {
+	<sl-input name="handle" placeholder="thoughtdiff" type="text" label="Handle" minlength="4" maxlength="12" required>
+		<div slot="prefix">
+			<sl-icon name="at-sign" library="sonr"></sl-icon>
+		</div>
+	</sl-input>
+}
+
+templ CodeInput(id string) {
+	<sl-input id={ id } placeholder="●" type="text" maxlength="1" pill class="w-min"></sl-input>
+}
+
+// Hidden input and button which calls a javascript function to generate a passkey
+templ PasskeyInput(id string) {
+	@CredentialsScripts()
+	<sl-button type="submit" pill style="width: 100%;">
+		<sl-icon slot="prefix" name="passkey" library="sonr" style="font-size: 20px;"></sl-icon>
+		Create PassKey
+		<sl-icon slot="suffix" name="arrow-right" library="sonr" style="font-size: 20px;"></sl-icon>
+	</sl-button>
+}
+
+templ TurnstileWidget(sitekey string) {
+	if sitekey != "" {
+		<br/>
+		<div class="cf-turnstile" data-sitekey={ sitekey }></div>
+	}
+}
+
+templ Submit(text string) {
+	<sl-button type="submit">
+		{ text }
+		<sl-icon slot="suffix" name="arrow-right" library="sonr"></sl-icon>
+	</sl-button>
+}

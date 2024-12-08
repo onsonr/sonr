@@ -9,8 +9,8 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/onsonr/nebula/ui/layout"
-	"github.com/onsonr/nebula/ui/text"
+	"github.com/onsonr/sonr/pkg/blocks/layout"
+	"github.com/onsonr/sonr/pkg/blocks/text"
 )
 
 func InitialView() templ.Component {
@@ -74,7 +74,7 @@ func InitialView() templ.Component {
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = layout.Root("Welcome | Sonr.ID").Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = layout.Root("Sonr.ID").Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

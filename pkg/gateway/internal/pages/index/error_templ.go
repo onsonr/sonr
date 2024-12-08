@@ -8,7 +8,7 @@ package index
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "github.com/onsonr/nebula/ui/layout"
+import "github.com/onsonr/sonr/pkg/blocks/layout"
 
 func NoWebauthnErrorView() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {

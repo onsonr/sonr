@@ -81,7 +81,6 @@ require (
 	github.com/multiformats/go-multicodec v0.9.0
 	github.com/multiformats/go-multihash v0.2.3
 	github.com/multiformats/go-varint v0.0.7
-	github.com/onsonr/nebula v0.1.0
 	github.com/pkg/errors v0.9.1
 	github.com/segmentio/ksuid v1.0.4
 	github.com/spf13/cast v1.6.0
