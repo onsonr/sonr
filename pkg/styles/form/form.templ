@@ -32,10 +32,15 @@ templ Form(action string, method string, submit templ.Component, progress string
 	</form>
 }
 
+templ IsHumanInput(target string, first string, last string) {
+	@layout.Rows() {
+	}
+}
+
 templ NameInput() {
 	@layout.Rows() {
-		<sl-input name="first_name" placeholder="Steve" type="text" label="First Name" required autofocus></sl-input>
-		<sl-input name="last_name" placeholder="J" maxlength="1" type="text" label="Last Initial"></sl-input>
+		<sl-input name="first_name" placeholder="Steve" type="text" label="First Name" required autofocus autofill></sl-input>
+		<sl-input name="last_name" placeholder="J" maxlength="1" type="text" label="Last Initial" autofill></sl-input>
 	}
 }
 
