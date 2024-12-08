@@ -9,10 +9,10 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/onsonr/sonr/pkg/styles/details"
-	"github.com/onsonr/sonr/pkg/styles/form"
-	"github.com/onsonr/sonr/pkg/styles/layout"
-	"github.com/onsonr/sonr/pkg/styles/text"
+	"github.com/onsonr/nebula/ui/details"
+	"github.com/onsonr/nebula/ui/form"
+	"github.com/onsonr/nebula/ui/layout"
+	"github.com/onsonr/nebula/ui/text"
 )
 
 func ProfileFormView(turnstileSiteKey string) templ.Component {

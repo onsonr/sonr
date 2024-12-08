@@ -1,8 +1,6 @@
 module github.com/onsonr/sonr
 
-go 1.23
-
-toolchain go1.23.1
+go 1.23.3
 
 // overrides
 replace (
@@ -282,6 +280,7 @@ require (
 	github.com/oasisprotocol/curve25519-voi v0.0.0-20230904125328-1f23a7beb09a // indirect
 	github.com/oklog/run v1.1.0 // indirect
 	github.com/onsi/ginkgo/v2 v2.22.0 // indirect
+	github.com/onsonr/nebula v0.1.0 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/pbnjay/memory v0.0.0-20210728143218-7b4eea64cf58 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.2 // indirect

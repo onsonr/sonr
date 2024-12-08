@@ -2,8 +2,6 @@ package session
 
 import (
 	"net/http"
-	"regexp"
-	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/common"
@@ -12,6 +10,13 @@ import (
 	"gorm.io/gorm"
 )
 
+// HTTPContext is the context for HTTP endpoints.
+type HTTPContext struct {
+	echo.Context
+	db   *gorm.DB
+	sess *database.Session
+}
+
 // Get returns the HTTPContext from the echo context
 func Get(c echo.Context) (*HTTPContext, error) {
 	ctx, ok := c.(*HTTPContext)
@@ -19,13 +24,6 @@ func Get(c echo.Context) (*HTTPContext, error) {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Session Context not found")
 	}
 	return ctx, nil
-}
-
-// HTTPContext is the context for HTTP endpoints.
-type HTTPContext struct {
-	echo.Context
-	db   *gorm.DB
-	sess *database.Session
 }
 
 // NewHTTPContext creates a new session context
@@ -78,32 +76,4 @@ func (s *HTTPContext) getOrCreateSessionID() string {
 		common.WriteCookie(s.Context, common.SessionID, sessionID)
 	}
 	return sessionID
-}
-
-func extractBrowserInfo(c echo.Context) (string, string) {
-	userAgent := common.HeaderRead(c, common.UserAgent)
-	if userAgent == "" {
-		return "N/A", "-1"
-	}
-
-	var name, ver string
-	entries := strings.Split(strings.TrimSpace(userAgent), ",")
-	for _, entry := range entries {
-		entry = strings.TrimSpace(entry)
-		re := regexp.MustCompile(`"([^"]+)";v="([^"]+)"`)
-		matches := re.FindStringSubmatch(entry)
-
-		if len(matches) == 3 {
-			browserName := matches[1]
-			version := matches[2]
-
-			if browserName != common.BrowserNameUnknown.String() &&
-				browserName != common.BrowserNameChromium.String() {
-				name = browserName
-				ver = version
-				break
-			}
-		}
-	}
-	return name, ver
 }
