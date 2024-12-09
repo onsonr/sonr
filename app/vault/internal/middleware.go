@@ -6,8 +6,8 @@ import (
 
 	"github.com/labstack/echo/v4"
 
+	"github.com/onsonr/sonr/app/vault/types"
 	"github.com/onsonr/sonr/pkg/common"
-	"github.com/onsonr/sonr/pkg/vault/types"
 )
 
 type SessionCtx interface {

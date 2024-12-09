@@ -12,8 +12,8 @@ import (
 	"github.com/onsonr/sonr/app/gateway"
 	"github.com/onsonr/sonr/app/gateway/config"
 	"github.com/onsonr/sonr/crypto/ucan"
-	"github.com/onsonr/sonr/pkg/common/didauth/producer"
 	"github.com/onsonr/sonr/pkg/common/ipfs"
+	"github.com/onsonr/sonr/pkg/didauth/producer"
 )
 
 //go:embed config.pkl

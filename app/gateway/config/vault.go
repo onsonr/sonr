@@ -5,7 +5,7 @@ import (
 
 	"github.com/ipfs/boxo/files"
 	"github.com/onsonr/sonr/app/gateway/config/internal"
-	"github.com/onsonr/sonr/pkg/vault/types"
+	"github.com/onsonr/sonr/app/vault/types"
 )
 
 const SchemaVersion = 1

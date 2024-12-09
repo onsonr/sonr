@@ -7,9 +7,9 @@ package vault
 import (
 	"github.com/labstack/echo/v4"
 
-	"github.com/onsonr/sonr/pkg/vault/handlers"
-	"github.com/onsonr/sonr/pkg/vault/internal/session"
-	"github.com/onsonr/sonr/pkg/vault/types"
+	"github.com/onsonr/sonr/app/vault/handlers"
+	session "github.com/onsonr/sonr/app/vault/internal"
+	"github.com/onsonr/sonr/app/vault/types"
 )
 
 // RegisterRoutes registers the Decentralized Web Node API routes.

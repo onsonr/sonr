@@ -4,8 +4,8 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/onsonr/sonr/app/vault/types"
 	"github.com/onsonr/sonr/pkg/common/models"
-	"github.com/onsonr/sonr/pkg/vault/types"
 )
 
 // DefaultSchema returns the default schema

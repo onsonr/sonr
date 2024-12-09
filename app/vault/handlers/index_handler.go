@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	session "github.com/onsonr/sonr/app/vault/internal"
+	"github.com/onsonr/sonr/app/vault/internal/pages/index"
 	"github.com/onsonr/sonr/pkg/common/response"
-	session "github.com/onsonr/sonr/pkg/vault/internal"
-	"github.com/onsonr/sonr/pkg/vault/pages/index"
 )
 
 func HandleIndex(c echo.Context) error {
