@@ -10,7 +10,7 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"fmt"
-	"github.com/onsonr/sonr/pkg/blocks/layout"
+	"github.com/onsonr/sonr/pkg/common/styles/layout"
 )
 
 type CreateProfileData struct {
@@ -61,7 +61,7 @@ func CreateProfile(action string, method string, data CreateProfileData) templ.C
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(method)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/forms/create_profile.templ`, Line: 20, Col: 55}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/common/styles/forms/create_profile.templ`, Line: 20, Col: 55}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -112,7 +112,7 @@ func CreateProfile(action string, method string, data CreateProfileData) templ.C
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(data.IsHumanLabel())
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/forms/create_profile.templ`, Line: 38, Col: 56}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/common/styles/forms/create_profile.templ`, Line: 38, Col: 56}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {

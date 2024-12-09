@@ -8,7 +8,7 @@ package forms
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "github.com/onsonr/sonr/pkg/blocks/layout"
+import "github.com/onsonr/sonr/pkg/common/styles/layout"
 
 type SetupWalletData struct {
 	TurnstileSiteKey string
@@ -54,7 +54,7 @@ func SetupWallet(action string, method string, data CreateProfileData) templ.Com
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(method)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/forms/setup_wallet.templ`, Line: 13, Col: 55}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/common/styles/forms/setup_wallet.templ`, Line: 13, Col: 55}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
