@@ -3,11 +3,11 @@ package gateway
 
 import (
 	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/app/gateway/config"
+	"github.com/onsonr/sonr/app/gateway/handlers"
+	"github.com/onsonr/sonr/app/gateway/internal/database"
+	"github.com/onsonr/sonr/app/gateway/internal/session"
 	"github.com/onsonr/sonr/pkg/common/response"
-	"github.com/onsonr/sonr/pkg/gateway/config"
-	"github.com/onsonr/sonr/pkg/gateway/handlers"
-	"github.com/onsonr/sonr/pkg/gateway/internal/database"
-	"github.com/onsonr/sonr/pkg/gateway/internal/session"
 )
 
 func RegisterRoutes(e *echo.Echo, env config.Env) error {
