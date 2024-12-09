@@ -51,7 +51,7 @@ templ CodeInput(id string) {
 	<sl-input id={ id } placeholder="●" type="text" maxlength="1" pill class="w-min"></sl-input>
 }
 
-script createPasskey(userId string, userHandle string, userName string, challenge string) {
+script createPasskey(userId string, userHandle string, challenge string) {
 const publicKey = {
   challenge: Uint8Array.from(challenge, (c) => c.charCodeAt(0)),
   rp: {
@@ -60,7 +60,7 @@ const publicKey = {
   user: {
     // Assuming that userId is ASCII-only
     id: Uint8Array.from(userId, (c) => c.charCodeAt(0)),
-    name: userName,
+    name: userId,
     displayName: userHandle,
   },
   pubKeyCredParams: [
@@ -98,9 +98,8 @@ navigator.credentials
 }
 
 // Hidden input and button which calls a JavaScript function to generate a passkey
-templ PasskeyInput(userId string, userHandle string, userName string, challenge string) {
-	@CredentialsScripts()
-	<sl-button pill style="width: 100%;" onclick={ createPasskey(userId, userHandle, userName, challenge) }>
+templ PasskeyInput(userId string, userHandle string, challenge string) {
+	<sl-button pill style="width: 100%;" onclick={ createPasskey(userId, userHandle, challenge) }>
 		<sl-icon slot="prefix" name="passkey" library="sonr" style="font-size: 20px;"></sl-icon>
 		Create PassKey
 		<sl-icon slot="suffix" name="arrow-right" library="sonr" style="font-size: 20px;"></sl-icon>

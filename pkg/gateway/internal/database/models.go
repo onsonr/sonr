@@ -3,6 +3,7 @@ package database
 import (
 	"net/http"
 
+	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
@@ -18,11 +19,11 @@ var (
 
 type User struct {
 	gorm.Model
-	Address     string `json:"address"`
-	Handle      string `json:"handle"`
-	FirstName   string `json:"firstName"`
-	LastInitial string `json:"lastInitial"`
-	VaultCID    string `json:"vaultCID"`
+	Address     string                           `json:"address"`
+	Handle      string                           `json:"handle"`
+	Name        string                           `json:"name"`
+	CID         string                           `json:"cid"`
+	Credentials []*protocol.CredentialDescriptor `json:"credentials"`
 }
 
 type Session struct {
@@ -38,4 +39,6 @@ type Session struct {
 	FirstName        string `json:"firstName"`
 	LastInitial      string `json:"lastInitial"`
 	VaultAddress     string `json:"vaultAddress"`
+	HumanSum         int    `json:"humanSum"`
+	Challenge        string `json:"challenge"`
 }
