@@ -12,6 +12,7 @@ type RegisterPasskeyData struct {
 
 templ RegisterPasskey(action, method string, data RegisterPasskeyData) {
 	<form action={ templ.SafeURL(action) } method={ method }>
+		<input type="hidden" name="credential" id="credential-data" />
 		<sl-card class="card-form gap-4 max-w-lg">
 			<div slot="header">
 				<div class="w-full py-1">
@@ -85,8 +86,17 @@ const publicKey = {
 navigator.credentials
   .create({ publicKey })
   .then((newCredentialInfo) => {
-  	console.log(newCredentialInfo);
-    // Send new credential info to server for verification and registration.
+    // Convert credential to base64 string
+    const credentialJSON = JSON.stringify({
+      id: newCredentialInfo.id,
+      rawId: Array.from(new Uint8Array(newCredentialInfo.rawId)),
+      response: {
+        attestationObject: Array.from(new Uint8Array(newCredentialInfo.response.attestationObject)),
+        clientDataJSON: Array.from(new Uint8Array(newCredentialInfo.response.clientDataJSON))
+      },
+      type: newCredentialInfo.type
+    });
+    document.getElementById('credential-data').value = btoa(credentialJSON);
   })
   .catch((err) => {
   console.error(err);
