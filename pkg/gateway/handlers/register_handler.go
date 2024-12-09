@@ -57,8 +57,9 @@ func HandleRegisterFinish(c echo.Context) error {
 	}
 
 	// Log credential details
-	fmt.Printf("Credential ID: %s\n", cred.CredentialID)
+	fmt.Printf("Credential ID: %v\n", cred.CredentialID)
 	fmt.Printf("Credential Type: %s\n", cred.Type)
+	fmt.Printf("Transport: %v\n", cred.Transport)
 
 	return response.TemplEcho(c, register.LoadingVaultView())
 }
