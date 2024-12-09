@@ -21,11 +21,11 @@ func RegisterRoutes(e *echo.Echo, env config.Env) error {
 	}
 
 	// Inject session middleware with database connection
-	e.Use(session.Middleware(db))
+	e.Use(session.Middleware(db, env))
 
 	// Register routes
 	e.GET("/", handlers.HandleIndex)
-	e.GET("/register", handlers.HandleRegisterView(env))
+	e.GET("/register", handlers.HandleRegisterView)
 	e.POST("/register/start", handlers.HandleRegisterStart)
 	e.POST("/register/finish", handlers.HandleRegisterFinish)
 	return nil

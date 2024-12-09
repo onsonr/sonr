@@ -4,12 +4,13 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/pkg/gateway/config"
 	"github.com/onsonr/sonr/pkg/gateway/internal/database"
 	"gorm.io/gorm"
 )
 
 // Middleware creates a new session middleware
-func Middleware(db *gorm.DB) echo.MiddlewareFunc {
+func Middleware(db *gorm.DB, env config.Env) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			cc := NewHTTPContext(c, db)
@@ -26,6 +27,7 @@ type HTTPContext struct {
 	echo.Context
 	db   *gorm.DB
 	sess *database.Session
+	env  config.Env
 }
 
 // Get returns the HTTPContext from the echo context

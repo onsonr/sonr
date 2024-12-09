@@ -1,7 +1,6 @@
 package session
 
 import (
-	"fmt"
 	"regexp"
 	"strings"
 
@@ -34,13 +33,6 @@ func (s *HTTPContext) InitSession() error {
 			return err
 		}
 	}
-	fmt.Println(sess.BrowserName)
-	fmt.Println(sess.BrowserVersion)
-	fmt.Println(sess.UserArchitecture)
-	fmt.Println(sess.Platform)
-	fmt.Println(sess.PlatformVersion)
-	fmt.Println(sess.DeviceModel)
-
 	s.sess = &sess
 	return nil
 }

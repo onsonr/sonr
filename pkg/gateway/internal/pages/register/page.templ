@@ -6,11 +6,11 @@ import (
 	"github.com/onsonr/sonr/pkg/blocks/text"
 )
 
-templ ProfileFormView(turnstileSiteKey string) {
+templ ProfileFormView(data forms.CreateProfileData) {
 	@layout.Root("New Profile | Sonr.ID") {
 		@layout.Container() {
 			@text.Header("Create a Profile", "Enter some basic information about yourself.")
-			@forms.CreateProfile("/register/start", "POST")
+			@forms.CreateProfile("/register/start", "POST", data)
 		}
 	}
 }

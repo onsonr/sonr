@@ -11,14 +11,16 @@ import (
 	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/pkg/blocks/forms"
 	"github.com/onsonr/sonr/pkg/common/response"
-	"github.com/onsonr/sonr/pkg/gateway/config"
+	"github.com/onsonr/sonr/pkg/gateway/internal/database"
 	"github.com/onsonr/sonr/pkg/gateway/internal/pages/register"
 )
 
-func HandleRegisterView(env config.Env) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		return response.TemplEcho(c, register.ProfileFormView(env.GetTurnstileSiteKey()))
+func HandleRegisterView(c echo.Context) error {
+	dat := forms.CreateProfileData{
+		FirstNumber: 1,
+		LastNumber:  2,
 	}
+	return response.TemplEcho(c, register.ProfileFormView(dat))
 }
 
 func HandleRegisterStart(c echo.Context) error {
@@ -47,21 +49,7 @@ func HandleRegisterFinish(c echo.Context) error {
 	if credentialJSON == "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "missing credential data")
 	}
-
-	// Define the credential structure matching our frontend data
-	var cred struct {
-		ID                     string                 `json:"id"`
-		RawID                  string                 `json:"rawId"`
-		Type                   string                 `json:"type"`
-		AuthenticatorAttachment string                `json:"authenticatorAttachment"`
-		Transports            []string               `json:"transports"`
-		ClientExtensionResults map[string]interface{} `json:"clientExtensionResults"`
-		Response              struct {
-			AttestationObject string `json:"attestationObject"`
-			ClientDataJSON    string `json:"clientDataJSON"`
-		} `json:"response"`
-	}
-
+	cred := database.Credential{}
 	// Unmarshal the credential JSON
 	if err := json.Unmarshal([]byte(credentialJSON), &cred); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("invalid credential format: %v", err))
@@ -105,13 +93,6 @@ func HandleRegisterFinish(c echo.Context) error {
 		cred.Transports,
 		len(attestationObj),
 		len(clientData))
-
-	// TODO: Verify the attestation and store the credential
-	// This is where you would:
-	// 1. Verify the attestation signature
-	// 2. Check the origin in client data
-	// 3. Verify the challenge
-	// 4. Store the credential for future authentications
 
 	return response.TemplEcho(c, register.LoadingVaultView())
 }

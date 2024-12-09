@@ -13,22 +13,20 @@ templ RegisterPasskey(action, method string, data RegisterPasskeyData) {
 		<input type="hidden" name="credential" id="credential-data" required/>
 		<sl-card class="card-form gap-4 max-w-lg">
 			<div slot="header">
-				<div class="w-full py-1">
+				<div class="w-full py-2">
 					@sonrProfile(data.Address, data.Name, data.Handle, data.CreationBlock)
 				</div>
 			</div>
-			@passkeyDropzone(data.Address, data.Handle, data.Challenge)
-			<div slot="footer">
-				<sl-button type="submit" pill style="width: 100%;" variant="primary">
-					<sl-icon slot="prefix" name="shield-fill-check"></sl-icon>
-					Register Vault
-					<sl-icon slot="suffix" name="arrow-outbound" library="sonr"></sl-icon>
+			<div slot="footer" class="space-y-2">
+				@passkeyDropzone(data.Address, data.Handle, data.Challenge)
+				<sl-button href="/" style="width: 100%;" outline>
+					<sl-icon slot="prefix" name="x-lg"></sl-icon>
+					Cancel
 				</sl-button>
 			</div>
 			<style>
   		.card-form [slot='footer'] {
-    		display: flex;
-    		justify-content: space-between;
+    		justify-content: space-evenly;
     		align-items: center;
   		}
 		</style>
@@ -37,7 +35,7 @@ templ RegisterPasskey(action, method string, data RegisterPasskeyData) {
 }
 
 templ passkeyDropzone(addr string, userHandle string, challenge string) {
-	<sl-button pill style="width: 100%;" onclick={ createPasskey(addr, userHandle, challenge) }>
+	<sl-button style="width: 100%;" onclick={ createPasskey(addr, userHandle, challenge) }>
 		<sl-icon slot="prefix" name="passkey" library="sonr" style="font-size: 24px;" class="text-neutral-500"></sl-icon>
 		Register Passkey
 	</sl-button>
