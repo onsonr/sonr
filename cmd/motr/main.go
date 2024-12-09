@@ -8,7 +8,7 @@ import (
 	"syscall/js"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/pkg/common/dids"
+	"github.com/onsonr/sonr/pkg/common/didauth/controller"
 	"github.com/onsonr/sonr/pkg/vault"
 	"github.com/onsonr/sonr/pkg/vault/types"
 )
@@ -48,7 +48,7 @@ func main() {
 
 	e := echo.New()
 	e.Use(vault.WasmContextMiddleware)
-	e.Use(dids.Middleware(nil))
+	e.Use(controller.Middleware(nil))
 	vault.RegisterRoutes(e, config)
 	vault.ServeFetch(e)
 }

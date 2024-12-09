@@ -1,6 +1,7 @@
 package producer
 
 import (
+	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/crypto/ucan"
 	"github.com/onsonr/sonr/crypto/ucan/store"
 	"github.com/onsonr/sonr/pkg/common/ipfs"
@@ -26,4 +27,12 @@ func Middleware(ipfs ipfs.Client, perms ucan.Permissions) echo.MiddlewareFunc {
 			return next(ctx)
 		}
 	}
+}
+
+func NewKeyset(c echo.Context) (mpc.Keyset, error) {
+	ks, err := mpc.NewKeyset()
+	if err != nil {
+		return nil, err
+	}
+	return ks, nil
 }
