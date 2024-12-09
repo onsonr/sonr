@@ -2,9 +2,9 @@ package handlers
 
 import (
 	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/app/gateway/internal/pages/index"
+	"github.com/onsonr/sonr/app/gateway/internal/session"
 	"github.com/onsonr/sonr/pkg/common/response"
-	"github.com/onsonr/sonr/pkg/gateway/internal/session"
-	"github.com/onsonr/sonr/pkg/gateway/pages/index"
 )
 
 func HandleIndex(c echo.Context) error {

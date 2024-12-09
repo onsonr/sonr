@@ -4,7 +4,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/onsonr/sonr/pkg/gateway/config"
+	"github.com/onsonr/sonr/app/gateway/config"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -32,12 +32,12 @@ func formatDBPath(path string) string {
 	if home == "" {
 		home = "."
 	}
-	
+
 	configDir := filepath.Join(home, ".config", "hway")
-	if err := os.MkdirAll(configDir, 0755); err != nil {
+	if err := os.MkdirAll(configDir, 0o755); err != nil {
 		// If we can't create the directory, fall back to current directory
 		return path
 	}
-	
+
 	return filepath.Join(configDir, path)
 }

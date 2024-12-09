@@ -8,11 +8,11 @@ import (
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/app/gateway/internal/database"
+	"github.com/onsonr/sonr/app/gateway/internal/pages/register"
 	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/pkg/common/response"
 	"github.com/onsonr/sonr/pkg/common/styles/forms"
-	"github.com/onsonr/sonr/pkg/gateway/internal/database"
-	"github.com/onsonr/sonr/pkg/gateway/pages/register"
 )
 
 func HandleRegisterView(c echo.Context) error {
