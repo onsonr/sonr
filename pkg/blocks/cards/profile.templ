@@ -1,19 +1,19 @@
 package cards
 
-type SonrProfileData struct {
-	Address       string
-	Handle        string
-	Name          string
-	ChainID       string
-	CreationBlock string
+// Helper function to shorten address
+func shortenAddress(address string) string {
+	if len(address) <= 20 {
+		return address
+	}
+	return address[:16] + "..." + address[len(address)-4:]
 }
 
 templ SonrProfile(addr string, name string, handle string, creationBlock string) {
 	<div class="profile-card min-w-[320px]">
-		<div class="text-white max-w-xs my-auto mx-auto bg-gradient-to-r from-purple-800 to-purple-400 p-4 py-5 px-5 rounded-xl">
+		<div class="text-white max-w-xs my-auto mx-auto bg-gradient-to-r from-cyan-700 to-cyan-300 p-4 py-5 px-5 rounded-xl">
 			<div class="flex justify-between">
 				<div>
-					<h3>sonr-testnet-1</h3>
+					<h2>sonr-testnet-1</h2>
 					<p class="text-2xl font-bold">{ handle }</p>
 				</div>
 				<div class="flex items-center opacity-60">
@@ -35,12 +35,4 @@ templ SonrProfile(addr string, name string, handle string, creationBlock string)
 			</div>
 		</div>
 	</div>
-}
-
-// Helper function to shorten address
-func shortenAddress(address string) string {
-	if len(address) <= 20 {
-		return address
-	}
-	return address[:16] + "..." + address[len(address)-4:]
 }

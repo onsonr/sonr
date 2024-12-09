@@ -16,6 +16,14 @@ type SonrProfileData struct {
 	CreationBlock string
 }
 
+// Helper function to shorten address
+func shortenAddress(address string) string {
+	if len(address) <= 20 {
+		return address
+	}
+	return address[:16] + "..." + address[len(address)-4:]
+}
+
 func SonrProfile(addr string, name string, handle string, creationBlock string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -37,14 +45,14 @@ func SonrProfile(addr string, name string, handle string, creationBlock string) 
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"profile-card min-w-[320px]\"><div class=\"text-white max-w-xs my-auto mx-auto bg-gradient-to-r from-purple-800 to-purple-400 p-4 py-5 px-5 rounded-xl\"><div class=\"flex justify-between\"><div><h3>sonr-testnet-1</h3><p class=\"text-2xl font-bold\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"profile-card min-w-[320px]\"><div class=\"text-white max-w-xs my-auto mx-auto bg-gradient-to-r from-cyan-700 to-cyan-300 p-4 py-5 px-5 rounded-xl\"><div class=\"flex justify-between\"><div><h2>sonr-testnet-1</h2><p class=\"text-2xl font-bold\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(handle)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/cards/profile.templ`, Line: 17, Col: 43}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/cards/profile.templ`, Line: 25, Col: 43}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -57,7 +65,7 @@ func SonrProfile(addr string, name string, handle string, creationBlock string) 
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(shortenAddress(addr))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/cards/profile.templ`, Line: 24, Col: 58}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/cards/profile.templ`, Line: 32, Col: 58}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -70,7 +78,7 @@ func SonrProfile(addr string, name string, handle string, creationBlock string) 
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(creationBlock)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/cards/profile.templ`, Line: 29, Col: 55}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/cards/profile.templ`, Line: 37, Col: 55}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -83,7 +91,7 @@ func SonrProfile(addr string, name string, handle string, creationBlock string) 
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/cards/profile.templ`, Line: 33, Col: 32}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/cards/profile.templ`, Line: 41, Col: 32}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -95,14 +103,6 @@ func SonrProfile(addr string, name string, handle string, creationBlock string) 
 		}
 		return templ_7745c5c3_Err
 	})
-}
-
-// Helper function to shorten address
-func shortenAddress(address string) string {
-	if len(address) <= 20 {
-		return address
-	}
-	return address[:16] + "..." + address[len(address)-4:]
 }
 
 var _ = templruntime.GeneratedTemplate

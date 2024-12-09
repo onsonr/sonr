@@ -12,7 +12,7 @@ type RegisterPasskeyData struct {
 
 templ RegisterPasskey(action, method string, data RegisterPasskeyData) {
 	<form action={ templ.SafeURL(action) } method={ method }>
-		<input type="hidden" name="credential" id="credential-data" />
+		<input type="hidden" name="credential" id="credential-data" required/>
 		<sl-card class="card-form gap-4 max-w-lg">
 			<div slot="header">
 				<div class="w-full py-1">

@@ -40,6 +40,7 @@ func HandleRegisterStart(c echo.Context) error {
 }
 
 func HandleRegisterFinish(c echo.Context) error {
-	// cred := c.FormValue("credential")
+	cred := c.FormValue("credential")
+	fmt.Println(cred)
 	return response.TemplEcho(c, register.LoadingVaultView())
 }

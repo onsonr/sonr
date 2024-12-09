@@ -61,7 +61,7 @@ func RegisterPasskey(action, method string, data RegisterPasskeyData) templ.Comp
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><sl-card class=\"card-form gap-4 max-w-lg\"><div slot=\"header\"><div class=\"w-full py-1\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><input type=\"hidden\" name=\"credential\" id=\"credential-data\" required> <sl-card class=\"card-form gap-4 max-w-lg\"><div slot=\"header\"><div class=\"w-full py-1\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -133,8 +133,8 @@ func passkeyDropzone(addr string, userHandle string, challenge string) templ.Com
 
 func createPasskey(userId string, userHandle string, challenge string) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_createPasskey_9b69`,
-		Function: `function __templ_createPasskey_9b69(userId, userHandle, challenge){const publicKey = {
+		Name: `__templ_createPasskey_6e79`,
+		Function: `function __templ_createPasskey_6e79(userId, userHandle, challenge){const publicKey = {
   challenge: Uint8Array.from(challenge, (c) => c.charCodeAt(0)),
   rp: {
     name: "Sonr.ID",
@@ -170,16 +170,25 @@ func createPasskey(userId string, userHandle string, challenge string) templ.Com
 navigator.credentials
   .create({ publicKey })
   .then((newCredentialInfo) => {
-  	console.log(newCredentialInfo);
-    // Send new credential info to server for verification and registration.
+    // Convert credential to base64 string
+    const credentialJSON = JSON.stringify({
+      id: newCredentialInfo.id,
+      rawId: Array.from(new Uint8Array(newCredentialInfo.rawId)),
+      response: {
+        attestationObject: Array.from(new Uint8Array(newCredentialInfo.response.attestationObject)),
+        clientDataJSON: Array.from(new Uint8Array(newCredentialInfo.response.clientDataJSON))
+      },
+      type: newCredentialInfo.type
+    });
+    document.getElementById('credential-data').value = btoa(credentialJSON);
   })
   .catch((err) => {
   console.error(err);
     // No acceptable authenticator or user refused consent. Handle appropriately.
   });
 }`,
-		Call:       templ.SafeScript(`__templ_createPasskey_9b69`, userId, userHandle, challenge),
-		CallInline: templ.SafeScriptInline(`__templ_createPasskey_9b69`, userId, userHandle, challenge),
+		Call:       templ.SafeScript(`__templ_createPasskey_6e79`, userId, userHandle, challenge),
+		CallInline: templ.SafeScriptInline(`__templ_createPasskey_6e79`, userId, userHandle, challenge),
 	}
 }
 
