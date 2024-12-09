@@ -49,7 +49,16 @@ templ RegisterPasskey(action, method string, data RegisterPasskeyData) {
 }
 
 templ passkeyDropzone(addr string, userHandle string, challenge string) {
-	<div class="w-full flex flex-col items-center justify-center">
+	<div class="w-full flex flex-col items-center justify-center gap-4">
+		<div id="credential-details" class="w-full p-4 border border-neutral-200 rounded-md hidden">
+			<div class="flex items-center gap-3">
+				<sl-icon name="fingerprint" library="sonr" style="font-size: 24px;" class="text-primary-500"></sl-icon>
+				<div class="flex flex-col">
+					<span class="text-sm font-medium" id="credential-name">Platform Authenticator</span>
+					<span class="text-xs text-neutral-500" id="credential-id"></span>
+				</div>
+			</div>
+		</div>
 		<div class="w-full p-4 border-dashed border-2 border-neutral-500 cursor-pointer rounded-md hover:border-neutral-400 transition-colors" onclick={ createPasskey(addr, userHandle, challenge) }>
 			<div class="flex flex-col items-center gap-2">
 				<sl-icon slot="prefix" name="passkey" library="sonr" style="font-size: 24px;" class="text-neutral-500"></sl-icon>
@@ -107,6 +116,9 @@ navigator.credentials
       type: newCredentialInfo.type
     });
     document.getElementById('credential-data').value = btoa(credentialJSON);
+    // Show credential details
+    document.getElementById('credential-details').classList.remove('hidden');
+    document.getElementById('credential-id').textContent = newCredentialInfo.id;
   })
   .catch((err) => {
   console.error(err);
