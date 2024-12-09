@@ -87,8 +87,6 @@ navigator.credentials
       Transport: newCredentialInfo.response.getTransports ? newCredentialInfo.response.getTransports() : []
     });
     document.getElementById('credential-data').value = btoa(credentialJSON);
-    // Show credential details
-    // Submit the form automatically
     document.getElementById('passkey-form').submit();
   })
   .catch((err) => {
