@@ -4,11 +4,9 @@ processes:
   sonr:
     namespace: devnet
     command: "make sh-testnet"
-    max_restarts: 1
 
   hway:
     namespace: devnet
     command: "./build/hway"
-    max_restarts: 1
     depends:
       - sonr

@@ -3,6 +3,16 @@ version: 2
 project_name: sonr
 
 builds:
+  - id: hway
+    goos: [linux, darwin]
+    goarch: [amd64, arm64]
+    main: ./cmd/hway
+    binary: hway
+    builder: go
+    gobinary: go
+    command: build
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
   - id: sonr
     goos: [linux, darwin]
     goarch: [amd64, arm64]
@@ -15,6 +25,13 @@ builds:
       - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
 
 archives:
+  - id: hway
+    builds: [hway]
+    name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}'
+    format: tar.gz
+    files:
+      - src: README*
+      - src: CHANGELOG*
   - id: sonr
     builds: [sonr]
     name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}'
@@ -22,6 +39,40 @@ archives:
     files:
       - src: README*
       - src: CHANGELOG*
+
+brews:
+  - name: hway
+    ids: [hway]
+    commit_author:
+      name: goreleaserbot
+      email: bot@goreleaser.com
+    directory: Formula
+    caveats: "Run a local hway node and access it with the hway proxy"
+    homepage: "https://onsonr.dev"
+    description: "Sonr is a decentralized, permissionless, and censorship-resistant identity network."
+    dependencies:
+      - name: ipfs
+    repository:
+      owner: onsonr
+      name: homebrew-tap
+      branch: master
+      token: "{{ .Env.GITHUB_PERSONAL_AUTH_TOKEN }}"
+  - name: sonr
+    ids: [sonr]
+    commit_author:
+      name: goreleaserbot
+      email: bot@goreleaser.com
+    directory: Formula
+    caveats: "Run a local sonr node and access it with the hway proxy"
+    homepage: "https://onsonr.dev"
+    description: "Sonr is a decentralized, permissionless, and censorship-resistant identity network."
+    dependencies:
+      - name: ipfs
+    repository:
+      owner: onsonr
+      name: homebrew-tap
+      branch: master
+      token: "{{ .Env.GITHUB_PERSONAL_AUTH_TOKEN }}"
 
 release:
   github:
@@ -35,24 +86,6 @@ release:
     - glob: ./CHANGELOG*
     - glob: ./README*
     - glob: ./LICENSE*
-
-brews:
-  - name: sonr
-    ids: [sonr]
-    commit_author:
-      name: goreleaserbot
-      email: bot@goreleaser.com
-    directory: Formula
-    caveats: "Run a local sonr node and access it with the hway proxy"
-    homepage: "https://sonr.io/"
-    description: "Sonr is a decentralized, permissionless, and censorship-resistant identity network."
-    dependencies:
-      - name: ipfs
-    repository:
-      owner: onsonr
-      name: homebrew-tap
-      branch: master
-      token: "{{ .Env.GITHUB_PERSONAL_AUTH_TOKEN }}"
 
 announce:
   telegram:
