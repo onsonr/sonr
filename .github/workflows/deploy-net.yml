@@ -1,0 +1,21 @@
+name: Deploy Network
+on:
+  push:
+    tags:
+      - "v*"
+    branches:
+      - develop
+      - feature/*
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  devnet_restart:
+    name: Restart Devnet
+    runs-on: ubuntu-latest
+    environment: "Devnet"
+    steps:
+      # Run `git checkout`
+      - uses: actions/checkout@v3

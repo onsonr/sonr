@@ -11,8 +11,8 @@
   "env": {
     "GOPATH": "$HOME/go",
     "PATH": "./build:$HOME/go/bin:$PATH",
-    "CHAIN_ID": "sonr-testnet-1",
-    "DENOM": "usnr",
+    "CHAIN_ID": "local-1",
+    "DENOM": "stake",
     "KEYRING": "test",
     "MONIKER": "florence",
     "BINARY": "sonrd",
@@ -24,6 +24,7 @@
     "ACC1_MNEMONIC": "$(skate get ACC1_MNEMONIC)",
     "TURNSTILE_SITE_KEY": "$(skate get TURNSTILE_SITE_KEY)",
     "PC_NO_SERVER": "true",
+    "PC_PORT_NUM": "42069",
     "PC_LOG_FILE": "./sonr.log"
   },
   "shell": {
