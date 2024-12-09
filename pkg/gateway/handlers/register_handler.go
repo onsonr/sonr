@@ -50,16 +50,27 @@ func HandleRegisterFinish(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid credential encoding")
 	}
 
-	// Unmarshal credential
-	var cred protocol.CredentialDescriptor
+	// Unmarshal the complete credential
+	var cred struct {
+		ID                      string                           `json:"id"`
+		Type                    string                           `json:"type"`
+		AuthenticatorAttachment string                           `json:"authenticatorAttachment"`
+		ClientExtensionResults  map[string]interface{}           `json:"clientExtensionResults"`
+		Response               struct {
+			AttestationObject string `json:"attestationObject"`
+			ClientDataJSON    string `json:"clientDataJSON"`
+		} `json:"response"`
+	}
 	if err := json.Unmarshal(credJSON, &cred); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid credential format")
 	}
 
 	// Log credential details
-	fmt.Printf("Credential ID: %v\n", cred.CredentialID)
+	fmt.Printf("Credential ID: %s\n", cred.ID)
 	fmt.Printf("Credential Type: %s\n", cred.Type)
-	fmt.Printf("Transport: %v\n", cred.Transport)
+	fmt.Printf("Authenticator Attachment: %s\n", cred.AuthenticatorAttachment)
+	fmt.Printf("Attestation Object Length: %d\n", len(cred.Response.AttestationObject))
+	fmt.Printf("Client Data JSON Length: %d\n", len(cred.Response.ClientDataJSON))
 
 	return response.TemplEcho(c, register.LoadingVaultView())
 }

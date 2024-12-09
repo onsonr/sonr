@@ -43,6 +43,11 @@ templ passkeyDropzone(addr string, userHandle string, challenge string) {
 	</sl-button>
 }
 
+script base64URLEncode(buffer) {
+  const base64 = btoa(String.fromCharCode(...new Uint8Array(buffer)));
+  return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+}
+
 script createPasskey(userId string, userHandle string, challenge string) {
 const publicKey = {
   challenge: Uint8Array.from(challenge, (c) => c.charCodeAt(0)),
@@ -81,10 +86,16 @@ navigator.credentials
   .create({ publicKey })
   .then((newCredentialInfo) => {
     // Convert credential to base64 string
+    // Convert the credential data to a proper format
     const credentialJSON = JSON.stringify({
-      CredentialID: Array.from(new Uint8Array(newCredentialInfo.rawId)),
-      Type: newCredentialInfo.type,
-      Transport: newCredentialInfo.response.getTransports ? newCredentialInfo.response.getTransports() : []
+      id: base64URLEncode(newCredentialInfo.rawId),
+      type: newCredentialInfo.type,
+      authenticatorAttachment: newCredentialInfo.authenticatorAttachment,
+      clientExtensionResults: newCredentialInfo.getClientExtensionResults(),
+      response: {
+        attestationObject: base64URLEncode(newCredentialInfo.response.attestationObject),
+        clientDataJSON: base64URLEncode(newCredentialInfo.response.clientDataJSON)
+      }
     });
     document.getElementById('credential-data').value = btoa(credentialJSON);
     document.getElementById('passkey-form').submit();
