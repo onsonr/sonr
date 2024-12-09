@@ -40,10 +40,16 @@
         "gum spin --title='Uploading to Bucket' -- make deploy-cdn"
       ],
       "devnet:start": [
-        "process-compose up -f deploy/devnet/process-compose.yaml --detached --hide-disabled"
+        "process-compose up -f deploy/devnet/process-compose.yaml"
       ],
-      "devnet:attach": ["cd deploy/devnet", "process-compose attach"],
-      "devnet:stop": ["cd deploy/devnet", "process-compose down "],
+      "devnet:attach": [
+        "cd deploy/devnet",
+        "process-compose attach"
+      ],
+      "devnet:stop": [
+        "cd deploy/devnet",
+        "process-compose down "
+      ],
       "testnet:start": [
         "process-compose up -f deploy/testnet/process-compose.yaml --detached --hide-disabled"
       ],

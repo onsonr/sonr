@@ -57,7 +57,7 @@ func Tailwind() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script src=\"https://cdn.tailwindcss.com?plugins=typography,aspect-ratio,line-clamp,container-queries\"></script> <script src=\"https://kit.fontawesome.com/9909219bb5.js\" crossorigin=\"anonymous\"></script>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script src=\"https://cdn.tailwindcss.com?plugins=typography,aspect-ratio,container-queries\"></script> <script src=\"https://kit.fontawesome.com/9909219bb5.js\" crossorigin=\"anonymous\"></script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

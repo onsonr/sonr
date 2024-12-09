@@ -21,16 +21,14 @@ templ ProfileFormView(turnstileSiteKey string) {
 	}
 }
 
-templ LinkCredentialView(req LinkCredentialRequest) {
+templ LinkCredentialView(addr string, handle string) {
 	@layout.Root("Register | Sonr.ID") {
 		@layout.Container() {
 			@text.Header("Link a PassKey", "This will be used to login to your vault.")
 			@form.Form("/register/finish", "POST", form.PasskeyInput("passkey"), "65", false) {
 				@details.PropertyList() {
-					@details.Property("Address", req.Address, "wallet")
-					@details.Property("Handle", req.Handle, "at-sign")
-					@details.Property("Platform", req.Platform, "device-iphone")
-					@details.Property("Model", req.DeviceModel, "laptop")
+					@details.Property("Address", addr, "wallet")
+					@details.Property("Handle", handle, "at-sign")
 				}
 			}
 		}

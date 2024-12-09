@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"net/http"
-
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/common/response"
 	"github.com/onsonr/sonr/pkg/gateway/internal/pages/index"
@@ -10,13 +8,10 @@ import (
 )
 
 func HandleIndex(c echo.Context) error {
-	if isInitial(c) {
-		return response.TemplEcho(c, index.InitialView())
-	}
 	if isExpired(c) {
 		return response.TemplEcho(c, index.ReturningView())
 	}
-	return c.Render(http.StatusOK, "index.templ", nil)
+	return response.TemplEcho(c, index.InitialView())
 }
 
 // ╭─────────────────────────────────────────────────────────╮

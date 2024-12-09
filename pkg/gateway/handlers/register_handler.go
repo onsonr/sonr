@@ -28,8 +28,7 @@ func HandleRegisterStart(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	req := getLinkCredentialRequest(c, ks.Address(), handle, ks.UserJSON())
-	return response.TemplEcho(c, register.LinkCredentialView(req))
+	return response.TemplEcho(c, register.LinkCredentialView(ks.Address(), handle))
 }
 
 func HandleRegisterFinish(c echo.Context) error {

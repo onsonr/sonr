@@ -122,7 +122,7 @@ func ProfileFormView(turnstileSiteKey string) templ.Component {
 	})
 }
 
-func LinkCredentialView(req LinkCredentialRequest) templ.Component {
+func LinkCredentialView(addr string, handle string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -199,7 +199,7 @@ func LinkCredentialView(req LinkCredentialRequest) templ.Component {
 							}()
 						}
 						ctx = templ.InitializeContext(ctx)
-						templ_7745c5c3_Err = details.Property("Address", req.Address, "wallet").Render(ctx, templ_7745c5c3_Buffer)
+						templ_7745c5c3_Err = details.Property("Address", addr, "wallet").Render(ctx, templ_7745c5c3_Buffer)
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
@@ -207,23 +207,7 @@ func LinkCredentialView(req LinkCredentialRequest) templ.Component {
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
-						templ_7745c5c3_Err = details.Property("Handle", req.Handle, "at-sign").Render(ctx, templ_7745c5c3_Buffer)
-						if templ_7745c5c3_Err != nil {
-							return templ_7745c5c3_Err
-						}
-						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" ")
-						if templ_7745c5c3_Err != nil {
-							return templ_7745c5c3_Err
-						}
-						templ_7745c5c3_Err = details.Property("Platform", req.Platform, "device-iphone").Render(ctx, templ_7745c5c3_Buffer)
-						if templ_7745c5c3_Err != nil {
-							return templ_7745c5c3_Err
-						}
-						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" ")
-						if templ_7745c5c3_Err != nil {
-							return templ_7745c5c3_Err
-						}
-						templ_7745c5c3_Err = details.Property("Model", req.DeviceModel, "laptop").Render(ctx, templ_7745c5c3_Buffer)
+						templ_7745c5c3_Err = details.Property("Handle", handle, "at-sign").Render(ctx, templ_7745c5c3_Buffer)
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
