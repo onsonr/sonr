@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/go-webauthn/webauthn/protocol"
@@ -8,7 +9,6 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/pkg/common"
-	"github.com/onsonr/sonr/pkg/common/passkeys"
 	"github.com/onsonr/sonr/pkg/common/response"
 	"github.com/onsonr/sonr/pkg/gateway/config"
 	"github.com/onsonr/sonr/pkg/gateway/internal/pages/register"
@@ -22,16 +22,16 @@ func HandleRegisterView(env config.Env) echo.HandlerFunc {
 }
 
 func HandleRegisterStart(c echo.Context) error {
+	challenge, _ := protocol.CreateChallenge()
 	handle := c.FormValue("handle")
-
+	firstName := c.FormValue("first_name")
+	lastName := c.FormValue("last_name")
+	fullName := fmt.Sprintf("%s %s", firstName, lastName)
 	ks, err := mpc.NewKeyset()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-
-	opts := passkeys.Create(c, handle, ks)
-
-	return response.TemplEcho(c, register.LinkCredentialView(ks.Address(), handle, opts))
+	return response.TemplEcho(c, register.LinkCredentialView(ks.Address(), handle, fullName, challenge.String()))
 }
 
 func HandleRegisterFinish(c echo.Context) error {
