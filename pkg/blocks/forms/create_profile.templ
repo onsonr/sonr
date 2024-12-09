@@ -1,0 +1,43 @@
+package forms
+
+import "github.com/onsonr/sonr/pkg/blocks/layout"
+
+// ProfileForm is a standard form styled like a card
+templ CreateProfile(action string, method string) {
+	<form action={ templ.SafeURL(action) } method={ method }>
+		<sl-card class="card-form gap-4 max-w-lg">
+			<div slot="header">
+				<div class="w-full py-1">
+					<sl-progress-bar value="50"></sl-progress-bar>
+				</div>
+			</div>
+			@layout.Rows() {
+				<sl-input name="first_name" placeholder="Steve" type="text" label="First Name" required autofocus></sl-input>
+				<sl-input name="last_name" placeholder="J" maxlength="1" type="text" label="Last Initial"></sl-input>
+			}
+			@layout.Spacer()
+			<sl-input name="handle" placeholder="thoughtdiff" type="text" label="Handle" minlength="4" maxlength="12" required>
+				<div slot="prefix">
+					<sl-icon name="at-sign" library="sonr"></sl-icon>
+				</div>
+			</sl-input>
+			<div slot="footer">
+				<sl-button href="/" outline>
+					<sl-icon slot="prefix" name="arrow-left" library="sonr"></sl-icon>
+					Cancel
+				</sl-button>
+				<sl-button type="submit">
+					Next
+					<sl-icon slot="suffix" name="arrow-right" library="sonr"></sl-icon>
+				</sl-button>
+			</div>
+			<style>
+  		.card-form [slot='footer'] {
+    		display: flex;
+    		justify-content: space-between;
+    		align-items: center;
+  		}
+		</style>
+		</sl-card>
+	</form>
+}

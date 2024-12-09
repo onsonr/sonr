@@ -1,8 +1,7 @@
 package register
 
 import (
-	"github.com/onsonr/sonr/pkg/blocks/details"
-	"github.com/onsonr/sonr/pkg/blocks/form"
+	"github.com/onsonr/sonr/pkg/blocks/forms"
 	"github.com/onsonr/sonr/pkg/blocks/layout"
 	"github.com/onsonr/sonr/pkg/blocks/text"
 )
@@ -11,26 +10,16 @@ templ ProfileFormView(turnstileSiteKey string) {
 	@layout.Root("New Profile | Sonr.ID") {
 		@layout.Container() {
 			@text.Header("Create a Profile", "Enter some basic information about yourself.")
-			@form.Form("/register/start", "POST", form.Submit("Continue"), "25", true) {
-				@form.NameInput()
-				<br/>
-				@form.HandleInput()
-				@form.TurnstileWidget(turnstileSiteKey)
-			}
+			@forms.CreateProfile("/register/start", "POST")
 		}
 	}
 }
 
-templ LinkCredentialView(addr string, handle string, challenge string) {
+templ LinkCredentialView(data forms.RegisterPasskeyData) {
 	@layout.Root("Register | Sonr.ID") {
 		@layout.Container() {
 			@text.Header("Link a PassKey", "This will be used to login to your vault.")
-			@form.Form("/register/finish", "POST", form.PasskeyInput(addr, handle, challenge), "65", false) {
-				@details.PropertyList() {
-					@details.Property("Address", addr, "wallet")
-					@details.Property("Handle", handle, "at-sign")
-				}
-			}
+			@forms.RegisterPasskey("/register/finish", "POST", data)
 		}
 	}
 }
