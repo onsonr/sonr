@@ -48,11 +48,15 @@ func (s *HTTPContext) InitSession() error {
 	result := s.db.Where("id = ?", sessionID).First(&sess)
 	if result.Error != nil {
 		// Create new session if not found
-		bn, bv := extractBrowserInfo(s.Context)
+		bn, bv, arch, plat, platVer, model := extractBrowserInfo(s.Context)
 		sess = database.Session{
-			ID:             sessionID,
-			BrowserName:    bn,
-			BrowserVersion: bv,
+			ID:               sessionID,
+			BrowserName:      bn,
+			BrowserVersion:   bv,
+			UserArchitecture: arch,
+			Platform:         plat,
+			PlatformVersion:  platVer,
+			DeviceModel:      model,
 		}
 		if err := s.db.Create(&sess).Error; err != nil {
 			return err
