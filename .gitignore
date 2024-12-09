@@ -41,6 +41,7 @@ go.work.sum
 # Environment files
 .env
 **/*.env
+sonr.log
 
 
 # Terraform
@@ -59,6 +60,10 @@ override.tf.json
 
 .terraformrc
 terraform.rc
+
+Taskfile.yml
+
+!deploy/**/Taskfile.yml
 
 # Misc
 .DS_Store
