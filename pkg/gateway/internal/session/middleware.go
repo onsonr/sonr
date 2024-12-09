@@ -1,11 +1,10 @@
 package session
 
 import (
-	"regexp"
-	"strings"
+	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/pkg/common"
+	"github.com/onsonr/sonr/pkg/gateway/internal/database"
 	"gorm.io/gorm"
 )
 
@@ -22,51 +21,31 @@ func Middleware(db *gorm.DB) echo.MiddlewareFunc {
 	}
 }
 
-func extractBrowserInfo(c echo.Context) (string, string, string, string, string, string) {
-	// Extract all relevant headers
-	browserName := common.HeaderRead(c, common.UserAgent)
-	arch := common.HeaderRead(c, common.Architecture)
-	platform := common.HeaderRead(c, common.Platform)
-	platformVer := common.HeaderRead(c, common.PlatformVersion)
-	model := common.HeaderRead(c, common.Model)
-	fullVersionList := common.HeaderRead(c, common.FullVersionList)
+// HTTPContext is the context for HTTP endpoints.
+type HTTPContext struct {
+	echo.Context
+	db   *gorm.DB
+	sess *database.Session
+}
 
-	// Default values if headers are empty
-	if browserName == "" {
-		browserName = "N/A"
+// Get returns the HTTPContext from the echo context
+func Get(c echo.Context) (*HTTPContext, error) {
+	ctx, ok := c.(*HTTPContext)
+	if !ok {
+		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Session Context not found")
 	}
-	if arch == "" {
-		arch = "unknown"
-	}
-	if platform == "" {
-		platform = "unknown"
-	}
-	if platformVer == "" {
-		platformVer = "unknown"
-	}
-	if model == "" {
-		model = "unknown"
-	}
+	return ctx, nil
+}
 
-	// Extract browser version from full version list
-	version := "-1"
-	if fullVersionList != "" {
-		entries := strings.Split(strings.TrimSpace(fullVersionList), ",")
-		for _, entry := range entries {
-			entry = strings.TrimSpace(entry)
-			re := regexp.MustCompile(`"([^"]+)";v="([^"]+)"`)
-			matches := re.FindStringSubmatch(entry)
-
-			if len(matches) == 3 {
-				browserName = matches[1]
-				version = matches[2]
-				if browserName != "Not.A/Brand" && 
-				   browserName != "Chromium" {
-					break
-				}
-			}
-		}
+// NewHTTPContext creates a new session context
+func NewHTTPContext(c echo.Context, db *gorm.DB) *HTTPContext {
+	return &HTTPContext{
+		Context: c,
+		db:      db,
 	}
+}
 
-	return browserName, version, arch, platform, platformVer, model
+// Session returns the current session
+func (s *HTTPContext) Session() *database.Session {
+	return s.sess
 }
