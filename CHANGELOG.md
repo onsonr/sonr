@@ -1,3 +1,9 @@
+## v0.5.20 (2024-12-07)
+
+### Refactor
+
+- simplify CI workflow by removing redundant asset publishing steps
+
 ## v0.5.19 (2024-12-06)
 
 ### Feat

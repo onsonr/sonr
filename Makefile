@@ -323,6 +323,7 @@ motr-build:
 hway-build: templ-gen
 	go build -o build/hway ./cmd/hway/main.go
 
+
 hway-serve: hway-build
 	./build/hway
 
