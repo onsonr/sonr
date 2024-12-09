@@ -53,7 +53,7 @@ require (
 	github.com/apple/pkl-go v0.8.0
 	github.com/btcsuite/btcd/btcec/v2 v2.3.4
 	github.com/bwesterb/go-ristretto v1.2.3
-	github.com/cometbft/cometbft v0.38.12
+	github.com/cometbft/cometbft v0.38.11
 	github.com/consensys/gnark-crypto v0.12.1
 	github.com/cosmos/btcutil v1.0.5
 	github.com/cosmos/cosmos-db v1.0.2
@@ -119,7 +119,8 @@ require (
 	github.com/bgentry/speakeasy v0.1.1-0.20220910012023-760eaf8b6816 // indirect
 	github.com/bits-and-blooms/bitset v1.13.0 // indirect
 	github.com/blang/semver/v4 v4.0.0 // indirect
-	github.com/btcsuite/btcd v0.20.1-beta // indirect
+	github.com/btcsuite/btcd/btcutil v1.1.5 // indirect
+	github.com/btcsuite/btcd/chaincfg/chainhash v1.1.0 // indirect
 	github.com/caddyserver/certmagic v0.21.4 // indirect
 	github.com/caddyserver/zerossl v0.1.3 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
