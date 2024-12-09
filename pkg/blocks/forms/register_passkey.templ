@@ -1,7 +1,5 @@
 package forms
 
-import "github.com/onsonr/sonr/pkg/blocks/cards"
-
 type RegisterPasskeyData struct {
 	Address       string
 	Handle        string
@@ -16,7 +14,7 @@ templ RegisterPasskey(action, method string, data RegisterPasskeyData) {
 		<sl-card class="card-form gap-4 max-w-lg">
 			<div slot="header">
 				<div class="w-full py-1">
-					@cards.SonrProfile(data.Address, data.Name, data.Handle, data.CreationBlock)
+					@sonrProfile(data.Address, data.Name, data.Handle, data.CreationBlock)
 				</div>
 			</div>
 			@passkeyDropzone(data.Address, data.Handle, data.Challenge)
@@ -49,23 +47,10 @@ templ RegisterPasskey(action, method string, data RegisterPasskeyData) {
 }
 
 templ passkeyDropzone(addr string, userHandle string, challenge string) {
-	<div class="w-full flex flex-col items-center justify-center gap-4">
-		<div id="credential-details" class="w-full p-4 border border-neutral-200 rounded-md hidden">
-			<div class="flex items-center gap-3">
-				<sl-icon name="fingerprint" library="sonr" style="font-size: 24px;" class="text-primary-500"></sl-icon>
-				<div class="flex flex-col">
-					<span class="text-sm font-medium" id="credential-name">Platform Authenticator</span>
-					<span class="text-xs text-neutral-500" id="credential-id"></span>
-				</div>
-			</div>
-		</div>
-		<div class="w-full p-4 border-dashed border-2 border-neutral-500 cursor-pointer rounded-md hover:border-neutral-400 transition-colors" onclick={ createPasskey(addr, userHandle, challenge) }>
-			<div class="flex flex-col items-center gap-2">
-				<sl-icon slot="prefix" name="passkey" library="sonr" style="font-size: 24px;" class="text-neutral-500"></sl-icon>
-				<span class="text-neutral-500">Link a passkey to your vault</span>
-			</div>
-		</div>
-	</div>
+	<sl-button pill style="width: 100%;" onclick={ createPasskey(addr, userHandle, challenge) }>
+		<sl-icon slot="prefix" name="passkey" library="sonr" style="font-size: 24px;" class="text-neutral-500"></sl-icon>
+		Register Passkey
+	</sl-button>
 }
 
 script createPasskey(userId string, userHandle string, challenge string) {
@@ -120,4 +105,41 @@ navigator.credentials
   console.error(err);
     // No acceptable authenticator or user refused consent. Handle appropriately.
   });
+}
+
+templ sonrProfile(addr string, name string, handle string, creationBlock string) {
+	<div class="profile-card min-w-[320px]">
+		<div class="text-white max-w-xs my-auto mx-auto bg-gradient-to-r from-cyan-700 to-cyan-300 p-4 py-5 px-5 rounded-xl">
+			<div class="flex justify-between">
+				<div>
+					<h2>sonr-testnet-1</h2>
+					<p class="text-2xl font-bold">{ handle }</p>
+				</div>
+				<div class="flex items-center opacity-60">
+					<sl-icon style="font-size: 52px;" library="sonr" name="sonr-fill"></sl-icon>
+				</div>
+			</div>
+			<div class="mt-5 flex justify-between items-center w-52">
+				<span class="text-lg font-mono">{ shortenAddress(addr) }</span>
+			</div>
+			<div class="flex justify-between mt-5 w-48 ">
+				<div>
+					<h3 class="text-xs">Block Created </h3>
+					<p class="font-bold"><span>#</span>{ creationBlock }</p>
+				</div>
+				<div>
+					<h3 class="text-xs">Issued to</h3>
+					<p class="font-bold">{ name }</p>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+// Helper function to shorten address
+func shortenAddress(address string) string {
+	if len(address) <= 20 {
+		return address
+	}
+	return address[:16] + "..." + address[len(address)-4:]
 }
