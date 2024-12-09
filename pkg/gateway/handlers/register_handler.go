@@ -24,6 +24,16 @@ func HandleRegisterView(c echo.Context) error {
 }
 
 func HandleRegisterStart(c echo.Context) error {
+	// Validate the form submission
+	formData := make(map[string][]string)
+	for key, values := range c.Request().Form {
+		formData[key] = values
+	}
+	
+	if err := forms.ValidateCreateProfileForm(formData); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
 	challenge, _ := protocol.CreateChallenge()
 	handle := c.FormValue("handle")
 	firstName := c.FormValue("first_name")

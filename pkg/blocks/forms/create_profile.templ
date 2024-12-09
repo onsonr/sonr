@@ -2,6 +2,8 @@ package forms
 
 import (
 	"fmt"
+	"strconv"
+	"errors"
 	"github.com/onsonr/sonr/pkg/blocks/layout"
 )
 
@@ -13,6 +15,30 @@ type CreateProfileData struct {
 
 func (d CreateProfileData) IsHumanLabel() string {
 	return fmt.Sprintf("What is %d + %d?", d.FirstNumber, d.LastNumber)
+}
+
+func ValidateCreateProfileForm(formData map[string][]string) error {
+	// Validate ishuman slider
+	ishumanValues := formData["is_human"]
+	if len(ishumanValues) == 0 {
+		return errors.New("human verification is required")
+	}
+
+	ishumanSum, err := strconv.Atoi(ishumanValues[0])
+	if err != nil {
+		return errors.New("invalid human verification value")
+	}
+
+	// Get the expected sum from the form data
+	firstNum, _ := strconv.Atoi(formData["first_number"][0])
+	lastNum, _ := strconv.Atoi(formData["last_number"][0])
+	expectedSum := firstNum + lastNum
+
+	if ishumanSum != expectedSum {
+		return errors.New("incorrect sum for human verification")
+	}
+
+	return nil
 }
 
 // ProfileForm is a standard form styled like a card
@@ -35,7 +61,26 @@ templ CreateProfile(action string, method string, data CreateProfileData) {
 				</div>
 			</sl-input>
 			@layout.Spacer()
-			<sl-range name="is_human" label={ data.IsHumanLabel() } help-text="Prove you are a human." min="0" max="9" step="1"></sl-range>
+			<sl-range 
+				name="is_human" 
+				label={ data.IsHumanLabel() } 
+				help-text="Prove you are a human." 
+				min="0" 
+				max={ fmt.Sprint(data.FirstNumber + data.LastNumber) }
+				step="1"
+				onchange="validateSum(this)"
+			></sl-range>
+			<script>
+				function validateSum(slider) {
+					const expectedSum = { fmt.Sprint(data.FirstNumber + data.LastNumber) };
+					const value = parseInt(slider.value);
+					if (value !== expectedSum) {
+						slider.setCustomValidity("Please select the correct sum");
+					} else {
+						slider.setCustomValidity("");
+					}
+				}
+			</script>
 			<div slot="footer">
 				<sl-button href="/" outline>
 					<sl-icon slot="prefix" name="arrow-left" library="sonr"></sl-icon>
