@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -39,8 +41,37 @@ func HandleRegisterStart(c echo.Context) error {
 	return response.TemplEcho(c, register.LinkCredentialView(dat))
 }
 
+type Credential struct {
+	ID       string `json:"id"`
+	RawID    []int  `json:"rawId"`
+	Type     string `json:"type"`
+	Response struct {
+		AttestationObject []int `json:"attestationObject"`
+		ClientDataJSON    []int `json:"clientDataJSON"`
+	} `json:"response"`
+}
+
 func HandleRegisterFinish(c echo.Context) error {
-	cred := c.FormValue("credential")
-	fmt.Println(cred)
+	credB64 := c.FormValue("credential")
+	
+	// Decode base64 credential
+	credJSON, err := base64.StdEncoding.DecodeString(credB64)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid credential encoding")
+	}
+
+	// Unmarshal credential
+	var cred Credential
+	if err := json.Unmarshal(credJSON, &cred); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid credential format")
+	}
+
+	// Log credential details
+	fmt.Printf("Credential ID: %s\n", cred.ID)
+	fmt.Printf("Credential Type: %s\n", cred.Type)
+	fmt.Printf("Raw ID Length: %d\n", len(cred.RawID))
+	fmt.Printf("Attestation Object Length: %d\n", len(cred.Response.AttestationObject))
+	fmt.Printf("Client Data Length: %d\n", len(cred.Response.ClientDataJSON))
+
 	return response.TemplEcho(c, register.LoadingVaultView())
 }
