@@ -8,6 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/pkg/common"
+	"github.com/onsonr/sonr/pkg/common/passkeys"
 	"github.com/onsonr/sonr/pkg/common/response"
 	"github.com/onsonr/sonr/pkg/gateway/config"
 	"github.com/onsonr/sonr/pkg/gateway/internal/pages/register"
@@ -28,7 +29,9 @@ func HandleRegisterStart(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	return response.TemplEcho(c, register.LinkCredentialView(ks.Address(), handle))
+	opts := passkeys.Create(c, handle, ks)
+
+	return response.TemplEcho(c, register.LinkCredentialView(ks.Address(), handle, opts))
 }
 
 func HandleRegisterFinish(c echo.Context) error {

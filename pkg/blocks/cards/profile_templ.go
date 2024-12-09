@@ -8,7 +8,7 @@ package cards
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-func ProfileCard(address string, handle string, name string, chainID string, creationBlock string) templ.Component {
+func SonrProfile(address string, handle string, name string, chainID string, creationBlock string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -29,14 +29,14 @@ func ProfileCard(address string, handle string, name string, chainID string, cre
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"profile-card\"><div class=\"text-white max-w-xs my-auto mx-auto bg-gradient-to-r from-blue-900 to-blue-500 p-4 py-5 px-5 rounded-xl\"><div class=\"flex justify-between\"><div><h2>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"profile-card\"><div class=\"text-white max-w-xs my-auto mx-auto bg-gradient-to-r from-cyan-900 to-cyan-500 p-4 py-5 px-5 rounded-xl\"><div class=\"flex justify-between\"><div><h2>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(chainID)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/cards/profile-card.templ`, Line: 8, Col: 18}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/cards/profile.templ`, Line: 8, Col: 18}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -49,7 +49,7 @@ func ProfileCard(address string, handle string, name string, chainID string, cre
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(handle)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/cards/profile-card.templ`, Line: 9, Col: 43}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/cards/profile.templ`, Line: 9, Col: 43}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -62,7 +62,7 @@ func ProfileCard(address string, handle string, name string, chainID string, cre
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(address)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/cards/profile-card.templ`, Line: 17, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/cards/profile.templ`, Line: 17, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -75,7 +75,7 @@ func ProfileCard(address string, handle string, name string, chainID string, cre
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(creationBlock)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/cards/profile-card.templ`, Line: 22, Col: 55}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/cards/profile.templ`, Line: 22, Col: 55}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -88,7 +88,7 @@ func ProfileCard(address string, handle string, name string, chainID string, cre
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/cards/profile-card.templ`, Line: 26, Col: 32}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/cards/profile.templ`, Line: 26, Col: 32}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {

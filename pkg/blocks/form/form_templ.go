@@ -8,7 +8,10 @@ package form
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "github.com/onsonr/sonr/pkg/blocks/layout"
+import (
+	"github.com/go-webauthn/webauthn/protocol"
+	"github.com/onsonr/sonr/pkg/blocks/layout"
+)
 
 // Form is a standard form styled like a card
 func Form(action string, method string, submit templ.Component, progress string, enableCancel bool) templ.Component {
@@ -48,7 +51,7 @@ func Form(action string, method string, submit templ.Component, progress string,
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(method)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/form/form.templ`, Line: 7, Col: 55}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/form/form.templ`, Line: 10, Col: 55}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -61,7 +64,7 @@ func Form(action string, method string, submit templ.Component, progress string,
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(progress)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/form/form.templ`, Line: 11, Col: 38}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/form/form.templ`, Line: 14, Col: 38}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -201,7 +204,7 @@ func CodeInput(id string) templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(id)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/form/form.templ`, Line: 51, Col: 18}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/form/form.templ`, Line: 54, Col: 18}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
@@ -215,8 +218,8 @@ func CodeInput(id string) templ.Component {
 	})
 }
 
-// Hidden input and button which calls a javascript function to generate a passkey
-func PasskeyInput(id string) templ.Component {
+// Hidden input and button which calls a JavaScript function to generate a passkey
+func PasskeyInput(options protocol.PublicKeyCredentialCreationOptions) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -241,7 +244,7 @@ func PasskeyInput(id string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-button type=\"submit\" pill style=\"width: 100%;\"><sl-icon slot=\"prefix\" name=\"passkey\" library=\"sonr\" style=\"font-size: 20px;\"></sl-icon> Create PassKey <sl-icon slot=\"suffix\" name=\"arrow-right\" library=\"sonr\" style=\"font-size: 20px;\"></sl-icon></sl-button>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form><input type=\"hidden\" name=\"passkey\"> <sl-button pill style=\"width: 100%;\" onclick=\"createPasskey(this)\"><sl-icon slot=\"prefix\" name=\"passkey\" library=\"sonr\" style=\"font-size: 20px;\"></sl-icon> Create PassKey <sl-icon slot=\"suffix\" name=\"arrow-right\" library=\"sonr\" style=\"font-size: 20px;\"></sl-icon></sl-button></form>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -278,7 +281,7 @@ func TurnstileWidget(sitekey string) templ.Component {
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(sitekey)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/form/form.templ`, Line: 67, Col: 50}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/form/form.templ`, Line: 73, Col: 50}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
@@ -321,7 +324,7 @@ func Submit(text string) templ.Component {
 		var templ_7745c5c3_Var14 string
 		templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/form/form.templ`, Line: 73, Col: 8}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/form/form.templ`, Line: 79, Col: 8}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 		if templ_7745c5c3_Err != nil {
