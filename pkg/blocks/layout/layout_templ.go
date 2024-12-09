@@ -176,7 +176,7 @@ func Body(align Alignment, screenWidth ScreenWidth) templ.Component {
 			templ_7745c5c3_Var4 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<body class=\"flex items-center justify-center h-full lg:p-24 md:16 p-4 no-scrollbar\"><main class=\"flex-row items-center justify-center mx-auto w-fit max-w-screen-sm gap-y-3\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<style>\n\t\t.sl-toast-stack {\n\t\t\ttop: auto;\n\t\t\tbottom: 0;\n  \t\tleft: auto;\n  \t\tright: 0;\n\t\t}\n\t\t.no-scrollbar::-webkit-scrollbar {\n\t\t\tdisplay: none;\n\t\t}\n\t</style><body class=\"flex items-center justify-center h-full lg:p-24 md:16 p-4 no-scrollbar\"><main class=\"flex-row items-center justify-center mx-auto w-fit max-w-screen-sm gap-y-3\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -43,11 +43,6 @@ templ passkeyDropzone(addr string, userHandle string, challenge string) {
 	</sl-button>
 }
 
-script base64URLEncode(buffer) {
-  const base64 = btoa(String.fromCharCode(...new Uint8Array(buffer)));
-  return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
-}
-
 script createPasskey(userId string, userHandle string, challenge string) {
 const publicKey = {
   challenge: Uint8Array.from(challenge, (c) => c.charCodeAt(0)),

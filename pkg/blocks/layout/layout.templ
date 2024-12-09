@@ -57,6 +57,17 @@ templ Head(title string, nebulaVersion string) {
 }
 
 templ Body(align Alignment, screenWidth ScreenWidth) {
+	<style>
+		.sl-toast-stack {
+			top: auto;
+			bottom: 0;
+  		left: auto;
+  		right: 0;
+		}
+		.no-scrollbar::-webkit-scrollbar {
+			display: none;
+		}
+	</style>
 	<body class="flex items-center justify-center h-full lg:p-24 md:16 p-4 no-scrollbar">
 		<main class="flex-row items-center justify-center mx-auto w-fit max-w-screen-sm gap-y-3">
 			{ children... }

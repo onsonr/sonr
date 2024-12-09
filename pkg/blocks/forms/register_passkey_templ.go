@@ -8,8 +8,6 @@ package forms
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "github.com/onsonr/sonr/pkg/blocks/cards"
-
 type RegisterPasskeyData struct {
 	Address       string
 	Handle        string
@@ -55,17 +53,17 @@ func RegisterPasskey(action, method string, data RegisterPasskeyData) templ.Comp
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(method)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/forms/register_passkey.templ`, Line: 14, Col: 55}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/forms/register_passkey.templ`, Line: 12, Col: 55}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><input type=\"hidden\" name=\"credential\" id=\"credential-data\" required> <sl-card class=\"card-form gap-4 max-w-lg\"><div slot=\"header\"><div class=\"w-full py-1\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" id=\"passkey-form\"><input type=\"hidden\" name=\"credential\" id=\"credential-data\" required> <sl-card class=\"card-form gap-4 max-w-lg\"><div slot=\"header\"><div class=\"w-full py-1\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = cards.SonrProfile(data.Address, data.Name, data.Handle, data.CreationBlock).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = sonrProfile(data.Address, data.Name, data.Handle, data.CreationBlock).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -106,15 +104,11 @@ func passkeyDropzone(addr string, userHandle string, challenge string) templ.Com
 			templ_7745c5c3_Var4 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"w-full flex flex-col items-center justify-center\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
 		templ_7745c5c3_Err = templ.RenderScriptItems(ctx, templ_7745c5c3_Buffer, createPasskey(addr, userHandle, challenge))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"w-full p-4 border-dashed border-2 border-neutral-500 cursor-pointer rounded-md hover:border-neutral-400 transition-colors\" onclick=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-button pill style=\"width: 100%;\" onclick=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -123,7 +117,7 @@ func passkeyDropzone(addr string, userHandle string, challenge string) templ.Com
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><div class=\"flex flex-col items-center gap-2\"><sl-icon slot=\"prefix\" name=\"passkey\" library=\"sonr\" style=\"font-size: 24px;\" class=\"text-neutral-500\"></sl-icon> <span class=\"text-neutral-500\">Link a passkey to your vault</span></div></div></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><sl-icon slot=\"prefix\" name=\"passkey\" library=\"sonr\" style=\"font-size: 24px;\" class=\"text-neutral-500\"></sl-icon> Register Passkey</sl-button>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -133,8 +127,8 @@ func passkeyDropzone(addr string, userHandle string, challenge string) templ.Com
 
 func createPasskey(userId string, userHandle string, challenge string) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_createPasskey_6e79`,
-		Function: `function __templ_createPasskey_6e79(userId, userHandle, challenge){const publicKey = {
+		Name: `__templ_createPasskey_d562`,
+		Function: `function __templ_createPasskey_d562(userId, userHandle, challenge){const publicKey = {
   challenge: Uint8Array.from(challenge, (c) => c.charCodeAt(0)),
   rp: {
     name: "Sonr.ID",
@@ -170,26 +164,108 @@ func createPasskey(userId string, userHandle string, challenge string) templ.Com
 navigator.credentials
   .create({ publicKey })
   .then((newCredentialInfo) => {
-    // Convert credential to base64 string
-    const credentialJSON = JSON.stringify({
-      id: newCredentialInfo.id,
-      rawId: Array.from(new Uint8Array(newCredentialInfo.rawId)),
-      response: {
-        attestationObject: Array.from(new Uint8Array(newCredentialInfo.response.attestationObject)),
-        clientDataJSON: Array.from(new Uint8Array(newCredentialInfo.response.clientDataJSON))
-      },
-      type: newCredentialInfo.type
-    });
+    const credentialJSON = JSON.stringify(newCredentialInfo);
     document.getElementById('credential-data').value = btoa(credentialJSON);
-  })
+    document.getElementById('passkey-form').submit();
+  )
   .catch((err) => {
-  console.error(err);
-    // No acceptable authenticator or user refused consent. Handle appropriately.
+    console.error(err);
+    alert('Failed to create passkey. Please try again.');
   });
+  }
 }`,
-		Call:       templ.SafeScript(`__templ_createPasskey_6e79`, userId, userHandle, challenge),
-		CallInline: templ.SafeScriptInline(`__templ_createPasskey_6e79`, userId, userHandle, challenge),
+		Call:       templ.SafeScript(`__templ_createPasskey_d562`, userId, userHandle, challenge),
+		CallInline: templ.SafeScriptInline(`__templ_createPasskey_d562`, userId, userHandle, challenge),
 	}
+}
+
+func sonrProfile(addr string, name string, handle string, creationBlock string) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var6 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var6 == nil {
+			templ_7745c5c3_Var6 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"profile-card min-w-[320px]\"><div class=\"text-white max-w-xs my-auto mx-auto bg-gradient-to-r from-cyan-700 to-cyan-300 p-4 py-5 px-5 rounded-xl\"><div class=\"flex justify-between\"><div><h2>sonr-testnet-1</h2><p class=\"text-2xl font-bold\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var7 string
+		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(handle)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/forms/register_passkey.templ`, Line: 100, Col: 43}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p></div><div class=\"flex items-center opacity-60\"><sl-icon style=\"font-size: 52px;\" library=\"sonr\" name=\"sonr-fill\"></sl-icon></div></div><div class=\"mt-5 flex justify-between items-center w-52\"><span class=\"text-lg font-mono\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var8 string
+		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(shortenAddress(addr))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/forms/register_passkey.templ`, Line: 107, Col: 58}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></div><div class=\"flex justify-between mt-5 w-48 \"><div><h3 class=\"text-xs\">Block Created </h3><p class=\"font-bold\"><span>#</span>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var9 string
+		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(creationBlock)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/forms/register_passkey.templ`, Line: 112, Col: 55}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p></div><div><h3 class=\"text-xs\">Issued to</h3><p class=\"font-bold\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var10 string
+		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(name)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/forms/register_passkey.templ`, Line: 116, Col: 32}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p></div></div></div></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
+// Helper function to shorten address
+func shortenAddress(address string) string {
+	if len(address) <= 20 {
+		return address
+	}
+	return address[:16] + "..." + address[len(address)-4:]
 }
 
 var _ = templruntime.GeneratedTemplate
