@@ -8,8 +8,7 @@ import (
 	"syscall/js"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/cmd/motr/internal"
-	"github.com/onsonr/sonr/pkg/common/controller"
+	"github.com/onsonr/sonr/pkg/common/dids"
 	"github.com/onsonr/sonr/pkg/vault"
 	"github.com/onsonr/sonr/pkg/vault/types"
 )
@@ -48,8 +47,8 @@ func main() {
 	js.Global().Set("processConfig", js.FuncOf(processConfig))
 
 	e := echo.New()
-	e.Use(internal.WasmContextMiddleware)
-	e.Use(controller.Middleware(nil))
+	e.Use(vault.WasmContextMiddleware)
+	e.Use(dids.Middleware(nil))
 	vault.RegisterRoutes(e, config)
-	internal.ServeFetch(e)
+	vault.ServeFetch(e)
 }

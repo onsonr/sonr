@@ -8,23 +8,16 @@ package forms
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import (
-	"fmt"
-	"github.com/onsonr/sonr/pkg/blocks/layout"
-)
+import "github.com/onsonr/sonr/pkg/blocks/layout"
 
-type CreateProfileData struct {
+type SetupWalletData struct {
 	TurnstileSiteKey string
 	FirstNumber      int
 	LastNumber       int
 }
 
-func (d CreateProfileData) IsHumanLabel() string {
-	return fmt.Sprintf("What is %d + %d?", d.FirstNumber, d.LastNumber)
-}
-
-// ProfileForm is a standard form styled like a card
-func CreateProfile(action string, method string, data CreateProfileData) templ.Component {
+// SetupWallet is a standard form styled like a card
+func SetupWallet(action string, method string, data CreateProfileData) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -61,35 +54,13 @@ func CreateProfile(action string, method string, data CreateProfileData) templ.C
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(method)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/forms/create_profile.templ`, Line: 20, Col: 55}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/forms/setup_wallet.templ`, Line: 13, Col: 55}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><sl-card class=\"card-form gap-4 max-w-lg\"><div slot=\"header\"><div class=\"w-full py-1\"><sl-progress-bar value=\"50\"></sl-progress-bar></div></div>")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Var4 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
-			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
-			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
-			if !templ_7745c5c3_IsBuffer {
-				defer func() {
-					templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
-					if templ_7745c5c3_Err == nil {
-						templ_7745c5c3_Err = templ_7745c5c3_BufErr
-					}
-				}()
-			}
-			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-input name=\"first_name\" placeholder=\"Steve\" type=\"text\" label=\"First Name\" required autofocus></sl-input> <sl-input name=\"last_name\" placeholder=\"J\" maxlength=\"1\" type=\"text\" label=\"Last Initial\"></sl-input>")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			return templ_7745c5c3_Err
-		})
-		templ_7745c5c3_Err = layout.Rows().Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -105,20 +76,7 @@ func CreateProfile(action string, method string, data CreateProfileData) templ.C
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-range name=\"is_human\" label=\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var5 string
-		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(data.IsHumanLabel())
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/blocks/forms/create_profile.templ`, Line: 38, Col: 56}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" help-text=\"Prove you are a human.\" min=\"0\" max=\"9\" step=\"1\"></sl-range><div slot=\"footer\"><sl-button href=\"/\" outline><sl-icon slot=\"prefix\" name=\"arrow-left\" library=\"sonr\"></sl-icon> Cancel</sl-button> <sl-button type=\"submit\">Next <sl-icon slot=\"suffix\" name=\"arrow-right\" library=\"sonr\"></sl-icon></sl-button></div><style>\n  \t\t.card-form [slot='footer'] {\n    \t\tdisplay: flex;\n    \t\tjustify-content: space-between;\n    \t\talign-items: center;\n  \t\t}\n\t\t</style></sl-card></form>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div slot=\"footer\"><sl-button href=\"/\" outline><sl-icon slot=\"prefix\" name=\"arrow-left\" library=\"sonr\"></sl-icon> Skip for now</sl-button> <sl-button type=\"submit\">Done <sl-icon slot=\"suffix\" name=\"arrow-right\" library=\"sonr\"></sl-icon></sl-button></div><style>\n  \t\t.card-form [slot='footer'] {\n    \t\tdisplay: flex;\n    \t\tjustify-content: space-between;\n    \t\talign-items: center;\n  \t\t}\n\t\t</style></sl-card></form>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

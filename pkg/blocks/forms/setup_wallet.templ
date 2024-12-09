@@ -1,22 +1,15 @@
 package forms
 
-import (
-	"fmt"
-	"github.com/onsonr/sonr/pkg/blocks/layout"
-)
+import "github.com/onsonr/sonr/pkg/blocks/layout"
 
-type CreateProfileData struct {
+type SetupWalletData struct {
 	TurnstileSiteKey string
 	FirstNumber      int
 	LastNumber       int
 }
 
-func (d CreateProfileData) IsHumanLabel() string {
-	return fmt.Sprintf("What is %d + %d?", d.FirstNumber, d.LastNumber)
-}
-
-// ProfileForm is a standard form styled like a card
-templ CreateProfile(action string, method string, data CreateProfileData) {
+// SetupWallet is a standard form styled like a card
+templ SetupWallet(action string, method string, data CreateProfileData) {
 	<form action={ templ.SafeURL(action) } method={ method }>
 		<sl-card class="card-form gap-4 max-w-lg">
 			<div slot="header">
@@ -24,10 +17,6 @@ templ CreateProfile(action string, method string, data CreateProfileData) {
 					<sl-progress-bar value="50"></sl-progress-bar>
 				</div>
 			</div>
-			@layout.Rows() {
-				<sl-input name="first_name" placeholder="Steve" type="text" label="First Name" required autofocus></sl-input>
-				<sl-input name="last_name" placeholder="J" maxlength="1" type="text" label="Last Initial"></sl-input>
-			}
 			@layout.Spacer()
 			<sl-input name="handle" placeholder="thoughtdiff" type="text" label="Handle" minlength="4" maxlength="12" required>
 				<div slot="prefix">
@@ -35,14 +24,13 @@ templ CreateProfile(action string, method string, data CreateProfileData) {
 				</div>
 			</sl-input>
 			@layout.Spacer()
-			<sl-range name="is_human" label={ data.IsHumanLabel() } help-text="Prove you are a human." min="0" max="9" step="1"></sl-range>
 			<div slot="footer">
 				<sl-button href="/" outline>
 					<sl-icon slot="prefix" name="arrow-left" library="sonr"></sl-icon>
-					Cancel
+					Skip for now
 				</sl-button>
 				<sl-button type="submit">
-					Next
+					Done
 					<sl-icon slot="suffix" name="arrow-right" library="sonr"></sl-icon>
 				</sl-button>
 			</div>

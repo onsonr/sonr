@@ -1,4 +1,4 @@
-package controller
+package dids
 
 import (
 	"github.com/labstack/echo/v4"

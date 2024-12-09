@@ -12,7 +12,7 @@ import (
 	"github.com/onsonr/sonr/pkg/blocks/forms"
 	"github.com/onsonr/sonr/pkg/common/response"
 	"github.com/onsonr/sonr/pkg/gateway/internal/database"
-	"github.com/onsonr/sonr/pkg/gateway/internal/pages/register"
+	"github.com/onsonr/sonr/pkg/gateway/pages/register"
 )
 
 func HandleRegisterView(c echo.Context) error {
@@ -24,16 +24,6 @@ func HandleRegisterView(c echo.Context) error {
 }
 
 func HandleRegisterStart(c echo.Context) error {
-	// Validate the form submission
-	formData := make(map[string][]string)
-	for key, values := range c.Request().Form {
-		formData[key] = values
-	}
-	
-	if err := forms.ValidateCreateProfileForm(formData); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
-
 	challenge, _ := protocol.CreateChallenge()
 	handle := c.FormValue("handle")
 	firstName := c.FormValue("first_name")
