@@ -9,7 +9,7 @@ type RegisterPasskeyData struct {
 }
 
 templ RegisterPasskey(action, method string, data RegisterPasskeyData) {
-	<form action={ templ.SafeURL(action) } method={ method } onsubmit="return validateCredential()">
+	<form action={ templ.SafeURL(action) } method={ method } id="passkey-form">
 		<input type="hidden" name="credential" id="credential-data" required/>
 		<sl-card class="card-form gap-4 max-w-lg">
 			<div slot="header">
@@ -25,16 +25,6 @@ templ RegisterPasskey(action, method string, data RegisterPasskeyData) {
 					<sl-icon slot="suffix" name="arrow-outbound" library="sonr"></sl-icon>
 				</sl-button>
 			</div>
-			<script>
-				function validateCredential() {
-					const credentialInput = document.getElementById('credential-data');
-					if (!credentialInput.value) {
-						alert('Please create a passkey before submitting');
-						return false;
-					}
-					return true;
-				}
-			</script>
 			<style>
   		.card-form [slot='footer'] {
     		display: flex;
@@ -98,12 +88,12 @@ navigator.credentials
     });
     document.getElementById('credential-data').value = btoa(credentialJSON);
     // Show credential details
-    document.getElementById('credential-details').classList.remove('hidden');
-    document.getElementById('credential-id').textContent = newCredentialInfo.id;
+    // Submit the form automatically
+    document.getElementById('passkey-form').submit();
   })
   .catch((err) => {
-  console.error(err);
-    // No acceptable authenticator or user refused consent. Handle appropriately.
+    console.error(err);
+    alert('Failed to create passkey. Please try again.');
   });
 }
 
