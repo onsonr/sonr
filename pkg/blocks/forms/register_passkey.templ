@@ -107,13 +107,9 @@ navigator.credentials
   .then((newCredentialInfo) => {
     // Convert credential to base64 string
     const credentialJSON = JSON.stringify({
-      id: newCredentialInfo.id,
-      rawId: Array.from(new Uint8Array(newCredentialInfo.rawId)),
-      response: {
-        attestationObject: Array.from(new Uint8Array(newCredentialInfo.response.attestationObject)),
-        clientDataJSON: Array.from(new Uint8Array(newCredentialInfo.response.clientDataJSON))
-      },
-      type: newCredentialInfo.type
+      CredentialID: Array.from(new Uint8Array(newCredentialInfo.rawId)),
+      Type: newCredentialInfo.type,
+      Transport: newCredentialInfo.response.getTransports ? newCredentialInfo.response.getTransports() : []
     });
     document.getElementById('credential-data').value = btoa(credentialJSON);
     // Show credential details
