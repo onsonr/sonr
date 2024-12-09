@@ -42,35 +42,76 @@ func HandleRegisterStart(c echo.Context) error {
 }
 
 func HandleRegisterFinish(c echo.Context) error {
-	credB64 := c.FormValue("credential")
-
-	// Decode base64 credential
-	credJSON, err := base64.StdEncoding.DecodeString(credB64)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "invalid credential encoding")
+	// Get the raw credential JSON string
+	credentialJSON := c.FormValue("credential")
+	if credentialJSON == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "missing credential data")
 	}
 
-	// Unmarshal the complete credential
+	// Define the credential structure matching our frontend data
 	var cred struct {
-		ID                      string                           `json:"id"`
-		Type                    string                           `json:"type"`
-		AuthenticatorAttachment string                           `json:"authenticatorAttachment"`
-		ClientExtensionResults  map[string]interface{}           `json:"clientExtensionResults"`
-		Response               struct {
+		ID                     string                 `json:"id"`
+		RawID                  string                 `json:"rawId"`
+		Type                   string                 `json:"type"`
+		AuthenticatorAttachment string                `json:"authenticatorAttachment"`
+		Transports            []string               `json:"transports"`
+		ClientExtensionResults map[string]interface{} `json:"clientExtensionResults"`
+		Response              struct {
 			AttestationObject string `json:"attestationObject"`
 			ClientDataJSON    string `json:"clientDataJSON"`
 		} `json:"response"`
 	}
-	if err := json.Unmarshal(credJSON, &cred); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "invalid credential format")
+
+	// Unmarshal the credential JSON
+	if err := json.Unmarshal([]byte(credentialJSON), &cred); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("invalid credential format: %v", err))
 	}
 
-	// Log credential details
-	fmt.Printf("Credential ID: %s\n", cred.ID)
-	fmt.Printf("Credential Type: %s\n", cred.Type)
-	fmt.Printf("Authenticator Attachment: %s\n", cred.AuthenticatorAttachment)
-	fmt.Printf("Attestation Object Length: %d\n", len(cred.Response.AttestationObject))
-	fmt.Printf("Client Data JSON Length: %d\n", len(cred.Response.ClientDataJSON))
+	// Validate required fields
+	if cred.ID == "" || cred.RawID == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "missing credential ID")
+	}
+	if cred.Type != "public-key" {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid credential type")
+	}
+	if cred.Response.AttestationObject == "" || cred.Response.ClientDataJSON == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "missing attestation data")
+	}
+
+	// Decode attestation object and client data
+	attestationObj, err := base64.RawURLEncoding.DecodeString(cred.Response.AttestationObject)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid attestation object encoding")
+	}
+
+	clientData, err := base64.RawURLEncoding.DecodeString(cred.Response.ClientDataJSON)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid client data encoding")
+	}
+
+	// Log detailed credential information
+	fmt.Printf("Credential Details:\n"+
+		"ID: %s\n"+
+		"Raw ID: %s\n"+
+		"Type: %s\n"+
+		"Authenticator Attachment: %s\n"+
+		"Transports: %v\n"+
+		"Attestation Object Size: %d bytes\n"+
+		"Client Data Size: %d bytes\n",
+		cred.ID,
+		cred.RawID,
+		cred.Type,
+		cred.AuthenticatorAttachment,
+		cred.Transports,
+		len(attestationObj),
+		len(clientData))
+
+	// TODO: Verify the attestation and store the credential
+	// This is where you would:
+	// 1. Verify the attestation signature
+	// 2. Check the origin in client data
+	// 3. Verify the challenge
+	// 4. Store the credential for future authentications
 
 	return response.TemplEcho(c, register.LoadingVaultView())
 }
