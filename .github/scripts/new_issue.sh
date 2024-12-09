@@ -6,7 +6,7 @@ ROOT_DIR=$(git rev-parse --show-toplevel)
 
 # Extract scope name and path using jq, and pass it to fzf for selection
 SCOPE=$(cat "$ROOT_DIR/.github/scopes.json" | jq -r '.[] | "\(.name)"' | fzf --prompt "Select scope:")
-DOCS=$(cat "$ROOT_DIR/.github/scopes.json" | jq -r ".[] | select(.name == \"$SCOPE\") | .docs[]")
+DOCS=$(cat "$ROOT_DIR/.github/scopes.json" | jq -r ".[] | select(.name == \"$SCOPE\") | .docs[].url")
 
 # Write Title
 TITLE=$(gum input --placeholder "Issue Title...")
@@ -38,9 +38,9 @@ create_body() {
         echo "$(($i + 1)). ${REQUIREMENTS[$i]}"
     done
     echo "### Resources:"
-    for doc in "${DOCS[@]}"; do
+    while IFS= read -r doc; do
         echo "- $doc"
-    done
+    done <<< "$DOCS"
 }
 
 ISSUE_BODY=$(create_body)
