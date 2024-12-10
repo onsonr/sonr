@@ -8,7 +8,6 @@ SDK_PACK := $(shell go list -m github.com/cosmos/cosmos-sdk | sed  's/ /\@/g')
 BINDIR ?= $(GOPATH)/bin
 SIMAPP = ./app
 
-PC_NO_SERVER ?= true
 PC_PORT_NUM ?= 42069
 PC_LOG_FILE ?= ./sonr.log
 
@@ -120,18 +119,16 @@ clean:
 	rm -rf .aider*
 	rm -rf static
 	rm -rf .out
-	rm -rf build
 	rm -rf hway.db
 	rm -rf snapcraft-local.yaml build/
+	rm -rf build
 
 distclean: clean
 	rm -rf vendor/
 
-get-process-compose:
-ifeq (,$(shell which process-compose))
+init-env:
 	@echo "Installing process-compose"
-	sh -c "$(curl --location https://raw.githubusercontent.com/F1bonacc1/process-compose/main/scripts/get-pc.sh)" -- -d -b ~/.local/bin
-endif
+	sh scripts/init_env.sh
 
 ########################################
 ### Testing
@@ -309,16 +306,16 @@ sh-testnet: mod-tidy
 ###############################################################################
 ###                                generation                               ###
 ###############################################################################
-.PHONY: pkl-gen tailwind-gen templ-gen
+.PHONY: gen-pkl gen-templ
 
-pkl-gen:
+gen-pkl:
 	go install github.com/apple/pkl-go/cmd/pkl-gen-go@latest
 	pkl-gen-go pkl/sonr.motr/ATN.pkl
 	pkl-gen-go pkl/sonr.hway/Env.pkl
 	pkl-gen-go pkl/sonr.motr/DWN.pkl
 	pkl-gen-go pkl/sonr.hway/ORM.pkl
 
-templ-gen:
+gen-templ:
 	@go install github.com/a-h/templ/cmd/templ@latest
 	templ generate
 
@@ -326,29 +323,41 @@ templ-gen:
 ###############################################################################
 ###                             custom builds                               ###
 ###############################################################################
-.PHONY: motr-build hway-build start
+.PHONY: build-motr build-hway logs-hway logs-sonr
 
-motr-build:
+build-motr:
 	GOOS=js GOARCH=wasm go build -o static/wasm/app.wasm ./cmd/motr/main.go
 
-hway-build: templ-gen
+build-hway: templ-gen
 	go build -o build/hway ./cmd/hway/main.go
 
-start: hway-build
-	$(PROCESS_COMPOSE) up --port $(PC_PORT_NUM) --log-file $(PC_LOG_FILE) --no-server $(PC_NO_SERVER)
 
-down:
-	$(PROCESS_COMPOSE) down
+logs-hway: init-env
+	bin/process-compose process logs hway --port $(PC_PORT_NUM) --follow
+
+logs-sonr: init-env
+	bin/process-compose process logs sonr --port $(PC_PORT_NUM) --follow
 
 ###############################################################################
 ###                                     help                                ###
 ###############################################################################
-.PHONY: deploy-buf deploy-pkl
 
-deploy-buf:
+.PHONY: deploy start stop restart status
+
+start: build-hway init-env
+	bin/process-compose up --port $(PC_PORT_NUM) --log-file $(PC_LOG_FILE) --detached
+
+stop: init-env
+
+	bin/process-compose down --port $(PC_PORT_NUM)
+
+restart: stop clean start
+
+status: init-env
+	bin/process-compose project state --port $(PC_PORT_NUM)
+
+deploy: 
 	cd ./proto && bunx buf dep update && bunx buf build && bunx buf push
-
-deploy-pkl: 
 	sh ./.github/scripts/upload_cdn.sh
 
 
