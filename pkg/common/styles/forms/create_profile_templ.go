@@ -83,7 +83,7 @@ func CreateProfile(action string, method string, data CreateProfileData) templ.C
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-input name=\"first_name\" placeholder=\"Steve\" type=\"text\" label=\"First Name\" required autofocus></sl-input> <sl-input name=\"last_name\" placeholder=\"J\" maxlength=\"1\" type=\"text\" label=\"Last Initial\"></sl-input>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-input name=\"first_name\" placeholder=\"Satoshi\" type=\"text\" label=\"First Name\" required autofocus></sl-input> <sl-input name=\"last_name\" placeholder=\"N\" maxlength=\"1\" type=\"text\" label=\"Last Initial\"></sl-input>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -97,7 +97,7 @@ func CreateProfile(action string, method string, data CreateProfileData) templ.C
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-input name=\"handle\" placeholder=\"thoughtdiff\" type=\"text\" label=\"Handle\" minlength=\"4\" maxlength=\"12\" required><div slot=\"prefix\"><sl-icon name=\"at-sign\" library=\"sonr\"></sl-icon></div></sl-input>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-input name=\"handle\" placeholder=\"digitalgold\" type=\"text\" label=\"Handle\" minlength=\"4\" maxlength=\"12\" required><div slot=\"prefix\"><sl-icon name=\"at-sign\" library=\"sonr\"></sl-icon></div></sl-input>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

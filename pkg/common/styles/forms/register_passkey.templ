@@ -17,6 +17,44 @@ templ RegisterPasskey(action, method string, data RegisterPasskeyData) {
 					@sonrProfile(data.Address, data.Name, data.Handle, data.CreationBlock)
 				</div>
 			</div>
+			<sl-select
+				label="Accounts"
+				value="SNR BTC ETH"
+				help-text="Select Blockchains to connect with your Vault"
+				multiple
+				class="custom-tag py-2"
+			>
+				@cryptoWalletOption("SNR", "Sonr", true)
+				@cryptoWalletOption("BTC", "Bitcoin", true)
+				@cryptoWalletOption("ETH", "Ethereum", true)
+				@cryptoWalletOption("SOL", "Solana", false)
+				@cryptoWalletOption("LTC", "Litecoin", false)
+				@cryptoWalletOption("DOGE", "Dogecoin", false)
+				@cryptoWalletOption("XRP", "Ripple", false)
+				@cryptoWalletOption("OSMO", "Osmosis", false)
+				@cryptoWalletOption("ATOM", "Cosmos", false)
+				@cryptoWalletOption("STARZ", "Stargaze", false)
+				@cryptoWalletOption("AKT", "Akash", false)
+				@cryptoWalletOption("EVMOS", "Evmos", false)
+				@cryptoWalletOption("FIL", "Filecoin", false)
+				@cryptoWalletOption("AXL", "Axelar", false)
+			</sl-select>
+			<script type="module">
+          const select = document.querySelector('.custom-tag');
+
+          select.getTag = (option, index) => {
+            // Use the same icon used in the <sl-option>
+            const name = option.querySelector('sl-icon[slot="prefix"]').name;
+
+            // You can return a string, a Lit Template, or an HTMLElement here
+            return `
+              <sl-tag removable>
+                <sl-icon name="${name}" library="crypto" style="padding-inline-end: .5rem;"></sl-icon>
+                ${option.getTextLabel()}
+              </sl-tag>
+            `;
+          };
+        </script>
 			<div slot="footer" class="space-y-2">
 				@passkeyDropzone(data.Address, data.Handle, data.Challenge)
 				<sl-button href="/" style="width: 100%;" outline>
@@ -153,6 +191,22 @@ templ sonrProfile(addr string, name string, handle string, creationBlock string)
 			</div>
 		</div>
 	</div>
+}
+
+templ cryptoWalletOption(ticker string, name string, isDefault bool) {
+	if isDefault {
+		<sl-option value={ ticker } selected disabled>
+			<sl-icon slot="prefix" name={ ticker } library="crypto"></sl-icon>
+			{ name }
+		</sl-option>
+		<sl-divider></sl-divider>
+	} else {
+		<sl-option value={ ticker }>
+			<sl-icon slot="prefix" name={ ticker } library="crypto"></sl-icon>
+			{ name }
+		</sl-option>
+		<sl-divider></sl-divider>
+	}
 }
 
 // Helper function to shorten address
