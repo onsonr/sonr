@@ -62,7 +62,7 @@ func InitialView() templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div class=\"pt-1.5 flex flex-col items-center justify-center h-full\"><sl-button hx-target=\"#container\" hx-get=\"/register\" hx-push-url=\"/register\" type=\"button\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"sonr\"></sl-icon> Get Started <sl-icon slot=\"suffix\" library=\"sonr\" name=\"arrow-right\"></sl-icon></sl-button></div><div class=\"pt-3 flex flex-row items-center justify-center h-full gap-2\"><sl-button circle outline><sl-icon name=\"home\" library=\"sonr\" label=\"Home\"></sl-icon></sl-button> <sl-button circle outline><sl-icon name=\"docs\" library=\"sonr\" label=\"Docs\"></sl-icon></sl-button> <sl-button circle outline><sl-icon name=\"question\" label=\"About\"></sl-icon></sl-button></div>")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div class=\"pt-1.5 mb-3 flex flex-col items-center justify-center h-full\"><sl-button hx-target=\"#container\" hx-get=\"/register\" hx-push-url=\"/register\" type=\"button\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"sonr\"></sl-icon> Get Started <sl-icon slot=\"suffix\" library=\"sonr\" name=\"arrow-right\"></sl-icon></sl-button></div><div class=\"pt-5 flex flex-row items-center justify-center h-full gap-2\"><sl-button circle outline><sl-icon name=\"home\" library=\"sonr\" label=\"Home\"></sl-icon></sl-button> <sl-button circle outline><sl-icon name=\"docs\" library=\"sonr\" label=\"Docs\"></sl-icon></sl-button> <sl-button circle outline><sl-icon name=\"question\" label=\"About\"></sl-icon></sl-button></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
