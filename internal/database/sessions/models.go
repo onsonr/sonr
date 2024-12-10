@@ -16,27 +16,12 @@ var (
 	ErrUserNotFound      = echo.NewHTTPError(http.StatusNotFound, "User not found")
 )
 
-// Define the credential structure matching our frontend data
-type Credential struct {
-	ID                      string                 `json:"id"`
-	RawID                   string                 `json:"rawId"`
-	Type                    string                 `json:"type"`
-	AuthenticatorAttachment string                 `json:"authenticatorAttachment"`
-	Transports              []string               `json:"transports"`
-	ClientExtensionResults  map[string]interface{} `json:"clientExtensionResults"`
-	Response                struct {
-		AttestationObject string `json:"attestationObject"`
-		ClientDataJSON    string `json:"clientDataJSON"`
-	} `json:"response"`
-}
-
 type User struct {
 	gorm.Model
-	Address     string        `json:"address"`
-	Handle      string        `json:"handle"`
-	Name        string        `json:"name"`
-	CID         string        `json:"cid"`
-	Credentials []*Credential `json:"credentials"`
+	Address string `json:"address"`
+	Handle  string `json:"handle"`
+	Name    string `json:"name"`
+	CID     string `json:"cid"`
 }
 
 type Session struct {

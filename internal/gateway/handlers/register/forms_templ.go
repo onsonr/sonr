@@ -53,7 +53,7 @@ func formCreateProfile(action string, method string, data CreateProfileData) tem
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><sl-card class=\"card-form gap-6 w-full max-w-2xl mx-auto px-4 sm:px-8\"><div slot=\"header\"><div class=\"w-full py-1\"><sl-progress-bar value=\"50\"></sl-progress-bar></div></div><div class=\"grid grid-cols-1 lg:grid-cols-2 gap-4\"><sl-input name=\"first_name\" placeholder=\"Satoshi\" type=\"text\" label=\"First Name\" required autofocus></sl-input> <sl-input name=\"last_name\" placeholder=\"N\" maxlength=\"1\" type=\"text\" label=\"Last Initial\"></sl-input></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><sl-card class=\"card-form gap-6 w-full max-w-xl\"><div slot=\"header\"><div class=\"w-full py-1\"><sl-progress-bar value=\"50\"></sl-progress-bar></div></div><div class=\"grid grid-cols-1 lg:grid-cols-2 gap-4\"><sl-input name=\"first_name\" placeholder=\"Satoshi\" type=\"text\" label=\"First Name\" required autofocus></sl-input> <sl-input name=\"last_name\" placeholder=\"N\" maxlength=\"1\" type=\"text\" label=\"Last Initial\"></sl-input></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -133,7 +133,7 @@ func formRegisterPasskey(action, method string, data RegisterPasskeyData) templ.
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" id=\"passkey-form\"><input type=\"hidden\" name=\"credential\" id=\"credential-data\" required> <sl-card class=\"card-form gap-4 max-w-lg\"><div slot=\"header\"><div class=\"w-full py-2\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" id=\"passkey-form\"><input type=\"hidden\" name=\"credential\" id=\"credential-data\" required> <sl-card class=\"card-form gap-4 max-w-xl\"><div slot=\"header\"><div class=\"w-full py-2\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

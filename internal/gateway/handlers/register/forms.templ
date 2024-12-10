@@ -4,7 +4,7 @@ import "github.com/onsonr/sonr/pkg/common/styles/layout"
 
 templ formCreateProfile(action string, method string, data CreateProfileData) {
 	<form action={ templ.SafeURL(action) } method={ method }>
-		<sl-card class="card-form gap-6 w-full max-w-2xl mx-auto px-4 sm:px-8">
+		<sl-card class="card-form gap-6 w-full max-w-xl">
 			<div slot="header">
 				<div class="w-full py-1">
 					<sl-progress-bar value="50"></sl-progress-bar>
@@ -63,7 +63,7 @@ templ formCreateProfile(action string, method string, data CreateProfileData) {
 templ formRegisterPasskey(action, method string, data RegisterPasskeyData) {
 	<form action={ templ.SafeURL(action) } method={ method } id="passkey-form">
 		<input type="hidden" name="credential" id="credential-data" required/>
-		<sl-card class="card-form gap-4 max-w-lg">
+		<sl-card class="card-form gap-4 max-w-xl">
 			<div slot="header">
 				<div class="w-full py-2">
 					@sonrProfile(data.Address, data.Name, data.Handle, data.CreationBlock)
@@ -123,4 +123,3 @@ templ formRegisterPasskey(action, method string, data RegisterPasskeyData) {
 		</sl-card>
 	</form>
 }
-

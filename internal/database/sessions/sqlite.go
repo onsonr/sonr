@@ -20,7 +20,6 @@ func NewGormDB(env config.Env) (*gorm.DB, error) {
 	// Migrate the schema
 	db.AutoMigrate(&Session{})
 	db.AutoMigrate(&User{})
-
 	return db, nil
 }
 

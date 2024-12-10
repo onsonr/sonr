@@ -6,8 +6,22 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/database/sessions"
 )
+
+// Define the credential structure matching our frontend data
+type Credential struct {
+	Handle                  string            `json:"handle"`
+	ID                      string            `json:"id"`
+	RawID                   string            `json:"rawId"`
+	Type                    string            `json:"type"`
+	AuthenticatorAttachment string            `json:"authenticatorAttachment"`
+	Transports              string            `json:"transports"`
+	ClientExtensionResults  map[string]string `json:"clientExtensionResults"`
+	Response                struct {
+		AttestationObject string `json:"attestationObject"`
+		ClientDataJSON    string `json:"clientDataJSON"`
+	} `json:"response"`
+}
 
 type CreateProfileData struct {
 	TurnstileSiteKey string
@@ -35,8 +49,8 @@ func (d CreateProfileData) IsHumanLabel() string {
 	return fmt.Sprintf("What is %d + %d?", d.FirstNumber, d.LastNumber)
 }
 
-func extractCredentialDescriptor(jsonString string) (*sessions.Credential, error) {
-	cred := &sessions.Credential{}
+func extractCredentialDescriptor(jsonString string) (*Credential, error) {
+	cred := &Credential{}
 	// Unmarshal the credential JSON
 	if err := json.Unmarshal([]byte(jsonString), cred); err != nil {
 		return nil, echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("invalid credential format: %v", err))
