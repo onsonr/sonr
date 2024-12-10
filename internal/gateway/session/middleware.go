@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/app/gateway/config"
-	"github.com/onsonr/sonr/app/gateway/internal/database"
+	"github.com/onsonr/sonr/internal/gateway/config"
+	"github.com/onsonr/sonr/internal/gateway/database"
 	"gorm.io/gorm"
 )
 

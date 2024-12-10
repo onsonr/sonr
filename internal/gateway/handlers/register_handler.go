@@ -8,15 +8,14 @@ import (
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/app/gateway/internal/database"
-	"github.com/onsonr/sonr/app/gateway/internal/pages/register"
 	"github.com/onsonr/sonr/crypto/mpc"
+	"github.com/onsonr/sonr/internal/gateway/database"
+	"github.com/onsonr/sonr/internal/gateway/pages/register"
 	"github.com/onsonr/sonr/pkg/common/response"
-	"github.com/onsonr/sonr/pkg/common/styles/forms"
 )
 
 func HandleRegisterView(c echo.Context) error {
-	dat := forms.CreateProfileData{
+	dat := register.CreateProfileData{
 		FirstNumber: 1,
 		LastNumber:  2,
 	}
@@ -33,7 +32,7 @@ func HandleRegisterStart(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	dat := forms.RegisterPasskeyData{
+	dat := register.RegisterPasskeyData{
 		Address:       ks.Address(),
 		Handle:        handle,
 		Name:          fmt.Sprintf("%s %s", firstName, lastName),

@@ -3,10 +3,10 @@ package gateway
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/app/gateway/config"
-	"github.com/onsonr/sonr/app/gateway/handlers"
-	"github.com/onsonr/sonr/app/gateway/internal/database"
-	"github.com/onsonr/sonr/app/gateway/internal/session"
+	"github.com/onsonr/sonr/internal/gateway/config"
+	"github.com/onsonr/sonr/internal/gateway/database"
+	"github.com/onsonr/sonr/internal/gateway/handlers"
+	"github.com/onsonr/sonr/internal/gateway/session"
 	"github.com/onsonr/sonr/pkg/common/response"
 )
 

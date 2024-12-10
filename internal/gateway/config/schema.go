@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/onsonr/sonr/app/vault/types"
+	"github.com/onsonr/sonr/internal/vault/types"
 	"github.com/onsonr/sonr/pkg/common/models"
 )
 

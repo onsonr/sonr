@@ -4,7 +4,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/onsonr/sonr/app/gateway/config"
+	"github.com/onsonr/sonr/internal/gateway/config"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )

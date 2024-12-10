@@ -8,8 +8,8 @@ import (
 	"syscall/js"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/app/vault"
-	"github.com/onsonr/sonr/app/vault/types"
+	"github.com/onsonr/sonr/internal/vault"
+	"github.com/onsonr/sonr/internal/vault/types"
 	"github.com/onsonr/sonr/pkg/didauth/controller"
 )
 

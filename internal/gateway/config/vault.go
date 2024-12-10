@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 
 	"github.com/ipfs/boxo/files"
-	"github.com/onsonr/sonr/app/gateway/config/internal"
-	"github.com/onsonr/sonr/app/vault/types"
+	"github.com/onsonr/sonr/internal/gateway/config/embed"
+	"github.com/onsonr/sonr/internal/vault/types"
 )
 
 const SchemaVersion = 1
@@ -30,9 +30,9 @@ func NewFS(cfg *types.Config) (files.Directory, error) {
 	return files.NewMapDirectory(map[string]files.Node{
 		AppManifestFileName:   files.NewBytesFile(manifestBz),
 		DWNConfigFileName:     files.NewBytesFile(cnfBz),
-		IndexHTMLFileName:     files.NewBytesFile(internal.IndexHTML),
-		MainJSFileName:        files.NewBytesFile(internal.MainJS),
-		ServiceWorkerFileName: files.NewBytesFile(internal.WorkerJS),
+		IndexHTMLFileName:     files.NewBytesFile(embed.IndexHTML),
+		MainJSFileName:        files.NewBytesFile(embed.MainJS),
+		ServiceWorkerFileName: files.NewBytesFile(embed.WorkerJS),
 	}), nil
 }
 

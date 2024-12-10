@@ -9,9 +9,9 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/onsonr/sonr/app/gateway"
-	"github.com/onsonr/sonr/app/gateway/config"
 	"github.com/onsonr/sonr/crypto/ucan"
+	"github.com/onsonr/sonr/internal/gateway"
+	"github.com/onsonr/sonr/internal/gateway/config"
 	"github.com/onsonr/sonr/pkg/common/ipfs"
 	"github.com/onsonr/sonr/pkg/didauth/producer"
 )
