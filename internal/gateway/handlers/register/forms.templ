@@ -4,7 +4,7 @@ import "github.com/onsonr/sonr/pkg/common/styles/layout"
 
 templ formCreateProfile(action string, method string, data CreateProfileData) {
 	<form action={ templ.SafeURL(action) } method={ method }>
-		<sl-card class="card-form gap-4 w-full max-w-lg mx-auto px-4 sm:px-6">
+		<sl-card class="card-form gap-6 w-full max-w-2xl mx-auto px-4 sm:px-8">
 			<div slot="header">
 				<div class="w-full py-1">
 					<sl-progress-bar value="50"></sl-progress-bar>
