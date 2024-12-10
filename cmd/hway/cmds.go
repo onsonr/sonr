@@ -19,17 +19,17 @@ import (
 
 // Command line flags
 var (
-	servePort      int
-	configDir      string
-	sqliteFile     string
-	chainId        string
-	ipfsGatewayUrl string
-	sonrApiUrl     string
-	sonrGrpcUrl    string
-	sonrRpcUrl     string
+	servePort      int    // Gateway http entry point (default 3000)
+	configDir      string // Hway config directory (default hway)
+	sqliteFile     string // SQLite database file (default hway.db)
+	chainID        string // Current chain ID (default sonr-testnet-1)
+	ipfsGatewayURL string // IPFS gateway URL (default localhost:8080)
+	sonrAPIURL     string // Sonr API URL (default localhost:1317)
+	sonrGrpcURL    string // Sonr gRPC URL (default localhost:9090)
+	sonrRPCURL     string // Sonr RPC URL (default localhost:26657)
 )
 
-func NewRootCmd() *cobra.Command {
+func rootCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "hway",
 		Short: "Sonr DID gateway",
@@ -52,16 +52,16 @@ func NewRootCmd() *cobra.Command {
 	cmd.Flags().IntVar(&servePort, "serve-port", 3000, "Port to serve the gateway on")
 	cmd.Flags().StringVar(&configDir, "config-dir", "hway", "Directory to store config files")
 	cmd.Flags().StringVar(&sqliteFile, "sqlite-file", "hway.db", "File to store sqlite database")
-	cmd.Flags().StringVar(&chainId, "chain-id", "sonr-testnet-1", "Chain ID")
-	cmd.Flags().StringVar(&ipfsGatewayUrl, "ipfs-gateway-url", "localhost:8080", "IPFS gateway URL")
-	cmd.Flags().StringVar(&sonrApiUrl, "sonr-api-url", "localhost:1317", "Sonr API URL")
-	cmd.Flags().StringVar(&sonrGrpcUrl, "sonr-grpc-url", "localhost:9090", "Sonr gRPC URL")
-	cmd.Flags().StringVar(&sonrRpcUrl, "sonr-rpc-url", "localhost:26657", "Sonr RPC URL")
+	cmd.Flags().StringVar(&chainID, "chain-id", "sonr-testnet-1", "Chain ID")
+	cmd.Flags().StringVar(&ipfsGatewayURL, "ipfs-gateway-url", "localhost:8080", "IPFS gateway URL")
+	cmd.Flags().StringVar(&sonrAPIURL, "sonr-api-url", "localhost:1317", "Sonr API URL")
+	cmd.Flags().StringVar(&sonrGrpcURL, "sonr-grpc-url", "localhost:9090", "Sonr gRPC URL")
+	cmd.Flags().StringVar(&sonrRPCURL, "sonr-rpc-url", "localhost:26657", "Sonr RPC URL")
 	return cmd
 }
 
 func loadEnvImplFromArgs(args []string) (config.Env, error) {
-	cmd := NewRootCmd()
+	cmd := rootCmd()
 	if err := cmd.ParseFlags(args); err != nil {
 		return nil, err
 	}
@@ -70,11 +70,11 @@ func loadEnvImplFromArgs(args []string) (config.Env, error) {
 		ServePort:      servePort,
 		ConfigDir:      configDir,
 		SqliteFile:     sqliteFile,
-		ChainId:        chainId,
-		IpfsGatewayUrl: ipfsGatewayUrl,
-		SonrApiUrl:     sonrApiUrl,
-		SonrGrpcUrl:    sonrGrpcUrl,
-		SonrRpcUrl:     sonrRpcUrl,
+		ChainId:        chainID,
+		IpfsGatewayUrl: ipfsGatewayURL,
+		SonrApiUrl:     sonrAPIURL,
+		SonrGrpcUrl:    sonrGrpcURL,
+		SonrRpcUrl:     sonrRPCURL,
 	}
 	return env, nil
 }

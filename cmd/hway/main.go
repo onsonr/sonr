@@ -8,7 +8,7 @@ import (
 
 // main is the entry point for the application
 func main() {
-	cmd := NewRootCmd()
+	cmd := rootCmd()
 	if err := cmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
