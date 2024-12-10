@@ -5,7 +5,8 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/internal/gateway/config"
 	"github.com/onsonr/sonr/internal/gateway/database"
-	"github.com/onsonr/sonr/internal/gateway/handlers"
+	"github.com/onsonr/sonr/internal/gateway/handlers/index"
+	"github.com/onsonr/sonr/internal/gateway/handlers/register"
 	"github.com/onsonr/sonr/internal/gateway/session"
 	"github.com/onsonr/sonr/pkg/common/response"
 )
@@ -24,9 +25,9 @@ func RegisterRoutes(e *echo.Echo, env config.Env) error {
 	e.Use(session.Middleware(db, env))
 
 	// Register routes
-	e.GET("/", handlers.HandleIndex)
-	e.GET("/register", handlers.HandleRegisterView)
-	e.POST("/register/start", handlers.HandleRegisterStart)
-	e.POST("/register/finish", handlers.HandleRegisterFinish)
+	e.GET("/", index.Handler)
+	e.GET("/register", register.HandleCreateProfile)
+	e.POST("/register/start", register.HandlePasskeyStart)
+	e.POST("/register/finish", register.HandlePasskeyFinish)
 	return nil
 }

@@ -1,76 +1,5 @@
 package register
 
-type RegisterPasskeyData struct {
-	Address       string
-	Handle        string
-	Name          string
-	Challenge     string
-	CreationBlock string
-}
-
-templ formRegisterPasskey(action, method string, data RegisterPasskeyData) {
-	<form action={ templ.SafeURL(action) } method={ method } id="passkey-form">
-		<input type="hidden" name="credential" id="credential-data" required/>
-		<sl-card class="card-form gap-4 max-w-lg">
-			<div slot="header">
-				<div class="w-full py-2">
-					@sonrProfile(data.Address, data.Name, data.Handle, data.CreationBlock)
-				</div>
-			</div>
-			<sl-select
-				label="Accounts"
-				value="SNR BTC ETH"
-				help-text="Select Blockchains to connect with your Vault"
-				multiple
-				class="custom-tag py-2"
-			>
-				@cryptoWalletOption("SNR", "Sonr", true)
-				@cryptoWalletOption("BTC", "Bitcoin", true)
-				@cryptoWalletOption("ETH", "Ethereum", true)
-				@cryptoWalletOption("SOL", "Solana", false)
-				@cryptoWalletOption("LTC", "Litecoin", false)
-				@cryptoWalletOption("DOGE", "Dogecoin", false)
-				@cryptoWalletOption("XRP", "Ripple", false)
-				@cryptoWalletOption("OSMO", "Osmosis", false)
-				@cryptoWalletOption("ATOM", "Cosmos", false)
-				@cryptoWalletOption("STARZ", "Stargaze", false)
-				@cryptoWalletOption("AKT", "Akash", false)
-				@cryptoWalletOption("EVMOS", "Evmos", false)
-				@cryptoWalletOption("FIL", "Filecoin", false)
-				@cryptoWalletOption("AXL", "Axelar", false)
-			</sl-select>
-			<script type="module">
-          const select = document.querySelector('.custom-tag');
-
-          select.getTag = (option, index) => {
-            // Use the same icon used in the <sl-option>
-            const name = option.querySelector('sl-icon[slot="prefix"]').name;
-
-            // You can return a string, a Lit Template, or an HTMLElement here
-            return `
-              <sl-tag removable>
-                <sl-icon name="${name}" library="crypto" style="padding-inline-end: .5rem;"></sl-icon>
-                ${option.getTextLabel()}
-              </sl-tag>
-            `;
-          };
-        </script>
-			<div slot="footer" class="space-y-2">
-				@passkeyDropzone(data.Address, data.Handle, data.Challenge)
-				<sl-button href="/" style="width: 100%;" outline>
-					<sl-icon slot="prefix" name="x-lg"></sl-icon>
-					Cancel
-				</sl-button>
-			</div>
-			<style>
-  		.card-form [slot='footer'] {
-    		justify-content: space-evenly;
-    		align-items: center;
-  		}
-		</style>
-		</sl-card>
-	</form>
-}
 
 templ passkeyDropzone(addr string, userHandle string, challenge string) {
 	<sl-button style="width: 100%;" onclick={ createPasskey(addr, userHandle, challenge) }>
@@ -207,12 +136,4 @@ templ cryptoWalletOption(ticker string, name string, isDefault bool) {
 		</sl-option>
 		<sl-divider></sl-divider>
 	}
-}
-
-// Helper function to shorten address
-func shortenAddress(address string) string {
-	if len(address) <= 20 {
-		return address
-	}
-	return address[:16] + "..." + address[len(address)-4:]
 }

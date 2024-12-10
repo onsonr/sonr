@@ -1,22 +1,9 @@
-package handlers
+package index
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/gateway/pages/index"
 	"github.com/onsonr/sonr/internal/gateway/session"
-	"github.com/onsonr/sonr/pkg/common/response"
 )
-
-func HandleIndex(c echo.Context) error {
-	if isExpired(c) {
-		return response.TemplEcho(c, index.ReturningView())
-	}
-	return response.TemplEcho(c, index.InitialView())
-}
-
-// ╭─────────────────────────────────────────────────────────╮
-// │                    Utility Functions                    │
-// ╰─────────────────────────────────────────────────────────╯
 
 // Initial users have no authorization, user handle, or vault address
 func isInitial(c echo.Context) bool {
