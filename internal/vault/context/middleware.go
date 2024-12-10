@@ -1,4 +1,4 @@
-package session
+package context
 
 import (
 	"encoding/json"

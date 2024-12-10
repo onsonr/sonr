@@ -6,6 +6,6 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func HandleDash(c echo.Context) error {
+func Handler(c echo.Context) error {
 	return c.Render(http.StatusOK, "index.templ", nil)
 }

@@ -1,11 +1,11 @@
-package session
+package context
 
 import (
 	"regexp"
 	"strings"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/gateway/database"
+	"github.com/onsonr/sonr/internal/database/sessions"
 	"github.com/onsonr/sonr/pkg/common"
 	"github.com/segmentio/ksuid"
 )
@@ -15,12 +15,12 @@ func (s *HTTPContext) InitSession() error {
 	sessionID := s.getOrCreateSessionID()
 
 	// Try to load existing session
-	var sess database.Session
+	var sess sessions.Session
 	result := s.db.Where("id = ?", sessionID).First(&sess)
 	if result.Error != nil {
 		// Create new session if not found
 		bn, bv, arch, plat, platVer, model := extractBrowserInfo(s.Context)
-		sess = database.Session{
+		sess = sessions.Session{
 			ID:               sessionID,
 			BrowserName:      bn,
 			BrowserVersion:   bv,

@@ -1,11 +1,11 @@
-package session
+package context
 
 import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/internal/database/sessions"
 	"github.com/onsonr/sonr/internal/gateway/config"
-	"github.com/onsonr/sonr/internal/gateway/database"
 	"gorm.io/gorm"
 )
 
@@ -26,7 +26,7 @@ func Middleware(db *gorm.DB, env config.Env) echo.MiddlewareFunc {
 type HTTPContext struct {
 	echo.Context
 	db   *gorm.DB
-	sess *database.Session
+	sess *sessions.Session
 	env  config.Env
 }
 
@@ -48,6 +48,6 @@ func NewHTTPContext(c echo.Context, db *gorm.DB) *HTTPContext {
 }
 
 // Session returns the current session
-func (s *HTTPContext) Session() *database.Session {
+func (s *HTTPContext) Session() *sessions.Session {
 	return s.sess
 }

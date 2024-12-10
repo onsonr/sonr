@@ -1,4 +1,4 @@
-package database
+package sessions
 
 import (
 	"net/http"

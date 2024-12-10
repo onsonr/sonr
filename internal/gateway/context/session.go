@@ -1,8 +1,8 @@
-package session
+package context
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/gateway/database"
+	"github.com/onsonr/sonr/internal/database/sessions"
 )
 
 // ╭───────────────────────────────────────────────────────╮
@@ -160,7 +160,7 @@ func HandleExists(c echo.Context, handle string) (bool, error) {
 	}
 
 	var count int64
-	if err := sess.db.Model(&database.Session{}).Where("user_handle = ?", handle).Count(&count).Error; err != nil {
+	if err := sess.db.Model(&sessions.Session{}).Where("user_handle = ?", handle).Count(&count).Error; err != nil {
 		return false, err
 	}
 

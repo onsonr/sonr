@@ -7,10 +7,12 @@ import (
 	session "github.com/onsonr/sonr/internal/vault/session"
 )
 
-func HandleIndex(c echo.Context) error {
+func Handler(c echo.Context) error {
+	// TODO: Create views
 	if isInitial(c) {
 		// return response.TemplEcho(c, index.InitialView())
 	}
+	// TODO: Add authorization check
 	if isExpired(c) {
 		// return response.TemplEcho(c, index.ReturningView())
 	}

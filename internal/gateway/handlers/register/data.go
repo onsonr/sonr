@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/gateway/database"
+	"github.com/onsonr/sonr/internal/database/sessions"
 )
 
 type CreateProfileData struct {
@@ -35,8 +35,8 @@ func (d CreateProfileData) IsHumanLabel() string {
 	return fmt.Sprintf("What is %d + %d?", d.FirstNumber, d.LastNumber)
 }
 
-func extractCredentialDescriptor(jsonString string) (*database.Credential, error) {
-	cred := &database.Credential{}
+func extractCredentialDescriptor(jsonString string) (*sessions.Credential, error) {
+	cred := &sessions.Credential{}
 	// Unmarshal the credential JSON
 	if err := json.Unmarshal([]byte(jsonString), cred); err != nil {
 		return nil, echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("invalid credential format: %v", err))

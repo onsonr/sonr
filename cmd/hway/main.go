@@ -10,6 +10,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/onsonr/sonr/crypto/ucan"
+	"github.com/onsonr/sonr/internal/database/sessions"
 	"github.com/onsonr/sonr/internal/gateway"
 	"github.com/onsonr/sonr/internal/gateway/config"
 	"github.com/onsonr/sonr/pkg/common/ipfs"
@@ -29,12 +30,16 @@ func setupServer(env config.Env) (*echo.Echo, error) {
 	if err != nil {
 		return nil, err
 	}
+	db, err := sessions.InitDB(env)
+	if err != nil {
+		return nil, err
+	}
 	e := echo.New()
 	e.IPExtractor = echo.ExtractIPDirect()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(producer.Middleware(ipc, ucan.ServicePermissions))
-	gateway.RegisterRoutes(e, env)
+	gateway.RegisterRoutes(e, env, db)
 	return e, nil
 }
 

@@ -2,12 +2,12 @@ package index
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/gateway/session"
+	"github.com/onsonr/sonr/internal/gateway/context"
 )
 
 // Initial users have no authorization, user handle, or vault address
 func isInitial(c echo.Context) bool {
-	sess, err := session.Get(c)
+	sess, err := context.Get(c)
 	if err != nil {
 		return false
 	}
@@ -17,7 +17,7 @@ func isInitial(c echo.Context) bool {
 
 // Expired users have either a user handle or vault address
 func isExpired(c echo.Context) bool {
-	sess, err := session.Get(c)
+	sess, err := context.Get(c)
 	if err != nil {
 		return false
 	}
@@ -27,7 +27,7 @@ func isExpired(c echo.Context) bool {
 
 // Returning users have a valid authorization, and either a user handle or vault address
 func isReturning(c echo.Context) bool {
-	sess, err := session.Get(c)
+	sess, err := context.Get(c)
 	if err != nil {
 		return false
 	}

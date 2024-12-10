@@ -7,11 +7,11 @@ package vault
 import (
 	"github.com/labstack/echo/v4"
 
-	session "github.com/onsonr/sonr/internal/vault/session"
+	"github.com/onsonr/sonr/internal/vault/context"
 	"github.com/onsonr/sonr/internal/vault/types"
 )
 
 // RegisterRoutes registers the Decentralized Web Node API routes.
 func RegisterRoutes(e *echo.Echo, config *types.Config) {
-	e.Use(session.Middleware(config))
+	e.Use(context.Middleware(config))
 }
