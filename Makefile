@@ -8,9 +8,14 @@ SDK_PACK := $(shell go list -m github.com/cosmos/cosmos-sdk | sed  's/ /\@/g')
 BINDIR ?= $(GOPATH)/bin
 SIMAPP = ./app
 
+PC_NO_SERVER ?= true
+PC_PORT_NUM ?= 42069
+PC_LOG_FILE ?= ./sonr.log
+
 # for dockerized protobuf tools
 DOCKER := $(shell which docker)
 HTTPS_GIT := github.com/onsonr/sonr.git
+PROCESS_COMPOSE := $(shell which process-compose)
 
 export GO111MODULE = on
 
@@ -121,6 +126,10 @@ clean:
 
 distclean: clean
 	rm -rf vendor/
+
+get-process-compose:
+	@echo "Installing process-compose"
+	sh -c "$(curl --location https://raw.githubusercontent.com/F1bonacc1/process-compose/main/scripts/get-pc.sh)" -- -d -b ~/.local/bin
 
 ########################################
 ### Testing
@@ -315,7 +324,7 @@ templ-gen:
 ###############################################################################
 ###                             custom builds                               ###
 ###############################################################################
-.PHONY: motr-build hway-build hway-serve
+.PHONY: motr-build hway-build start
 
 motr-build:
 	GOOS=js GOARCH=wasm go build -o static/wasm/app.wasm ./cmd/motr/main.go
@@ -323,8 +332,11 @@ motr-build:
 hway-build: templ-gen
 	go build -o build/hway ./cmd/hway/main.go
 
-hway-serve: hway-build
-	./build/hway
+start: hway-build
+	$(PROCESS_COMPOSE) up --port $(PC_PORT_NUM) --log-file $(PC_LOG_FILE) --no-server $(PC_NO_SERVER)
+
+down:
+	$(PROCESS_COMPOSE) down
 
 ###############################################################################
 ###                                     help                                ###
