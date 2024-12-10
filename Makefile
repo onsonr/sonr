@@ -128,8 +128,10 @@ distclean: clean
 	rm -rf vendor/
 
 get-process-compose:
+ifeq (,$(shell which process-compose))
 	@echo "Installing process-compose"
 	sh -c "$(curl --location https://raw.githubusercontent.com/F1bonacc1/process-compose/main/scripts/get-pc.sh)" -- -d -b ~/.local/bin
+endif
 
 ########################################
 ### Testing
