@@ -16,18 +16,16 @@ templ InitialView() {
 					<sl-icon slot="suffix" library="sonr" name="arrow-right"></sl-icon>
 				</sl-button>
 			</div>
-			<div class="pt-1.5 flex flex-col items-center justify-center h-full">
-			<sl-button variant="default" size="small" circle>
-  			<sl-icon name="gear" label="Settings"></sl-icon>
-			</sl-button>
-
-			<sl-button variant="default" size="medium" circle>
-  			<sl-icon name="gear" label="Settings"></sl-icon>
-			</sl-button>
-
-			<sl-button variant="default" size="large" circle>
-  			<sl-icon name="gear" label="Settings"></sl-icon>
-			</sl-button>
+			<div class="pt-3 flex flex-row items-center justify-center h-full gap-2">
+				<sl-button circle outline>
+					<sl-icon name="home" library="sonr" label="Home"></sl-icon>
+				</sl-button>
+				<sl-button circle outline>
+					<sl-icon name="docs" library="sonr" label="Docs"></sl-icon>
+				</sl-button>
+				<sl-button circle outline>
+					<sl-icon name="question" label="About"></sl-icon>
+				</sl-button>
 			</div>
 		}
 	}
