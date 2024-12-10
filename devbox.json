@@ -30,9 +30,9 @@
   "shell": {
     "scripts": {
       "start": ["process-compose up --hide-disabled"],
-      "start:detached": ["process-compose up --detached --hide-disabled"],
+      "up": ["process-compose up --detached --hide-disabled"],
       "attach": ["process-compose attach"],
-      "stop": ["process-compose down "]
+      "down": ["fuser -k 1317/tcp", "fuser -k 3000/tcp"]
     }
   }
 }
