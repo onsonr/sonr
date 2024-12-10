@@ -8,8 +8,8 @@ SDK_PACK := $(shell go list -m github.com/cosmos/cosmos-sdk | sed  's/ /\@/g')
 BINDIR ?= $(GOPATH)/bin
 SIMAPP = ./app
 
-PC_PORT_NUM ?= 42069
-PC_LOG_FILE ?= ./sonr.log
+PC_PORT_NUM=42069
+PC_LOG_FILE=./sonr.log
 
 # for dockerized protobuf tools
 DOCKER := $(shell which docker)
@@ -328,9 +328,8 @@ gen-templ:
 build-motr:
 	GOOS=js GOARCH=wasm go build -o static/wasm/app.wasm ./cmd/motr/main.go
 
-build-hway: templ-gen
+build-hway: gen-templ
 	go build -o build/hway ./cmd/hway/main.go
-
 
 logs-hway: init-env
 	bin/process-compose process logs hway --port $(PC_PORT_NUM) --follow
@@ -345,7 +344,7 @@ logs-sonr: init-env
 .PHONY: deploy start stop restart status
 
 start: build-hway init-env
-	bin/process-compose up --port $(PC_PORT_NUM) --log-file $(PC_LOG_FILE) --detached
+	bin/process-compose up --port $(PC_PORT_NUM) --log-file $(PC_LOG_FILE) --detached -f deploy/process-compose.yaml
 
 stop: init-env
 
