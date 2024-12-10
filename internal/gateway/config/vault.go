@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/ipfs/boxo/files"
-	"github.com/onsonr/sonr/internal/gateway/config/embed"
+	"github.com/onsonr/sonr/internal/vault/embed"
 	"github.com/onsonr/sonr/internal/vault/types"
 )
 
