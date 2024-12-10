@@ -139,7 +139,7 @@ func Head(title string, nebulaVersion string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><!-- Sets the status bar style to transparent --><meta name=\"apple-mobile-web-app-capable\" content=\"yes\"><meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\"><link rel=\"icon\" type=\"image/png\" href=\"https://cdn.sonr.id/favicon.png\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><!-- Sets the status bar style to transparent --><meta name=\"apple-mobile-web-app-capable\" content=\"yes\"><meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\"><link rel=\"icon\" type=\"image/png\" href=\"https://cdn.sonr.id/favicon.png\"><style>\n   \t\t@keyframes fade-in {\n     \t\tfrom { opacity: 0; }\n   \t\t}\n\n   \t\t@keyframes fade-out {\n     \t\tto { opacity: 0; }\n   \t\t}\n\n   \t\t@keyframes slide-from-right {\n     \t\tfrom { transform: translateX(90px); }\n   \t\t}\n\n   \t\t@keyframes slide-to-left {\n     \t\tto { transform: translateX(-90px); }\n   \t\t}\n\n   \t\t.slide-it {\n     \t\tview-transition-name: slide-it;\n   \t\t}\n\n   \t\t::view-transition-old(slide-it) {\n     \t\tanimation: 180ms cubic-bezier(0.4, 0, 1, 1) both fade-out,\n     \t\t600ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;\n   \t\t}\n   \t\t::view-transition-new(slide-it) {\n     \t\tanimation: 420ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in,\n     \t\t600ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;\n   \t\t}\n\t\t</style>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
