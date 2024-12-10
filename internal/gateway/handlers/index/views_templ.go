@@ -62,7 +62,7 @@ func InitialView() templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div class=\"pt-3 flex flex-col items-center justify-center h-full\"><sl-button hx-target=\"#container\" hx-get=\"/register\" hx-push-url=\"/register\" type=\"button\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"sonr\"></sl-icon> Get Started <sl-icon slot=\"suffix\" library=\"sonr\" name=\"arrow-right\"></sl-icon></sl-button></div>")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div class=\"pt-1.5 flex flex-col items-center justify-center h-full\"><sl-button hx-target=\"#container\" hx-get=\"/register\" hx-push-url=\"/register\" type=\"button\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"sonr\"></sl-icon> Get Started <sl-icon slot=\"suffix\" library=\"sonr\" name=\"arrow-right\"></sl-icon></sl-button></div><div class=\"pt-1.5 flex flex-col items-center justify-center h-full\"><sl-button variant=\"default\" size=\"small\" circle><sl-icon name=\"gear\" label=\"Settings\"></sl-icon></sl-button> <sl-button variant=\"default\" size=\"medium\" circle><sl-icon name=\"gear\" label=\"Settings\"></sl-icon></sl-button> <sl-button variant=\"default\" size=\"large\" circle><sl-icon name=\"gear\" label=\"Settings\"></sl-icon></sl-button></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
