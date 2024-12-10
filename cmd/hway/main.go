@@ -30,7 +30,7 @@ func setupServer(env config.Env) (*echo.Echo, error) {
 	if err != nil {
 		return nil, err
 	}
-	db, err := sessions.InitDB(env)
+	db, err := sessions.NewGormDB(env)
 	if err != nil {
 		return nil, err
 	}

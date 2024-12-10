@@ -9,8 +9,8 @@ import (
 	"gorm.io/gorm"
 )
 
-// InitDB initializes and returns a configured database connection
-func InitDB(env config.Env) (*gorm.DB, error) {
+// NewGormDB initializes and returns a configured database connection
+func NewGormDB(env config.Env) (*gorm.DB, error) {
 	path := formatDBPath(env.GetSqliteFile())
 	db, err := gorm.Open(sqlite.Open(path), &gorm.Config{})
 	if err != nil {
