@@ -3,7 +3,6 @@
   "packages": [
     "go@latest",
     "bun@latest",
-    "gum@latest",
     "skate@latest",
     "templ@latest",
     "tigerbeetle@latest",
