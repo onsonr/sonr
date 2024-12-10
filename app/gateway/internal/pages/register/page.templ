@@ -1,25 +1,24 @@
 package register
 
 import (
-	"github.com/onsonr/sonr/pkg/common/styles/forms"
 	"github.com/onsonr/sonr/pkg/common/styles/layout"
 	"github.com/onsonr/sonr/pkg/common/styles/text"
 )
 
-templ ProfileFormView(data forms.CreateProfileData) {
-	@layout.Root("New Profile | Sonr.ID") {
+templ ProfileFormView(data CreateProfileData) {
+	@layout.Root("Create Profile | Sonr.ID") {
 		@layout.Container() {
-			@text.Header("Create a Profile", "Enter some basic information about yourself.")
-			@forms.CreateProfile("/register/start", "POST", data)
+			@text.Header("Basic Info", "Tell us a little about yourself.")
+			@formCreateProfile("/register/start", "POST", data)
 		}
 	}
 }
 
-templ LinkCredentialView(data forms.RegisterPasskeyData) {
+templ LinkCredentialView(data RegisterPasskeyData) {
 	@layout.Root("Register | Sonr.ID") {
 		@layout.Container() {
 			@text.Header("Link a PassKey", "This will be used to login to your vault.")
-			@forms.RegisterPasskey("/register/finish", "POST", data)
+			@formRegisterPasskey("/register/finish", "POST", data)
 		}
 	}
 }

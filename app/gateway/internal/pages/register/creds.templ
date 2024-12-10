@@ -1,4 +1,4 @@
-package forms
+package register
 
 type RegisterPasskeyData struct {
 	Address       string
@@ -8,7 +8,7 @@ type RegisterPasskeyData struct {
 	CreationBlock string
 }
 
-templ RegisterPasskey(action, method string, data RegisterPasskeyData) {
+templ formRegisterPasskey(action, method string, data RegisterPasskeyData) {
 	<form action={ templ.SafeURL(action) } method={ method } id="passkey-form">
 		<input type="hidden" name="credential" id="credential-data" required/>
 		<sl-card class="card-form gap-4 max-w-lg">

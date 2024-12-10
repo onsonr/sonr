@@ -9,12 +9,11 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/onsonr/sonr/pkg/common/styles/forms"
 	"github.com/onsonr/sonr/pkg/common/styles/layout"
 	"github.com/onsonr/sonr/pkg/common/styles/text"
 )
 
-func ProfileFormView(data forms.CreateProfileData) templ.Component {
+func ProfileFormView(data CreateProfileData) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -59,7 +58,7 @@ func ProfileFormView(data forms.CreateProfileData) templ.Component {
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
-				templ_7745c5c3_Err = text.Header("Create a Profile", "Enter some basic information about yourself.").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = text.Header("Basic Info", "Tell us a little about yourself.").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -67,7 +66,7 @@ func ProfileFormView(data forms.CreateProfileData) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = forms.CreateProfile("/register/start", "POST", data).Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = formCreateProfile("/register/start", "POST", data).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -79,7 +78,7 @@ func ProfileFormView(data forms.CreateProfileData) templ.Component {
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = layout.Root("New Profile | Sonr.ID").Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = layout.Root("Create Profile | Sonr.ID").Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -87,7 +86,7 @@ func ProfileFormView(data forms.CreateProfileData) templ.Component {
 	})
 }
 
-func LinkCredentialView(data forms.RegisterPasskeyData) templ.Component {
+func LinkCredentialView(data RegisterPasskeyData) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -140,7 +139,7 @@ func LinkCredentialView(data forms.RegisterPasskeyData) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = forms.RegisterPasskey("/register/finish", "POST", data).Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = formRegisterPasskey("/register/finish", "POST", data).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

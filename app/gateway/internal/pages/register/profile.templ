@@ -1,4 +1,4 @@
-package forms
+package register
 
 import (
 	"fmt"
@@ -15,8 +15,7 @@ func (d CreateProfileData) IsHumanLabel() string {
 	return fmt.Sprintf("What is %d + %d?", d.FirstNumber, d.LastNumber)
 }
 
-// ProfileForm is a standard form styled like a card
-templ CreateProfile(action string, method string, data CreateProfileData) {
+templ formCreateProfile(action string, method string, data CreateProfileData) {
 	<form action={ templ.SafeURL(action) } method={ method }>
 		<sl-card class="card-form gap-4 w-full max-w-lg mx-auto px-4 sm:px-6">
 			<div slot="header">
@@ -73,3 +72,7 @@ templ CreateProfile(action string, method string, data CreateProfileData) {
 		</sl-card>
 	</form>
 }
+
+// ╭──────────────────────────────────────────────────────╮
+// │                  Passkey Components                  │
+// ╰──────────────────────────────────────────────────────╯
