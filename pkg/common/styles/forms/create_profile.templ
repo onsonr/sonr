@@ -18,7 +18,7 @@ func (d CreateProfileData) IsHumanLabel() string {
 // ProfileForm is a standard form styled like a card
 templ CreateProfile(action string, method string, data CreateProfileData) {
 	<form action={ templ.SafeURL(action) } method={ method }>
-		<sl-card class="card-form gap-4 max-w-lg">
+		<sl-card class="card-form gap-4 w-full max-w-lg mx-auto px-4 sm:px-6">
 			<div slot="header">
 				<div class="w-full py-1">
 					<sl-progress-bar value="50"></sl-progress-bar>
@@ -47,12 +47,29 @@ templ CreateProfile(action string, method string, data CreateProfileData) {
 				</sl-button>
 			</div>
 			<style>
-  		.card-form [slot='footer'] {
-    		display: flex;
-    		justify-content: space-between;
-    		align-items: center;
-  		}
-		</style>
+				.card-form {
+					margin: 1rem;
+				}
+				.card-form [slot='footer'] {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					flex-wrap: wrap;
+					gap: 1rem;
+				}
+				@media (max-width: 640px) {
+					.card-form {
+						margin: 0.5rem;
+					}
+					.card-form [slot='footer'] {
+						flex-direction: column-reverse;
+						width: 100%;
+					}
+					.card-form [slot='footer'] sl-button {
+						width: 100%;
+					}
+				}
+			</style>
 		</sl-card>
 	</form>
 }
