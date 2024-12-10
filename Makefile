@@ -329,7 +329,7 @@ build-motr:
 	GOOS=js GOARCH=wasm go build -o static/wasm/app.wasm ./cmd/motr/main.go
 
 build-hway: gen-templ
-	go build -o build/hway ./cmd/hway/main.go
+	go build -o build/hway ./cmd/hway
 
 logs-hway: init-env
 	bin/process-compose process logs hway --port $(PC_PORT_NUM) --follow
