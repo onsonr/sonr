@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	session "github.com/onsonr/sonr/internal/vault/session"
+	"github.com/onsonr/sonr/internal/vault/context"
 )
 
 func Handler(c echo.Context) error {
@@ -25,24 +25,24 @@ func Handler(c echo.Context) error {
 
 // Initial users have no authorization, user handle, or vault address
 func isInitial(c echo.Context) bool {
-	noAuth := !session.HasAuthorization(c)
-	noUserHandle := !session.HasUserHandle(c)
-	noVaultAddress := !session.HasVaultAddress(c)
+	noAuth := !context.HasAuthorization(c)
+	noUserHandle := !context.HasUserHandle(c)
+	noVaultAddress := !context.HasVaultAddress(c)
 	return noUserHandle && noVaultAddress && noAuth
 }
 
 // Expired users have either a user handle or vault address
 func isExpired(c echo.Context) bool {
-	noAuth := !session.HasAuthorization(c)
-	hasUserHandle := session.HasUserHandle(c)
-	hasVaultAddress := session.HasVaultAddress(c)
+	noAuth := !context.HasAuthorization(c)
+	hasUserHandle := context.HasUserHandle(c)
+	hasVaultAddress := context.HasVaultAddress(c)
 	return noAuth && hasUserHandle || noAuth && hasVaultAddress
 }
 
 // Returning users have a valid authorization, and either a user handle or vault address
 func isReturning(c echo.Context) bool {
-	hasAuth := session.HasAuthorization(c)
-	hasUserHandle := session.HasUserHandle(c)
-	hasVaultAddress := session.HasVaultAddress(c)
+	hasAuth := context.HasAuthorization(c)
+	hasUserHandle := context.HasUserHandle(c)
+	hasVaultAddress := context.HasVaultAddress(c)
 	return hasAuth && (hasUserHandle || hasVaultAddress)
 }
