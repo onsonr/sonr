@@ -3,36 +3,129 @@ version: 2
 project_name: sonr
 
 builds:
-  - id: hway
-    goos: [linux, darwin]
-    goarch: [amd64, arm64]
-    main: ./cmd/hway
-    binary: hway
-    builder: go
-    gobinary: go
-    command: build
-    ldflags:
-      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
   - id: sonr
-    goos: [linux, darwin]
-    goarch: [amd64, arm64]
     main: ./cmd/sonrd
     binary: sonrd
     builder: go
     gobinary: go
-    command: build
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    goamd64:
+      - v1
+    flags:
+      - -mod=readonly
+      - -trimpath
     ldflags:
-      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
+      - -X github.com/cosmos/cosmos-sdk/version.Name=sonr
+      - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
+      - -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}}
+      - -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
+      - -X "github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger"
+    tags:
+      - netgo
+      - ledger
 
+  - id: hway
+    main: ./cmd/hway
+    binary: hway
+    builder: go
+    gobinary: go
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    flags:
+      - -mod=readonly
+      - -trimpath
+    goamd64:
+      - v1
+    tags:
+      - netgo
+    ldflags:
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
 archives:
-  - id: default
-    builds: [hway, sonr]
-    name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}'
+  - id: sonr
+    builds: [sonr]
+    name_template: >-
+      sonr_{{ .Version }}_
+      {{- title .Os }}_{{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
     format: tar.gz
     files:
       - src: README*
       - src: CHANGELOG*
-      - src: LICENSE*
+    wrap_in_directory: true
+
+  - id: hway
+    builds: [hway]
+    name_template: >-
+      hway_{{ .Version }}_
+      {{- title .Os }}_{{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+    format: tar.gz
+    files:
+      - src: README*
+      - src: CHANGELOG*
+    wrap_in_directory: true
+
+nfpms:
+  - id: hway
+    package_name: hway
+    file_name_template: "{{ .ConventionalFileName }}"
+    builds: [hway]
+    vendor: Sonr
+    homepage: "https://onsonr.dev"
+    maintainer: "Sonr <support@onsonr.dev>"
+    description: "Sonr Highway is a decentralized, permissionless, and censorship-resistant identity network proxy."
+    license: "Apache 2.0"
+    formats:
+      - rpm
+      - deb
+      - apk
+    dependencies:
+      - ipfs
+    contents:
+      - src: README*
+        dst: /usr/share/doc/hway
+    bindir: /usr/bin
+    section: net
+    priority: optional
+    # Add these lines to match build config
+
+  - id: sonr
+    package_name: sonrd
+    file_name_template: "{{ .ConventionalFileName }}"
+    builds: [sonr]
+    vendor: Sonr
+    homepage: "https://onsonr.dev"
+    maintainer: "Sonr <support@onsonr.dev>"
+    description: "Sonr is a decentralized, permissionless, and censorship-resistant identity network."
+    license: "Apache 2.0"
+    formats:
+      - rpm
+      - deb
+      - apk
+    dependencies:
+      - ipfs
+    contents:
+      - src: README*
+        dst: /usr/share/doc/sonrd
+    bindir: /usr/bin
+    section: net
+    priority: optional
+    # Add these lines to match build config
 
 brews:
   - name: hway
@@ -51,6 +144,7 @@ brews:
       name: homebrew-tap
       branch: master
       token: "{{ .Env.GITHUB_PERSONAL_AUTH_TOKEN }}"
+
   - name: sonr
     ids: [sonr]
     commit_author:
@@ -79,7 +173,14 @@ release:
   extra_files:
     - glob: ./CHANGELOG*
     - glob: ./README*
-    - glob: ./LICENSE*
+
+cloudsmiths:
+  - organization: sonr
+    repository: sonr
+    distributions:
+      deb: "ubuntu/xenial"
+      alpine: "alpine/v3.8"
+      rpm: "el/7"
 
 announce:
   telegram:
