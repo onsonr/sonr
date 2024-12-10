@@ -1,0 +1,1364 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Sonr is a decentralized identity network built on the Cosmos-sdk. It has early origins as a peer-to-peer file sharing network, but has since evolved into a platform for decentralized authentication and authorization. The early lessons taught from our file sharing roots are used as our theology for building the Sonr Blockchain.">
+      
+      
+      
+        <link rel="canonical" href="https://onsonr.dev/changelog/">
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../concepts/Chain-Modules/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.48">
+    
+    
+      
+        <title>Index - Sonr Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Geist:300,300i,400,400i,700,700i%7CGeist+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Geist";--md-code-font:"Geist Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#v0519-2024-12-06" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Sonr Docs" class="md-header__button md-logo" aria-label="Sonr Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Sonr Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Index
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1M8 13h8v-2H8zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4a5 5 0 0 0 5-5 5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="cyan" data-md-color-accent="cyan"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="cyan"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5M7 15a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+    
+  
+  Introduction
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+    
+  
+  Changelog
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../concepts/Chain-Modules/" class="md-tabs__link">
+          
+  
+    
+  
+  Concepts
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../foundations/" class="md-tabs__link">
+          
+  
+    
+  
+  Foundations
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Sonr Docs" class="md-nav__button md-logo" aria-label="Sonr Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Sonr Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Changelog
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Concepts
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/Chain-Modules/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chain Modules
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/Consumer-Launch/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Consumer Chain Launch Process
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/Self-Custody/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Self Custody
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/System-Architecture/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    System Architecture
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/Token-Economy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Token Economy
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/ibc-accounts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Interchain Accounts
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/nebula-ui/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Nebula ui
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/sdk-usage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sdk usage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/svc-management/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Svc management
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../foundations/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Foundations
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Foundations
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../foundations/hway/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hway
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../foundations/motr/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Motr
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  <h1>Index</h1>
+
+<h2 id="v0519-2024-12-06">v0.5.19 (2024-12-06)</h2>
+<h3 id="feat">Feat</h3>
+<ul>
+<li>add support for parent field and resources list in Capability message</li>
+<li>add fast reflection methods for Capability and Resource</li>
+<li>add gum package and update devbox configuration</li>
+<li>add new button components and layout improvements</li>
+</ul>
+<h3 id="fix">Fix</h3>
+<ul>
+<li>adjust fullscreen modal close button margin</li>
+<li>update devbox lockfile</li>
+<li>resolve rendering issue in login modal</li>
+</ul>
+<h3 id="refactor">Refactor</h3>
+<ul>
+<li>rename accaddr package to address</li>
+<li>Update Credential table to match WebAuthn Credential Descriptor</li>
+<li>Deployment setup</li>
+<li>migrate build system from Taskfile to Makefile</li>
+<li>rename Assertion to Account and update related code</li>
+<li>remove unused TUI components</li>
+<li>Move IPFS interaction functions to common package</li>
+<li>remove dependency on DWN.pkl</li>
+<li>remove unused dependencies and simplify module imports</li>
+<li>Rename x/vault -&gt; x/dwn and x/service -&gt; x/svc</li>
+<li>move resolver formatter to services package</li>
+<li>remove web documentation</li>
+<li>update devbox configuration and scripts</li>
+<li>rename layout component to root</li>
+<li>refactor authentication pages into their own modules</li>
+<li>update templ version to v0.2.778 and remove unused air config</li>
+<li>move signer implementation to mpc package</li>
+</ul>
+<h2 id="v0518-2024-11-06">v0.5.18 (2024-11-06)</h2>
+<h2 id="v0517-2024-11-05">v0.5.17 (2024-11-05)</h2>
+<h3 id="feat_1">Feat</h3>
+<ul>
+<li>add remote client constructor</li>
+<li>add avatar image components</li>
+<li>add SVG CDN Illustrations to marketing architecture</li>
+<li><strong>marketing</strong>: refactor marketing page components</li>
+<li>Refactor intro video component to use a proper script template</li>
+<li>Move Alpine.js script initialization to separate component</li>
+<li>Add intro video modal component</li>
+<li>add homepage architecture section</li>
+<li>add Hero section component with stats and buttons</li>
+<li><strong>css</strong>: add new utility classes for group hover</li>
+<li>implement authentication register finish endpoint</li>
+<li>add controller creation step to allocate</li>
+<li>Update service module README based on protobuf files</li>
+<li>Update x/macaroon/README.md with details from protobuf files</li>
+<li>update Vault README with details from proto files</li>
+</ul>
+<h3 id="fix_1">Fix</h3>
+<ul>
+<li>update file paths in error messages</li>
+<li>update intro video modal script</li>
+<li>include assets generation in wasm build</li>
+</ul>
+<h3 id="refactor_1">Refactor</h3>
+<ul>
+<li>update marketing section architecture</li>
+<li>change verification table id</li>
+<li><strong>proto</strong>: remove macaroon proto</li>
+<li>rename ValidateBasic to Validate</li>
+<li>rename session cookie key</li>
+<li>remove unused sync-initial endpoint</li>
+<li>remove formatter.go from service module</li>
+</ul>
+<h2 id="v0516-2024-10-21">v0.5.16 (2024-10-21)</h2>
+<h2 id="v0515-2024-10-21">v0.5.15 (2024-10-21)</h2>
+<h2 id="v0514-2024-10-21">v0.5.14 (2024-10-21)</h2>
+<h3 id="refactor_2">Refactor</h3>
+<ul>
+<li>remove StakingKeeper dependency from GlobalFeeDecorator</li>
+</ul>
+<h2 id="v0513-2024-10-21">v0.5.13 (2024-10-21)</h2>
+<h3 id="feat_2">Feat</h3>
+<ul>
+<li>add custom secp256k1 pubkey</li>
+</ul>
+<h3 id="refactor_3">Refactor</h3>
+<ul>
+<li>update gRPC client to use new request types</li>
+<li>use RawPublicKey instead of PublicKey in macaroon issuer</li>
+<li>improve error handling in DID module</li>
+</ul>
+<h2 id="v0512-2024-10-18">v0.5.12 (2024-10-18)</h2>
+<h3 id="feat_3">Feat</h3>
+<ul>
+<li>add User-Agent and Platform to session</li>
+<li>introduce AuthState enum for authentication state</li>
+</ul>
+<h3 id="fix_2">Fix</h3>
+<ul>
+<li><strong>version</strong>: revert version bump to 0.5.11</li>
+<li><strong>version</strong>: update version to 0.5.12</li>
+</ul>
+<h3 id="refactor_4">Refactor</h3>
+<ul>
+<li>remove dependency on proto change detection</li>
+<li>update asset publishing configuration</li>
+</ul>
+<h2 id="v0511-2024-10-10">v0.5.11 (2024-10-10)</h2>
+<h3 id="feat_4">Feat</h3>
+<ul>
+<li>nebula assets served from CDN</li>
+<li>use CDN for nebula frontend assets</li>
+<li>add static hero section content to homepage</li>
+<li>add wrangler scripts for development, build, and deployment</li>
+<li>remove build configuration</li>
+<li>move gateway web code to dedicated directory</li>
+<li>add PubKey fast reflection</li>
+<li><strong>macaroon</strong>: add transaction allowlist/denylist caveats</li>
+<li>add PR labeler</li>
+<li><strong>devbox</strong>: remove hway start command</li>
+<li>add GitHub Actions workflow for running tests</li>
+<li>add workflow for deploying Hway to Cloudflare Workers</li>
+<li>Publish configs to R2</li>
+<li>integrate nebula UI with worker-assets-gen</li>
+<li>extract reusable layout components</li>
+<li>Implement service worker for IPFS vault</li>
+<li>implement CDN support for assets</li>
+<li>add payment method support</li>
+<li>add support for public key management</li>
+<li>add ModalForm component</li>
+<li>add LoginStart and RegisterStart routes</li>
+<li>implement authentication views</li>
+<li>add json tags to config structs</li>
+<li>implement templ forms for consent privacy, credential assert, credential register, and profile details</li>
+<li><strong>vault</strong>: introduce assembly of the initial vault</li>
+<li>add client logos to homepage</li>
+<li>add tailwind utility classes</li>
+<li>implement new profile card component</li>
+</ul>
+<h3 id="fix_3">Fix</h3>
+<ul>
+<li>Correct source directory for asset publishing</li>
+<li>install dependencies before nebula build</li>
+<li>update Schema service to use new API endpoint</li>
+<li>fix broken logo image path</li>
+</ul>
+<h3 id="refactor_5">Refactor</h3>
+<ul>
+<li>remove unnecessary branch configuration from scheduled release workflow</li>
+<li>update dwn configuration generation import path</li>
+<li>use nebula/routes instead of nebula/global</li>
+<li>move index template to routes package</li>
+<li>remove cdn package and move assets to global styles</li>
+<li>move nebula assets to hway build directory</li>
+<li>remove docker build and deployment</li>
+<li>rename internal/session package to internal/ctx</li>
+<li>remove unused fields from</li>
+<li>rename PR_TEMPLATE to PULL_REQUEST_TEMPLATE</li>
+<li>remove devbox.json init hook</li>
+<li>rename sonrd dockerfile to Dockerfile</li>
+<li>remove unused dependency</li>
+<li>rename 'global/cdn' to 'assets'</li>
+<li>move CDN assets to separate folder</li>
+<li>move Pkl module definitions to dedicated package</li>
+<li>move CDN assets to js/ folder</li>
+<li>remove unused component templates</li>
+<li>move ui components to global</li>
+<li>move view handlers to router package</li>
+</ul>
+<h2 id="v0510-2024-10-07">v0.5.10 (2024-10-07)</h2>
+<h3 id="feat_5">Feat</h3>
+<ul>
+<li><strong>blocks</strong>: remove button component</li>
+</ul>
+<h2 id="v059-2024-10-06">v0.5.9 (2024-10-06)</h2>
+<h3 id="feat_6">Feat</h3>
+<ul>
+<li>add Motr support</li>
+<li>update UIUX PKL to utilize optional fields</li>
+</ul>
+<h3 id="fix_4">Fix</h3>
+<ul>
+<li>Update source directory for asset publishing</li>
+</ul>
+<h2 id="v058-2024-10-04">v0.5.8 (2024-10-04)</h2>
+<h3 id="refactor_6">Refactor</h3>
+<ul>
+<li>Remove unused logs configuration</li>
+</ul>
+<h2 id="v057-2024-10-04">v0.5.7 (2024-10-04)</h2>
+<h3 id="feat_7">Feat</h3>
+<ul>
+<li><strong>devbox</strong>: use process-compose for testnet services</li>
+<li>remove motr.mjs dependency</li>
+<li>add markdown rendering to issue templates</li>
+<li>update issue templates for better clarity</li>
+<li>add issue templates for tracking and task issues</li>
+<li>add issue templates for bug report and tracking</li>
+<li>introduce docker-compose based setup</li>
+</ul>
+<h3 id="refactor_7">Refactor</h3>
+<ul>
+<li>update issue template headings</li>
+<li>rename bug-report issue template to bug</li>
+</ul>
+<h2 id="v056-2024-10-03">v0.5.6 (2024-10-03)</h2>
+<h3 id="feat_8">Feat</h3>
+<ul>
+<li>add hway and sonr processes to dev environment</li>
+</ul>
+<h2 id="v055-2024-10-03">v0.5.5 (2024-10-03)</h2>
+<h3 id="feat_9">Feat</h3>
+<ul>
+<li>add rudimentary DidController table</li>
+<li>update home section with new features</li>
+<li>introduce Home model and refactor views</li>
+<li><strong>nebula</strong>: create Home model for home page</li>
+</ul>
+<h3 id="refactor_8">Refactor</h3>
+<ul>
+<li>reorganize pkl files for better separation of concerns</li>
+<li>rename msg_server_test.go to rpc_test.go</li>
+</ul>
+<h2 id="v054-2024-10-02">v0.5.4 (2024-10-02)</h2>
+<h2 id="v053-2024-10-02">v0.5.3 (2024-10-02)</h2>
+<h3 id="fix_5">Fix</h3>
+<ul>
+<li>remove unnecessary telegram message template</li>
+</ul>
+<h2 id="v052-2024-10-02">v0.5.2 (2024-10-02)</h2>
+<h3 id="feat_10">Feat</h3>
+<ul>
+<li><strong>service</strong>: integrate group module (#1104)</li>
+</ul>
+<h3 id="refactor_9">Refactor</h3>
+<ul>
+<li>revert version bump to 0.5.1</li>
+</ul>
+<h2 id="v051-2024-10-02">v0.5.1 (2024-10-02)</h2>
+<h3 id="refactor_10">Refactor</h3>
+<ul>
+<li>move Motr API to state package</li>
+</ul>
+<h2 id="v050-2024-10-02">v0.5.0 (2024-10-02)</h2>
+<h3 id="feat_11">Feat</h3>
+<ul>
+<li>allow multiple macaroons with the same id</li>
+</ul>
+<h2 id="v045-2024-10-02">v0.4.5 (2024-10-02)</h2>
+<h3 id="fix_6">Fix</h3>
+<ul>
+<li>use correct secret for docker login</li>
+</ul>
+<h2 id="v044-2024-10-02">v0.4.4 (2024-10-02)</h2>
+<h2 id="v043-2024-10-02">v0.4.3 (2024-10-02)</h2>
+<h3 id="feat_12">Feat</h3>
+<ul>
+<li><strong>release</strong>: add docker images for sonrd and motr</li>
+<li>update homepage with new visual design</li>
+<li>add DID to vault genesis schema</li>
+<li>add video component</li>
+<li>add video component</li>
+<li>add hx-get attribute to primary button in hero section</li>
+</ul>
+<h3 id="fix_7">Fix</h3>
+<ul>
+<li><strong>layout</strong>: add missing favicon</li>
+<li><strong>hero</strong>: Use hx-swap for primary button to prevent flicker</li>
+</ul>
+<h3 id="refactor_11">Refactor</h3>
+<ul>
+<li>use single GITHUB_TOKEN for release workflow</li>
+<li>update workflow variables</li>
+</ul>
+<h2 id="v042-2024-10-01">v0.4.2 (2024-10-01)</h2>
+<h3 id="refactor_12">Refactor</h3>
+<ul>
+<li>use single GITHUB_TOKEN for release workflow</li>
+</ul>
+<h2 id="v041-2024-10-01">v0.4.1 (2024-10-01)</h2>
+<h3 id="feat_13">Feat</h3>
+<ul>
+<li>Implement session management</li>
+<li>allow manual release triggers</li>
+<li>add Input and RegistrationForm models</li>
+<li>add new utility classes</li>
+<li>add login and registration pages</li>
+<li>add tailwindcss utilities</li>
+<li>add support for ARM64 architecture</li>
+<li>add DWN resolver field</li>
+<li>add stats section to homepage</li>
+<li>implement hero section using Pkl</li>
+<li>add PKL schema for message formats</li>
+<li>add Homebrew tap for sonr</li>
+<li>update release workflow to use latest tag</li>
+</ul>
+<h3 id="fix_8">Fix</h3>
+<ul>
+<li><strong>version</strong>: update version number to 0.4.0</li>
+<li>update release workflow to use latest tag</li>
+<li><strong>versioning</strong>: revert version to 0.9.0</li>
+<li><strong>cta</strong>: Fix typo in CTA title</li>
+<li>change bento section title to reflect security focus</li>
+<li>adjust hero image dimensions</li>
+<li><strong>Input</strong>: Change type from to</li>
+<li>update hero image height in config.pkl</li>
+</ul>
+<h3 id="refactor_13">Refactor</h3>
+<ul>
+<li>move home page sections to home package</li>
+<li>rename motrd to motr</li>
+<li>update hero image dimensions</li>
+<li>move nebula configuration to static file</li>
+<li>rename buf-publish.yml to publish-assets.yml</li>
+<li>remove unused field from</li>
+</ul>
+<h2 id="v040-2024-09-30">v0.4.0 (2024-09-30)</h2>
+<h3 id="feat_14">Feat</h3>
+<ul>
+<li><strong>dwn</strong>: add wasm build for dwn</li>
+<li>add macaroon and oracle genesis states</li>
+<li>add scheduled binary release workflow</li>
+<li>introduce process-compose for process management</li>
+<li>add counter animation to hero section</li>
+<li>add registration page</li>
+</ul>
+<h3 id="fix_9">Fix</h3>
+<ul>
+<li>Enable scheduled release workflow</li>
+</ul>
+<h3 id="refactor_14">Refactor</h3>
+<ul>
+<li>remove old changelog entries</li>
+<li>remove unnecessary checkout in scheduled-release workflow</li>
+<li>rename build ID to sonr</li>
+<li>remove unnecessary release existence check</li>
+<li>move dwn wasm build to pkg directory</li>
+</ul>
+<h2 id="v031-2024-09-29">v0.3.1 (2024-09-29)</h2>
+<h3 id="refactor_15">Refactor</h3>
+<ul>
+<li>move nebula/pages to pkg/nebula/pages</li>
+</ul>
+<h2 id="v030-2024-09-29">v0.3.0 (2024-09-29)</h2>
+<h3 id="feat_15">Feat</h3>
+<ul>
+<li>add buf.lock for proto definitions</li>
+</ul>
+<h3 id="fix_10">Fix</h3>
+<ul>
+<li>remove unused linting rules</li>
+<li>update proto breaking check target to master branch</li>
+</ul>
+<h3 id="refactor_16">Refactor</h3>
+<ul>
+<li>remove unused lock files and configurations</li>
+</ul>
+<h2 id="v020-2024-09-29">v0.2.0 (2024-09-29)</h2>
+<h3 id="feat_16">Feat</h3>
+<ul>
+<li>disable goreleaser workflow</li>
+<li>update workflows to include master branch</li>
+<li>remove global style declaration</li>
+<li><strong>oracle</strong>: add oracle module</li>
+<li>optimize IPFS configuration for better performance</li>
+<li>add local IPFS bootstrap script and refactor devbox config</li>
+<li>add AllocateVault HTTP endpoint</li>
+<li>add WebAuthn credential management functionality</li>
+<li>remove unused coins interface</li>
+<li>remove global integrity proof from genesis state</li>
+<li>add vault module</li>
+<li>enable buf.build publishing on master and develop branches</li>
+<li>add Gitflow workflow for syncing branches</li>
+<li>add automated production release workflow</li>
+<li><strong>ui</strong>: implement profile page</li>
+<li>add automated production release workflow</li>
+<li><strong>did</strong>: remove unused proto files</li>
+<li>add enums.pulsar.go file for PermissionScope enum (#4)</li>
+<li>add initial DID implementation</li>
+<li>remove builder interface</li>
+<li>add basic UI for block explorer</li>
+<li>add Usage: pkl [OPTIONS] COMMAND [ARGS]...</li>
+<li>use SQLite embedded driver</li>
+<li>add DID method for each coin</li>
+<li>Expand KeyType enum and update KeyInfo message in genesis.proto</li>
+<li>Add whitelisted key types to genesis params</li>
+<li>Add DID grants protobuf definition</li>
+<li>Add fields to KeyInfo struct to distinguish CBOR and standard blockchain key types</li>
+<li>Add new message types for AssetInfo, ChainInfo, Endpoint, ExplorerInfo, FeeInfo, and KeyInfo</li>
+<li>run sonr-node container in testnet network and make network external</li>
+<li>Add docker-compose.yaml file to start a Sonr testnet node</li>
+<li>configure Sonr testnet environment</li>
+<li>Update Dockerfile to start and run a testnet</li>
+<li>add Equal methods for AssetInfo and ChainInfo types</li>
+<li>Add ProveWitness and SyncVault RPCs</li>
+<li>Add MsgRegisterService to handle service registration</li>
+<li>Add MsgRegisterService to handle service registration</li>
+<li>add enums.pulsar.go file for PermissionScope enum</li>
+</ul>
+<h3 id="fix_11">Fix</h3>
+<ul>
+<li>ensure go version is up-to-date</li>
+<li>use GITHUB_TOKEN for version bump workflow</li>
+<li>update account table interface to use address, chain and network</li>
+<li><strong>ci</strong>: update docker vm release workflow with new token</li>
+<li>use mnemonic phrases for test account keys</li>
+<li>reduce motr proxy shutdown timeout</li>
+<li><strong>nebula</strong>: use bunx for tailwindcss build</li>
+<li><strong>proto</strong>: update protobuf message index numbers</li>
+<li><strong>ante</strong>: reduce POA rate floor and ceiling</li>
+<li>Update proc_list_width in mprocs.yaml</li>
+<li>Add service to database when registering</li>
+<li>pin added did documents to local ipfs node</li>
+<li>remove extra spaces in typeUrl</li>
+<li><strong>release</strong>: remove unnecessary quotes in tag pattern</li>
+<li>remove unused imports and simplify KeyInfo message</li>
+<li>bind node ports to localhost</li>
+<li>Update docker-compose network name to dokploy-network</li>
+<li>Update network name to dokploy</li>
+<li>remove unused port mapping</li>
+<li>Update docker-compose.yaml to use correct volume path</li>
+<li>update docker-compose volume name</li>
+<li>Update docker-compose.yaml to use shell directly for sonrd command</li>
+<li>replace "sh" with "/bin/sh" in docker-compose.yaml command</li>
+<li>Update runner image dependencies for debian-11</li>
+<li><strong>deps</strong>: update golang image to 1.21</li>
+<li><strong>chains</strong>: update nomic chain build target</li>
+<li>Remove unused <code>Meta</code> message from <code>genesis.proto</code></li>
+<li>Add ProveWitness and SyncVault RPCs</li>
+</ul>
+<h3 id="refactor_17">Refactor</h3>
+<ul>
+<li>adjust source directory for config files (#1102)</li>
+<li>Use actions/checkout@v4</li>
+<li>remove unused master branch from CI workflow</li>
+<li>rename github token secret</li>
+<li>remove unnecessary x-cloak styles</li>
+<li>optimize oracle genesis proto</li>
+<li>remove unused code related to whitelisted assets</li>
+<li>update buf publish source directory</li>
+<li>adjust devbox configuration to reflect nebula changes</li>
+<li>rename msg_server.go to rpc.go</li>
+<li>remove devbox integration</li>
+<li>move dwn package to app/config</li>
+<li>move configuration files to app directory</li>
+<li>extract root command creation to separate file</li>
+<li>move ipfs setup to function</li>
+<li>remove unnecessary proxy config</li>
+<li>rename script to</li>
+<li>move DWN proxy server logic to separate file</li>
+<li>use htmx instead of dwn for vault client</li>
+<li>remove unused environment variables</li>
+<li>simplify verification method structure</li>
+<li>use staking keeper in DID keeper</li>
+<li>remove unused dependencies</li>
+<li>remove unused image building workflow</li>
+<li>add field to</li>
+<li>Update KeyKind Enum to have proper naming conventions</li>
+<li>Update <code>DIDNamespace</code> to have proper naming convention</li>
+<li>expose ports directly in docker-compose</li>
+<li>remove unused port mappings</li>
+<li>streamline script execution</li>
+<li>use CMD instead of ENTRYPOINT in Dockerfile</li>
+<li><strong>deps</strong>: Upgrade Debian base image to 11</li>
+<li>Simplify the types and properties to keep a consistent structure for the blockchain</li>
+<li>remove PERMISSION_SCOPE_IDENTIFIERS_ENS enum value</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Previous: Introduction">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Introduction
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../concepts/Chain-Modules/" class="md-footer__link md-footer__link--next" aria-label="Next: Chain Modules">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Chain Modules
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["announce.dismiss", "content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.code.select", "content.tooltips", "header.autohide", "navigation.footer", "navigation.indexes", "navigation.instant", "navigation.instant.prefetch", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow", "toc.integrate"], "search": "../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.83f73b43.min.js"></script>
+      
+    
+  </body>
+</html>
