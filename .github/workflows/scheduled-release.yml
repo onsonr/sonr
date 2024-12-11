@@ -1,17 +1,16 @@
-name: Scheduled Release
+name: Versioned Release
 
 on:
-  workflow_dispatch:
   push:
     tags:
-      - v*
+      - "v*"
 
 permissions:
   contents: write
 
 jobs:
   goreleaser:
-    name: Release motr, sonrd, and DWN
+    name: Run GoReleaser
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
@@ -21,6 +20,9 @@ jobs:
           repository: onsonr/sonr
           fetch-depth: 0
           fetch-tags: true
+
+      - name: Checkout Latest Tag
+        run: git checkout $(git describe --tags --abbrev=0)
 
       - uses: actions/setup-go@v5
         with:
