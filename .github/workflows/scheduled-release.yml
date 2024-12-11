@@ -3,14 +3,30 @@ name: Versioned Release
 on:
   push:
     tags:
-      - "v*"
+      - "*"
 
 permissions:
   contents: write
 
 jobs:
+  check-release:
+    name: Check Existing Release
+    runs-on: ubuntu-latest
+    outputs:
+      release_exists: ${{ steps.check.outputs.release_exists }}
+    steps:
+      - name: Check if release exists
+        id: check
+        run: |
+          RELEASE_EXISTS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/onsonr/sonr/releases/tags/${GITHUB_REF#refs/tags/}" \
+            | jq -r 'if .message == "Not Found" then "false" else "true" end')
+          echo "release_exists=$RELEASE_EXISTS" >> "$GITHUB_OUTPUT"
+
   goreleaser:
     name: Run GoReleaser
+    needs: check-release
+    if: needs.check-release.outputs.release_exists == 'false'
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
