@@ -1,3 +1,10 @@
+## v0.5.23 (2024-12-11)
+
+### Refactor
+
+- rename scheduled release workflow to versioned release
+- remove changelog from release artifacts
+
 ## v0.5.22 (2024-12-11)
 
 ### Feat
