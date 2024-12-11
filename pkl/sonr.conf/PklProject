@@ -17,6 +17,6 @@
 amends "../basePklProject.pkl"
 
 package {
-  name = "sonr.motr"
+  name = "sonr.conf"
   version = "0.0.1"
 }

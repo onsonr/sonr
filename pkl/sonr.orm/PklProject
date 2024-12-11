@@ -13,10 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //===----------------------------------------------------------------------===//
-/// Configuration files for integrating the Matrix service
+/// Common types for operations across the sonr ecosystem
 amends "../basePklProject.pkl"
 
 package {
-  name = "ipfs.net"
-  version = "0.0.4"
+  name = "sonr.orm"
+  version = "0.0.1"
 }

@@ -1,15 +1,16 @@
-package config
+package embed
 
 import (
 	"reflect"
 	"strings"
 
 	"github.com/onsonr/sonr/pkg/common/models"
+	config "github.com/onsonr/sonr/pkg/config/motr"
 )
 
 // DefaultSchema returns the default schema
-func DefaultSchema() *Schema {
-	return &Schema{
+func DefaultSchema() *config.Schema {
+	return &config.Schema{
 		Version:    SchemaVersion,
 		Account:    getSchema(&models.Account{}),
 		Asset:      getSchema(&models.Asset{}),

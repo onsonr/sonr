@@ -1,5 +1,5 @@
-// Code generated from Pkl module `sonr.hway.Env`. DO NOT EDIT.
-package config
+// Code generated from Pkl module `sonr.conf.Hway`. DO NOT EDIT.
+package hway
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"github.com/apple/pkl-go/pkl"
 )
 
-type Env interface {
+type Hway interface {
 	GetServePort() int
 
 	GetConfigDir() string
@@ -25,9 +25,9 @@ type Env interface {
 	GetSonrRpcUrl() string
 }
 
-var _ Env = (*EnvImpl)(nil)
+var _ Hway = (*HwayImpl)(nil)
 
-type EnvImpl struct {
+type HwayImpl struct {
 	ServePort int `pkl:"servePort"`
 
 	ConfigDir string `pkl:"configDir"`
@@ -45,40 +45,40 @@ type EnvImpl struct {
 	SonrRpcUrl string `pkl:"sonrRpcUrl"`
 }
 
-func (rcv *EnvImpl) GetServePort() int {
+func (rcv *HwayImpl) GetServePort() int {
 	return rcv.ServePort
 }
 
-func (rcv *EnvImpl) GetConfigDir() string {
+func (rcv *HwayImpl) GetConfigDir() string {
 	return rcv.ConfigDir
 }
 
-func (rcv *EnvImpl) GetSqliteFile() string {
+func (rcv *HwayImpl) GetSqliteFile() string {
 	return rcv.SqliteFile
 }
 
-func (rcv *EnvImpl) GetChainId() string {
+func (rcv *HwayImpl) GetChainId() string {
 	return rcv.ChainId
 }
 
-func (rcv *EnvImpl) GetIpfsGatewayUrl() string {
+func (rcv *HwayImpl) GetIpfsGatewayUrl() string {
 	return rcv.IpfsGatewayUrl
 }
 
-func (rcv *EnvImpl) GetSonrApiUrl() string {
+func (rcv *HwayImpl) GetSonrApiUrl() string {
 	return rcv.SonrApiUrl
 }
 
-func (rcv *EnvImpl) GetSonrGrpcUrl() string {
+func (rcv *HwayImpl) GetSonrGrpcUrl() string {
 	return rcv.SonrGrpcUrl
 }
 
-func (rcv *EnvImpl) GetSonrRpcUrl() string {
+func (rcv *HwayImpl) GetSonrRpcUrl() string {
 	return rcv.SonrRpcUrl
 }
 
-// LoadFromPath loads the pkl module at the given path and evaluates it into a Env
-func LoadFromPath(ctx context.Context, path string) (ret Env, err error) {
+// LoadFromPath loads the pkl module at the given path and evaluates it into a Hway
+func LoadFromPath(ctx context.Context, path string) (ret Hway, err error) {
 	evaluator, err := pkl.NewEvaluator(ctx, pkl.PreconfiguredOptions)
 	if err != nil {
 		return nil, err
@@ -93,9 +93,9 @@ func LoadFromPath(ctx context.Context, path string) (ret Env, err error) {
 	return ret, err
 }
 
-// Load loads the pkl module at the given source and evaluates it with the given evaluator into a Env
-func Load(ctx context.Context, evaluator pkl.Evaluator, source *pkl.ModuleSource) (Env, error) {
-	var ret EnvImpl
+// Load loads the pkl module at the given source and evaluates it with the given evaluator into a Hway
+func Load(ctx context.Context, evaluator pkl.Evaluator, source *pkl.ModuleSource) (Hway, error) {
+	var ret HwayImpl
 	if err := evaluator.EvaluateModule(ctx, source, &ret); err != nil {
 		return nil, err
 	}

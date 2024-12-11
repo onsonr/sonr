@@ -32,3 +32,15 @@ if [ ! -f "$ROOT_DIR/bin/process-compose" ]; then
   sh -c "$(curl --location https://raw.githubusercontent.com/F1bonacc1/process-compose/main/scripts/get-pc.sh)" -- -d -b $ROOT_DIR/bin
 fi
 
+# Check if pkl-gen-go is installed to $GOPATH/bin
+if [ ! -f "$GOPATH/bin/pkl-gen-go" ]; then
+  echo "pkl-gen-go not found. Installing..."
+  go install github.com/apple/pkl-go/cmd/pkl-gen-go@latest
+fi
+
+# Check if templ is installed to $GOPATH/bin
+if [ ! -f "$GOPATH/bin/templ" ]; then
+  echo "templ not found. Installing..."
+  go install github.com/a-h/templ/cmd/templ@latest
+fi
+

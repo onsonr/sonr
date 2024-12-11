@@ -1,4 +1,4 @@
-package config
+package embed
 
 import "encoding/json"
 

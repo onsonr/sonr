@@ -10,8 +10,8 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/onsonr/sonr/crypto/ucan"
 	"github.com/onsonr/sonr/internal/gateway"
-	"github.com/onsonr/sonr/internal/gateway/config"
 	"github.com/onsonr/sonr/pkg/common/ipfs"
+	config "github.com/onsonr/sonr/pkg/config/hway"
 	"github.com/onsonr/sonr/pkg/database/sessions"
 	"github.com/onsonr/sonr/pkg/didauth/producer"
 	"github.com/spf13/cobra"
@@ -60,13 +60,13 @@ func rootCmd() *cobra.Command {
 	return cmd
 }
 
-func loadEnvImplFromArgs(args []string) (config.Env, error) {
+func loadEnvImplFromArgs(args []string) (config.Hway, error) {
 	cmd := rootCmd()
 	if err := cmd.ParseFlags(args); err != nil {
 		return nil, err
 	}
 
-	env := &config.EnvImpl{
+	env := &config.HwayImpl{
 		ServePort:      servePort,
 		ConfigDir:      configDir,
 		SqliteFile:     sqliteFile,
@@ -80,7 +80,7 @@ func loadEnvImplFromArgs(args []string) (config.Env, error) {
 }
 
 // setupServer sets up the server
-func setupServer(env config.Env) (*echo.Echo, error) {
+func setupServer(env config.Hway) (*echo.Echo, error) {
 	ipc, err := ipfs.NewClient()
 	if err != nil {
 		return nil, err

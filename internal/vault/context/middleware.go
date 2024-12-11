@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	config "github.com/onsonr/sonr/pkg/config/motr"
 
-	"github.com/onsonr/sonr/internal/vault/types"
 	"github.com/onsonr/sonr/pkg/common"
 )
 
@@ -33,7 +33,7 @@ func Get(c echo.Context) (SessionCtx, error) {
 }
 
 // WebNodeMiddleware establishes a Session Cookie.
-func Middleware(config *types.Config) echo.MiddlewareFunc {
+func Middleware(config *config.Config) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			err := injectConfig(c, config)
@@ -46,7 +46,7 @@ func Middleware(config *types.Config) echo.MiddlewareFunc {
 	}
 }
 
-func injectConfig(c echo.Context, config *types.Config) error {
+func injectConfig(c echo.Context, config *config.Config) error {
 	common.HeaderWrite(c, common.SonrAPIURL, config.SonrApiUrl)
 	common.HeaderWrite(c, common.SonrRPCURL, config.SonrRpcUrl)
 

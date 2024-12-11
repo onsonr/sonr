@@ -1,5 +1,5 @@
-// Code generated from Pkl module `sonr.motr.DWN`. DO NOT EDIT.
-package config
+// Code generated from Pkl module `sonr.conf.Motr`. DO NOT EDIT.
+package motr
 
 type Config struct {
 	IpfsGatewayUrl string `pkl:"ipfsGatewayUrl" json:"ipfsGatewayUrl,omitempty"`

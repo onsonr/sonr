@@ -308,15 +308,13 @@ sh-testnet: mod-tidy
 ###############################################################################
 .PHONY: gen-pkl gen-templ
 
-gen-pkl:
-	go install github.com/apple/pkl-go/cmd/pkl-gen-go@latest
-	pkl-gen-go pkl/sonr.motr/ATN.pkl
-	pkl-gen-go pkl/sonr.hway/Env.pkl
-	pkl-gen-go pkl/sonr.motr/DWN.pkl
-	pkl-gen-go pkl/sonr.hway/ORM.pkl
+gen-pkl: init-env
+	pkl-gen-go pkl/sonr.orm/UCAN.pkl
+	pkl-gen-go pkl/sonr.orm/Models.pkl
+	pkl-gen-go pkl/sonr.conf/Hway.pkl
+	pkl-gen-go pkl/sonr.conf/Motr.pkl
 
-gen-templ:
-	@go install github.com/a-h/templ/cmd/templ@latest
+gen-templ: init-env
 	templ generate
 
 

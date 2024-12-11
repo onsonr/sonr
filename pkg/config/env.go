@@ -4,16 +4,17 @@ import (
 	"context"
 
 	"github.com/apple/pkl-go/pkl"
+	hwayconfig "github.com/onsonr/sonr/pkg/config/hway"
 )
 
 // LoadFromBytes loads the environment from the given bytes
-func LoadFromBytes(data []byte) (Env, error) {
+func LoadHwayFromBytes(data []byte) (hwayconfig.Hway, error) {
 	text := string(data)
-	return LoadFromString(text)
+	return LoadHwayFromString(text)
 }
 
 // LoadFromString loads the environment from the given string
-func LoadFromString(text string) (Env, error) {
+func LoadHwayFromString(text string) (hwayconfig.Hway, error) {
 	evaluator, err := pkl.NewEvaluator(context.Background(), pkl.PreconfiguredOptions)
 	if err != nil {
 		return nil, err
@@ -24,12 +25,12 @@ func LoadFromString(text string) (Env, error) {
 			err = cerr
 		}
 	}()
-	ret, err := Load(context.Background(), evaluator, pkl.TextSource(text))
+	ret, err := hwayconfig.Load(context.Background(), evaluator, pkl.TextSource(text))
 	return ret, err
 }
 
 // LoadFromURL loads the environment from the given URL
-func LoadFromURL(url string) (Env, error) {
+func LoadFromURL(url string) (hwayconfig.Hway, error) {
 	evaluator, err := pkl.NewEvaluator(context.Background(), pkl.PreconfiguredOptions)
 	if err != nil {
 		return nil, err
@@ -40,6 +41,6 @@ func LoadFromURL(url string) (Env, error) {
 			err = cerr
 		}
 	}()
-	ret, err := Load(context.Background(), evaluator, pkl.UriSource(url))
+	ret, err := hwayconfig.Load(context.Background(), evaluator, pkl.UriSource(url))
 	return ret, err
 }
