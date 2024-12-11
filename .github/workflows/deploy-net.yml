@@ -26,8 +26,8 @@ jobs:
       - name: Stop Devnet
         continue-on-error: true
         run: |
-          make stop
+          make stop-uds
 
       - name: Start Devnet
         run: |
-          make start
+          make start-uds

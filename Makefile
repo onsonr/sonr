@@ -339,7 +339,7 @@ logs-sonr: init-env
 ###                           Network Start/Stop                            ###
 ###############################################################################
 
-.PHONY: deploy start start-tui stop restart status
+.PHONY: deploy start start-tui start-uds stop stop-uds restart status
 
 start: build-hway init-env
 	bin/process-compose up --port $(PC_PORT_NUM) --log-file $(PC_LOG_FILE) --detached -f deploy/process-compose.yaml
@@ -347,23 +347,26 @@ start: build-hway init-env
 start-tui: build-hway init-env
 	bin/process-compose up --port $(PC_PORT_NUM) --log-file $(PC_LOG_FILE) -f deploy/process-compose.yaml
 
+start-uds: build-hway init-env
+	bin/process-compose up --use-uds --log-file $(PC_LOG_FILE) --detached -f deploy/process-compose.yaml
+
 stop: init-env
 	bin/process-compose down --port $(PC_PORT_NUM)
+
+stop-uds: init-env
+	bin/process-compose down --use-uds
 
 restart: stop clean start
 
 status: init-env
 	bin/process-compose project state --port $(PC_PORT_NUM)
-
-deploy: 
-	cd ./proto && bunx buf dep update && bunx buf build && bunx buf push
-	sh ./.github/scripts/upload_cdn.sh
-
-
 ###############################################################################
 ###                                     help                                ###
 ###############################################################################
 
+deploy: 
+	cd ./proto && bunx buf dep update && bunx buf build && bunx buf push
+	sh ./.github/scripts/upload_cdn.sh
 
 help:
 	@echo "Usage: make <target>"
