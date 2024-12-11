@@ -63,7 +63,7 @@ func InitialView() templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div class=\"pt-1.5 mb-3 flex flex-col items-center justify-center h-full\"><sl-button size=\"large\" hx-target=\"#container\" hx-get=\"/register\" hx-push-url=\"/register\" type=\"button\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"sonr\"></sl-icon> Get Started <sl-icon slot=\"suffix\" library=\"sonr\" name=\"arrow-right\"></sl-icon></sl-button></div><div class=\"pt-4 flex flex-row items-center justify-center h-full gap-3\"><sl-button circle outline href=\"https://sonr.io\"><sl-icon name=\"home\" library=\"sonr\" label=\"Home\"></sl-icon></sl-button> <sl-button circle outline href=\"https://onsonr.dev\"><sl-icon name=\"docs\" library=\"sonr\" label=\"Docs\"></sl-icon></sl-button> <sl-button circle outline href=\"https://github.com/onsonr/sonr\"><sl-icon name=\"social-github\" library=\"sonr\" label=\"Open Source\"></sl-icon></sl-button></div>")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div class=\"pt-1.5 mb-3 flex flex-col items-center justify-center h-full\"><sl-button size=\"large\" hx-target=\"#container\" hx-get=\"/register\" hx-push-url=\"/register\" type=\"button\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"sonr\"></sl-icon> Get Started <sl-icon slot=\"suffix\" library=\"sonr\" name=\"arrow-right\"></sl-icon></sl-button></div><div class=\"pt-1.5 flex flex-row items-center justify-center h-full gap-3\"><sl-button circle outline href=\"https://sonr.io\"><sl-icon name=\"home\" library=\"sonr\" label=\"Home\"></sl-icon></sl-button> <sl-button circle outline href=\"https://onsonr.dev\"><sl-icon name=\"docs\" library=\"sonr\" label=\"Docs\"></sl-icon></sl-button> <sl-button circle outline href=\"https://github.com/onsonr/sonr\"><sl-icon name=\"social-github\" library=\"sonr\" label=\"Open Source\"></sl-icon></sl-button></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -75,7 +75,7 @@ func InitialView() templ.Component {
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = layout.Root("Sonr.ID").Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = layout.View("Sonr.ID").Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -144,7 +144,7 @@ func ReturningView() templ.Component {
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = layout.Root("Login | Sonr.ID").Render(templ.WithChildren(ctx, templ_7745c5c3_Var5), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = layout.View("Login | Sonr.ID").Render(templ.WithChildren(ctx, templ_7745c5c3_Var5), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

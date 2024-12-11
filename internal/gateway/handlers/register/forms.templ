@@ -3,6 +3,7 @@ package register
 import (
 	"github.com/onsonr/sonr/internal/nebula/card"
 	"github.com/onsonr/sonr/internal/nebula/form"
+	"github.com/onsonr/sonr/internal/nebula/input"
 )
 
 templ formCreateProfile(action string, method string, data CreateProfileData) {
@@ -11,9 +12,9 @@ templ formCreateProfile(action string, method string, data CreateProfileData) {
 			@form.Header() {
 				<sl-progress-bar value="50"></sl-progress-bar>
 			}
-			@form.InputName()
-			@form.InputHandle()
-			@form.InputHumanSlider(data.FirstNumber, data.LastNumber)
+			@input.Name()
+			@input.Handle()
+			@input.HumanSlider(data.FirstNumber, data.LastNumber)
 			@form.Footer() {
 				@form.CancelButton()
 				@form.SubmitButton("Next")
@@ -31,9 +32,9 @@ templ formRegisterPasskey(action, method string, data RegisterPasskeyData) {
 					@card.SonrProfile(data.Address, data.Name, data.Handle, data.CreationBlock)
 				</div>
 			</div>
-			@form.InputCoinSelect()
+			@input.CoinSelect()
 			<div slot="footer" class="space-y-2">
-				@form.InputPasskey(data.Address, data.Handle, data.Challenge)
+				@input.Passkey(data.Address, data.Handle, data.Challenge)
 				<sl-button href="/" style="width: 100%;" outline>
 					<sl-icon slot="prefix" name="x-lg"></sl-icon>
 					Cancel

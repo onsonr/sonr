@@ -1,18 +1,18 @@
-package form
+package input
 
-type InputNameState string
+type NameState string
 
 const (
-	InputNameStateInitial InputNameState = "inital"
-	InputNameStateValid   InputNameState = "valid"
-	InputNameStateInvalid InputNameState = "invalid"
+	NameStateInitial NameState = "inital"
+	NameStateValid   NameState = "valid"
+	NameStateInvalid NameState = "invalid"
 )
 
-func (s InputNameState) string() string {
+func (s NameState) string() string {
 	return string(s)
 }
 
-templ InputName() {
+templ Name() {
 	<div hx-target="this" hx-swap="outerHTML" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 		<sl-input name="first_name" placeholder="Satoshi" type="text" label="First Name" required autofocus></sl-input>
 		<sl-input name="last_name" placeholder="N" maxlength="1" type="text" label="Last Initial"></sl-input>
@@ -20,7 +20,7 @@ templ InputName() {
 	<br/>
 }
 
-templ InputNameError() {
+templ NameError() {
 	<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 		<sl-input name="first_name" placeholder="Satoshi" type="text" label="First Name" required autofocus class="border-red-500"></sl-input>
 		<sl-input name="last_name" placeholder="N" maxlength="1" type="text" label="Last Initial" class="border-red-500"></sl-input>
@@ -28,7 +28,7 @@ templ InputNameError() {
 	<br/>
 }
 
-templ InputNameValid() {
+templ NameValid() {
 	<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 		<sl-input name="first_name" placeholder="Satoshi" type="text" label="First Name" required autofocus class="border-green-500"></sl-input>
 		<sl-input name="last_name" placeholder="N" maxlength="1" type="text" label="Last Initial" class="border-green-500"></sl-input>

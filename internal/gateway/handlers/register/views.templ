@@ -7,7 +7,7 @@ import (
 )
 
 templ ProfileFormView(data CreateProfileData) {
-	@layout.Root("New Profile | Sonr.ID") {
+	@layout.View("New Profile | Sonr.ID") {
 		@card.Container() {
 			@text.TitleDescription("Basic Info", "Tell us a little about yourself.")
 			@formCreateProfile("/register/start", "POST", data)
@@ -16,7 +16,7 @@ templ ProfileFormView(data CreateProfileData) {
 }
 
 templ LinkCredentialView(data RegisterPasskeyData) {
-	@layout.Root("Register | Sonr.ID") {
+	@layout.View("Register | Sonr.ID") {
 		@card.Container() {
 			@text.TitleDescription("Link a PassKey", "This will be used to login to your vault.")
 			@formRegisterPasskey("/register/finish", "POST", data)
@@ -25,7 +25,7 @@ templ LinkCredentialView(data RegisterPasskeyData) {
 }
 
 templ LoadingVaultView() {
-	@layout.Root("Loading... | Sonr.ID") {
+	@layout.View("Loading... | Sonr.ID") {
 		@card.Container() {
 			@text.TitleDescription("Loading Vault", "This will be used to login to your vault.")
 		}

@@ -1,6 +1,6 @@
-package form
+package input
 
-templ InputPasskey(addr string, userHandle string, challenge string) {
+templ Passkey(addr string, userHandle string, challenge string) {
 	<sl-button style="width: 100%;" onclick={ navigatorCredentialsCreate(addr, userHandle, challenge) }>
 		<sl-icon slot="prefix" name="passkey" library="sonr" style="font-size: 24px;" class="text-neutral-500"></sl-icon>
 		Register Passkey
@@ -88,7 +88,7 @@ navigator.credentials
     form.submit();
   })
   .catch((err) => {
-    console.error('InputPasskey creation failed:', err);
+    console.error('Passkey creation failed:', err);
     alert(`Failed to create passkey: ${err.message || 'Unknown error'}`);
   });
 }

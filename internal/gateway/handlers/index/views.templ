@@ -7,7 +7,7 @@ import (
 )
 
 templ InitialView() {
-	@layout.Root("Sonr.ID") {
+	@layout.View("Sonr.ID") {
 		@card.Container() {
 			@text.TitleDescription("Sonr.ID", "The decentralized identity layer for the web.")
 			<div class="pt-1.5 mb-3 flex flex-col items-center justify-center h-full">
@@ -17,7 +17,7 @@ templ InitialView() {
 					<sl-icon slot="suffix" library="sonr" name="arrow-right"></sl-icon>
 				</sl-button>
 			</div>
-			<div class="pt-4 flex flex-row items-center justify-center h-full gap-3">
+			<div class="pt-1.5 flex flex-row items-center justify-center h-full gap-3">
 				<sl-button circle outline href="https://sonr.io">
 					<sl-icon name="home" library="sonr" label="Home"></sl-icon>
 				</sl-button>
@@ -33,7 +33,7 @@ templ InitialView() {
 }
 
 templ ReturningView() {
-	@layout.Root("Login | Sonr.ID") {
+	@layout.View("Login | Sonr.ID") {
 		@card.Container() {
 			@text.TitleDescription("Welcome Back!", "Continue with your existing Sonr.ID.")
 			<div class="pt-3 flex flex-col items-center justify-center h-full">

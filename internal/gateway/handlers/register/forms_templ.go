@@ -11,6 +11,7 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"github.com/onsonr/sonr/internal/nebula/card"
 	"github.com/onsonr/sonr/internal/nebula/form"
+	"github.com/onsonr/sonr/internal/nebula/input"
 )
 
 func formCreateProfile(action string, method string, data CreateProfileData) templ.Component {
@@ -84,7 +85,7 @@ func formCreateProfile(action string, method string, data CreateProfileData) tem
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = form.InputName().Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = input.Name().Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -92,7 +93,7 @@ func formCreateProfile(action string, method string, data CreateProfileData) tem
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = form.InputHandle().Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = input.Handle().Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -100,7 +101,7 @@ func formCreateProfile(action string, method string, data CreateProfileData) tem
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = form.InputHumanSlider(data.FirstNumber, data.LastNumber).Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = input.HumanSlider(data.FirstNumber, data.LastNumber).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -191,7 +192,7 @@ func formRegisterPasskey(action, method string, data RegisterPasskeyData) templ.
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(method)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/gateway/handlers/register/forms.templ`, Line: 26, Col: 55}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/gateway/handlers/register/forms.templ`, Line: 27, Col: 55}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -209,7 +210,7 @@ func formRegisterPasskey(action, method string, data RegisterPasskeyData) templ.
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = form.InputCoinSelect().Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = input.CoinSelect().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -217,7 +218,7 @@ func formRegisterPasskey(action, method string, data RegisterPasskeyData) templ.
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = form.InputPasskey(data.Address, data.Handle, data.Challenge).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = input.Passkey(data.Address, data.Handle, data.Challenge).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

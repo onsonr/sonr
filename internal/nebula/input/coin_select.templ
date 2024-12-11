@@ -1,4 +1,4 @@
-package form
+package input
 
 type Coin struct {
 	Ticker    string
@@ -23,7 +23,7 @@ var defaultCoins = []Coin{
 	{Ticker: "AXL", Name: "Axelar", IsDefault: false},
 }
 
-templ InputCoinSelect() {
+templ CoinSelect() {
 	<sl-select
 		label="Accounts"
 		name="selected_assets"
