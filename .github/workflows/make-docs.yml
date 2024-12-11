@@ -1,6 +1,12 @@
 name: Publish Docs via GitHub Pages
 on:
   push:
+    branches:
+      - main
+      - master
+      - develop
+    paths:
+      - "docs/**"
 
 permissions:
   contents: write
