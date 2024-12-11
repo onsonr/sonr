@@ -8,7 +8,10 @@ package register
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "github.com/onsonr/sonr/pkg/common/styles/layout"
+import (
+	"github.com/onsonr/sonr/internal/gateway/handlers/register/ui"
+	"github.com/onsonr/sonr/pkg/common/styles/layout"
+)
 
 func formCreateProfile(action string, method string, data CreateProfileData) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -47,7 +50,7 @@ func formCreateProfile(action string, method string, data CreateProfileData) tem
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(method)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/gateway/handlers/register/forms.templ`, Line: 6, Col: 55}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/gateway/handlers/register/forms.templ`, Line: 9, Col: 55}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -76,7 +79,7 @@ func formCreateProfile(action string, method string, data CreateProfileData) tem
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(data.IsHumanLabel())
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/gateway/handlers/register/forms.templ`, Line: 24, Col: 56}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/gateway/handlers/register/forms.templ`, Line: 27, Col: 56}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -127,7 +130,7 @@ func formRegisterPasskey(action, method string, data RegisterPasskeyData) templ.
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(method)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/gateway/handlers/register/forms.templ`, Line: 64, Col: 55}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/gateway/handlers/register/forms.templ`, Line: 67, Col: 55}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -137,75 +140,15 @@ func formRegisterPasskey(action, method string, data RegisterPasskeyData) templ.
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = sonrProfile(data.Address, data.Name, data.Handle, data.CreationBlock).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = ui.ProfileCard(data.Address, data.Name, data.Handle, data.CreationBlock).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><sl-select label=\"Accounts\" value=\"SNR BTC ETH\" help-text=\"Select Blockchains to connect with your Vault\" multiple class=\"custom-tag py-2\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><div slot=\"footer\" class=\"space-y-2\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = cryptoWalletOption("SNR", "Sonr", true).Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = cryptoWalletOption("BTC", "Bitcoin", true).Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = cryptoWalletOption("ETH", "Ethereum", true).Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = cryptoWalletOption("SOL", "Solana", false).Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = cryptoWalletOption("LTC", "Litecoin", false).Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = cryptoWalletOption("DOGE", "Dogecoin", false).Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = cryptoWalletOption("XRP", "Ripple", false).Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = cryptoWalletOption("OSMO", "Osmosis", false).Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = cryptoWalletOption("ATOM", "Cosmos", false).Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = cryptoWalletOption("STARZ", "Stargaze", false).Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = cryptoWalletOption("AKT", "Akash", false).Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = cryptoWalletOption("EVMOS", "Evmos", false).Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = cryptoWalletOption("FIL", "Filecoin", false).Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = cryptoWalletOption("AXL", "Axelar", false).Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</sl-select><script type=\"module\">\n          const select = document.querySelector('.custom-tag');\n\n          select.getTag = (option, index) => {\n            // Use the same icon used in the <sl-option>\n            const name = option.querySelector('sl-icon[slot=\"prefix\"]').name;\n\n            // You can return a string, a Lit Template, or an HTMLElement here\n            return `\n              <sl-tag removable>\n                <sl-icon name=\"${name}\" library=\"crypto\" style=\"padding-inline-end: .5rem;\"></sl-icon>\n                ${option.getTextLabel()}\n              </sl-tag>\n            `;\n          };\n        </script><div slot=\"footer\" class=\"space-y-2\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = passkeyDropzone(data.Address, data.Handle, data.Challenge).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = ui.CreatePasskey(data.Address, data.Handle, data.Challenge).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

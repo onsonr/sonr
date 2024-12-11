@@ -1,0 +1,56 @@
+
+package views
+
+import (
+  "math/rand"
+  "time"
+  "github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/internal/gateway/handlers/register/ui"
+)
+
+func HandleProfileFormView(c echo.Context) error {
+	dat := CreateProfileData{
+		FirstNumber: 1,
+		LastNumber:  2,
+	}
+	return response.TemplEcho(c, ProfileFormView(dat))
+}
+
+
+templ FormRegisterPasskey(action, method string) {
+	<form action={ templ.SafeURL(action) } method={ method } id="passkey-form">
+		<input type="hidden" name="credential" id="credential-data" required/>
+		<sl-card class="card-form gap-4 max-w-xl">
+			<div slot="header">
+				<div class="w-full py-2">
+					@ui.ProfileCard(data.Address, data.Name, data.Handle, data.CreationBlock)
+				</div>
+			</div>
+			<div slot="footer" class="space-y-2">
+				@ui.CreatePasskey(data.Address, data.Handle, data.Challenge)
+				<sl-button href="/" style="width: 100%;" outline>
+					<sl-icon slot="prefix" name="x-lg"></sl-icon>
+					Cancel
+				</sl-button>
+			</div>
+			<style>
+  		.card-form [slot='footer'] {
+    		justify-content: space-evenly;
+    		align-items: center;
+  		}
+		</style>
+		</sl-card>
+	</form>
+}
+
+
+// randomNumbers returns two random numbers whose sum is less than or equal to 10
+func randomNumbers() (int, int) {
+	rand.Seed(time.Now().UnixNano())
+	firstNumber := rand.Intn(10)
+	lastNumber := rand.Intn(10)
+	for firstNumber+lastNumber > 10 {
+		lastNumber = rand.Intn(10)
+	}
+	return firstNumber, lastNumber
+}

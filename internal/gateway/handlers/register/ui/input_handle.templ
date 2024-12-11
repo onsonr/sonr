@@ -1,0 +1,21 @@
+package ui
+
+type InputHandleState string
+
+const (
+	InputHandleStateInitial InputHandleState = "inital"
+	InputHandleStateValid   InputHandleState = "valid"
+	InputHandleStateInvalid InputHandleState = "invalid"
+)
+
+func (s InputHandleState) string() string {
+	return string(s)
+}
+
+templ InputHandle(handle string) {
+	<sl-input name="handle" placeholder="digitalgold" type="text" label="Handle" minlength="4" maxlength="12" required>
+		<div slot="prefix">
+			<sl-icon name="at-sign" library="sonr"></sl-icon>
+		</div>
+	</sl-input>
+}

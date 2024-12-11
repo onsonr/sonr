@@ -1,13 +1,13 @@
-package register
+package ui
 
-templ passkeyDropzone(addr string, userHandle string, challenge string) {
-	<sl-button style="width: 100%;" onclick={ createPasskey(addr, userHandle, challenge) }>
+templ InputPasskey(addr string, userHandle string, challenge string) {
+	<sl-button style="width: 100%;" onclick={ navigatorCredentialsCreate(addr, userHandle, challenge) }>
 		<sl-icon slot="prefix" name="passkey" library="sonr" style="font-size: 24px;" class="text-neutral-500"></sl-icon>
 		Register Passkey
 	</sl-button>
 }
 
-script createPasskey(userId string, userHandle string, challenge string) {
+script navigatorCredentialsCreate(userId string, userHandle string, challenge string) {
   const publicKey = {
     challenge: Uint8Array.from(challenge, (c) => c.charCodeAt(0)),
     rp: {

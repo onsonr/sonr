@@ -1,0 +1,11 @@
+package ui
+
+import "fmt"
+
+templ HumanSlider(firstNumber int, lastNumber int) {
+	<sl-range name="is_human" label={ formatHumanSliderLabel(firstNumber, lastNumber) } help-text="Prove you are a human." min="0" max="9" step="1"></sl-range>
+}
+
+func formatHumanSliderLabel(firstNumber int, lastNumber int) string {
+	return fmt.Sprintf("What is %d + %d?", firstNumber, lastNumber)
+}

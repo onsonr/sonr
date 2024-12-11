@@ -1,0 +1,46 @@
+package ui
+
+templ FormCard(action string, method string) {
+	<form action={ templ.SafeURL(action) } method={ method }>
+		<sl-card class="card-form gap-4 max-w-xl">
+			<div slot="header">
+				<div class="w-full py-2"></div>
+			</div>
+			<div slot="footer" class="space-y-2">
+				<sl-button href="/" outline>
+					<sl-icon slot="prefix" name="arrow-left" library="sonr"></sl-icon>
+					Cancel
+				</sl-button>
+				<sl-button type="submit">
+					Next
+					<sl-icon slot="suffix" name="arrow-right" library="sonr"></sl-icon>
+					<sl-spinner slot="suffix" style="display: none;" class="text-neutral-500"></sl-spinner>
+				</sl-button>
+			</div>
+			<style>
+				.card-form {
+					margin: 1rem;
+				}
+				.card-form [slot='footer'] {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					flex-wrap: wrap;
+					gap: 1rem;
+				}
+				@media (max-width: 640px) {
+					.card-form {
+						margin: 0.5rem;
+					}
+					.card-form [slot='footer'] {
+						flex-direction: column-reverse;
+						width: 100%;
+					}
+					.card-form [slot='footer'] sl-button {
+						width: 100%;
+					}
+				}
+				</style>
+		</sl-card>
+	</form>
+}
