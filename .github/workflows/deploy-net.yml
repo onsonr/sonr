@@ -14,7 +14,7 @@ permissions:
 jobs:
   devnet_restart:
     name: Restart Devnet
-    runs-on: ubuntu-latest
+    runs-on: devnet
     environment: "Devnet"
     steps:
       # Run `git checkout`
