@@ -64,7 +64,6 @@ archives:
     format: tar.gz
     files:
       - src: README*
-      - src: CHANGELOG*
     wrap_in_directory: true
 
   - id: hway
@@ -77,7 +76,6 @@ archives:
     format: tar.gz
     files:
       - src: README*
-      - src: CHANGELOG*
     wrap_in_directory: true
 
 nfpms:
@@ -171,16 +169,7 @@ release:
   replace_existing_draft: true
   replace_existing_artifacts: true
   extra_files:
-    - glob: ./CHANGELOG*
     - glob: ./README*
-
-cloudsmiths:
-  - organization: sonr
-    repository: sonr
-    distributions:
-      deb: "ubuntu/jammy"
-      alpine: "alpine/v3.8"
-      rpm: "el/7"
 
 announce:
   telegram:
