@@ -138,7 +138,7 @@ func Body() templ.Component {
 			templ_7745c5c3_Var6 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-card class=\"card-form max-w-lg\"><div class=\"space-y-5\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-card class=\"card-form max-w-lg\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -146,7 +146,7 @@ func Body() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><style>\n  \t.card-form [slot='header'] {\n    \tdisplay: flex;\n    \talign-items: center;\n  \t  justify-content: space-between;\n\t  }\n\n\t  .card-form [slot='footer'] {\n   \t \tdisplay: flex;\n    \tjustify-content: space-between;\n    \talign-items: center;\n  \t}\n\t\t</style></sl-card>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<style>\n\t\t.card-form {\n\t\t\t\tspace-y: 1rem;\n\t\t}\n\n  \t.card-form [slot='header'] {\n    \tdisplay: flex;\n    \talign-items: center;\n  \t  justify-content: space-between;\n\t  }\n\n\t  .card-form [slot='footer'] {\n   \t \tdisplay: flex;\n    \tjustify-content: space-between;\n    \talign-items: center;\n  \t}\n\t\t</style></sl-card>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -248,7 +248,7 @@ func SubmitButton(text string) templ.Component {
 		var templ_7745c5c3_Var10 string
 		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/nebula/form/layout.templ`, Line: 53, Col: 8}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/nebula/form/layout.templ`, Line: 55, Col: 8}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 		if templ_7745c5c3_Err != nil {
