@@ -14,7 +14,7 @@ permissions:
 jobs:
   devnet_restart:
     name: Restart Devnet
-    runs-on: devnet
+    runs-on: goliath
     environment: "Devnet"
     steps:
       # Run `git checkout`
