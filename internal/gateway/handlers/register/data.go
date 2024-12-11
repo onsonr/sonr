@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"golang.org/x/exp/rand"
 )
 
 // Define the credential structure matching our frontend data
@@ -75,4 +76,11 @@ func extractCredentialDescriptor(jsonString string) (*Credential, error) {
 		cred.Transports,
 	)
 	return cred, nil
+}
+
+func randomCreateProfileData() CreateProfileData {
+	return CreateProfileData{
+		FirstNumber: rand.Intn(5) + 1,
+		LastNumber:  rand.Intn(4) + 1,
+	}
 }

@@ -6,7 +6,7 @@ import (
 )
 
 templ ProfileFormView(data CreateProfileData) {
-	@layout.Root("Create Profile | Sonr.ID") {
+	@layout.Root("New Profile | Sonr.ID") {
 		@layout.Container() {
 			@text.Header("Basic Info", "Tell us a little about yourself.")
 			@formCreateProfile("/register/start", "POST", data)

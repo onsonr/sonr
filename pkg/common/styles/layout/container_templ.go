@@ -67,7 +67,7 @@ func Container() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"container\" class=\"flex fixed inset-0 z-[99] w-screen h-screen\"><div class=\"relative flex flex-wrap items-center w-full h-full px-8\"><div class=\"relative w-full max-w-sm mx-auto lg:mb-0\"><div class=\"flex flex-col items-center justify-center h-full\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"container\" class=\"flex fixed inset-0 z-[99] w-screen h-screen\"><div class=\"relative flex flex-wrap items-center w-full h-full px-8\"><div class=\"relative w-full max-w-screen-lg mx-auto lg:mb-0\"><div class=\"flex flex-col items-center justify-center h-full\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
