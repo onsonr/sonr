@@ -23,11 +23,12 @@ jobs:
           fetch-depth: 0
           branch: develop
 
-      - name: Stop Devnet
+      - name: Stop Existing Network
         continue-on-error: true
         run: |
           make stop-uds
+          make clean
 
-      - name: Start Devnet
+      - name: Start Updated Network
         run: |
           make start-uds

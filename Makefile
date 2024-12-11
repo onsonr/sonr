@@ -10,6 +10,7 @@ SIMAPP = ./app
 
 PC_PORT_NUM=42069
 PC_LOG_FILE=./sonr.log
+PC_SOCKET_PATH=/tmp/sonr-net.sock
 
 # for dockerized protobuf tools
 DOCKER := $(shell which docker)
@@ -348,15 +349,13 @@ start-tui: build-hway init-env
 	bin/process-compose up --port $(PC_PORT_NUM) --log-file $(PC_LOG_FILE) -f deploy/process-compose.yaml
 
 start-uds: build-hway init-env
-	bin/process-compose up --use-uds --log-file $(PC_LOG_FILE) --detached -f deploy/process-compose.yaml
+	bin/process-compose up --use-uds --unix-socket $(PC_SOCKET_PATH) --log-file $(PC_LOG_FILE) --detached -f deploy/process-compose.yaml
 
 stop: init-env
 	bin/process-compose down --port $(PC_PORT_NUM)
 
 stop-uds: init-env
-	bin/process-compose down --use-uds
-
-restart: stop clean start
+	bin/process-compose down --use-uds --unix-socket $(PC_SOCKET_PATH)
 
 status: init-env
 	bin/process-compose project state --port $(PC_PORT_NUM)
