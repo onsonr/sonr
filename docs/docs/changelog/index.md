@@ -1,3 +1,108 @@
+## v0.5.21 (2024-12-11)
+
+### Feat
+
+- allow manual triggering of deployment workflow
+- add start-tui command for interactive mode
+- add coin selection and update passkey input in registration form
+- add hway command for Sonr DID gateway
+- Conditionally install process-compose only if binary not found
+- Add process-compose support with custom start and down commands
+- implement passkey registration flow
+- Improve createProfile form layout with wider max-width and enhanced spacing
+- improve index page UI with new navigation buttons and remove redundant settings buttons
+- Make input rows responsive with grid layout for mobile and desktop
+- enhance index page with additional settings buttons and style adjustments
+- implement passkey-based authentication
+- add support for Cloudsmith releases
+- add go dependency and enhance devbox environment variables
+- update create profile form placeholders and handle
+- add DID-based authentication middleware
+- Add validation for human verification slider sum in CreateProfile form
+- implement passkey registration flow
+- Update WebAuthn credential handling with modern browser standards
+- Streamline passkey registration with automatic form submission
+- Add credential parsing and logging in register finish handler
+- Add credential details row with icon after passkey creation
+- Add form validation for passkey credential input
+- implement passkey registration flow
+- Add hidden input to store passkey credential data for form submission
+- add CI workflow for deploying network
+- add hway binary support and Homebrew formula
+- remove username from passkey creation
+- implement passkey registration flow
+- add passkey creation functionality
+- add CNAME for onsonr.dev domain
+
+### Fix
+
+- use Unix domain sockets for devnet processes
+- correct workflow name and improve devnet deployment process
+- correct title of profile creation page
+- rename devbox start script to up and remove stop script
+- Consolidate archive configuration and add LICENSE file
+- Improve cross-browser passkey credential handling and encoding
+- Remove commented-out code in passkey registration script
+- remove line-clamp from tailwind config
+- remove unnecessary background and restart settings from process-compose.yaml
+- suppress process-compose server output and log to file
+
+### Refactor
+
+- remove unnecessary git fetch step in deploy workflow
+- remove obsolete interchain test dependencies
+- update index views to use new nebula components
+- move Wasm related code to pkg/common/wasm
+- migrate config package to pkg directory
+- migrate to new configuration system and model definitions
+- move session package to pkg directory
+- Refactor registration forms to use UI components
+- move gateway config to vault package
+- improve command line flag descriptions and variable names
+- refactor hway command to use echo framework for server
+- Update root command to load EnvImpl from cobra flags
+- Modify command flags and environment loading logic in cmds.go
+- improve build process and move process-compose.yaml
+- remove unused devbox.json and related configurations
+- Improve mobile layout responsiveness for Rows and Columns components
+- Remove max-w-fit from Rows component
+- replace session package with context package
+- rename database initialization function
+- move session management to dedicated database module
+- remove unused UI components related to wallet and index pages
+- consolidate handlers into single files
+- move gateway and vault packages to internal directory
+- Move registration form components to dedicated directory
+- remove unused devbox package
+- remove devbox configuration
+- move vault package to app directory
+- improve code structure within gateway package
+- move gateway package to app directory
+- move vault package internal components to root
+- migrate layout imports to common styles package
+- Move form templates and styles to common directory
+- consolidate authentication and DID handling logic
+- Improve WebAuthn credential handling and validation in register finish route
+- remove profile card component
+- Simplify passkey registration UI and move profile component inline
+- Update credential logging with transport and ID type
+- Update register handler to use protocol.CredentialDescriptor struct
+- Update credential handling to use protocol.CredentialDescriptor
+- improve profile card styling and functionality
+- Simplify session management and browser information extraction
+- Update PeerInfo to extract and store comprehensive device information
+- improve address display in property details
+- remove unused documentation generation script
+- replace sonr/pkg/styles/layout with nebula/ui/layout
+- migrate UI components to nebula module
+- improve scopes.json structure and update scripts for better usability
+
+## v0.5.20 (2024-12-07)
+
+### Refactor
+
+- simplify CI workflow by removing redundant asset publishing steps
+
 ## v0.5.19 (2024-12-06)
 
 ### Feat
