@@ -1,0 +1,34 @@
+package ui
+
+type InputNameState string
+
+const (
+	InputNameStateInitial InputNameState = "inital"
+	InputNameStateValid   InputNameState = "valid"
+	InputNameStateInvalid InputNameState = "invalid"
+)
+
+func (s InputNameState) string() string {
+	return string(s)
+}
+
+templ InputName() {
+	<div hx-target="this" hx-swap="outerHTML" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+		<sl-input name="first_name" placeholder="Satoshi" type="text" label="First Name" required autofocus></sl-input>
+		<sl-input name="last_name" placeholder="N" maxlength="1" type="text" label="Last Initial"></sl-input>
+	</div>
+}
+
+templ InputNameError() {
+	<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+		<sl-input name="first_name" placeholder="Satoshi" type="text" label="First Name" required autofocus class="border-red-500"></sl-input>
+		<sl-input name="last_name" placeholder="N" maxlength="1" type="text" label="Last Initial" class="border-red-500"></sl-input>
+	</div>
+}
+
+templ InputNameValid() {
+	<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+		<sl-input name="first_name" placeholder="Satoshi" type="text" label="First Name" required autofocus class="border-green-500"></sl-input>
+		<sl-input name="last_name" placeholder="N" maxlength="1" type="text" label="Last Initial" class="border-green-500"></sl-input>
+	</div>
+}

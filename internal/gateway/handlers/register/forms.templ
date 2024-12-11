@@ -72,8 +72,9 @@ templ formRegisterPasskey(action, method string, data RegisterPasskeyData) {
 					@ui.ProfileCard(data.Address, data.Name, data.Handle, data.CreationBlock)
 				</div>
 			</div>
+			@ui.SelectCoins()
 			<div slot="footer" class="space-y-2">
-				@ui.CreatePasskey(data.Address, data.Handle, data.Challenge)
+				@ui.InputPasskey(data.Address, data.Handle, data.Challenge)
 				<sl-button href="/" style="width: 100%;" outline>
 					<sl-icon slot="prefix" name="x-lg"></sl-icon>
 					Cancel
