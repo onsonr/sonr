@@ -1,3 +1,10 @@
+## v0.5.25 (2024-12-11)
+
+### Feat
+
+- enable GoReleaser releases on tags and snapshots
+- automate release on tag and workflow dispatch
+
 ## v0.5.24 (2024-12-11)
 
 ### Feat
