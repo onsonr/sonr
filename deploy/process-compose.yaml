@@ -1,0 +1,12 @@
+version: "0.6"
+
+processes:
+  sonr:
+    namespace: devnet
+    command: "make sh-testnet"
+
+  hway:
+    namespace: devnet
+    command: "./build/hway"
+    depends:
+      - sonr

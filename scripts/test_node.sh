@@ -124,6 +124,7 @@ from_scratch () {
 
 # check if CLEAN is not set to false
 if [ "$CLEAN" != "false" ]; then
+  
   echo "Starting from a clean state"
   from_scratch
 fi

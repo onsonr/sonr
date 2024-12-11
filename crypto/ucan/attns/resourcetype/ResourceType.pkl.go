@@ -1,4 +1,4 @@
-// Code generated from Pkl module `sonr.motr.ATN`. DO NOT EDIT.
+// Code generated from Pkl module `sonr.orm.UCAN`. DO NOT EDIT.
 package resourcetype
 
 import (

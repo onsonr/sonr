@@ -41,7 +41,7 @@ go.work.sum
 # Environment files
 .env
 **/*.env
-sonr.log
+**/sonr.log
 
 
 # Terraform

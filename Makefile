@@ -8,9 +8,14 @@ SDK_PACK := $(shell go list -m github.com/cosmos/cosmos-sdk | sed  's/ /\@/g')
 BINDIR ?= $(GOPATH)/bin
 SIMAPP = ./app
 
+PC_PORT_NUM=42069
+PC_LOG_FILE=./sonr.log
+PC_SOCKET_PATH=/tmp/sonr-net.sock
+
 # for dockerized protobuf tools
 DOCKER := $(shell which docker)
 HTTPS_GIT := github.com/onsonr/sonr.git
+PROCESS_COMPOSE := $(shell which process-compose)
 
 export GO111MODULE = on
 
@@ -115,12 +120,16 @@ clean:
 	rm -rf .aider*
 	rm -rf static
 	rm -rf .out
-	rm -rf build
 	rm -rf hway.db
 	rm -rf snapcraft-local.yaml build/
+	rm -rf build
 
 distclean: clean
 	rm -rf vendor/
+
+init-env:
+	@echo "Installing process-compose"
+	sh scripts/init_env.sh
 
 ########################################
 ### Testing
@@ -298,51 +307,65 @@ sh-testnet: mod-tidy
 ###############################################################################
 ###                                generation                               ###
 ###############################################################################
-.PHONY: pkl-gen tailwind-gen templ-gen
+.PHONY: gen-pkl gen-templ
 
-pkl-gen:
-	go install github.com/apple/pkl-go/cmd/pkl-gen-go@latest
-	pkl-gen-go pkl/sonr.motr/ATN.pkl
-	pkl-gen-go pkl/sonr.hway/Env.pkl
-	pkl-gen-go pkl/sonr.motr/DWN.pkl
-	pkl-gen-go pkl/sonr.hway/ORM.pkl
+gen-pkl: init-env
+	pkl-gen-go pkl/sonr.orm/UCAN.pkl
+	pkl-gen-go pkl/sonr.orm/Models.pkl
+	pkl-gen-go pkl/sonr.conf/Hway.pkl
+	pkl-gen-go pkl/sonr.conf/Motr.pkl
 
-templ-gen:
-	@go install github.com/a-h/templ/cmd/templ@latest
+gen-templ: init-env
 	templ generate
 
 
 ###############################################################################
 ###                             custom builds                               ###
 ###############################################################################
-.PHONY: motr-build hway-build hway-serve
+.PHONY: build-motr build-hway logs-hway logs-sonr
 
-motr-build:
+build-motr:
 	GOOS=js GOARCH=wasm go build -o static/wasm/app.wasm ./cmd/motr/main.go
 
-hway-build: templ-gen
-	go build -o build/hway ./cmd/hway/main.go
+build-hway: gen-templ
+	go build -o build/hway ./cmd/hway
 
+logs-hway: init-env
+	bin/process-compose process logs hway --port $(PC_PORT_NUM) --follow
 
-hway-serve: hway-build
-	./build/hway
+logs-sonr: init-env
+	bin/process-compose process logs sonr --port $(PC_PORT_NUM) --follow
 
+###############################################################################
+###                           Network Start/Stop                            ###
+###############################################################################
+
+.PHONY: deploy start start-tui start-uds stop stop-uds restart status
+
+start: build-hway init-env
+	bin/process-compose up --port $(PC_PORT_NUM) --log-file $(PC_LOG_FILE) --detached -f deploy/process-compose.yaml
+
+start-tui: build-hway init-env
+	bin/process-compose up --port $(PC_PORT_NUM) --log-file $(PC_LOG_FILE) -f deploy/process-compose.yaml
+
+start-uds: build-hway init-env
+	bin/process-compose up --use-uds --unix-socket $(PC_SOCKET_PATH) --log-file $(PC_LOG_FILE) --detached -f deploy/process-compose.yaml
+
+stop: init-env
+	bin/process-compose down --port $(PC_PORT_NUM)
+
+stop-uds: init-env
+	bin/process-compose down --use-uds --unix-socket $(PC_SOCKET_PATH)
+
+status: init-env
+	bin/process-compose project state --port $(PC_PORT_NUM)
 ###############################################################################
 ###                                     help                                ###
 ###############################################################################
-.PHONY: deploy-buf deploy-pkl
 
-deploy-buf:
+deploy: 
 	cd ./proto && bunx buf dep update && bunx buf build && bunx buf push
-
-deploy-pkl: 
 	sh ./.github/scripts/upload_cdn.sh
-
-
-###############################################################################
-###                                     help                                ###
-###############################################################################
-
 
 help:
 	@echo "Usage: make <target>"

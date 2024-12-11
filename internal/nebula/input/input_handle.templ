@@ -1,0 +1,43 @@
+package input
+
+type HandleState string
+
+const (
+	HandleStateInitial HandleState = "inital"
+	HandleStateValid   HandleState = "valid"
+	HandleStateInvalid HandleState = "invalid"
+)
+
+func (s HandleState) string() string {
+	return string(s)
+}
+
+templ Handle() {
+	<sl-input name="handle" placeholder="digitalgold" type="text" label="Handle" minlength="4" maxlength="12" required>
+		<div slot="prefix">
+			<sl-icon name="at-sign" library="sonr"></sl-icon>
+		</div>
+	</sl-input>
+	<br/>
+}
+
+templ HandleError() {
+	<sl-input name="handle" placeholder="digitalgold" type="text" label="Handle" minlength="4" maxlength="12" required class="border-red-500">
+		<div slot="prefix">
+			<sl-icon name="at-sign" library="sonr"></sl-icon>
+		</div>
+		<div slot="suffix" style="color: #B54549;">
+			<sl-icon name="at-sign" library="sonr"></sl-icon>
+		</div>
+	</sl-input>
+	<br/>
+}
+
+templ HandleValid() {
+	<sl-input name="handle" placeholder="digitalgold" type="text" label="Handle" minlength="4" maxlength="12" required class="border-green-500">
+		<div slot="prefix" style="color: #46A758;">
+			<sl-icon name="at-sign" library="sonr"></sl-icon>
+		</div>
+	</sl-input>
+	<br/>
+}
