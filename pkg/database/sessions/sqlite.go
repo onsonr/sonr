@@ -4,13 +4,13 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/onsonr/sonr/internal/gateway/config"
+	config "github.com/onsonr/sonr/pkg/config/hway"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
 // NewGormDB initializes and returns a configured database connection
-func NewGormDB(env config.Env) (*gorm.DB, error) {
+func NewGormDB(env config.Hway) (*gorm.DB, error) {
 	path := formatDBPath(env.GetSqliteFile())
 	db, err := gorm.Open(sqlite.Open(path), &gorm.Config{})
 	if err != nil {

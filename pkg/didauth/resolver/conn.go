@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/gateway/config"
+	config "github.com/onsonr/sonr/pkg/config/hway"
 	"google.golang.org/grpc"
 )
 
@@ -25,7 +25,7 @@ func GetClientConn(c echo.Context) (*grpc.ClientConn, error) {
 	return grpcConn, nil
 }
 
-func Middleware(env config.Env) echo.MiddlewareFunc {
+func Middleware(env config.Hway) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			cc := &ClientsContext{Context: c, addr: env.GetSonrGrpcUrl()}
