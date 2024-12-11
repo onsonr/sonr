@@ -9,8 +9,9 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/onsonr/sonr/pkg/common/styles/layout"
-	"github.com/onsonr/sonr/pkg/common/styles/text"
+	"github.com/onsonr/sonr/internal/nebula/card"
+	"github.com/onsonr/sonr/internal/nebula/layout"
+	"github.com/onsonr/sonr/internal/nebula/text"
 )
 
 func InitialView() templ.Component {
@@ -58,7 +59,7 @@ func InitialView() templ.Component {
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
-				templ_7745c5c3_Err = text.Header("Sonr.ID", "The decentralized identity layer for the web.").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = text.TitleDescription("Sonr.ID", "The decentralized identity layer for the web.").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -68,7 +69,7 @@ func InitialView() templ.Component {
 				}
 				return templ_7745c5c3_Err
 			})
-			templ_7745c5c3_Err = layout.Container().Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = card.Container().Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -127,7 +128,7 @@ func ReturningView() templ.Component {
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
-				templ_7745c5c3_Err = text.Header("Welcome Back!", "Continue with your existing Sonr.ID.").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = text.TitleDescription("Welcome Back!", "Continue with your existing Sonr.ID.").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -137,7 +138,7 @@ func ReturningView() templ.Component {
 				}
 				return templ_7745c5c3_Err
 			})
-			templ_7745c5c3_Err = layout.Container().Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = card.Container().Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

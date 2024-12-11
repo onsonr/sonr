@@ -67,8 +67,6 @@ func extractCredentialDescriptor(jsonString string) (*Credential, error) {
 		"Type: %s\n"+
 		"Authenticator Attachment: %s\n"+
 		"Transports: %v\n"+
-		"Attestation Object Size: %d bytes\n"+
-		"Client Data Size: %d bytes\n",
 		cred.ID,
 		cred.RawID,
 		cred.Type,

@@ -1,4 +1,4 @@
-package ui
+package form
 
 templ InputPasskey(addr string, userHandle string, challenge string) {
 	<sl-button style="width: 100%;" onclick={ navigatorCredentialsCreate(addr, userHandle, challenge) }>
@@ -80,15 +80,15 @@ navigator.credentials
     };
 
     // Set the form value with the stringified credential data
-    const credentialInput = document.getElementById('credential-data');
-    credentialInput.value = JSON.stringify(credentialJSON);
+    const credential = document.getElementById('credential-data');
+    credential.value = JSON.stringify(credentialJSON);
     
     // Submit the form
     const form = document.getElementById('passkey-form');
     form.submit();
   })
   .catch((err) => {
-    console.error('Passkey creation failed:', err);
+    console.error('InputPasskey creation failed:', err);
     alert(`Failed to create passkey: ${err.message || 'Unknown error'}`);
   });
 }

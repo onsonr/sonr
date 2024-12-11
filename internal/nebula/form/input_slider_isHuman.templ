@@ -1,8 +1,8 @@
-package ui
+package form
 
 import "fmt"
 
-templ HumanSlider(firstNumber int, lastNumber int) {
+templ InputHumanSlider(firstNumber int, lastNumber int) {
 	<sl-range name="is_human" label={ formatHumanSliderLabel(firstNumber, lastNumber) } help-text="Prove you are a human." min="0" max="9" step="1"></sl-range>
 }
 

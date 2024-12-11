@@ -1,14 +1,15 @@
 package register
 
 import (
-	"github.com/onsonr/sonr/pkg/common/styles/layout"
-	"github.com/onsonr/sonr/pkg/common/styles/text"
+	"github.com/onsonr/sonr/internal/nebula/card"
+	"github.com/onsonr/sonr/internal/nebula/layout"
+	"github.com/onsonr/sonr/internal/nebula/text"
 )
 
 templ ProfileFormView(data CreateProfileData) {
 	@layout.Root("New Profile | Sonr.ID") {
-		@layout.Container() {
-			@text.Header("Basic Info", "Tell us a little about yourself.")
+		@card.Container() {
+			@text.TitleDescription("Basic Info", "Tell us a little about yourself.")
 			@formCreateProfile("/register/start", "POST", data)
 		}
 	}
@@ -16,8 +17,8 @@ templ ProfileFormView(data CreateProfileData) {
 
 templ LinkCredentialView(data RegisterPasskeyData) {
 	@layout.Root("Register | Sonr.ID") {
-		@layout.Container() {
-			@text.Header("Link a PassKey", "This will be used to login to your vault.")
+		@card.Container() {
+			@text.TitleDescription("Link a PassKey", "This will be used to login to your vault.")
 			@formRegisterPasskey("/register/finish", "POST", data)
 		}
 	}
@@ -25,8 +26,8 @@ templ LinkCredentialView(data RegisterPasskeyData) {
 
 templ LoadingVaultView() {
 	@layout.Root("Loading... | Sonr.ID") {
-		@layout.Container() {
-			@text.Header("Loading Vault", "This will be used to login to your vault.")
+		@card.Container() {
+			@text.TitleDescription("Loading Vault", "This will be used to login to your vault.")
 		}
 	}
 }

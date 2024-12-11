@@ -1,4 +1,4 @@
-package ui
+package form
 
 type Coin struct {
 	Ticker    string
@@ -23,9 +23,10 @@ var defaultCoins = []Coin{
 	{Ticker: "AXL", Name: "Axelar", IsDefault: false},
 }
 
-templ SelectCoins() {
+templ InputCoinSelect() {
 	<sl-select
 		label="Accounts"
+		name="selected_assets"
 		value="SNR BTC ETH"
 		help-text="Select Blockchains to connect with your Vault"
 		multiple
