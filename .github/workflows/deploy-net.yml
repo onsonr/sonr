@@ -23,9 +23,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Fetch latest changes
-        run: git fetch --prune --unshallow
-
       - name: Stop Devnet
         continue-on-error: true
         run: |
