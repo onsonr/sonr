@@ -336,16 +336,18 @@ logs-sonr: init-env
 	bin/process-compose process logs sonr --port $(PC_PORT_NUM) --follow
 
 ###############################################################################
-###                                     help                                ###
+###                           Network Start/Stop                            ###
 ###############################################################################
 
-.PHONY: deploy start stop restart status
+.PHONY: deploy start start-tui stop restart status
 
 start: build-hway init-env
 	bin/process-compose up --port $(PC_PORT_NUM) --log-file $(PC_LOG_FILE) --detached -f deploy/process-compose.yaml
 
-stop: init-env
+start-tui: build-hway init-env
+	bin/process-compose up --port $(PC_PORT_NUM) --log-file $(PC_LOG_FILE) -f deploy/process-compose.yaml
 
+stop: init-env
 	bin/process-compose down --port $(PC_PORT_NUM)
 
 restart: stop clean start

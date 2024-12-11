@@ -8,14 +8,11 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/pkg/common/response"
+	"golang.org/x/exp/rand"
 )
 
 func HandleCreateProfile(c echo.Context) error {
-	dat := CreateProfileData{
-		FirstNumber: 1,
-		LastNumber:  2,
-	}
-	return response.TemplEcho(c, ProfileFormView(dat))
+	return response.TemplEcho(c, ProfileFormView(randomCreateProfileData()))
 }
 
 func HandlePasskeyStart(c echo.Context) error {
@@ -49,4 +46,11 @@ func HandlePasskeyFinish(c echo.Context) error {
 		return err
 	}
 	return response.TemplEcho(c, LoadingVaultView())
+}
+
+func randomCreateProfileData() CreateProfileData {
+	return CreateProfileData{
+		FirstNumber: rand.Intn(5) + 1,
+		LastNumber:  rand.Intn(4) + 1,
+	}
 }
