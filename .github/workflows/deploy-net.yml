@@ -18,10 +18,19 @@ jobs:
     runs-on: goliath
     environment: "Devnet"
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch latest changes
+        run: git fetch --prune --unshallow
+
       - name: Stop Devnet
         continue-on-error: true
         run: |
-          cd ~/ghq/github.com/onsonr/sonr && make stop
+          make stop
+
       - name: Start Devnet
         run: |
-          cd ~/ghq/github.com/onsonr/sonr && make start
+          make start
