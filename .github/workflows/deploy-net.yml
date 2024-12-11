@@ -1,4 +1,4 @@
-name: Deploy Network
+name: Deploy Networks
 on:
   workflow_dispatch:
   push:
@@ -13,13 +13,15 @@ permissions:
   issues: write
 
 jobs:
-  devnet_restart:
-    name: Restart Devnet
+  reboot-devnet:
+    name: Devnet Deploy
     runs-on: goliath
     environment: "Devnet"
     steps:
-      # Run `git checkout`
-      - uses: actions/checkout@v3
-      - name: Restart Devnet
+      - name: Stop Devnet
+        continue-on-error: true
         run: |
-          make restart
+          cd ~/ghq/github.com/onsonr/sonr && make stop
+      - name: Start Devnet
+        run: |
+          cd ~/ghq/github.com/onsonr/sonr && make start
