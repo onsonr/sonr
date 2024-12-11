@@ -1,3 +1,9 @@
+## v0.5.24 (2024-12-11)
+
+### Feat
+
+- prevent duplicate releases
+
 ## v0.5.23 (2024-12-11)
 
 ### Refactor
