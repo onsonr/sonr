@@ -2,8 +2,9 @@ name: Versioned Release
 
 on:
   push:
-    tags:
-      - "*"
+    tags: ["v*"]
+    branches: ["develop"]
+  workflow_dispatch:
 
 permissions:
   contents: write
