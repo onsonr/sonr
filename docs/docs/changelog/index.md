@@ -1,3 +1,9 @@
+## v0.5.22 (2024-12-11)
+
+### Feat
+
+- Implement passkey-based authentication and registration flow
+
 ## v0.5.21 (2024-12-11)
 
 ### Feat
