@@ -5,3 +5,4 @@ version_scheme = "semver"
 version = "0.5.21"
 update_changelog_on_bump = true
 major_version_zero = true
+changelog_file = "./docs/docs/changelog/index.md"
