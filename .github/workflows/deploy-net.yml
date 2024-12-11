@@ -13,9 +13,13 @@ permissions:
 
 jobs:
   devnet_restart:
+    if: github.ref == 'refs/heads/develop || github.ref == 'refs/heads/feature/*'
     name: Restart Devnet
     runs-on: ubuntu-latest
     environment: "Devnet"
     steps:
       # Run `git checkout`
       - uses: actions/checkout@v3
+      - name: Restart Devnet
+        run: |
+          make restart
