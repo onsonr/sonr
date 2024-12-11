@@ -1,4 +1,4 @@
-@go.Package { name = "github.com/onsonr/sonr/internal/vault/types" }
+@go.Package { name = "github.com/onsonr/sonr/internal/vault/config" }
 
 module sonr.motr.DWN
 

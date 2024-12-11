@@ -1,5 +1,5 @@
 // Code generated from Pkl module `sonr.motr.DWN`. DO NOT EDIT.
-package types
+package config
 
 type Environment struct {
 	IsDevelopment bool `pkl:"isDevelopment" json:"isDevelopment,omitempty"`

@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/database/sessions"
 	"github.com/onsonr/sonr/pkg/common"
+	"github.com/onsonr/sonr/pkg/database/sessions"
 	"github.com/segmentio/ksuid"
 )
 

@@ -2,7 +2,7 @@ package context
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/database/sessions"
+	"github.com/onsonr/sonr/pkg/database/sessions"
 )
 
 // ╭───────────────────────────────────────────────────────╮

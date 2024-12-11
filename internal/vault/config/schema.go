@@ -4,13 +4,12 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/onsonr/sonr/internal/vault/types"
 	"github.com/onsonr/sonr/pkg/common/models"
 )
 
 // DefaultSchema returns the default schema
-func DefaultSchema() *types.Schema {
-	return &types.Schema{
+func DefaultSchema() *Schema {
+	return &Schema{
 		Version:    SchemaVersion,
 		Account:    getSchema(&models.Account{}),
 		Asset:      getSchema(&models.Asset{}),
