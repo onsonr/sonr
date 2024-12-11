@@ -9,13 +9,14 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/internal/vault"
-	"github.com/onsonr/sonr/internal/vault/types"
+	"github.com/onsonr/sonr/pkg/common/wasm"
+	"github.com/onsonr/sonr/pkg/config/motr"
 	"github.com/onsonr/sonr/pkg/didauth/controller"
 )
 
 var (
-	env    *types.Environment
-	config *types.Config
+	env    *motr.Environment
+	config *motr.Config
 	err    error
 )
 
@@ -47,8 +48,8 @@ func main() {
 	js.Global().Set("processConfig", js.FuncOf(processConfig))
 
 	e := echo.New()
-	e.Use(vault.WasmContextMiddleware)
+	e.Use(wasm.ContextMiddleware)
 	e.Use(controller.Middleware(nil))
 	vault.RegisterRoutes(e, config)
-	vault.ServeFetch(e)
+	wasm.ServeFetch(e)
 }

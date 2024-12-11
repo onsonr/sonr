@@ -8,10 +8,10 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"github.com/onsonr/sonr/internal/vault/context"
-	"github.com/onsonr/sonr/internal/vault/types"
+	"github.com/onsonr/sonr/pkg/config/motr"
 )
 
 // RegisterRoutes registers the Decentralized Web Node API routes.
-func RegisterRoutes(e *echo.Echo, config *types.Config) {
+func RegisterRoutes(e *echo.Echo, config *motr.Config) {
 	e.Use(context.Middleware(config))
 }

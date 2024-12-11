@@ -1,7 +1,7 @@
 //go:build js && wasm
 // +build js,wasm
 
-package vault
+package wasm
 
 import (
 	"bytes"
