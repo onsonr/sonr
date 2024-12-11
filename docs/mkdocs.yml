@@ -51,5 +51,5 @@ theme:
         icon: material/toggle-switch-off
         name: Switch to system preference
   font:
-    text: Roboto
-    code: Roboto Mono
+    text: Geist
+    code: Geist Mono

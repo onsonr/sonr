@@ -8,15 +8,15 @@ import (
 	"syscall/js"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/cmd/motr/internal"
-	"github.com/onsonr/sonr/pkg/common/controller"
-	"github.com/onsonr/sonr/pkg/vault"
-	"github.com/onsonr/sonr/pkg/vault/types"
+	"github.com/onsonr/sonr/internal/vault"
+	"github.com/onsonr/sonr/pkg/common/wasm"
+	"github.com/onsonr/sonr/pkg/config/motr"
+	"github.com/onsonr/sonr/pkg/didauth/controller"
 )
 
 var (
-	env    *types.Environment
-	config *types.Config
+	env    *motr.Environment
+	config *motr.Config
 	err    error
 )
 
@@ -48,8 +48,8 @@ func main() {
 	js.Global().Set("processConfig", js.FuncOf(processConfig))
 
 	e := echo.New()
-	e.Use(internal.WasmContextMiddleware)
+	e.Use(wasm.ContextMiddleware)
 	e.Use(controller.Middleware(nil))
 	vault.RegisterRoutes(e, config)
-	internal.ServeFetch(e)
+	wasm.ServeFetch(e)
 }

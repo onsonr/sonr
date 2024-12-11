@@ -1,4 +1,4 @@
-// Code generated from Pkl module `sonr.motr.ORM`. DO NOT EDIT.
+// Code generated from Pkl module `sonr.orm.Models`. DO NOT EDIT.
 package didmethod
 
 import (
