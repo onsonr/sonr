@@ -178,7 +178,7 @@ cloudsmiths:
   - organization: sonr
     repository: sonr
     distributions:
-      deb: "ubuntu/xenial"
+      deb: "ubuntu/jammy"
       alpine: "alpine/v3.8"
       rpm: "el/7"
 
