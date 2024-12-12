@@ -4,15 +4,15 @@ import (
 	"github.com/onsonr/sonr/internal/gateway/models"
 	"github.com/onsonr/sonr/pkg/nebula/card"
 	"github.com/onsonr/sonr/pkg/nebula/form"
+	"github.com/onsonr/sonr/pkg/nebula/hero"
 	"github.com/onsonr/sonr/pkg/nebula/input"
 	"github.com/onsonr/sonr/pkg/nebula/layout"
-	"github.com/onsonr/sonr/pkg/nebula/text"
 )
 
 templ CreateProfileForm(data models.CreateProfileData) {
 	@layout.View("New Profile | Sonr.ID") {
 		@layout.Container() {
-			@text.TitleDesc("Basic Info", "Tell us a little about yourself.")
+			@hero.TitleDesc("Basic Info", "Tell us a little about yourself.")
 			@formCreateProfile(data)
 		}
 	}
@@ -21,7 +21,7 @@ templ CreateProfileForm(data models.CreateProfileData) {
 templ CreatePasskeyForm(data models.CreatePasskeyData) {
 	@layout.View("Register | Sonr.ID") {
 		@layout.Container() {
-			@text.TitleDesc("Link a PassKey", "This will be used to login to your vault.")
+			@hero.TitleDesc("Link a PassKey", "This will be used to login to your vault.")
 			@formCreatePasskey(data)
 		}
 	}
@@ -30,7 +30,7 @@ templ CreatePasskeyForm(data models.CreatePasskeyData) {
 templ LoadingVaultView() {
 	@layout.View("Loading... | Sonr.ID") {
 		@layout.Container() {
-			@text.TitleDesc("Loading Vault", "This will be used to login to your vault.")
+			@hero.TitleDesc("Loading Vault", "This will be used to login to your vault.")
 		}
 	}
 }

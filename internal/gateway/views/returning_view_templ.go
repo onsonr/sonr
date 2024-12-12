@@ -9,8 +9,8 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
+	"github.com/onsonr/sonr/pkg/nebula/hero"
 	"github.com/onsonr/sonr/pkg/nebula/layout"
-	"github.com/onsonr/sonr/pkg/nebula/text"
 )
 
 func ReturningView() templ.Component {
@@ -58,7 +58,7 @@ func ReturningView() templ.Component {
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
-				templ_7745c5c3_Err = text.TitleDesc("Welcome Back!", "Continue with your existing Sonr.ID.").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = hero.TitleDesc("Welcome Back!", "Continue with your existing Sonr.ID.").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

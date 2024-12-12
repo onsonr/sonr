@@ -11,7 +11,6 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"github.com/onsonr/sonr/pkg/nebula/hero"
 	"github.com/onsonr/sonr/pkg/nebula/layout"
-	"github.com/onsonr/sonr/pkg/nebula/text"
 )
 
 func InitialView(isUnavailable bool) templ.Component {
@@ -60,7 +59,7 @@ func InitialView(isUnavailable bool) templ.Component {
 						}()
 					}
 					ctx = templ.InitializeContext(ctx)
-					templ_7745c5c3_Err = text.TitleDesc("Sonr.ID", "The decentralized identity layer for the web.").Render(ctx, templ_7745c5c3_Buffer)
+					templ_7745c5c3_Err = hero.TitleDesc("Sonr.ID", "The decentralized identity layer for the web.").Render(ctx, templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -109,7 +108,7 @@ func InitialView(isUnavailable bool) templ.Component {
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
-				templ_7745c5c3_Err = text.TitleDesc("Sonr.ID", "The decentralized identity layer for the web.").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = hero.TitleDesc("Sonr.ID", "The decentralized identity layer for the web.").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

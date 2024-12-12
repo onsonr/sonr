@@ -12,9 +12,9 @@ import (
 	"github.com/onsonr/sonr/internal/gateway/models"
 	"github.com/onsonr/sonr/pkg/nebula/card"
 	"github.com/onsonr/sonr/pkg/nebula/form"
+	"github.com/onsonr/sonr/pkg/nebula/hero"
 	"github.com/onsonr/sonr/pkg/nebula/input"
 	"github.com/onsonr/sonr/pkg/nebula/layout"
-	"github.com/onsonr/sonr/pkg/nebula/text"
 )
 
 func CreateProfileForm(data models.CreateProfileData) templ.Component {
@@ -62,7 +62,7 @@ func CreateProfileForm(data models.CreateProfileData) templ.Component {
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
-				templ_7745c5c3_Err = text.TitleDesc("Basic Info", "Tell us a little about yourself.").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = hero.TitleDesc("Basic Info", "Tell us a little about yourself.").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -135,7 +135,7 @@ func CreatePasskeyForm(data models.CreatePasskeyData) templ.Component {
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
-				templ_7745c5c3_Err = text.TitleDesc("Link a PassKey", "This will be used to login to your vault.").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = hero.TitleDesc("Link a PassKey", "This will be used to login to your vault.").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -208,7 +208,7 @@ func LoadingVaultView() templ.Component {
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
-				templ_7745c5c3_Err = text.TitleDesc("Loading Vault", "This will be used to login to your vault.").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = hero.TitleDesc("Loading Vault", "This will be used to login to your vault.").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

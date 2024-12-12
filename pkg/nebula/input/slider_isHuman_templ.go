@@ -38,7 +38,7 @@ func HumanSlider(firstNumber int, lastNumber int) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(formatHumanSliderLabel(firstNumber, lastNumber))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/input/input_slider_isHuman.templ`, Line: 6, Col: 82}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/input/slider_isHuman.templ`, Line: 6, Col: 82}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {

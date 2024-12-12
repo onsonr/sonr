@@ -3,21 +3,20 @@ package views
 import (
 	"github.com/onsonr/sonr/pkg/nebula/hero"
 	"github.com/onsonr/sonr/pkg/nebula/layout"
-	"github.com/onsonr/sonr/pkg/nebula/text"
 )
 
 templ InitialView(isUnavailable bool) {
 	if isUnavailable {
 		@layout.View("Sonr.ID") {
 			@layout.Container() {
-				@text.TitleDesc("Sonr.ID", "The decentralized identity layer for the web.")
+				@hero.TitleDesc("Sonr.ID", "The decentralized identity layer for the web.")
 				@hero.SocialButtonsRow()
 			}
 		}
 	}
 	@layout.View("Sonr.ID") {
 		@layout.Container() {
-			@text.TitleDesc("Sonr.ID", "The decentralized identity layer for the web.")
+			@hero.TitleDesc("Sonr.ID", "The decentralized identity layer for the web.")
 			@hero.GetStartedButton()
 			@hero.SocialButtonsRow()
 		}
