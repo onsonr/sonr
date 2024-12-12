@@ -26,6 +26,7 @@ func RenderPasskeyStart(c echo.Context) error {
 	handle := c.FormValue("handle")
 	firstName := c.FormValue("first_name")
 	lastName := c.FormValue("last_name")
+	isHuman := c.FormValue("is_human")
 
 	ks, err := mpc.NewKeyset()
 	if err != nil {
