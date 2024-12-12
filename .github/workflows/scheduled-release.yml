@@ -1,17 +1,50 @@
-name: Scheduled Release
+name: Versioned Release
 
 on:
-  workflow_dispatch:
   push:
     tags:
-      - v*
+      - "v[0-9]+.[0-9]+.[0-9]+"
+    branches: ["develop"]
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
+  check-release:
+    name: Check Existing Release
+    runs-on: ubuntu-latest
+    outputs:
+      release_exists: ${{ steps.check.outputs.release_exists }}
+      is_tag: ${{ steps.check-ref.outputs.is_tag }}
+      ref_name: ${{ steps.check-ref.outputs.ref_name }}
+    steps:
+      - name: Determine ref type and name
+        id: check-ref
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            echo "is_tag=true" >> "$GITHUB_OUTPUT"
+            echo "ref_name=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+          else
+            echo "is_tag=false" >> "$GITHUB_OUTPUT"
+            echo "ref_name=${GITHUB_REF#refs/heads/}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check if release exists
+        id: check
+        if: steps.check-ref.outputs.is_tag == 'true'
+        run: |
+          RELEASE_EXISTS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/onsonr/sonr/releases/tags/${GITHUB_REF#refs/tags/}" \
+            | jq -r 'if .message == "Not Found" then "false" else "true" end')
+          echo "release_exists=$RELEASE_EXISTS" >> "$GITHUB_OUTPUT"
+
   goreleaser:
-    name: Release motr, sonrd, and DWN
+    name: Run GoReleaser
+    needs: check-release
+    if: |
+      (needs.check-release.outputs.is_tag == 'true' && needs.check-release.outputs.release_exists == 'false') ||
+      (needs.check-release.outputs.is_tag == 'false')
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
@@ -21,6 +54,18 @@ jobs:
           repository: onsonr/sonr
           fetch-depth: 0
           fetch-tags: true
+
+      - name: Set up release configuration
+        id: setup
+        run: |
+          if [[ "${{ needs.check-release.outputs.is_tag }}" == "true" ]]; then
+            echo "Using tag configuration"
+            git checkout ${{ needs.check-release.outputs.ref_name }}
+            echo "args=release --clean" >> "$GITHUB_OUTPUT"
+          else
+            echo "Using snapshot configuration"
+            echo "args=release --snapshot --clean" >> "$GITHUB_OUTPUT"
+          fi
 
       - uses: actions/setup-go@v5
         with:
@@ -38,7 +83,7 @@ jobs:
         with:
           distribution: goreleaser-pro
           version: latest
-          args: release --clean
+          args: ${{ steps.setup.outputs.args }}
         env:
           GITHUB_TOKEN: ${{ secrets.GH_RELEASER_TOKEN }}
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
