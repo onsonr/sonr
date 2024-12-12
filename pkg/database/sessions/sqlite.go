@@ -23,20 +23,12 @@ func NewGormDB(env config.Hway) (*gorm.DB, error) {
 	return db, nil
 }
 
-func formatDBPath(path string) string {
-	home := os.Getenv("HOME")
-	if home == "" {
-		home = os.Getenv("USERPROFILE")
-	}
-	if home == "" {
-		home = "."
-	}
-
-	configDir := filepath.Join(home, ".config", "hway")
+func formatDBPath(fileName string) string {
+	configDir := filepath.Join(os.Getenv("XDG_CONFIG_HOME"), "hway")
 	if err := os.MkdirAll(configDir, 0o755); err != nil {
 		// If we can't create the directory, fall back to current directory
-		return path
+		return configDir
 	}
 
-	return filepath.Join(configDir, path)
+	return filepath.Join(configDir, fileName)
 }
