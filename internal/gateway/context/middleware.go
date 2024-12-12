@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/medama-io/go-useragent"
 	"github.com/onsonr/sonr/internal/gateway/models"
+	"github.com/onsonr/sonr/internal/gateway/services"
 	config "github.com/onsonr/sonr/pkg/config/hway"
 	"gorm.io/gorm"
 )
@@ -16,7 +17,7 @@ func Middleware(db *gorm.DB, env config.Hway) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			agent := ua.Parse(c.Request().UserAgent())
-			cc := NewHTTPContext(c, db, agent)
+			cc := NewHTTPContext(c, db, agent, env.GetSonrGrpcUrl())
 			if err := cc.initSession(); err != nil {
 				return err
 			}
@@ -28,6 +29,7 @@ func Middleware(db *gorm.DB, env config.Hway) echo.MiddlewareFunc {
 // HTTPContext is the context for HTTP endpoints.
 type HTTPContext struct {
 	echo.Context
+	*services.ResolverService
 	db   *gorm.DB
 	sess *models.Session
 	user *models.User
@@ -45,10 +47,13 @@ func Get(c echo.Context) (*HTTPContext, error) {
 }
 
 // NewHTTPContext creates a new session context
-func NewHTTPContext(c echo.Context, db *gorm.DB, a useragent.UserAgent) *HTTPContext {
+func NewHTTPContext(c echo.Context, db *gorm.DB, a useragent.UserAgent, grpcAddr string) *HTTPContext {
+	rsv := services.NewResolverService(grpcAddr)
 	return &HTTPContext{
-		Context: c,
-		db:      db,
+		Context:         c,
+		db:              db,
+		ResolverService: rsv,
+		UserAgent:       a,
 	}
 }
 

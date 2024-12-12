@@ -2,6 +2,6 @@ package services
 
 import "gorm.io/gorm"
 
-type AuthService struct {
+type MultiPartyService struct {
 	DB *gorm.DB
 }

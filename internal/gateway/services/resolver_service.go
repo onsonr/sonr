@@ -12,6 +12,12 @@ type ResolverService struct {
 	grpcAddr string
 }
 
+func NewResolverService(grpcAddr string) *ResolverService {
+	return &ResolverService{
+		grpcAddr: grpcAddr,
+	}
+}
+
 func (s *ResolverService) getClientConn() (*grpc.ClientConn, error) {
 	grpcConn, err := grpc.NewClient(s.grpcAddr, grpc.WithInsecure())
 	if err != nil {
