@@ -40,7 +40,7 @@ func loadEnvImplFromArgs(args []string) (config.Hway, error) {
 		SonrApiUrl:     sonrAPIURL,
 		SonrGrpcUrl:    sonrGrpcURL,
 		SonrRpcUrl:     sonrRPCURL,
-		PsqlDSN:        psqlDSN,
+		PsqlDSN:        formatPsqlDSN(),
 	}
 	return env, nil
 }
