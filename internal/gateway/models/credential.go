@@ -1,16 +1,12 @@
-package context
+package models
 
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
-
-	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/pkg/database/sessions"
 )
 
 // Define the credential structure matching our frontend data
-type Credential struct {
+type CredentialDescriptor struct {
 	ID                      string            `json:"id"`
 	RawID                   string            `json:"rawId"`
 	Type                    string            `json:"type"`
@@ -23,8 +19,8 @@ type Credential struct {
 	} `json:"response"`
 }
 
-func (c *Credential) ToDBModel(handle, origin string) *sessions.Credential {
-	return &sessions.Credential{
+func (c *CredentialDescriptor) ToDBModel(handle, origin string) *Credential {
+	return &Credential{
 		Handle:     handle,
 		Origin:     origin,
 		ID:         c.ID,
@@ -33,22 +29,22 @@ func (c *Credential) ToDBModel(handle, origin string) *sessions.Credential {
 	}
 }
 
-func ExtractCredential(jsonString string) (*Credential, error) {
-	cred := &Credential{}
+func ExtractCredentialDescriptor(jsonString string) (*CredentialDescriptor, error) {
+	cred := &CredentialDescriptor{}
 	// Unmarshal the credential JSON
 	if err := json.Unmarshal([]byte(jsonString), cred); err != nil {
-		return nil, echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("invalid credential format: %v", err))
+		return nil, err
 	}
 
 	// Validate required fields
 	if cred.ID == "" || cred.RawID == "" {
-		return nil, echo.NewHTTPError(http.StatusBadRequest, "missing credential ID")
+		return nil, fmt.Errorf("missing credential ID")
 	}
 	if cred.Type != "public-key" {
-		return nil, echo.NewHTTPError(http.StatusBadRequest, "invalid credential type")
+		return nil, fmt.Errorf("invalid credential type")
 	}
 	if cred.Response.AttestationObject == "" || cred.Response.ClientDataJSON == "" {
-		return nil, echo.NewHTTPError(http.StatusBadRequest, "missing attestation data")
+		return nil, fmt.Errorf("missing attestation data")
 	}
 
 	// Log detailed credential information

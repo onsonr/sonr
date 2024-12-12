@@ -12,7 +12,6 @@ import (
 	"github.com/onsonr/sonr/internal/gateway"
 	"github.com/onsonr/sonr/pkg/common/ipfs"
 	config "github.com/onsonr/sonr/pkg/config/hway"
-	"github.com/onsonr/sonr/pkg/database/sessions"
 	"github.com/onsonr/sonr/pkg/didauth/producer"
 )
 
@@ -51,7 +50,7 @@ func setupServer(env config.Hway) (*echo.Echo, error) {
 	if err != nil {
 		return nil, err
 	}
-	db, err := sessions.NewGormDB(env)
+	db, err := gateway.NewDB(env)
 	if err != nil {
 		return nil, err
 	}

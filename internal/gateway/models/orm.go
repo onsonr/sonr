@@ -1,4 +1,4 @@
-package sessions
+package models
 
 import (
 	"gorm.io/gorm"

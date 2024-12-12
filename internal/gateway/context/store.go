@@ -4,14 +4,10 @@ import (
 	"fmt"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/pkg/database/sessions"
+	"github.com/onsonr/sonr/internal/gateway/models"
 )
 
-func InsertCredential(c echo.Context, handle string) error {
-	cred, err := ExtractCredential(c.FormValue("credential"))
-	if err != nil {
-		return err
-	}
+func InsertCredential(c echo.Context, handle string, cred *models.CredentialDescriptor) error {
 	sess, err := Get(c)
 	if err != nil {
 		return err
@@ -27,7 +23,7 @@ func InsertProfile(c echo.Context) error {
 	handle := c.FormValue("handle")
 	firstName := c.FormValue("first_name")
 	lastName := c.FormValue("last_name")
-	return sess.db.Save(&sessions.User{
+	return sess.db.Save(&models.User{
 		Handle: handle,
 		Name:   fmt.Sprintf("%s %s", firstName, lastName),
 	}).Error
@@ -54,7 +50,7 @@ func HandleExists(c echo.Context, handle string) (bool, error) {
 	}
 
 	var count int64
-	if err := sess.db.Model(&sessions.Session{}).Where("user_handle = ?", handle).Count(&count).Error; err != nil {
+	if err := sess.db.Model(&models.User{}).Where("handle = ?", handle).Count(&count).Error; err != nil {
 		return false, err
 	}
 

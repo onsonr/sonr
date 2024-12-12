@@ -7,14 +7,17 @@ import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/crypto/mpc"
-	"github.com/onsonr/sonr/internal/gateway/context"
+	"github.com/onsonr/sonr/internal/gateway/models"
 	"github.com/onsonr/sonr/internal/gateway/views"
-	"github.com/onsonr/sonr/internal/nebula/form"
 	"github.com/onsonr/sonr/pkg/common/response"
+	"golang.org/x/exp/rand"
 )
 
 func RenderProfileRegister(c echo.Context) error {
-	d := form.RandomCreateProfileData()
+	d := models.CreateProfileData{
+		FirstNumber: rand.Intn(5) + 1,
+		LastNumber:  rand.Intn(4) + 1,
+	}
 	return response.TemplEcho(c, views.CreateProfileForm(d))
 }
 
@@ -28,7 +31,7 @@ func RenderPasskeyStart(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	dat := form.CreatePasskeyData{
+	dat := models.CreatePasskeyData{
 		Address:       ks.Address(),
 		Handle:        handle,
 		Name:          fmt.Sprintf("%s %s", firstName, lastName),
@@ -43,7 +46,7 @@ func RenderPasskeyFinish(c echo.Context) error {
 	if credentialJSON == "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "missing credential data")
 	}
-	_, err := context.ExtractCredential(credentialJSON)
+	_, err := models.ExtractCredentialDescriptor(credentialJSON)
 	if err != nil {
 		return err
 	}

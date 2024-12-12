@@ -1,25 +1,28 @@
 package views
 
 import (
-	"github.com/onsonr/sonr/internal/nebula/form"
-	"github.com/onsonr/sonr/internal/nebula/layout"
-	"github.com/onsonr/sonr/internal/nebula/text"
+	"github.com/onsonr/sonr/internal/gateway/models"
+	"github.com/onsonr/sonr/pkg/nebula/card"
+	"github.com/onsonr/sonr/pkg/nebula/form"
+	"github.com/onsonr/sonr/pkg/nebula/input"
+	"github.com/onsonr/sonr/pkg/nebula/layout"
+	"github.com/onsonr/sonr/pkg/nebula/text"
 )
 
-templ CreateProfileForm(data form.CreateProfileData) {
+templ CreateProfileForm(data models.CreateProfileData) {
 	@layout.View("New Profile | Sonr.ID") {
 		@layout.Container() {
 			@text.TitleDesc("Basic Info", "Tell us a little about yourself.")
-			@form.CreateProfile(data)
+			@formCreateProfile(data)
 		}
 	}
 }
 
-templ CreatePasskeyForm(data form.CreatePasskeyData) {
+templ CreatePasskeyForm(data models.CreatePasskeyData) {
 	@layout.View("Register | Sonr.ID") {
 		@layout.Container() {
 			@text.TitleDesc("Link a PassKey", "This will be used to login to your vault.")
-			@form.CreatePasskey(data)
+			@formCreatePasskey(data)
 		}
 	}
 }
@@ -28,6 +31,39 @@ templ LoadingVaultView() {
 	@layout.View("Loading... | Sonr.ID") {
 		@layout.Container() {
 			@text.TitleDesc("Loading Vault", "This will be used to login to your vault.")
+		}
+	}
+}
+
+templ formCreatePasskey(data models.CreatePasskeyData) {
+	@form.Root("/register/finish", "POST", "passkey-form") {
+		<input type="hidden" name="credential" id="credential-data" required/>
+		@form.Body() {
+			@form.Header() {
+				@card.SonrProfile(data.Address, data.Name, data.Handle, data.CreationBlock)
+			}
+			@input.CoinSelect()
+			@form.Footer() {
+				@input.Passkey(data.Address, data.Handle, data.Challenge)
+				@form.CancelButton()
+			}
+		}
+	}
+}
+
+templ formCreateProfile(data models.CreateProfileData) {
+	@form.Root("/register/passkey", "POST", "create-profile") {
+		@form.Body() {
+			@form.Header() {
+				<sl-progress-bar value="50"></sl-progress-bar>
+			}
+			@input.Name()
+			@input.Handle()
+			@input.HumanSlider(data.FirstNumber, data.LastNumber)
+			@form.Footer() {
+				@form.CancelButton()
+				@form.SubmitButton("Next")
+			}
 		}
 	}
 }

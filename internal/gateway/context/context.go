@@ -1,8 +1,8 @@
 package context
 
 import (
+	"github.com/onsonr/sonr/internal/gateway/models"
 	"github.com/onsonr/sonr/pkg/common"
-	"github.com/onsonr/sonr/pkg/database/sessions"
 	"github.com/segmentio/ksuid"
 )
 
@@ -11,11 +11,11 @@ func (s *HTTPContext) initSession() error {
 	sessionID := s.getOrCreateSessionID()
 
 	// Try to load existing session
-	var sess sessions.Session
+	var sess models.Session
 	result := s.db.Where("id = ?", sessionID).First(&sess)
 	if result.Error != nil {
 		// Create new session if not found
-		sess = sessions.Session{
+		sess = models.Session{
 			ID:             sessionID,
 			BrowserName:    s.GetBrowser(),
 			BrowserVersion: s.GetMajorVersion(),

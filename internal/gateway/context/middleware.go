@@ -5,8 +5,8 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/medama-io/go-useragent"
+	"github.com/onsonr/sonr/internal/gateway/models"
 	config "github.com/onsonr/sonr/pkg/config/hway"
-	"github.com/onsonr/sonr/pkg/database/sessions"
 	"gorm.io/gorm"
 )
 
@@ -29,8 +29,8 @@ func Middleware(db *gorm.DB, env config.Hway) echo.MiddlewareFunc {
 type HTTPContext struct {
 	echo.Context
 	db   *gorm.DB
-	sess *sessions.Session
-	user *sessions.User
+	sess *models.Session
+	user *models.User
 	env  config.Hway
 	useragent.UserAgent
 }
@@ -53,6 +53,6 @@ func NewHTTPContext(c echo.Context, db *gorm.DB, a useragent.UserAgent) *HTTPCon
 }
 
 // Session returns the current session
-func (s *HTTPContext) Session() *sessions.Session {
+func (s *HTTPContext) Session() *models.Session {
 	return s.sess
 }
