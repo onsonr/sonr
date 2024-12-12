@@ -16,8 +16,8 @@ func Middleware(db *gorm.DB, env config.Hway) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			agent := ua.Parse(c.Request().UserAgent())
-			cc := NewHTTPContext(c, db)
-			if err := cc.InitSession(agent); err != nil {
+			cc := NewHTTPContext(c, db, agent)
+			if err := cc.initSession(); err != nil {
 				return err
 			}
 			return next(cc)
@@ -31,6 +31,7 @@ type HTTPContext struct {
 	db   *gorm.DB
 	sess *sessions.Session
 	env  config.Hway
+	useragent.UserAgent
 }
 
 // Get returns the HTTPContext from the echo context
@@ -43,7 +44,7 @@ func Get(c echo.Context) (*HTTPContext, error) {
 }
 
 // NewHTTPContext creates a new session context
-func NewHTTPContext(c echo.Context, db *gorm.DB) *HTTPContext {
+func NewHTTPContext(c echo.Context, db *gorm.DB, a useragent.UserAgent) *HTTPContext {
 	return &HTTPContext{
 		Context: c,
 		db:      db,

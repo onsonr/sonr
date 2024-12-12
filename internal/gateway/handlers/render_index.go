@@ -11,7 +11,7 @@ func RenderIndex(c echo.Context) error {
 	if isReturning(c) {
 		return response.TemplEcho(c, views.ReturningView())
 	}
-	return response.TemplEcho(c, views.InitialView())
+	return response.TemplEcho(c, views.InitialView(isUnavailableDevice(c)))
 }
 
 // Returning users have a valid authorization, and either a user handle or vault address
@@ -22,4 +22,13 @@ func isReturning(c echo.Context) bool {
 	}
 	data := sess.Session()
 	return data.UserHandle != "" && data.VaultAddress != ""
+}
+
+// isUnavailableDevice returns true if the device is unavailable
+func isUnavailableDevice(c echo.Context) bool {
+	s, err := context.Get(c)
+	if err != nil {
+		return true
+	}
+	return s.IsBot() || s.IsTV()
 }

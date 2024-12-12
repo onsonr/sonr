@@ -6,7 +6,15 @@ import (
 	"github.com/onsonr/sonr/internal/nebula/text"
 )
 
-templ InitialView() {
+templ InitialView(isUnavailable bool) {
+	if isUnavailable {
+		@layout.View("Sonr.ID") {
+			@layout.Container() {
+				@text.TitleDesc("Sonr.ID", "The decentralized identity layer for the web.")
+				@hero.SocialButtonsRow()
+			}
+		}
+	}
 	@layout.View("Sonr.ID") {
 		@layout.Container() {
 			@text.TitleDesc("Sonr.ID", "The decentralized identity layer for the web.")

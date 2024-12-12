@@ -1,14 +1,13 @@
 package context
 
 import (
-	"github.com/medama-io/go-useragent"
 	"github.com/onsonr/sonr/pkg/common"
 	"github.com/onsonr/sonr/pkg/database/sessions"
 	"github.com/segmentio/ksuid"
 )
 
-// InitSession initializes or loads an existing session
-func (s *HTTPContext) InitSession(agent useragent.UserAgent) error {
+// initSession initializes or loads an existing session
+func (s *HTTPContext) initSession() error {
 	sessionID := s.getOrCreateSessionID()
 
 	// Try to load existing session
@@ -18,14 +17,14 @@ func (s *HTTPContext) InitSession(agent useragent.UserAgent) error {
 		// Create new session if not found
 		sess = sessions.Session{
 			ID:             sessionID,
-			BrowserName:    agent.GetBrowser(),
-			BrowserVersion: agent.GetMajorVersion(),
-			Platform:       agent.GetOS(),
-			IsMobile:       agent.IsMobile(),
-			IsTablet:       agent.IsTablet(),
-			IsDesktop:      agent.IsDesktop(),
-			IsBot:          agent.IsBot(),
-			IsTV:           agent.IsTV(),
+			BrowserName:    s.GetBrowser(),
+			BrowserVersion: s.GetMajorVersion(),
+			Platform:       s.GetOS(),
+			IsMobile:       s.IsMobile(),
+			IsTablet:       s.IsTablet(),
+			IsDesktop:      s.IsDesktop(),
+			IsBot:          s.IsBot(),
+			IsTV:           s.IsTV(),
 		}
 		if err := s.db.Create(&sess).Error; err != nil {
 			return err
