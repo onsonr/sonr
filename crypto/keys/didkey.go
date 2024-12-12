@@ -1,4 +1,4 @@
-package didkey
+package keys
 
 import (
 	"crypto/ed25519"
@@ -23,23 +23,23 @@ const (
 	MulticodecKindSecp256k1PubKey = 0x1206
 )
 
-// ID is a DID:key identifier
-type ID struct {
+// DID is a DID:key identifier
+type DID struct {
 	crypto.PubKey
 }
 
 // NewID constructs an Identifier from a public key
-func NewID(pub crypto.PubKey) (ID, error) {
+func NewID(pub crypto.PubKey) (DID, error) {
 	switch pub.Type() {
 	case crypto.Ed25519, crypto.RSA, crypto.Secp256k1:
-		return ID{PubKey: pub}, nil
+		return DID{PubKey: pub}, nil
 	default:
-		return ID{}, fmt.Errorf("unsupported key type: %s", pub.Type())
+		return DID{}, fmt.Errorf("unsupported key type: %s", pub.Type())
 	}
 }
 
 // MulticodecType indicates the type for this multicodec
-func (id ID) MulticodecType() uint64 {
+func (id DID) MulticodecType() uint64 {
 	switch id.Type() {
 	case crypto.RSA:
 		return MulticodecKindRSAPubKey
@@ -53,7 +53,7 @@ func (id ID) MulticodecType() uint64 {
 }
 
 // String returns this did:key formatted as a string
-func (id ID) String() string {
+func (id DID) String() string {
 	raw, err := id.Raw()
 	if err != nil {
 		return ""
@@ -75,7 +75,7 @@ func (id ID) String() string {
 
 // VerifyKey returns the backing implementation for a public key, one of:
 // *rsa.PublicKey, ed25519.PublicKey
-func (id ID) VerifyKey() (interface{}, error) {
+func (id DID) VerifyKey() (interface{}, error) {
 	rawPubBytes, err := id.PubKey.Raw()
 	if err != nil {
 		return nil, err
@@ -105,8 +105,8 @@ func (id ID) VerifyKey() (interface{}, error) {
 }
 
 // Parse turns a string into a key method ID
-func Parse(keystr string) (ID, error) {
-	var id ID
+func Parse(keystr string) (DID, error) {
+	var id DID
 	if !strings.HasPrefix(keystr, KeyPrefix) {
 		return id, fmt.Errorf("decentralized identifier is not a 'key' type")
 	}
@@ -133,13 +133,13 @@ func Parse(keystr string) (ID, error) {
 		if err != nil {
 			return id, err
 		}
-		return ID{pub}, nil
+		return DID{pub}, nil
 	case MulticodecKindEd25519PubKey:
 		pub, err := crypto.UnmarshalEd25519PublicKey(data[n:])
 		if err != nil {
 			return id, err
 		}
-		return ID{pub}, nil
+		return DID{pub}, nil
 	case MulticodecKindSecp256k1PubKey:
 		// Handle both compressed and uncompressed formats
 		keyData := data[n:]
@@ -150,7 +150,7 @@ func Parse(keystr string) (ID, error) {
 		if err != nil {
 			return id, fmt.Errorf("failed to unmarshal Secp256k1 key: %w", err)
 		}
-		return ID{pub}, nil
+		return DID{pub}, nil
 	}
 
 	return id, fmt.Errorf("unrecognized key type multicodec prefix: %x", data[0])

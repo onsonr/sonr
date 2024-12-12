@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/onsonr/sonr/crypto/keys"
 	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/crypto/ucan"
-	"github.com/onsonr/sonr/crypto/ucan/didkey"
 	"lukechampine.com/blake3"
 )
 
@@ -127,6 +127,6 @@ func (k ucanKeyshare) UCANParser() *ucan.TokenParser {
 type customDIDPubKeyResolver struct{}
 
 // ResolveDIDKey extracts a public key from  a did:key string
-func (customDIDPubKeyResolver) ResolveDIDKey(ctx context.Context, didStr string) (didkey.ID, error) {
-	return didkey.Parse(didStr)
+func (customDIDPubKeyResolver) ResolveDIDKey(ctx context.Context, didStr string) (keys.DID, error) {
+	return keys.Parse(didStr)
 }

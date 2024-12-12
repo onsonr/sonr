@@ -1,4 +1,4 @@
-package store
+package ipfs
 
 import (
 	"context"
@@ -8,27 +8,26 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	"github.com/ipfs/go-cid"
+	"github.com/onsonr/sonr/crypto/keys"
 	"github.com/onsonr/sonr/crypto/ucan"
-	"github.com/onsonr/sonr/crypto/ucan/didkey"
-	"github.com/onsonr/sonr/pkg/common/ipfs"
 )
 
 type IPFSTokenStore interface {
 	ucan.TokenStore
 	ResolveCIDBytes(ctx context.Context, id cid.Cid) ([]byte, error)
-	ResolveDIDKey(ctx context.Context, did string) (didkey.ID, error)
+	ResolveDIDKey(ctx context.Context, did string) (keys.DID, error)
 }
 
 // ipfsTokenStore is a token store that uses IPFS to store tokens. It uses the memory store as a cache
 // for CID strings to be used as keys for retrieving tokens.
 type ipfsTokenStore struct {
 	sync.Mutex
-	ipfs  ipfs.Client
+	ipfs  Client
 	cache map[string]string
 }
 
 // NewIPFSTokenStore creates a new IPFS-backed token store
-func NewIPFSTokenStore(ipfsClient ipfs.Client) IPFSTokenStore {
+func NewIPFSTokenStore(ipfsClient Client) IPFSTokenStore {
 	return &ipfsTokenStore{
 		ipfs:  ipfsClient,
 		cache: make(map[string]string),
@@ -134,10 +133,10 @@ func (st *ipfsTokenStore) ResolveCIDBytes(ctx context.Context, id cid.Cid) ([]by
 	return data, nil
 }
 
-func (st *ipfsTokenStore) ResolveDIDKey(ctx context.Context, did string) (didkey.ID, error) {
-	id, err := didkey.Parse(did)
+func (st *ipfsTokenStore) ResolveDIDKey(ctx context.Context, did string) (keys.DID, error) {
+	id, err := keys.Parse(did)
 	if err != nil {
-		return didkey.ID{}, fmt.Errorf("failed to parse DID: %w", err)
+		return keys.DID{}, fmt.Errorf("failed to parse DID: %w", err)
 	}
 	return id, nil
 }
