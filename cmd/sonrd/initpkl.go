@@ -16,18 +16,30 @@ func newPklInitCmd() *cobra.Command {
 		Use:   "init-pkl",
 		Short: "Initialize the Sonrd configuration using PKL",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			evaluator, err := pkl.NewEvaluator(context.Background(), pkl.PreconfiguredOptions)
+			ctx := context.Background()
+			evaluator, err := pkl.NewEvaluator(ctx, pkl.PreconfiguredOptions)
 			if err != nil {
 				return err
 			}
-			err = createAppToml(evaluator, formatConfigPath(cmd, "app.toml"))
-			if err != nil {
+			defer evaluator.Close()
+
+			appPath := formatConfigPath(cmd, "app.toml")
+			configPath := formatConfigPath(cmd, "config.toml")
+
+			// Create app.toml
+			if err := createAppToml(evaluator, appPath); err != nil {
+				cmd.PrintErrf("Failed to create app.toml: %v\n", err)
 				return err
 			}
-			err = createConfigToml(evaluator, formatConfigPath(cmd, "config.toml"))
-			if err != nil {
+			cmd.Printf("Successfully created %s\n", appPath)
+
+			// Create config.toml
+			if err := createConfigToml(evaluator, configPath); err != nil {
+				cmd.PrintErrf("Failed to create config.toml: %v\n", err)
 				return err
 			}
+			cmd.Printf("Successfully created %s\n", configPath)
+
 			return nil
 		},
 	}
@@ -55,12 +67,32 @@ func createConfigToml(evaluator pkl.Evaluator, path string) error {
 
 func formatConfigPath(cmd *cobra.Command, fileName string) string {
 	configDir := cmd.Flag("config-dir").Value.String()
+	// Expand home directory if needed
+	if configDir[:2] == "~/" {
+		home, err := os.UserHomeDir()
+		if err == nil {
+			configDir = filepath.Join(home, configDir[2:])
+		}
+	}
 	return filepath.Join(configDir, fileName)
 }
 
 func writeConfigFile(path string, content string) error {
-	if err := os.MkdirAll(path, 0o755); err != nil {
+	// Create the directory path if it doesn't exist
+	dir := filepath.Dir(path)
+	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return err
 	}
+
+	// Check if file already exists
+	if _, err := os.Stat(path); err == nil {
+		// File exists, create backup
+		backupPath := path + ".backup"
+		if err := os.Rename(path, backupPath); err != nil {
+			return err
+		}
+	}
+
+	// Write the new config file
 	return os.WriteFile(path, []byte(content), 0o644)
 }
