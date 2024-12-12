@@ -11,7 +11,7 @@ templ ProfileFormView(data form.CreateProfileData) {
 	@layout.View("New Profile | Sonr.ID") {
 		@card.Container() {
 			@text.TitleDescription("Basic Info", "Tell us a little about yourself.")
-			@form.CreateProfile("/register/passkey", "POST", data)
+			@form.CreateProfile(data)
 		}
 	}
 }
@@ -20,7 +20,7 @@ templ LinkCredentialView(data form.CreatePasskeyData) {
 	@layout.View("Register | Sonr.ID") {
 		@card.Container() {
 			@text.TitleDescription("Link a PassKey", "This will be used to login to your vault.")
-			@form.CreatePasskey("/register/finish", "POST", data)
+			@form.CreatePasskey(data)
 		}
 	}
 }

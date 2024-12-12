@@ -12,8 +12,8 @@ type CreateProfileData struct {
 	LastNumber       int
 }
 
-templ CreateProfile(action string, method string, data CreateProfileData) {
-	@Root(action, method, "create-profile") {
+templ CreateProfile(data CreateProfileData) {
+	@Root("/register/passkey", "POST", "create-profile") {
 		@Body() {
 			@Header() {
 				<sl-progress-bar value="50"></sl-progress-bar>

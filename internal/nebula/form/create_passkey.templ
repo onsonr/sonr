@@ -13,8 +13,8 @@ type CreatePasskeyData struct {
 	CreationBlock string
 }
 
-templ CreatePasskey(action, method string, data CreatePasskeyData) {
-	@Root(action, method, "passkey-form") {
+templ CreatePasskey(data CreatePasskeyData) {
+	@Root("/register/finish", "POST", "passkey-form") {
 		<input type="hidden" name="credential" id="credential-data" required/>
 		@Body() {
 			@Header() {
