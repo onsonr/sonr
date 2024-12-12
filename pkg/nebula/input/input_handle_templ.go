@@ -41,7 +41,7 @@ func Handle() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-input name=\"handle\" placeholder=\"digitalgold\" type=\"text\" label=\"Handle\" minlength=\"4\" maxlength=\"12\" required><div slot=\"prefix\"><sl-icon name=\"at-sign\" library=\"sonr\"></sl-icon></div></sl-input><br>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div><sl-input name=\"handle\" placeholder=\"digitalgold\" type=\"text\" label=\"Handle\" minlength=\"4\" maxlength=\"12\" required><div slot=\"prefix\"><sl-icon name=\"at-sign\" library=\"sonr\"></sl-icon></div></sl-input></div><br>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
