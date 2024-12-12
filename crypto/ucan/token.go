@@ -266,7 +266,7 @@ type DIDPubKeyResolver interface {
 
 // DIDStringFromPublicKey creates a did:key identifier string from a public key
 func DIDStringFromPublicKey(pub crypto.PubKey) (string, error) {
-	id, err := keys.NewID(pub)
+	id, err := keys.NewDID(pub)
 	if err != nil {
 		return "", err
 	}

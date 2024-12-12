@@ -28,8 +28,8 @@ type DID struct {
 	crypto.PubKey
 }
 
-// NewID constructs an Identifier from a public key
-func NewID(pub crypto.PubKey) (DID, error) {
+// NewDID constructs an Identifier from a public key
+func NewDID(pub crypto.PubKey) (DID, error) {
 	switch pub.Type() {
 	case crypto.Ed25519, crypto.RSA, crypto.Secp256k1:
 		return DID{PubKey: pub}, nil

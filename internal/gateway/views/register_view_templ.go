@@ -10,11 +10,11 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"github.com/onsonr/sonr/internal/gateway/models"
-	"github.com/onsonr/sonr/pkg/nebula/card"
-	"github.com/onsonr/sonr/pkg/nebula/form"
-	"github.com/onsonr/sonr/pkg/nebula/hero"
-	"github.com/onsonr/sonr/pkg/nebula/input"
-	"github.com/onsonr/sonr/pkg/nebula/layout"
+	"github.com/onsonr/sonr/internal/nebula/card"
+	"github.com/onsonr/sonr/internal/nebula/form"
+	"github.com/onsonr/sonr/internal/nebula/hero"
+	"github.com/onsonr/sonr/internal/nebula/input"
+	"github.com/onsonr/sonr/internal/nebula/layout"
 )
 
 func CreateProfileForm(data models.CreateProfileData) templ.Component {

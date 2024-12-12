@@ -9,8 +9,8 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/onsonr/sonr/pkg/nebula/hero"
-	"github.com/onsonr/sonr/pkg/nebula/layout"
+	"github.com/onsonr/sonr/internal/nebula/hero"
+	"github.com/onsonr/sonr/internal/nebula/layout"
 )
 
 func ReturningView() templ.Component {
