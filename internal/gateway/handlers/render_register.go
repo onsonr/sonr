@@ -13,7 +13,7 @@ import (
 	"golang.org/x/exp/rand"
 )
 
-func RenderProfileRegister(c echo.Context) error {
+func RenderProfileCreate(c echo.Context) error {
 	d := models.CreateProfileData{
 		FirstNumber: rand.Intn(5) + 1,
 		LastNumber:  rand.Intn(4) + 1,
@@ -21,12 +21,11 @@ func RenderProfileRegister(c echo.Context) error {
 	return response.TemplEcho(c, views.CreateProfileForm(d))
 }
 
-func RenderPasskeyStart(c echo.Context) error {
+func RenderPasskeyCreate(c echo.Context) error {
 	challenge, _ := protocol.CreateChallenge()
 	handle := c.FormValue("handle")
 	firstName := c.FormValue("first_name")
 	lastName := c.FormValue("last_name")
-	isHuman := c.FormValue("is_human")
 
 	ks, err := mpc.NewKeyset()
 	if err != nil {
@@ -42,7 +41,7 @@ func RenderPasskeyStart(c echo.Context) error {
 	return response.TemplEcho(c, views.CreatePasskeyForm(dat))
 }
 
-func RenderPasskeyFinish(c echo.Context) error {
+func RenderVaultLoading(c echo.Context) error {
 	credentialJSON := c.FormValue("credential")
 	if credentialJSON == "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "missing credential data")

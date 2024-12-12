@@ -26,13 +26,13 @@ func RegisterRoutes(e *echo.Echo, env config.Hway, db *gorm.DB) error {
 
 	// Register View Handlers
 	e.GET("/", handlers.RenderIndex)
-	e.GET("/register", handlers.RenderProfileRegister)
-	e.POST("/register/passkey", handlers.RenderPasskeyStart)
-	e.POST("/register/finish", handlers.RenderPasskeyFinish)
+	e.GET("/register", handlers.RenderProfileCreate)
+	e.POST("/register/passkey", handlers.RenderPasskeyCreate)
+	e.POST("/register/loading", handlers.RenderVaultLoading)
 
 	// Register Validation Handlers
-	e.PUT("/register/profile/submit", handlers.ValidateProfileHandle)
-	e.PUT("/register/passkey/submit", handlers.ValidateUserCredential)
+	e.PUT("/register/profile/submit", handlers.ValidateProfileSubmit)
+	e.PUT("/register/passkey/submit", handlers.ValidateCredentialSubmit)
 	return nil
 }
 
