@@ -18,10 +18,10 @@ func RegisterRoutes(e *echo.Echo, env config.Hway, db *gorm.DB) error {
 	// Inject session middleware with database connection
 	e.Use(context.Middleware(db, env))
 
-	// Register routes
-	e.GET("/", index.Handler)
-	e.GET("/register", register.HandleCreateProfile)
-	e.POST("/register/start", register.HandlePasskeyStart)
-	e.POST("/register/finish", register.HandlePasskeyFinish)
+	// Register View Handlers
+	e.GET("/", index.RenderHandler)
+	e.GET("/register", register.RenderProfileRegister)
+	e.POST("/register/passkey", register.RenderPasskeyStart)
+	e.POST("/register/finish", register.RenderPasskeyFinish)
 	return nil
 }

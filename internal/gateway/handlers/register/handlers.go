@@ -7,15 +7,17 @@ import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/crypto/mpc"
+	"github.com/onsonr/sonr/internal/nebula/form"
 	"github.com/onsonr/sonr/pkg/common/response"
+	"github.com/onsonr/sonr/pkg/passkeys"
 )
 
-func HandleCreateProfile(c echo.Context) error {
-	d := randomCreateProfileData()
+func RenderProfileRegister(c echo.Context) error {
+	d := form.RandomCreateProfileData()
 	return response.TemplEcho(c, ProfileFormView(d))
 }
 
-func HandlePasskeyStart(c echo.Context) error {
+func RenderPasskeyStart(c echo.Context) error {
 	challenge, _ := protocol.CreateChallenge()
 	handle := c.FormValue("handle")
 	firstName := c.FormValue("first_name")
@@ -25,7 +27,7 @@ func HandlePasskeyStart(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	dat := RegisterPasskeyData{
+	dat := form.CreatePasskeyData{
 		Address:       ks.Address(),
 		Handle:        handle,
 		Name:          fmt.Sprintf("%s %s", firstName, lastName),
@@ -35,13 +37,13 @@ func HandlePasskeyStart(c echo.Context) error {
 	return response.TemplEcho(c, LinkCredentialView(dat))
 }
 
-func HandlePasskeyFinish(c echo.Context) error {
+func RenderPasskeyFinish(c echo.Context) error {
 	// Get the raw credential JSON string
 	credentialJSON := c.FormValue("credential")
 	if credentialJSON == "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "missing credential data")
 	}
-	_, err := extractCredentialDescriptor(credentialJSON)
+	_, err := passkeys.ExtractCredential(credentialJSON)
 	if err != nil {
 		return err
 	}

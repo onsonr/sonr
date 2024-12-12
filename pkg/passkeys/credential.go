@@ -1,4 +1,4 @@
-package register
+package passkeys
 
 import (
 	"encoding/json"
@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"golang.org/x/exp/rand"
 )
 
 // Define the credential structure matching our frontend data
@@ -24,25 +23,7 @@ type Credential struct {
 	} `json:"response"`
 }
 
-type CreateProfileData struct {
-	TurnstileSiteKey string
-	FirstNumber      int
-	LastNumber       int
-}
-
-type RegisterPasskeyData struct {
-	Address       string
-	Handle        string
-	Name          string
-	Challenge     string
-	CreationBlock string
-}
-
-func (d CreateProfileData) IsHumanLabel() string {
-	return fmt.Sprintf("What is %d + %d?", d.FirstNumber, d.LastNumber)
-}
-
-func extractCredentialDescriptor(jsonString string) (*Credential, error) {
+func ExtractCredential(jsonString string) (*Credential, error) {
 	cred := &Credential{}
 	// Unmarshal the credential JSON
 	if err := json.Unmarshal([]byte(jsonString), cred); err != nil {
@@ -74,11 +55,4 @@ func extractCredentialDescriptor(jsonString string) (*Credential, error) {
 		cred.Transports,
 	)
 	return cred, nil
-}
-
-func randomCreateProfileData() CreateProfileData {
-	return CreateProfileData{
-		FirstNumber: rand.Intn(5) + 1,
-		LastNumber:  rand.Intn(4) + 1,
-	}
 }

@@ -1,0 +1,30 @@
+package form
+
+import (
+	"github.com/onsonr/sonr/internal/nebula/card"
+	"github.com/onsonr/sonr/internal/nebula/input"
+)
+
+type CreatePasskeyData struct {
+	Address       string
+	Handle        string
+	Name          string
+	Challenge     string
+	CreationBlock string
+}
+
+templ CreatePasskey(action, method string, data CreatePasskeyData) {
+	@Root(action, method, "passkey-form") {
+		<input type="hidden" name="credential" id="credential-data" required/>
+		@Body() {
+			@Header() {
+				@card.SonrProfile(data.Address, data.Name, data.Handle, data.CreationBlock)
+			}
+			@input.CoinSelect()
+			@Footer() {
+				@input.Passkey(data.Address, data.Handle, data.Challenge)
+				@CancelButton()
+			}
+		}
+	}
+}
