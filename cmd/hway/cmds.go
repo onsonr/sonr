@@ -34,7 +34,11 @@ func rootCmd() *cobra.Command {
 			if err != nil {
 				panic(err)
 			}
-			e, err := setupServer(env)
+			db, ipc, err := initDeps(env)
+			if err != nil {
+				panic(err)
+			}
+			e, err := setupServer(env, db, ipc)
 			if err != nil {
 				panic(err)
 			}

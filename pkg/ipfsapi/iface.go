@@ -1,4 +1,4 @@
-package ipfs
+package ipfsapi
 
 import "github.com/ipfs/boxo/files"
 
