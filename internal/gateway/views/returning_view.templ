@@ -1,15 +1,14 @@
 package views
 
 import (
-	"github.com/onsonr/sonr/internal/nebula/card"
 	"github.com/onsonr/sonr/internal/nebula/layout"
 	"github.com/onsonr/sonr/internal/nebula/text"
 )
 
 templ ReturningView() {
 	@layout.View("Login | Sonr.ID") {
-		@card.Container() {
-			@text.TitleDescription("Welcome Back!", "Continue with your existing Sonr.ID.")
+		@layout.Container() {
+			@text.TitleDesc("Welcome Back!", "Continue with your existing Sonr.ID.")
 			<div class="pt-3 flex flex-col items-center justify-center h-full">
 				<sl-button hx-target="#container" hx-get="/register" type="button">
 					<sl-icon slot="prefix" library="sonr" name="sonr"></sl-icon>

@@ -9,7 +9,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/onsonr/sonr/internal/nebula/card"
+	"github.com/onsonr/sonr/internal/nebula/hero"
 	"github.com/onsonr/sonr/internal/nebula/layout"
 	"github.com/onsonr/sonr/internal/nebula/text"
 )
@@ -59,17 +59,29 @@ func InitialView() templ.Component {
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
-				templ_7745c5c3_Err = text.TitleDescription("Sonr.ID", "The decentralized identity layer for the web.").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = text.TitleDesc("Sonr.ID", "The decentralized identity layer for the web.").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div class=\"pt-1.5 mb-3 flex flex-col items-center justify-center h-full\"><sl-button size=\"large\" hx-target=\"#container\" hx-get=\"/register\" hx-push-url=\"/register\" type=\"button\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"sonr\"></sl-icon> Get Started <sl-icon slot=\"suffix\" library=\"sonr\" name=\"arrow-right\"></sl-icon></sl-button></div><div class=\"pt-1.5 flex flex-row items-center justify-center h-full gap-3\"><sl-button circle outline href=\"https://sonr.io\"><sl-icon name=\"home\" library=\"sonr\" label=\"Home\"></sl-icon></sl-button> <sl-button circle outline href=\"https://onsonr.dev\"><sl-icon name=\"docs\" library=\"sonr\" label=\"Docs\"></sl-icon></sl-button> <sl-button circle outline href=\"https://github.com/onsonr/sonr\"><sl-icon name=\"social-github\" library=\"sonr\" label=\"Open Source\"></sl-icon></sl-button></div>")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" ")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = hero.GetStartedButton().Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" ")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = hero.SocialButtonsRow().Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				return templ_7745c5c3_Err
 			})
-			templ_7745c5c3_Err = card.Container().Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = layout.Container().Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

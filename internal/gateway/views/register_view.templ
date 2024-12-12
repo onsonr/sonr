@@ -1,7 +1,6 @@
 package views
 
 import (
-	"github.com/onsonr/sonr/internal/nebula/card"
 	"github.com/onsonr/sonr/internal/nebula/form"
 	"github.com/onsonr/sonr/internal/nebula/layout"
 	"github.com/onsonr/sonr/internal/nebula/text"
@@ -9,8 +8,8 @@ import (
 
 templ CreateProfileForm(data form.CreateProfileData) {
 	@layout.View("New Profile | Sonr.ID") {
-		@card.Container() {
-			@text.TitleDescription("Basic Info", "Tell us a little about yourself.")
+		@layout.Container() {
+			@text.TitleDesc("Basic Info", "Tell us a little about yourself.")
 			@form.CreateProfile(data)
 		}
 	}
@@ -18,8 +17,8 @@ templ CreateProfileForm(data form.CreateProfileData) {
 
 templ CreatePasskeyForm(data form.CreatePasskeyData) {
 	@layout.View("Register | Sonr.ID") {
-		@card.Container() {
-			@text.TitleDescription("Link a PassKey", "This will be used to login to your vault.")
+		@layout.Container() {
+			@text.TitleDesc("Link a PassKey", "This will be used to login to your vault.")
 			@form.CreatePasskey(data)
 		}
 	}
@@ -27,8 +26,8 @@ templ CreatePasskeyForm(data form.CreatePasskeyData) {
 
 templ LoadingVaultView() {
 	@layout.View("Loading... | Sonr.ID") {
-		@card.Container() {
-			@text.TitleDescription("Loading Vault", "This will be used to login to your vault.")
+		@layout.Container() {
+			@text.TitleDesc("Loading Vault", "This will be used to login to your vault.")
 		}
 	}
 }
