@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -53,15 +54,17 @@ func createAppToml(evaluator pkl.Evaluator, path string) error {
 	if err != nil {
 		return err
 	}
+	log.Printf("res: %s", res)
 	return writeConfigFile(path, res)
 }
 
 func createConfigToml(evaluator pkl.Evaluator, path string) error {
-	configSource := pkl.UriSource("https://pkl.sh/sonr.conf/0.0.2/Config.pkl")
+	configSource := pkl.UriSource("https://pkl.sh/sonr.chain/0.0.2/Config.pkl")
 	res, err := evaluator.EvaluateOutputText(context.Background(), configSource)
 	if err != nil {
 		return err
 	}
+	log.Printf("res: %s", res)
 	return writeConfigFile(path, res)
 }
 

@@ -1,4 +1,4 @@
-open module sonr.chain.Config
+module sonr.chain.Config
 
 import "package://pkg.pkl-lang.org/pkl-pantry/pkl.toml@1.0.0#/toml.pkl"
 
@@ -147,7 +147,6 @@ class Instrumentation {
   max_open_connections: Int = 3
   namespace: String = "cometbft"
 }
-
 
 output {
   renderer = new toml.Renderer {}

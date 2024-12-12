@@ -1,4 +1,4 @@
-open module sonr.chain.Genesis
+module sonr.chain.Genesis
 
 app_name: String
 

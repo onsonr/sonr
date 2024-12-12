@@ -52,13 +52,16 @@ func rootCmd() *cobra.Command {
 	cmd.Flags().StringVar(&sonrGrpcURL, "sonr-grpc-url", "localhost:9090", "Sonr gRPC URL")
 	cmd.Flags().StringVar(&sonrRPCURL, "sonr-rpc-url", "localhost:26657", "Sonr RPC URL")
 	cmd.Flags().StringVar(&sqliteFile, "sqlite-file", "hway.db", "File to store sqlite database")
-	cmd.Flags().StringVar(&psqlHost, "psql-host", "localhost", "PostgresSQL Host")
-	cmd.Flags().StringVar(&psqlUser, "psql-user", "postgres", "PostgresSQL User")
-	cmd.Flags().StringVar(&psqlPass, "psql-pass", "postgres", "PostgresSQL Password")
-	cmd.Flags().StringVar(&psqlDB, "psql-db", "hway", "PostgresSQL Database")
+	cmd.Flags().StringVar(&psqlHost, "psql-host", "", "PostgresSQL Host")
+	cmd.Flags().StringVar(&psqlUser, "psql-user", "", "PostgresSQL User")
+	cmd.Flags().StringVar(&psqlPass, "psql-pass", "", "PostgresSQL Password")
+	cmd.Flags().StringVar(&psqlDB, "psql-db", "", "PostgresSQL Database")
 	return cmd
 }
 
 func formatPsqlDSN() string {
+	if psqlHost == "" {
+		return ""
+	}
 	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable", psqlHost, psqlUser, psqlPass, psqlDB)
 }
