@@ -7,9 +7,9 @@ import (
 	"github.com/onsonr/sonr/internal/vault/context"
 )
 
-func Handler(c echo.Context) error {
+func RenderIndex(c echo.Context) error {
 	// TODO: Create views
-	if isInitial(c) {
+	if isReturning(c) {
 		// return response.TemplEcho(c, index.InitialView())
 	}
 	// TODO: Add authorization check
@@ -22,14 +22,6 @@ func Handler(c echo.Context) error {
 // ╭─────────────────────────────────────────────────────────╮
 // │                    Utility Functions                    │
 // ╰─────────────────────────────────────────────────────────╯
-
-// Initial users have no authorization, user handle, or vault address
-func isInitial(c echo.Context) bool {
-	noAuth := !context.HasAuthorization(c)
-	noUserHandle := !context.HasUserHandle(c)
-	noVaultAddress := !context.HasVaultAddress(c)
-	return noUserHandle && noVaultAddress && noAuth
-}
 
 // Expired users have either a user handle or vault address
 func isExpired(c echo.Context) bool {
