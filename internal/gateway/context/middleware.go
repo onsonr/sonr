@@ -30,6 +30,7 @@ type HTTPContext struct {
 	echo.Context
 	db   *gorm.DB
 	sess *sessions.Session
+	user *sessions.User
 	env  config.Hway
 	useragent.UserAgent
 }

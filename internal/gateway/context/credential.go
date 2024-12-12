@@ -1,4 +1,4 @@
-package passkeys
+package context
 
 import (
 	"encoding/json"
@@ -6,11 +6,11 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/pkg/database/sessions"
 )
 
 // Define the credential structure matching our frontend data
 type Credential struct {
-	Handle                  string            `json:"handle"`
 	ID                      string            `json:"id"`
 	RawID                   string            `json:"rawId"`
 	Type                    string            `json:"type"`
@@ -21,6 +21,16 @@ type Credential struct {
 		AttestationObject string `json:"attestationObject"`
 		ClientDataJSON    string `json:"clientDataJSON"`
 	} `json:"response"`
+}
+
+func (c *Credential) ToDBModel(handle, origin string) *sessions.Credential {
+	return &sessions.Credential{
+		Handle:     handle,
+		Origin:     origin,
+		ID:         c.ID,
+		Type:       c.Type,
+		Transports: c.Transports,
+	}
 }
 
 func ExtractCredential(jsonString string) (*Credential, error) {

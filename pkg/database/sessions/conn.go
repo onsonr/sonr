@@ -38,6 +38,7 @@ func NewGormDB(env config.Hway) (*gorm.DB, error) {
 	}
 
 	// Migrate the schema
+	db.AutoMigrate(&Credential{})
 	db.AutoMigrate(&Session{})
 	db.AutoMigrate(&User{})
 	return db, nil

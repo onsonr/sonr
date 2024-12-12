@@ -4,12 +4,22 @@ import (
 	"gorm.io/gorm"
 )
 
+type Credential struct {
+	gorm.Model
+	Handle     string `json:"handle"`
+	ID         string `json:"id"`
+	Origin     string `json:"origin"`
+	Type       string `json:"type"`
+	Transports string `json:"transports"`
+}
+
 type User struct {
 	gorm.Model
-	Address string `json:"address"`
-	Handle  string `json:"handle"`
-	Name    string `json:"name"`
-	CID     string `json:"cid"`
+	Address     string        `json:"address"`
+	Handle      string        `json:"handle"`
+	Name        string        `json:"name"`
+	CID         string        `json:"cid"`
+	Credentials []*Credential `json:"credentials"`
 }
 
 type Session struct {
@@ -23,7 +33,5 @@ type Session struct {
 	IsTablet       bool   `json:"isTablet"`
 	IsTV           bool   `json:"isTV"`
 	IsBot          bool   `json:"isBot"`
-	UserHandle     string `json:"userHandle"`
-	VaultAddress   string `json:"vaultAddress"`
 	Challenge      string `json:"challenge"`
 }
