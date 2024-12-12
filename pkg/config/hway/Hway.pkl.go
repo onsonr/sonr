@@ -1,4 +1,4 @@
-// Code generated from Pkl module `sonr.conf.Hway`. DO NOT EDIT.
+// Code generated from Pkl module `sonr.net.Hway`. DO NOT EDIT.
 package hway
 
 import (
