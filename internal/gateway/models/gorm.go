@@ -13,15 +13,6 @@ type Credential struct {
 	Transports string `json:"transports"`
 }
 
-type User struct {
-	gorm.Model
-	Address     string        `json:"address"`
-	Handle      string        `json:"handle"`
-	Name        string        `json:"name"`
-	CID         string        `json:"cid"`
-	Credentials []*Credential `json:"credentials"`
-}
-
 type Session struct {
 	gorm.Model
 	ID             string `json:"id" gorm:"primaryKey"`
@@ -34,4 +25,13 @@ type Session struct {
 	IsTV           bool   `json:"isTV"`
 	IsBot          bool   `json:"isBot"`
 	Challenge      string `json:"challenge"`
+}
+
+type User struct {
+	gorm.Model
+	Address string `json:"address"`
+	Handle  string `json:"handle"`
+	Origin  string `json:"origin"`
+	Name    string `json:"name"`
+	CID     string `json:"cid"`
 }
