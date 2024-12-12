@@ -2,86 +2,75 @@ module sonr.chain.App
 
 import "package://pkg.pkl-lang.org/pkl-pantry/pkl.toml@1.0.0#/toml.pkl"
 
-class Chain {
-  `minimum-gas-prices`: String = "0stake"
-  `query-gas-limit`: String = "0"
-  pruning: String = "default"
-  `pruning-keep-recent`: String = "0"
-  `pruning-interval`: String = "0"
-  `halt-height`: Int = 0
-  `halt-time`: Int = 0
-  `min-retain-blocks`: Int = 0
-  `inter-block-cache`: Boolean = true
-  `index-events`: Listing<String> = new {}
-  `iavl-cache-size`: Int = 781250
-  `iavl-disable-fastnode`: Boolean = false
-  `app-db-backend`: String = ""
-  telemetry: Telemetry = new {}
-  api: Api = new {}
-  grpc: Grpc = new {}
-  `grpc-web`: GrpcWeb = new {}
-  `state-sync`: StateSync = new {}
-  streaming: Streaming = new {}
-  mempool: Mempool = new {}
+`minimum-gas-prices` = "0stake"
+`query-gas-limit` = "0"
+pruning = "default"
+`pruning-keep-recent` = "0"
+`pruning-interval` = "0"
+`halt-height` = 0
+`halt-time` = 0
+`min-retain-blocks` = 0
+`inter-block-cache` = true
+`index-events` = new Listing {}
+`iavl-cache-size` = 781250
+`iavl-disable-fastnode` = false
+`app-db-backend` = ""
+
+telemetry = new {
+`service-name` = ""
+enabled = true
+`enable-hostname` = false
+`enable-hostname-label` = false
+`enable-service-label` = false
+`prometheus-retention-time` = 60
+`global-labels` = new Listing {
+    new Listing {
+        "chain_id"
+        "chain-NKlMbx"
+        }
+}
+`metrics-sink` = ""
+`statsd-addr` = ""
+`datadog-hostname` = ""
 }
 
-class Telemetry {
-  `service-name`: String = ""
-  enabled: Boolean = true
-  `enable-hostname`: Boolean = false
-  `enable-hostname-label`: Boolean = false
-  `enable-service-label`: Boolean = false
-  `prometheus-retention-time`: Int = 60
-  `global-labels`: Listing<Listing<String>> = new {
-    new {
-      "chain_id"
-      "chain-NKlMbx"
-    }
-  }
-  `metrics-sink`: String = ""
-  `statsd-addr`: String = ""
-  `datadog-hostname`: String = ""
+api = new {
+enable = true
+swagger = false
+address = "tcp://0.0.0.0:1317"
+`max-open-connections` = 1000
+`rpc-read-timeout` = 10
+`rpc-write-timeout` = 0
+`rpc-max-body-bytes` = 1000000
+`enabled-unsafe-cors` = false
 }
 
-class Api {
-  enable: Boolean = true
-  swagger: Boolean = false
-  address: String = "tcp://0.0.0.0:1317"
-  `max-open-connections`: Int = 1000
-  `rpc-read-timeout`: Int = 10
-  `rpc-write-timeout`: Int = 0
-  `rpc-max-body-bytes`: Int = 1000000
-  `enabled-unsafe-cors`: Boolean = false
+grpc = new {
+enable = true
+address = "0.0.0.0:9090"
+`max-recv-msg-size` = "10485760"
+`max-send-msg-size` = "2147483647"
 }
 
-class Grpc {
-  enable: Boolean = true
-  address: String = "0.0.0.0:9090"
-  `max-recv-msg-size`: String = "10485760"
-  `max-send-msg-size`: String = "2147483647"
+`grpc-web` = new {
+enable = true
 }
 
-class GrpcWeb {
-  enable: Boolean = true
+`state-sync` = new {
+`snapshot-interval` = 0
+`snapshot-keep-recent` = 2
 }
 
-class StateSync {
-  `snapshot-interval`: Int = 0
-  `snapshot-keep-recent`: Int = 2
+streaming = new {
+abci = new {
+    keys = new Listing {}
+    plugin = ""
+    `stop-node-on-err` = true
+}
 }
 
-class Streaming {
-  abci: Abci = new {}
-}
-
-class Abci {
-  keys: Listing<String> = new {}
-  plugin: String = ""
-  `stop-node-on-err`: Boolean = true
-}
-
-class Mempool {
-  `max-txs`: Int = 5000
+mempool = new {
+`max-txs` = 5000
 }
 
 output {
