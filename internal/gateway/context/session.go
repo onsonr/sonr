@@ -19,26 +19,6 @@ func SetUserHandle(c echo.Context, handle string) error {
 	return sess.db.Save(sess.Session()).Error
 }
 
-// SetFirstName sets the first name in the session
-func SetFirstName(c echo.Context, name string) error {
-	sess, err := Get(c)
-	if err != nil {
-		return err
-	}
-	sess.Session().FirstName = name
-	return sess.db.Save(sess.Session()).Error
-}
-
-// SetLastInitial sets the last initial in the session
-func SetLastInitial(c echo.Context, initial string) error {
-	sess, err := Get(c)
-	if err != nil {
-		return err
-	}
-	sess.Session().LastInitial = initial
-	return sess.db.Save(sess.Session()).Error
-}
-
 // SetVaultAddress sets the vault address in the session
 func SetVaultAddress(c echo.Context, address string) error {
 	sess, err := Get(c)
@@ -80,15 +60,6 @@ func GetBrowserVersion(c echo.Context) (string, error) {
 	return sess.Session().BrowserVersion, nil
 }
 
-// GetUserArchitecture returns the user architecture
-func GetUserArchitecture(c echo.Context) (string, error) {
-	sess, err := Get(c)
-	if err != nil {
-		return "", err
-	}
-	return sess.Session().UserArchitecture, nil
-}
-
 // GetPlatform returns the platform
 func GetPlatform(c echo.Context) (string, error) {
 	sess, err := Get(c)
@@ -98,24 +69,6 @@ func GetPlatform(c echo.Context) (string, error) {
 	return sess.Session().Platform, nil
 }
 
-// GetPlatformVersion returns the platform version
-func GetPlatformVersion(c echo.Context) (string, error) {
-	sess, err := Get(c)
-	if err != nil {
-		return "", err
-	}
-	return sess.Session().PlatformVersion, nil
-}
-
-// GetDeviceModel returns the device model
-func GetDeviceModel(c echo.Context) (string, error) {
-	sess, err := Get(c)
-	if err != nil {
-		return "", err
-	}
-	return sess.Session().DeviceModel, nil
-}
-
 // GetUserHandle returns the user handle
 func GetUserHandle(c echo.Context) (string, error) {
 	sess, err := Get(c)
@@ -123,24 +76,6 @@ func GetUserHandle(c echo.Context) (string, error) {
 		return "", err
 	}
 	return sess.Session().UserHandle, nil
-}
-
-// GetFirstName returns the first name
-func GetFirstName(c echo.Context) (string, error) {
-	sess, err := Get(c)
-	if err != nil {
-		return "", err
-	}
-	return sess.Session().FirstName, nil
-}
-
-// GetLastInitial returns the last initial
-func GetLastInitial(c echo.Context) (string, error) {
-	sess, err := Get(c)
-	if err != nil {
-		return "", err
-	}
-	return sess.Session().LastInitial, nil
 }
 
 // GetVaultAddress returns the vault address

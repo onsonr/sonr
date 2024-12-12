@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/medama-io/go-useragent"
 	config "github.com/onsonr/sonr/pkg/config/hway"
 	"github.com/onsonr/sonr/pkg/database/sessions"
 	"gorm.io/gorm"
@@ -11,10 +12,12 @@ import (
 
 // Middleware creates a new session middleware
 func Middleware(db *gorm.DB, env config.Hway) echo.MiddlewareFunc {
+	ua := useragent.NewParser()
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
+			agent := ua.Parse(c.Request().UserAgent())
 			cc := NewHTTPContext(c, db)
-			if err := cc.InitSession(); err != nil {
+			if err := cc.InitSession(agent); err != nil {
 				return err
 			}
 			return next(cc)
