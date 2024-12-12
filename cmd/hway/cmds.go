@@ -6,14 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
-	"github.com/onsonr/sonr/crypto/ucan"
-	"github.com/onsonr/sonr/internal/gateway"
-	"github.com/onsonr/sonr/pkg/common/ipfs"
 	config "github.com/onsonr/sonr/pkg/config/hway"
-	"github.com/onsonr/sonr/pkg/database/sessions"
-	"github.com/onsonr/sonr/pkg/didauth/producer"
 	"github.com/spf13/cobra"
 )
 
@@ -77,23 +70,4 @@ func loadEnvImplFromArgs(args []string) (config.Hway, error) {
 		SonrRpcUrl:     sonrRPCURL,
 	}
 	return env, nil
-}
-
-// setupServer sets up the server
-func setupServer(env config.Hway) (*echo.Echo, error) {
-	ipc, err := ipfs.NewClient()
-	if err != nil {
-		return nil, err
-	}
-	db, err := sessions.NewGormDB(env)
-	if err != nil {
-		return nil, err
-	}
-	e := echo.New()
-	e.IPExtractor = echo.ExtractIPDirect()
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-	e.Use(producer.Middleware(ipc, ucan.ServicePermissions))
-	gateway.RegisterRoutes(e, env, db)
-	return e, nil
 }
