@@ -343,9 +343,6 @@ logs-sonr: init-env
 .PHONY: deploy start start-tui start-uds stop stop-uds restart status
 
 start: build-hway init-env
-	bin/process-compose up --port $(PC_PORT_NUM) --log-file $(PC_LOG_FILE) --detached -f deploy/process-compose.yaml
-
-start-tui: build-hway init-env
 	bin/process-compose up --port $(PC_PORT_NUM) --log-file $(PC_LOG_FILE) -f deploy/process-compose.yaml
 
 start-uds: build-hway init-env
@@ -359,6 +356,9 @@ stop-uds: init-env
 
 status: init-env
 	bin/process-compose project state --port $(PC_PORT_NUM)
+
+status-uds: init-env
+	bin/process-compose project state --use-uds --unix-socket $(PC_SOCKET_PATH)
 ###############################################################################
 ###                                     help                                ###
 ###############################################################################
