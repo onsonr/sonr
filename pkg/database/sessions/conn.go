@@ -15,11 +15,18 @@ import (
 func NewGormDB(env config.Hway) (*gorm.DB, error) {
 	// Try PostgreSQL first if DSN is provided
 	if dsn := env.GetPsqlDSN(); dsn != "" && !strings.Contains(dsn, "password= ") {
-		if db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{}); err == nil {
-			// Successfully connected to PostgreSQL
-			db.AutoMigrate(&Session{})
-			db.AutoMigrate(&User{})
-			return db, nil
+		db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		if err == nil {
+			// Test the connection
+			sqlDB, err := db.DB()
+			if err == nil {
+				if err = sqlDB.Ping(); err == nil {
+					// Successfully connected to PostgreSQL
+					db.AutoMigrate(&Session{})
+					db.AutoMigrate(&User{})
+					return db, nil
+				}
+			}
 		}
 	}
 
