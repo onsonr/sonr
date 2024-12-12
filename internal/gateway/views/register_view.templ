@@ -1,4 +1,4 @@
-package register
+package views
 
 import (
 	"github.com/onsonr/sonr/internal/nebula/card"
@@ -7,7 +7,7 @@ import (
 	"github.com/onsonr/sonr/internal/nebula/text"
 )
 
-templ ProfileFormView(data form.CreateProfileData) {
+templ CreateProfileForm(data form.CreateProfileData) {
 	@layout.View("New Profile | Sonr.ID") {
 		@card.Container() {
 			@text.TitleDescription("Basic Info", "Tell us a little about yourself.")
@@ -16,7 +16,7 @@ templ ProfileFormView(data form.CreateProfileData) {
 	}
 }
 
-templ LinkCredentialView(data form.CreatePasskeyData) {
+templ CreatePasskeyForm(data form.CreatePasskeyData) {
 	@layout.View("Register | Sonr.ID") {
 		@card.Container() {
 			@text.TitleDescription("Link a PassKey", "This will be used to login to your vault.")

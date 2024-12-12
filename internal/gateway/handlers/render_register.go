@@ -1,4 +1,4 @@
-package register
+package handlers
 
 import (
 	"fmt"
@@ -7,6 +7,7 @@ import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/crypto/mpc"
+	"github.com/onsonr/sonr/internal/gateway/views"
 	"github.com/onsonr/sonr/internal/nebula/form"
 	"github.com/onsonr/sonr/pkg/common/response"
 	"github.com/onsonr/sonr/pkg/passkeys"
@@ -14,7 +15,7 @@ import (
 
 func RenderProfileRegister(c echo.Context) error {
 	d := form.RandomCreateProfileData()
-	return response.TemplEcho(c, ProfileFormView(d))
+	return response.TemplEcho(c, views.CreateProfileForm(d))
 }
 
 func RenderPasskeyStart(c echo.Context) error {
@@ -34,7 +35,7 @@ func RenderPasskeyStart(c echo.Context) error {
 		Challenge:     challenge.String(),
 		CreationBlock: "00001",
 	}
-	return response.TemplEcho(c, LinkCredentialView(dat))
+	return response.TemplEcho(c, views.CreatePasskeyForm(dat))
 }
 
 func RenderPasskeyFinish(c echo.Context) error {
@@ -47,5 +48,5 @@ func RenderPasskeyFinish(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return response.TemplEcho(c, LoadingVaultView())
+	return response.TemplEcho(c, views.LoadingVaultView())
 }

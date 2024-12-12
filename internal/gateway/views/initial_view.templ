@@ -1,4 +1,4 @@
-package index
+package views
 
 import (
 	"github.com/onsonr/sonr/internal/nebula/card"
@@ -26,21 +26,6 @@ templ InitialView() {
 				</sl-button>
 				<sl-button circle outline href="https://github.com/onsonr/sonr">
 					<sl-icon name="social-github" library="sonr" label="Open Source"></sl-icon>
-				</sl-button>
-			</div>
-		}
-	}
-}
-
-templ ReturningView() {
-	@layout.View("Login | Sonr.ID") {
-		@card.Container() {
-			@text.TitleDescription("Welcome Back!", "Continue with your existing Sonr.ID.")
-			<div class="pt-3 flex flex-col items-center justify-center h-full">
-				<sl-button hx-target="#container" hx-get="/register" type="button">
-					<sl-icon slot="prefix" library="sonr" name="sonr"></sl-icon>
-					Log back in
-					<sl-icon slot="suffix" library="sonr" name="arrow-right"></sl-icon>
 				</sl-button>
 			</div>
 		}
