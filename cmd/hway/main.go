@@ -26,6 +26,25 @@ func main() {
 	os.Exit(0)
 }
 
+func loadEnvImplFromArgs(args []string) (config.Hway, error) {
+	cmd := rootCmd()
+	if err := cmd.ParseFlags(args); err != nil {
+		return nil, err
+	}
+
+	env := &config.HwayImpl{
+		ServePort:      servePort,
+		SqliteFile:     sqliteFile,
+		ChainId:        chainID,
+		IpfsGatewayUrl: ipfsGatewayURL,
+		SonrApiUrl:     sonrAPIURL,
+		SonrGrpcUrl:    sonrGrpcURL,
+		SonrRpcUrl:     sonrRPCURL,
+		PsqlDSN:        psqlDSN,
+	}
+	return env, nil
+}
+
 // setupServer sets up the server
 func setupServer(env config.Hway) (*echo.Echo, error) {
 	ipc, err := ipfs.NewClient()
