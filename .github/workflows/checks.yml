@@ -46,7 +46,6 @@ jobs:
       - run: make test-unit
 
   test-race:
-    needs: [test-unit]
     runs-on: ubuntu-latest
     name: Run Race Tests
     continue-on-error: true
@@ -65,7 +64,6 @@ jobs:
       - run: make test-race
 
   test-cover:
-    needs: [test-unit]
     runs-on: ubuntu-latest
     name: Run Coverage Tests
     continue-on-error: true
