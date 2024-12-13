@@ -2,7 +2,6 @@ package mpc
 
 import (
 	"context"
-	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -111,33 +110,4 @@ func deserializeSignature(sigBytes []byte) (*curves.EcdsaSignature, error) {
 		S: new(big.Int).SetBytes(sigBytes[33:66]),
 	}
 	return sig, nil
-}
-
-func marshalPointJSON(point curves.Point) ([]byte, error) {
-	m := make(map[string]string, 2)
-	m["type"] = point.CurveName()
-	m["value"] = hex.EncodeToString(point.ToAffineCompressed())
-	return json.Marshal(m)
-}
-
-func unmarshalPointJSON(input []byte) (curves.Point, error) {
-	var m map[string]string
-
-	err := json.Unmarshal(input, &m)
-	if err != nil {
-		return nil, err
-	}
-	curve := curves.GetCurveByName(m["type"])
-	if curve == nil {
-		return nil, fmt.Errorf("invalid type")
-	}
-	p, err := hex.DecodeString(m["value"])
-	if err != nil {
-		return nil, err
-	}
-	P, err := curve.Point.FromAffineCompressed(p)
-	if err != nil {
-		return nil, err
-	}
-	return P, nil
 }
