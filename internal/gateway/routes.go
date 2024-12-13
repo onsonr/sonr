@@ -32,8 +32,9 @@ func RegisterRoutes(e *echo.Echo, env config.Hway, db *gorm.DB, ipc ipfsapi.Clie
 	e.POST("/register/finish", handlers.RenderVaultLoading)
 
 	// Register Validation Handlers
-	e.POST("/register/profile/submit", handlers.ValidateProfileSubmit)
-	e.POST("/register/passkey/submit", handlers.ValidateCredentialSubmit)
+	e.POST("/register/profile/handle", handlers.ValidateProfileHandle)
+	e.POST("/register/profile/is_human", handlers.ValidateIsHumanSum)
+	e.POST("/register/passkey/link", handlers.ValidateCredentialLink)
 	return nil
 }
 
