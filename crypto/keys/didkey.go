@@ -76,11 +76,11 @@ func (id DID) String() string {
 // VerifyKey returns the backing implementation for a public key, one of:
 // *rsa.PublicKey, ed25519.PublicKey
 func (id DID) VerifyKey() (interface{}, error) {
-	rawPubBytes, err := id.PubKey.Raw()
+	rawPubBytes, err := id.Raw()
 	if err != nil {
 		return nil, err
 	}
-	switch id.PubKey.Type() {
+	switch id.Type() {
 	case crypto.RSA:
 		verifyKeyiface, err := x509.ParsePKIXPublicKey(rawPubBytes)
 		if err != nil {
