@@ -24,7 +24,8 @@ type Enclave interface {
 // KeyEnclave implements the Enclave interface
 type KeyEnclave struct {
 	Addr      string       `json:"address"`
-	PubPoint  curves.Point `json:"pub_key"`
+	PubPoint  curves.Point `json:"-"`
+	PubBytes  []byte       `json:"pub_key"`
 	ValShare  Message      `json:"val_share"`
 	UserShare Message      `json:"user_share"`
 	VaultCID  string       `json:"vault_cid,omitempty"`
@@ -32,12 +33,24 @@ type KeyEnclave struct {
 
 // Marshal returns the JSON encoding of KeyEnclave
 func (k *KeyEnclave) Marshal() ([]byte, error) {
+	// Store compressed public point bytes before marshaling
+	k.PubBytes = k.PubPoint.ToAffineCompressed()
 	return json.Marshal(k)
 }
 
 // Unmarshal parses the JSON-encoded data and stores the result
 func (k *KeyEnclave) Unmarshal(data []byte) error {
-	return json.Unmarshal(data, k)
+	if err := json.Unmarshal(data, k); err != nil {
+		return err
+	}
+	// Reconstruct Point from bytes
+	curve := curves.K256()
+	point, err := curve.NewIdentityPoint().FromAffineCompressed(k.PubBytes)
+	if err != nil {
+		return err
+	}
+	k.PubPoint = point
+	return nil
 }
 
 func (k *KeyEnclave) IsValid() bool {
