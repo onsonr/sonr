@@ -9,13 +9,10 @@ import (
 type KeyEnclave map[string]string
 
 const (
-	kUserEnclaveKey      = "user"
-	kValEnclaveKey       = "val"
-	kAddrEnclaveKey      = "addr"
-	kIssuerEnclaveKey    = "issuer"
-	kPubKeyEnclaveKey    = "pub-point"
-	kChainCodeEnclaveKey = "chain-code"
-	kVaultCIDKey         = "vault-cid"
+	kUserEnclaveKey = "user"
+	kValEnclaveKey  = "val" 
+	kAddrEnclaveKey = "addr"
+	kPubKeyKey      = "pub"
 )
 
 func initKeyEnclave(valShare, userShare KeyShare) (KeyEnclave, error) {
@@ -46,23 +43,19 @@ func initKeyEnclave(valShare, userShare KeyShare) (KeyEnclave, error) {
 		return nil, err
 	}
 
-	enclave[kAddrEnclaveKey] = [](byte)(addr)
-	enclave[kPubKeyEnclaveKey] = ppJSON
-	enclave[kValEnclaveKey] = valShare.Bytes()
-	enclave[kUserEnclaveKey] = userShare.Bytes()
+	enclave[kAddrEnclaveKey] = addr
+	enclave[kPubKeyKey] = ppJSON
+	enclave[kValEnclaveKey] = valShare.String()
+	enclave[kUserEnclaveKey] = userShare.String()
 	return enclave, nil
 }
 
 func (k KeyEnclave) Address() string {
-	addr := k[kAddrEnclaveKey]
-	if addr == nil {
-		return ""
-	}
-	return string(addr)
+	return k[kAddrEnclaveKey]
 }
 
 func (k KeyEnclave) PubKey() keys.PubKey {
-	ppbz, ok := k[kPubKeyEnclaveKey]
+	ppbz, ok := k[kPubKeyKey]
 	if !ok {
 		return nil
 	}
@@ -74,19 +67,19 @@ func (k KeyEnclave) PubKey() keys.PubKey {
 }
 
 func (k KeyEnclave) Sign(data []byte) ([]byte, error) {
-	ukstr, ok := k[kUserEnclaveKey]
+	userShare, ok := k[kUserEnclaveKey]
 	if !ok {
 		return nil, fmt.Errorf("user share not found")
 	}
-	uks, err := DecodeKeyshare(string(ukstr))
+	uks, err := DecodeKeyshare(userShare)
 	if err != nil {
 		return nil, err
 	}
-	vkstr, ok := k[kValEnclaveKey]
+	valShare, ok := k[kValEnclaveKey]
 	if !ok {
 		return nil, fmt.Errorf("validator share not found")
 	}
-	vks, err := DecodeKeyshare(string(vkstr))
+	vks, err := DecodeKeyshare(valShare)
 	if err != nil {
 		return nil, err
 	}
