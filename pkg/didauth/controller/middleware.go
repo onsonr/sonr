@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/crypto/ucan/spec"
+	"github.com/onsonr/sonr/crypto/mpc/spec"
 )
 
 // Middleware returns middleware to validate Middleware tokens
