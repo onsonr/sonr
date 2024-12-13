@@ -18,23 +18,23 @@ type IPFSTokenStore interface {
 	ResolveDIDKey(ctx context.Context, did string) (keys.DID, error)
 }
 
-// ipfsTokenStore is a token store that uses IPFS to store tokens. It uses the memory store as a cache
+// ipfsUCANStore is a token store that uses IPFS to store tokens. It uses the memory store as a cache
 // for CID strings to be used as keys for retrieving tokens.
-type ipfsTokenStore struct {
+type ipfsUCANStore struct {
 	sync.Mutex
 	ipfs  Client
 	cache map[string]string
 }
 
-// NewIPFSTokenStore creates a new IPFS-backed token store
-func NewIPFSTokenStore(ipfsClient Client) IPFSTokenStore {
-	return &ipfsTokenStore{
+// NewUCANStore creates a new IPFS-backed token store
+func NewUCANStore(ipfsClient Client) IPFSTokenStore {
+	return &ipfsUCANStore{
 		ipfs:  ipfsClient,
 		cache: make(map[string]string),
 	}
 }
 
-func (st *ipfsTokenStore) PutToken(ctx context.Context, key string, raw string) error {
+func (st *ipfsUCANStore) PutToken(ctx context.Context, key string, raw string) error {
 	// Validate token format
 	p := &jwt.Parser{
 		UseJSONNumber:        true,
@@ -57,7 +57,7 @@ func (st *ipfsTokenStore) PutToken(ctx context.Context, key string, raw string) 
 	return nil
 }
 
-func (st *ipfsTokenStore) RawToken(ctx context.Context, key string) (string, error) {
+func (st *ipfsUCANStore) RawToken(ctx context.Context, key string) (string, error) {
 	st.Lock()
 	cid, exists := st.cache[key]
 	st.Unlock()
@@ -75,7 +75,7 @@ func (st *ipfsTokenStore) RawToken(ctx context.Context, key string) (string, err
 	return string(data), nil
 }
 
-func (st *ipfsTokenStore) DeleteToken(ctx context.Context, key string) error {
+func (st *ipfsUCANStore) DeleteToken(ctx context.Context, key string) error {
 	st.Lock()
 	defer st.Unlock()
 
@@ -93,7 +93,7 @@ func (st *ipfsTokenStore) DeleteToken(ctx context.Context, key string) error {
 	return nil
 }
 
-func (st *ipfsTokenStore) ListTokens(ctx context.Context, offset, limit int) ([]ucan.RawToken, error) {
+func (st *ipfsUCANStore) ListTokens(ctx context.Context, offset, limit int) ([]ucan.RawToken, error) {
 	st.Lock()
 	defer st.Unlock()
 
@@ -125,7 +125,7 @@ func (st *ipfsTokenStore) ListTokens(ctx context.Context, offset, limit int) ([]
 	return tokens[offset:end], nil
 }
 
-func (st *ipfsTokenStore) ResolveCIDBytes(ctx context.Context, id cid.Cid) ([]byte, error) {
+func (st *ipfsUCANStore) ResolveCIDBytes(ctx context.Context, id cid.Cid) ([]byte, error) {
 	data, err := st.ipfs.Get(id.String())
 	if err != nil {
 		return nil, fmt.Errorf("failed to resolve CID bytes: %w", err)
@@ -133,7 +133,7 @@ func (st *ipfsTokenStore) ResolveCIDBytes(ctx context.Context, id cid.Cid) ([]by
 	return data, nil
 }
 
-func (st *ipfsTokenStore) ResolveDIDKey(ctx context.Context, did string) (keys.DID, error) {
+func (st *ipfsUCANStore) ResolveDIDKey(ctx context.Context, did string) (keys.DID, error) {
 	id, err := keys.Parse(did)
 	if err != nil {
 		return keys.DID{}, fmt.Errorf("failed to parse DID: %w", err)

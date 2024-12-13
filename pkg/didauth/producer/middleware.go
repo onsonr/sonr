@@ -11,7 +11,7 @@ import (
 // Middleware returns middleware to spawn controllers and validate UCAN tokens
 func Middleware(ipc ipfsapi.Client, perms ucan.Permissions) echo.MiddlewareFunc {
 	// Setup token store and parser
-	store := ipfsapi.NewIPFSTokenStore(ipc)
+	store := ipfsapi.NewUCANStore(ipc)
 	parser := ucan.NewTokenParser(perms.GetConstructor(), store, store)
 
 	// Return middleware
