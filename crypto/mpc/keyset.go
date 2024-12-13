@@ -1,16 +1,5 @@
 package mpc
 
-import (
-	"fmt"
-
-	"github.com/cosmos/cosmos-sdk/types/bech32"
-	"github.com/onsonr/sonr/crypto/keys"
-)
-
-type (
-	ExportedKeyset = []byte
-)
-
 type Keyset interface {
 	Address() string
 	Val() *ValKeyshare
@@ -43,20 +32,4 @@ func (k keyset) ValJSON() string {
 
 func (k keyset) UserJSON() string {
 	return k.user.String()
-}
-
-func ComputeIssuerDID(pk keys.PubKey) (string, string, error) {
-	addr, err := ComputeSonrAddr(pk)
-	if err != nil {
-		return "", "", err
-	}
-	return fmt.Sprintf("did:sonr:%s", addr), addr, nil
-}
-
-func ComputeSonrAddr(pk keys.PubKey) (string, error) {
-	sonrAddr, err := bech32.ConvertAndEncode("idx", pk.Bytes())
-	if err != nil {
-		return "", err
-	}
-	return sonrAddr, nil
 }

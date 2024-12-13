@@ -12,22 +12,6 @@ import (
 
 var ErrInvalidKeyshareRole = errors.New("invalid keyshare role")
 
-type Role int
-
-const (
-	RoleUnknown Role = iota
-	RoleUser
-	RoleValidator
-)
-
-func (r Role) IsUser() bool {
-	return r == RoleUser
-}
-
-func (r Role) IsValidator() bool {
-	return r == RoleValidator
-}
-
 // Message is the protocol.Message that is used for MPC
 type Message *protocol.Message
 
