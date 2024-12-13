@@ -2,7 +2,7 @@ package mpc
 
 import (
 	"context"
-	"encoding/json"
+	"encoding/json" 
 	"errors"
 	"fmt"
 	"math/big"
@@ -13,6 +13,7 @@ import (
 	"github.com/onsonr/sonr/crypto/core/curves"
 	"github.com/onsonr/sonr/crypto/core/protocol"
 	"github.com/onsonr/sonr/crypto/tecdsa/dklsv1"
+	"golang.org/x/crypto/sha3"
 )
 
 func addEnclaveIPFS(enclave *KeyEnclave, ipc *rpc.HttpApi) (Enclave, error) {
@@ -87,44 +88,35 @@ func getEcdsaPoint(pubKey []byte) (*curves.EcPoint, error) {
 	return &curves.EcPoint{X: x, Y: y, Curve: ecCurve}, nil
 }
 
-// SerializeSecp256k1Signature serializes an ECDSA signature into a byte slice
 func serializeSignature(sig *curves.EcdsaSignature) ([]byte, error) {
-	if sig == nil || sig.R == nil || sig.S == nil {
-		return nil, errors.New("invalid signature: nil values")
+	if sig == nil {
+		return nil, errors.New("nil signature")
 	}
-
-	rBytes := sig.R.Bytes()
-	sBytes := sig.S.Bytes()
-
-	// Ensure R and S are exactly 32 bytes
-	rPadded := make([]byte, 32)
-	sPadded := make([]byte, 32)
-	copy(rPadded[32-len(rBytes):], rBytes)
-	copy(sPadded[32-len(sBytes):], sBytes)
-
-	// Combine V, R, and S
-	sigBytes := make([]byte, 65) // V (1 byte) + R (32 bytes) + S (32 bytes)
-	sigBytes[0] = byte(sig.V)
-	copy(sigBytes[1:33], rPadded)
-	copy(sigBytes[33:], sPadded)
-	return sigBytes, nil
+	hash := sha3.New256()
+	_, err := hash.Write(sig.R.Bytes())
+	if err != nil {
+		return nil, err
+	}
+	_, err = hash.Write(sig.S.Bytes())
+	if err != nil {
+		return nil, err
+	}
+	return hash.Sum(nil), nil
 }
 
-// DeserializeSecp256k1Signature deserializes an ECDSA signature from a byte slice
 func deserializeSignature(sigBytes []byte) (*curves.EcdsaSignature, error) {
-	if len(sigBytes) != 65 {
-		return nil, fmt.Errorf("malformed signature: expected 65 bytes, got %d", len(sigBytes))
+	if len(sigBytes) == 0 {
+		return nil, errors.New("empty signature bytes")
 	}
-
-	r := new(big.Int).SetBytes(sigBytes[1:33])
-	s := new(big.Int).SetBytes(sigBytes[33:65])
 	
-	if r.Sign() == 0 || s.Sign() == 0 {
-		return nil, errors.New("invalid signature: R or S is zero")
-	}
-
+	// Split the signature bytes into R and S components
+	rBytes := sigBytes[:len(sigBytes)/2]
+	sBytes := sigBytes[len(sigBytes)/2:]
+	
+	r := new(big.Int).SetBytes(rBytes)
+	s := new(big.Int).SetBytes(sBytes)
+	
 	return &curves.EcdsaSignature{
-		V: int(sigBytes[0]),
 		R: r,
 		S: s,
 	}, nil
