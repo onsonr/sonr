@@ -1,6 +1,7 @@
 package mpc
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -41,5 +42,64 @@ func TestEnclaveOperations(t *testing.T) {
 		valid, err = enclave.Verify(invalidData, signature)
 		require.NoError(t, err)
 		assert.False(t, valid)
+	})
+
+	t.Run("Address and Public Key", func(t *testing.T) {
+		enclave, err := GenEnclave()
+		require.NoError(t, err)
+
+		// Test Address
+		addr := enclave.Address()
+		assert.NotEmpty(t, addr)
+		assert.True(t, strings.HasPrefix(addr, "idx"))
+
+		// Test Public Key
+		pubKey := enclave.PubKey()
+		assert.NotNil(t, pubKey)
+		assert.NotEmpty(t, pubKey.Bytes())
+	})
+
+	t.Run("Refresh Operation", func(t *testing.T) {
+		enclave, err := GenEnclave()
+		require.NoError(t, err)
+
+		// Test refresh
+		refreshedEnclave, err := enclave.Refresh()
+		require.NoError(t, err)
+		require.NotNil(t, refreshedEnclave)
+		
+		// Verify refreshed enclave is valid
+		assert.True(t, refreshedEnclave.IsValid())
+		
+		// Verify it maintains the same address
+		assert.Equal(t, enclave.Address(), refreshedEnclave.Address())
+	})
+}
+
+func TestEnclaveSerialization(t *testing.T) {
+	t.Run("Marshal and Unmarshal", func(t *testing.T) {
+		// Generate original enclave
+		original, err := GenEnclave()
+		require.NoError(t, err)
+		require.NotNil(t, original)
+
+		// Marshal
+		keyEnclave, ok := original.(*KeyEnclave)
+		require.True(t, ok)
+		
+		data, err := keyEnclave.Marshal()
+		require.NoError(t, err)
+		require.NotEmpty(t, data)
+
+		// Unmarshal
+		restored := &KeyEnclave{}
+		err = restored.Unmarshal(data)
+		require.NoError(t, err)
+
+		// Verify restored enclave
+		assert.Equal(t, keyEnclave.Addr, restored.Addr)
+		assert.True(t, keyEnclave.PubPoint.Equal(restored.PubPoint))
+		assert.Equal(t, keyEnclave.VaultCID, restored.VaultCID)
+		assert.True(t, restored.IsValid())
 	})
 }

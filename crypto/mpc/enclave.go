@@ -2,6 +2,7 @@ package mpc
 
 import (
 	"crypto/ecdsa"
+	"encoding/json"
 
 	"github.com/onsonr/sonr/crypto/core/curves"
 	"github.com/onsonr/sonr/crypto/core/protocol"
@@ -27,6 +28,16 @@ type KeyEnclave struct {
 	ValShare  Message      `json:"val_share"`
 	UserShare Message      `json:"user_share"`
 	VaultCID  string       `json:"vault_cid,omitempty"`
+}
+
+// Marshal returns the JSON encoding of KeyEnclave
+func (k *KeyEnclave) Marshal() ([]byte, error) {
+	return json.Marshal(k)
+}
+
+// Unmarshal parses the JSON-encoded data and stores the result
+func (k *KeyEnclave) Unmarshal(data []byte) error {
+	return json.Unmarshal(data, k)
 }
 
 func (k *KeyEnclave) IsValid() bool {
