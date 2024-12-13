@@ -1,4 +1,4 @@
-name: Update Version
+name: Update Version and Release
 
 on:
   push:
@@ -27,13 +27,29 @@ jobs:
     runs-on: ubuntu-latest
     name: "Bump Version"
     if: ${{ !startsWith(github.event.head_commit.message, 'bump:') }}
+    outputs:
+      new_tag: ${{ steps.bump.outputs.new_tag }}
     steps:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
       - name: Create bump and changelog
+        id: bump
         uses: commitizen-tools/commitizen-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           increment: "PATCH"
+
+  trigger-release:
+    needs: [bump-version]
+    if: needs.bump-version.outputs.new_tag != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Trigger release workflow
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          event-type: trigger-release
+          client-payload: '{"tag": "${{ needs.bump-version.outputs.new_tag }}"}'
