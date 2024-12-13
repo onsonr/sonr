@@ -13,6 +13,7 @@ const (
 	kIssuerEnclaveKey    = "issuer"
 	kPubKeyEnclaveKey    = "pub-point"
 	kChainCodeEnclaveKey = "chain-code"
+	kVaultCIDKey         = "vault-cid"
 )
 
 func initKeyEnclave(shares ...KeyShare) (KeyEnclave, error) {
@@ -54,5 +55,29 @@ func (k KeyEnclave) PubKey() keys.PubKey {
 	if err != nil {
 		return nil
 	}
-	return keys.NewPubKey(pp, keys.DIDMethodKey)
+	return keys.NewPubKey(pp)
+}
+
+func (k KeyEnclave) Sign(data []byte) ([]byte, error) {
+	uks, ok := k[kUserEnclaveKey].(KeyShare)
+	if !ok {
+		return nil, nil
+	}
+	vks, ok := k[kValEnclaveKey].(KeyShare)
+	if !ok {
+		return nil, nil
+	}
+	userSign, err := getSignFunc(uks, data)
+	if err != nil {
+		return nil, err
+	}
+	valSign, err := getSignFunc(vks, data)
+	if err != nil {
+		return nil, err
+	}
+	return ExecuteSigning(valSign, userSign)
+}
+
+func (k KeyEnclave) Verify(data []byte, sig []byte) (bool, error) {
+	return k.PubKey().Verify(data, sig)
 }

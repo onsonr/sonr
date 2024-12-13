@@ -28,7 +28,7 @@ func Middleware(ipc ipfsapi.Client, perms ucan.Permissions) echo.MiddlewareFunc 
 	}
 }
 
-func NewKeyset(c echo.Context) (mpc.Keyset, error) {
+func NewKeyset(c echo.Context) (mpc.KeyEnclave, error) {
 	ks, err := mpc.NewKeyset()
 	if err != nil {
 		return nil, err

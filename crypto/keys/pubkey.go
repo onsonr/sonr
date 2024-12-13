@@ -3,14 +3,12 @@ package keys
 import (
 	"crypto/ecdsa"
 	"encoding/hex"
-	"fmt"
 
 	"github.com/onsonr/sonr/crypto/core/curves"
 )
 
 type PubKey interface {
 	Bytes() []byte
-	Method() string
 	Type() string
 	Hex() string
 	Verify(msg []byte, sig []byte) (bool, error)
@@ -21,10 +19,9 @@ type pubKey struct {
 	method      string
 }
 
-func NewPubKey(pk curves.Point, method DIDMethod) PubKey {
+func NewPubKey(pk curves.Point) PubKey {
 	return &pubKey{
 		publicPoint: pk,
-		method:      method.String(),
 	}
 }
 
@@ -34,10 +31,6 @@ func (p pubKey) Bytes() []byte {
 
 func (p pubKey) Hex() string {
 	return hex.EncodeToString(p.publicPoint.ToAffineCompressed())
-}
-
-func (p pubKey) Method() string {
-	return fmt.Sprintf("did:%s", p.method)
 }
 
 func (p pubKey) Type() string {

@@ -7,8 +7,8 @@ import (
 	"github.com/onsonr/sonr/crypto/tecdsa/dklsv1"
 )
 
-// NewKeyshareSource generates a new MPC keyshare
-func NewIPFSKeyset(ipc *rpc.HttpApi) (KeyEnclave, error) {
+// GenIPFSEnclave generates a new MPC keyshare
+func GenIPFSEnclave(ipc *rpc.HttpApi) (KeyEnclave, error) {
 	curve := curves.K256()
 	valKs := dklsv1.NewAliceDkg(curve, protocol.Version1)
 	userKs := dklsv1.NewBobDkg(curve, protocol.Version1)
@@ -35,8 +35,8 @@ func NewIPFSKeyset(ipc *rpc.HttpApi) (KeyEnclave, error) {
 	return initKeyEnclave(valShare, userShare)
 }
 
-// NewKeyshareSource generates a new MPC keyshare
-func NewKeyset() (KeyEnclave, error) {
+// GenEnclave generates a new MPC keyshare
+func GenEnclave() (KeyEnclave, error) {
 	curve := curves.K256()
 	valKs := dklsv1.NewAliceDkg(curve, protocol.Version1)
 	userKs := dklsv1.NewBobDkg(curve, protocol.Version1)
