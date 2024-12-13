@@ -16,30 +16,35 @@ const (
 	kVaultCIDKey         = "vault-cid"
 )
 
-func initKeyEnclave(shares ...KeyShare) (KeyEnclave, error) {
+func initKeyEnclave(valShare, userShare KeyShare) (KeyEnclave, error) {
+	if valShare.Role() != RoleValidator {
+		return nil, fmt.Errorf("first argument must be validator share")
+	}
+	if userShare.Role() != RoleUser {
+		return nil, fmt.Errorf("second argument must be user share")
+	}
+
 	enclave := make(KeyEnclave)
-	pubPoint, err := getKeyShareArrayPoint(shares)
+	pubPoint, err := getKeyShareArrayPoint([]KeyShare{valShare, userShare})
 	if err != nil {
 		return nil, err
 	}
+	
 	addr, err := computeSonrAddr(pubPoint)
 	if err != nil {
 		return nil, err
 	}
+	
 	ppJSON, err := marshalPointJSON(pubPoint)
 	if err != nil {
 		return nil, err
 	}
+
 	enclave[kAddrEnclaveKey] = addr
 	enclave[kPubKeyEnclaveKey] = ppJSON
-	for _, share := range shares {
-		if share.Role() == RoleUser {
-			enclave[kUserEnclaveKey] = share
-		}
-		if share.Role() == RoleValidator {
-			enclave[kValEnclaveKey] = share
-		}
-	}
+	enclave[kValEnclaveKey] = valShare
+	enclave[kUserEnclaveKey] = userShare
+	
 	return enclave, nil
 }
 
