@@ -100,7 +100,7 @@ func ServiceCapabilities() []string {
 func NewVault(
 	kss mpc.Keyset,
 ) Attenuations {
-	accountAddr, err := mpc.ComputeSonrAddr(kss.User().GetPublicKey())
+	accountAddr, err := mpc.ComputeSonrAddr(kss.User().PublicKey())
 	if err != nil {
 		return nil
 	}

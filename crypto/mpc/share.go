@@ -86,16 +86,6 @@ func (v *ValKeyshare) String() string {
 	return v.encoded
 }
 
-// PublicKey returns the uncompressed public key (65 bytes)
-func (v *ValKeyshare) PublicKey() []byte {
-	return v.UncompressedPubKey
-}
-
-// CompressedPublicKey returns the compressed public key (33 bytes)
-func (v *ValKeyshare) CompressedPublicKey() []byte {
-	return v.CompressedPubKey
-}
-
 type UserKeyshare struct {
 	BaseKeyshare
 	encoded string

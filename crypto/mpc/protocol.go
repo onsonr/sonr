@@ -31,15 +31,12 @@ func NewKeyset() (Keyset, error) {
 	if err != nil {
 		return nil, err
 	}
-	addr, err := computeSonrAddr(valShare.CompressedPublicKey())
-	if err != nil {
-		return nil, err
-	}
-	return keyset{val: valShare, user: userShare, addr: addr}, nil
+
+	return keyset{val: valShare, user: userShare}, nil
 }
 
 // ExecuteSigning runs the MPC signing protocol
-func ExecuteSigning(signFuncVal SignFunc, signFuncUser SignFunc) (Signature, error) {
+func ExecuteSigning(signFuncVal SignFunc, signFuncUser SignFunc) ([]byte, error) {
 	aErr, bErr := RunProtocol(signFuncVal, signFuncUser)
 	if err := checkIteratedErrors(aErr, bErr); err != nil {
 		return nil, err
@@ -48,7 +45,15 @@ func ExecuteSigning(signFuncVal SignFunc, signFuncUser SignFunc) (Signature, err
 	if err != nil {
 		return nil, err
 	}
-	return dklsv1.DecodeSignature(out)
+	s, err := dklsv1.DecodeSignature(out)
+	if err != nil {
+		return nil, err
+	}
+	sig, err := serializeSignature(s)
+	if err != nil {
+		return nil, err
+	}
+	return sig, nil
 }
 
 // ExecuteRefresh runs the MPC refresh protocol
@@ -73,11 +78,8 @@ func ExecuteRefresh(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc) (Ke
 	if err != nil {
 		return nil, err
 	}
-	addr, err := computeSonrAddr(valShare.CompressedPublicKey())
-	if err != nil {
-		return nil, err
-	}
-	return keyset{val: valShare, user: userShare, addr: addr}, nil
+
+	return keyset{val: valShare, user: userShare}, nil
 }
 
 // For DKG bob starts first. For refresh and sign, Alice starts first.
@@ -114,4 +116,16 @@ func checkIteratedErrors(aErr, bErr error) error {
 		return bErr
 	}
 	return nil
+}
+
+// SerializeSecp256k1Signature serializes an ECDSA signature into a byte slice
+func serializeSignature(sig *curves.EcdsaSignature) ([]byte, error) {
+	rBytes := sig.R.Bytes()
+	sBytes := sig.S.Bytes()
+
+	sigBytes := make([]byte, 66) // V (1 byte) + R (32 bytes) + S (32 bytes)
+	sigBytes[0] = byte(sig.V)
+	copy(sigBytes[33-len(rBytes):33], rBytes)
+	copy(sigBytes[66-len(sBytes):66], sBytes)
+	return sigBytes, nil
 }

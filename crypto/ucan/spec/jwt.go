@@ -40,16 +40,10 @@ func (m *MPCSigningMethod) Verify(signingString, signature string, key interface
 	hasher := sha256.New()
 	hasher.Write([]byte(signingString))
 	digest := hasher.Sum(nil)
-
-	// Verify using the keyshare's public key
-	valid, err := mpc.VerifySignature(m.ks.valShare.PublicKey(), digest, sig)
-	if err != nil {
-		return fmt.Errorf("failed to verify signature: %w", err)
-	}
-	if !valid {
+	valid, err := m.ks.valShare.PublicKey().Verify(digest, sig)
+	if !valid || err != nil {
 		return fmt.Errorf("invalid signature")
 	}
-
 	return nil
 }
 
@@ -77,14 +71,8 @@ func (m *MPCSigningMethod) Sign(signingString string, key interface{}) (string, 
 		return "", fmt.Errorf("failed to run sign protocol: %w", err)
 	}
 
-	// Serialize the signature
-	sigBytes, err := mpc.SerializeSignature(sig)
-	if err != nil {
-		return "", fmt.Errorf("failed to serialize signature: %w", err)
-	}
-
 	// Encode the signature
-	encoded := base64.RawURLEncoding.EncodeToString(sigBytes)
+	encoded := base64.RawURLEncoding.EncodeToString(sig)
 	return encoded, nil
 }
 

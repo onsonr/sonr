@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/types/bech32"
+	"github.com/onsonr/sonr/crypto/keys"
 )
 
 type (
@@ -44,7 +45,7 @@ func (k keyset) UserJSON() string {
 	return k.user.String()
 }
 
-func ComputeIssuerDID(pk []byte) (string, string, error) {
+func ComputeIssuerDID(pk keys.PubKey) (string, string, error) {
 	addr, err := ComputeSonrAddr(pk)
 	if err != nil {
 		return "", "", err
@@ -52,8 +53,8 @@ func ComputeIssuerDID(pk []byte) (string, string, error) {
 	return fmt.Sprintf("did:sonr:%s", addr), addr, nil
 }
 
-func ComputeSonrAddr(pk []byte) (string, error) {
-	sonrAddr, err := bech32.ConvertAndEncode("idx", pk)
+func ComputeSonrAddr(pk keys.PubKey) (string, error) {
+	sonrAddr, err := bech32.ConvertAndEncode("idx", pk.Bytes())
 	if err != nil {
 		return "", err
 	}

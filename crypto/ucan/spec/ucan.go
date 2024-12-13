@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/golang-jwt/jwt"
 	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/crypto/ucan"
@@ -95,22 +94,4 @@ func (k ucanKeyshare) newToken(audienceDID string, prf []Proof, att Attenuations
 		Facts:        fct,
 		Proofs:       prf,
 	}, nil
-}
-
-// ComputeIssuerDID computes the issuer DID from a public key
-func ComputeIssuerDID(pk []byte) (string, string, error) {
-	addr, err := ComputeSonrAddr(pk)
-	if err != nil {
-		return "", "", err
-	}
-	return fmt.Sprintf("did:sonr:%s", addr), addr, nil
-}
-
-// ComputeSonrAddr computes the Sonr address from a public key
-func ComputeSonrAddr(pk []byte) (string, error) {
-	sonrAddr, err := bech32.ConvertAndEncode("idx", pk)
-	if err != nil {
-		return "", err
-	}
-	return sonrAddr, nil
 }

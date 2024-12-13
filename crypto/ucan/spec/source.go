@@ -26,15 +26,16 @@ type KeyshareSource interface {
 func NewSource(ks mpc.Keyset) (KeyshareSource, error) {
 	val := ks.Val()
 	user := ks.User()
-	iss, addr, err := ComputeIssuerDID(val.GetPublicKey())
+	iss, addr, err := mpc.ComputeIssuerDID(val.PublicKey())
 	if err != nil {
 		return nil, err
 	}
+
 	return ucanKeyshare{
 		userShare: user,
 		valShare:  val,
-		addr:      addr,
 		issuerDID: iss,
+		addr:      addr,
 	}, nil
 }
 
@@ -79,15 +80,11 @@ func (k ucanKeyshare) SignData(data []byte) ([]byte, error) {
 	}
 
 	// Run the signing protocol
-	sig, err := mpc.ExecuteSigning(valSignFunc, signFunc)
-	if err != nil {
-		return nil, fmt.Errorf("failed to run sign protocol: %w", err)
-	}
-	return mpc.SerializeSignature(sig)
+	return mpc.ExecuteSigning(valSignFunc, signFunc)
 }
 
 func (k ucanKeyshare) VerifyData(data []byte, sig []byte) (bool, error) {
-	return mpc.VerifySignature(k.userShare.PublicKey(), data, sig)
+	return k.valShare.PublicKey().Verify(data, sig)
 }
 
 // TokenParser returns a token parser that can be used to parse tokens
