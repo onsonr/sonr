@@ -1,4 +1,4 @@
-// Code generated from Pkl module `sonr.conf.Motr`. DO NOT EDIT.
+// Code generated from Pkl module `sonr.net.Motr`. DO NOT EDIT.
 package motr
 
 import (

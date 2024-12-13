@@ -4,17 +4,21 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/medama-io/go-useragent"
+	"github.com/onsonr/sonr/internal/gateway/models"
+	"github.com/onsonr/sonr/internal/gateway/services"
 	config "github.com/onsonr/sonr/pkg/config/hway"
-	"github.com/onsonr/sonr/pkg/database/sessions"
 	"gorm.io/gorm"
 )
 
 // Middleware creates a new session middleware
 func Middleware(db *gorm.DB, env config.Hway) echo.MiddlewareFunc {
+	ua := useragent.NewParser()
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			cc := NewHTTPContext(c, db)
-			if err := cc.InitSession(); err != nil {
+			agent := ua.Parse(c.Request().UserAgent())
+			cc := NewHTTPContext(c, db, agent, env.GetSonrGrpcUrl())
+			if err := cc.initSession(); err != nil {
 				return err
 			}
 			return next(cc)
@@ -25,9 +29,12 @@ func Middleware(db *gorm.DB, env config.Hway) echo.MiddlewareFunc {
 // HTTPContext is the context for HTTP endpoints.
 type HTTPContext struct {
 	echo.Context
+	*services.ResolverService
 	db   *gorm.DB
-	sess *sessions.Session
+	sess *models.Session
+	user *models.User
 	env  config.Hway
+	useragent.UserAgent
 }
 
 // Get returns the HTTPContext from the echo context
@@ -40,14 +47,17 @@ func Get(c echo.Context) (*HTTPContext, error) {
 }
 
 // NewHTTPContext creates a new session context
-func NewHTTPContext(c echo.Context, db *gorm.DB) *HTTPContext {
+func NewHTTPContext(c echo.Context, db *gorm.DB, a useragent.UserAgent, grpcAddr string) *HTTPContext {
+	rsv := services.NewResolverService(grpcAddr)
 	return &HTTPContext{
-		Context: c,
-		db:      db,
+		Context:         c,
+		db:              db,
+		ResolverService: rsv,
+		UserAgent:       a,
 	}
 }
 
 // Session returns the current session
-func (s *HTTPContext) Session() *sessions.Session {
+func (s *HTTPContext) Session() *models.Session {
 	return s.sess
 }

@@ -29,7 +29,7 @@ func SonrProfile(addr, name, handle, creationBlock string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"profile-card min-w-[320px]\"><div class=\"text-white max-w-xs my-auto mx-auto bg-gradient-to-r from-cyan-700 to-cyan-300 p-4 py-5 px-5 rounded-xl\"><div class=\"flex justify-between\"><div><h2>sonr-testnet-1</h2><p class=\"text-2xl font-bold\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"profile-card min-w-[320px]\"><div class=\"text-white max-w-xs my-auto mx-auto bg-gradient-to-r from-cyan-600 to-cyan-300 p-4 py-5 px-5 rounded-xl\"><div class=\"flex justify-between\"><div><h2>sonr-testnet-1</h2><p class=\"text-2xl font-bold\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

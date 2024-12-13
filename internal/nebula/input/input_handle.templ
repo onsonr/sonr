@@ -13,11 +13,13 @@ func (s HandleState) string() string {
 }
 
 templ Handle() {
-	<sl-input name="handle" placeholder="digitalgold" type="text" label="Handle" minlength="4" maxlength="12" required>
-		<div slot="prefix">
-			<sl-icon name="at-sign" library="sonr"></sl-icon>
-		</div>
-	</sl-input>
+	<div>
+		<sl-input name="handle" placeholder="digitalgold" type="text" label="Handle" minlength="4" maxlength="12" required>
+			<div slot="prefix">
+				<sl-icon name="at-sign" library="sonr"></sl-icon>
+			</div>
+		</sl-input>
+	</div>
 	<br/>
 }
 

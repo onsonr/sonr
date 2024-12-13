@@ -184,7 +184,6 @@ format: format-tools
 
 mod-tidy:
 	go mod tidy
-	cd interchaintest && go mod tidy
 
 .PHONY: format-tools lint format mod-tidy
 
@@ -312,8 +311,8 @@ sh-testnet: mod-tidy
 gen-pkl: init-env
 	pkl-gen-go pkl/sonr.orm/UCAN.pkl
 	pkl-gen-go pkl/sonr.orm/Models.pkl
-	pkl-gen-go pkl/sonr.conf/Hway.pkl
-	pkl-gen-go pkl/sonr.conf/Motr.pkl
+	pkl-gen-go pkl/sonr.net/Hway.pkl
+	pkl-gen-go pkl/sonr.net/Motr.pkl
 
 gen-templ: init-env
 	templ generate
@@ -343,9 +342,6 @@ logs-sonr: init-env
 .PHONY: deploy start start-tui start-uds stop stop-uds restart status
 
 start: build-hway init-env
-	bin/process-compose up --port $(PC_PORT_NUM) --log-file $(PC_LOG_FILE) --detached -f deploy/process-compose.yaml
-
-start-tui: build-hway init-env
 	bin/process-compose up --port $(PC_PORT_NUM) --log-file $(PC_LOG_FILE) -f deploy/process-compose.yaml
 
 start-uds: build-hway init-env
@@ -359,6 +355,9 @@ stop-uds: init-env
 
 status: init-env
 	bin/process-compose project state --port $(PC_PORT_NUM)
+
+status-uds: init-env
+	bin/process-compose project state --use-uds --unix-socket $(PC_SOCKET_PATH)
 ###############################################################################
 ###                                     help                                ###
 ###############################################################################

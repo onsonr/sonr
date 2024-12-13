@@ -1,7 +1,7 @@
 name: PR Labeler
 on:
   pull_request:
-    types: [opened]
+    types: [opened, edited]
 
 permissions:
   contents: read
