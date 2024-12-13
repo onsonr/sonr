@@ -8,7 +8,7 @@ import (
 )
 
 // GenEnclave generates a new MPC keyshare
-func GenEnclave() (KeyEnclave, error) {
+func GenEnclave() (*KeyEnclave, error) {
 	curve := curves.K256()
 	valKs := dklsv1.NewAliceDkg(curve, protocol.Version1)
 	userKs := dklsv1.NewBobDkg(curve, protocol.Version1)
@@ -36,7 +36,7 @@ func GenEnclave() (KeyEnclave, error) {
 }
 
 // GenEnclaveIPFS generates a new MPC keyshare
-func GenEnclaveIPFS(ipc *rpc.HttpApi) (KeyEnclave, error) {
+func GenEnclaveIPFS(ipc *rpc.HttpApi) (*KeyEnclave, error) {
 	curve := curves.K256()
 	valKs := dklsv1.NewAliceDkg(curve, protocol.Version1)
 	userKs := dklsv1.NewBobDkg(curve, protocol.Version1)
@@ -89,7 +89,7 @@ func ExecuteSigning(signFuncVal SignFunc, signFuncUser SignFunc) ([]byte, error)
 }
 
 // ExecuteRefresh runs the MPC refresh protocol
-func ExecuteRefresh(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc) (KeyEnclave, error) {
+func ExecuteRefresh(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc) (*KeyEnclave, error) {
 	aErr, bErr := RunProtocol(refreshFuncVal, refreshFuncUser)
 	if err := checkIteratedErrors(aErr, bErr); err != nil {
 		return nil, err

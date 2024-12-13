@@ -16,7 +16,7 @@ type Enclave interface {
 
 // KeyEnclave implements the Enclave interface
 type KeyEnclave struct {
-	Address     string `json:"address"`
+	Addr       string `json:"address"`
 	PubKeyData  string `json:"pub_key"`
 	ValShare    string `json:"val_share"`
 	UserShare   string `json:"user_share"`
@@ -58,7 +58,7 @@ func initKeyEnclave(valShare, userShare KeyShare) (*KeyEnclave, error) {
 }
 
 func (k *KeyEnclave) Address() string {
-	return k.Address
+	return k.Addr
 }
 
 func (k *KeyEnclave) PubKey() keys.PubKey {
