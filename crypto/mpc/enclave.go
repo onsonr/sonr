@@ -1,6 +1,8 @@
 package mpc
 
 import (
+	"crypto/ecdsa"
+
 	"github.com/onsonr/sonr/crypto/core/curves"
 	"github.com/onsonr/sonr/crypto/core/protocol"
 	"github.com/onsonr/sonr/crypto/keys"
@@ -11,6 +13,7 @@ import (
 // Enclave defines the interface for key management operations
 type Enclave interface {
 	Address() string
+	IsValid() bool
 	PubKey() keys.PubKey
 	Refresh() (Enclave, error)
 	Sign(data []byte) ([]byte, error)
@@ -19,11 +22,15 @@ type Enclave interface {
 
 // KeyEnclave implements the Enclave interface
 type KeyEnclave struct {
-	Addr       string `json:"address"`
-	PubKeyData string `json:"pub_key"`
-	ValShare   string `json:"val_share"`
-	UserShare  string `json:"user_share"`
-	VaultCID   string `json:"vault_cid,omitempty"`
+	Addr      string       `json:"address"`
+	PubPoint  curves.Point `json:"pub_key"`
+	ValShare  Message      `json:"val_share"`
+	UserShare Message      `json:"user_share"`
+	VaultCID  string       `json:"vault_cid,omitempty"`
+}
+
+func (k *KeyEnclave) IsValid() bool {
+	return k.PubPoint != nil && k.ValShare != nil && k.UserShare != nil && k.Addr != ""
 }
 
 func initKeyEnclave(valShare, userShare Message) (*KeyEnclave, error) {
@@ -36,25 +43,11 @@ func initKeyEnclave(valShare, userShare Message) (*KeyEnclave, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	ppJSON, err := marshalPointJSON(pubPoint)
-	if err != nil {
-		return nil, err
-	}
-	valKs, err := protocol.EncodeMessage(valShare)
-	if err != nil {
-		return nil, err
-	}
-	userKs, err := protocol.EncodeMessage(userShare)
-	if err != nil {
-		return nil, err
-	}
-
 	return &KeyEnclave{
-		Addr:       addr,
-		PubKeyData: string(ppJSON),
-		ValShare:   valKs,
-		UserShare:  userKs,
+		Addr:      addr,
+		PubPoint:  pubPoint,
+		ValShare:  valShare,
+		UserShare: userShare,
 	}, nil
 }
 
@@ -63,11 +56,7 @@ func (k *KeyEnclave) Address() string {
 }
 
 func (k *KeyEnclave) PubKey() keys.PubKey {
-	pp, err := unmarshalPointJSON([]byte(k.PubKeyData))
-	if err != nil {
-		return nil
-	}
-	return keys.NewPubKey(pp)
+	return keys.NewPubKey(k.PubPoint)
 }
 
 func (k *KeyEnclave) Refresh() (Enclave, error) {
@@ -95,49 +84,38 @@ func (k *KeyEnclave) Sign(data []byte) ([]byte, error) {
 }
 
 func (k *KeyEnclave) Verify(data []byte, sig []byte) (bool, error) {
-	return k.PubKey().Verify(data, sig)
-}
-
-func (k *KeyEnclave) userShare() (Message, error) {
-	return protocol.DecodeMessage(k.UserShare)
+	edSig, err := deserializeSignature(sig)
+	if err != nil {
+		return false, err
+	}
+	ePub, err := getEcdsaPoint(k.PubPoint.ToAffineUncompressed())
+	if err != nil {
+		return false, err
+	}
+	pk := &ecdsa.PublicKey{
+		Curve: ePub.Curve,
+		X:     ePub.X,
+		Y:     ePub.Y,
+	}
+	return ecdsa.Verify(pk, data, edSig.R, edSig.S), nil
 }
 
 func (k *KeyEnclave) userSignFunc(bz []byte) (SignFunc, error) {
 	curve := curves.K256()
-	msg, err := k.userShare()
-	if err != nil {
-		return nil, err
-	}
-	return dklsv1.NewBobSign(curve, sha3.New256(), bz, msg, protocol.Version1)
+	return dklsv1.NewBobSign(curve, sha3.New256(), bz, k.UserShare, protocol.Version1)
 }
 
 func (k *KeyEnclave) userRefreshFunc() (RefreshFunc, error) {
 	curve := curves.K256()
-	msg, err := k.userShare()
-	if err != nil {
-		return nil, err
-	}
-	return dklsv1.NewBobRefresh(curve, msg, protocol.Version1)
-}
-
-func (k *KeyEnclave) valShare() (Message, error) {
-	return protocol.DecodeMessage(k.ValShare)
+	return dklsv1.NewBobRefresh(curve, k.UserShare, protocol.Version1)
 }
 
 func (k *KeyEnclave) valSignFunc(bz []byte) (SignFunc, error) {
 	curve := curves.K256()
-	msg, err := k.valShare()
-	if err != nil {
-		return nil, err
-	}
-	return dklsv1.NewAliceSign(curve, sha3.New256(), bz, msg, protocol.Version1)
+	return dklsv1.NewAliceSign(curve, sha3.New256(), bz, k.ValShare, protocol.Version1)
 }
 
 func (k *KeyEnclave) valRefreshFunc() (RefreshFunc, error) {
 	curve := curves.K256()
-	msg, err := k.valShare()
-	if err != nil {
-		return nil, err
-	}
-	return dklsv1.NewAliceRefresh(curve, msg, protocol.Version1)
+	return dklsv1.NewAliceRefresh(curve, k.ValShare, protocol.Version1)
 }
