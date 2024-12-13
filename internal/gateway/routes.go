@@ -12,23 +12,24 @@ import (
 	"github.com/onsonr/sonr/internal/gateway/models"
 	"github.com/onsonr/sonr/pkg/common/response"
 	config "github.com/onsonr/sonr/pkg/config/hway"
+	"github.com/onsonr/sonr/pkg/ipfsapi"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
-func RegisterRoutes(e *echo.Echo, env config.Hway, db *gorm.DB) error {
+func RegisterRoutes(e *echo.Echo, env config.Hway, db *gorm.DB, ipc ipfsapi.Client) error {
 	// Custom error handler for gateway
 	e.HTTPErrorHandler = response.RedirectOnError("http://localhost:3000")
 
 	// Inject session middleware with database connection
-	e.Use(context.Middleware(db, env))
+	e.Use(context.Middleware(db, env, ipc))
 
 	// Register View Handlers
 	e.GET("/", handlers.RenderIndex)
 	e.GET("/register", handlers.RenderProfileCreate)
 	e.POST("/register/passkey", handlers.RenderPasskeyCreate)
-	e.POST("/register/loading", handlers.RenderVaultLoading)
+	e.POST("/register/finish", handlers.RenderVaultLoading)
 
 	// Register Validation Handlers
 	e.PUT("/register/profile/submit", handlers.ValidateProfileSubmit)

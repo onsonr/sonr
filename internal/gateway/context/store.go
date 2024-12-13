@@ -1,8 +1,9 @@
 package context
 
 import (
-	"fmt"
+	"strconv"
 
+	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/internal/gateway/models"
 )
@@ -15,18 +16,75 @@ func InsertCredential(c echo.Context, handle string, cred *models.CredentialDesc
 	return sess.db.Save(cred.ToDBModel(handle, c.Request().Host)).Error
 }
 
-func InsertProfile(c echo.Context) error {
+func InsertProfile(c echo.Context, addr string, handle string, name string) error {
 	sess, err := Get(c)
 	if err != nil {
 		return err
 	}
-	handle := c.FormValue("handle")
-	firstName := c.FormValue("first_name")
-	lastName := c.FormValue("last_name")
 	return sess.db.Save(&models.User{
-		Handle: handle,
-		Name:   fmt.Sprintf("%s %s", firstName, lastName),
+		Origin:  c.Request().Host,
+		Address: addr,
+		Handle:  handle,
+		Name:    name,
 	}).Error
+}
+
+func RefreshChallenge(c echo.Context) error {
+	sess, err := Get(c)
+	if err != nil {
+		return err
+	}
+	challenge, err := protocol.CreateChallenge()
+	if err != nil {
+		return err
+	}
+
+	return sess.db.Save(&models.Session{
+		Challenge: challenge.String(),
+	}).Error
+}
+
+func SetIsHumanSum(c echo.Context, isHumanSum int) error {
+	sess, err := Get(c)
+	if err != nil {
+		return err
+	}
+	return sess.db.Save(&models.Session{
+		IsHumanSum: isHumanSum,
+	}).Error
+}
+
+func VerifyIsHumanSum(c echo.Context) error {
+	sum := c.FormValue("is_human")
+	sess, err := Get(c)
+	if err != nil {
+		return err
+	}
+	sumInt, err := strconv.Atoi(sum)
+	if err != nil {
+		return err
+	}
+	// Get the current session
+	var session models.Session
+	if err := sess.db.Where("id = ?", sess.Session().ID).First(&session).Error; err != nil {
+		return err
+	}
+	if session.IsHumanSum != sumInt {
+		return echo.NewHTTPError(400, "invalid human sum")
+	}
+	return nil
+}
+
+func GetProfile(c echo.Context) (models.User, error) {
+	sess, err := Get(c)
+	if err != nil {
+		return models.User{}, err
+	}
+	var user models.User
+	if err := sess.db.Where("id = ?", sess.Session().ID).First(&user).Error; err != nil {
+		return models.User{}, err
+	}
+	return user, nil
 }
 
 // ╭───────────────────────────────────────────────────────╮
@@ -53,6 +111,5 @@ func HandleExists(c echo.Context, handle string) (bool, error) {
 	if err := sess.db.Model(&models.User{}).Where("handle = ?", handle).Count(&count).Error; err != nil {
 		return false, err
 	}
-
 	return count > 0, nil
 }

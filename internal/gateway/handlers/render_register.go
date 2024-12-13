@@ -1,12 +1,10 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
-	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/crypto/mpc"
+	"github.com/onsonr/sonr/internal/gateway/context"
 	"github.com/onsonr/sonr/internal/gateway/models"
 	"github.com/onsonr/sonr/internal/gateway/views"
 	"github.com/onsonr/sonr/pkg/common/response"
@@ -18,28 +16,14 @@ func RenderProfileCreate(c echo.Context) error {
 		FirstNumber: rand.Intn(5) + 1,
 		LastNumber:  rand.Intn(4) + 1,
 	}
+	context.SetIsHumanSum(c, d.Sum())
 	return response.TemplEcho(c, views.CreateProfileForm(d))
 }
 
 func RenderPasskeyCreate(c echo.Context) error {
-	challenge, _ := protocol.CreateChallenge()
-	handle := c.FormValue("handle")
-	firstName := c.FormValue("first_name")
-	lastName := c.FormValue("last_name")
-	isHuman := c.FormValue("is_human")
-	c.Logger().Infof("isHuman: %s", isHuman)
-	c.Logger().Infof("handle: %s", handle)
-
-	ks, err := mpc.GenEnclave()
+	dat, err := context.GetPasskeyCreateData(c)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-	}
-	dat := models.CreatePasskeyData{
-		Address:       ks.Address(),
-		Handle:        handle,
-		Name:          fmt.Sprintf("%s %s", firstName, lastName),
-		Challenge:     challenge.String(),
-		CreationBlock: "00001",
+		return err
 	}
 	return response.TemplEcho(c, views.CreatePasskeyForm(dat))
 }

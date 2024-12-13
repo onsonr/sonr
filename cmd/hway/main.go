@@ -67,6 +67,6 @@ func setupServer(env config.Hway, db *gorm.DB, ipc ipfsapi.Client) (*echo.Echo, 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(producer.Middleware(ipc, ucan.ServicePermissions))
-	gateway.RegisterRoutes(e, env, db)
+	gateway.RegisterRoutes(e, env, db, ipc)
 	return e, nil
 }

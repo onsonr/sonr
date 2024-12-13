@@ -13,3 +13,7 @@ type CreateProfileData struct {
 	FirstNumber      int
 	LastNumber       int
 }
+
+func (d CreateProfileData) Sum() int {
+	return d.FirstNumber + d.LastNumber
+}

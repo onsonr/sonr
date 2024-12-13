@@ -8,16 +8,17 @@ import (
 	"github.com/onsonr/sonr/internal/gateway/models"
 	"github.com/onsonr/sonr/internal/gateway/services"
 	config "github.com/onsonr/sonr/pkg/config/hway"
+	"github.com/onsonr/sonr/pkg/ipfsapi"
 	"gorm.io/gorm"
 )
 
 // Middleware creates a new session middleware
-func Middleware(db *gorm.DB, env config.Hway) echo.MiddlewareFunc {
+func Middleware(db *gorm.DB, env config.Hway, ipc ipfsapi.Client) echo.MiddlewareFunc {
 	ua := useragent.NewParser()
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			agent := ua.Parse(c.Request().UserAgent())
-			cc := NewHTTPContext(c, db, agent, env.GetSonrGrpcUrl())
+			cc := NewHTTPContext(c, db, agent, env.GetSonrGrpcUrl(), ipc)
 			if err := cc.initSession(); err != nil {
 				return err
 			}
@@ -29,11 +30,12 @@ func Middleware(db *gorm.DB, env config.Hway) echo.MiddlewareFunc {
 // HTTPContext is the context for HTTP endpoints.
 type HTTPContext struct {
 	echo.Context
-	*services.ResolverService
-	db   *gorm.DB
-	sess *models.Session
-	user *models.User
-	env  config.Hway
+	vaultsvc *services.VaultService
+	resolver *services.ResolverService
+	db       *gorm.DB
+	sess     *models.Session
+	user     *models.User
+	env      config.Hway
 	useragent.UserAgent
 }
 
@@ -47,13 +49,15 @@ func Get(c echo.Context) (*HTTPContext, error) {
 }
 
 // NewHTTPContext creates a new session context
-func NewHTTPContext(c echo.Context, db *gorm.DB, a useragent.UserAgent, grpcAddr string) *HTTPContext {
+func NewHTTPContext(c echo.Context, db *gorm.DB, a useragent.UserAgent, grpcAddr string, ipc ipfsapi.Client) *HTTPContext {
 	rsv := services.NewResolverService(grpcAddr)
+	vsvc := services.NewVaultService(ipc)
 	return &HTTPContext{
-		Context:         c,
-		db:              db,
-		ResolverService: rsv,
-		UserAgent:       a,
+		Context:   c,
+		db:        db,
+		resolver:  rsv,
+		UserAgent: a,
+		vaultsvc:  vsvc,
 	}
 }
 
