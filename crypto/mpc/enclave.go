@@ -1,10 +1,12 @@
 package mpc
 
 import (
+	"fmt"
+
 	"github.com/onsonr/sonr/crypto/keys"
 )
 
-type KeyEnclave map[string]interface{}
+type KeyEnclave map[string]string
 
 const (
 	kUserEnclaveKey      = "user"
@@ -23,37 +25,48 @@ func initKeyEnclave(valShare, userShare KeyShare) (KeyEnclave, error) {
 	if userShare.Role() != RoleUser {
 		return nil, fmt.Errorf("second argument must be user share")
 	}
-
-	enclave := make(KeyEnclave)
-	pubPoint, err := getKeyShareArrayPoint([]KeyShare{valShare, userShare})
+	msg, err := valShare.Message()
 	if err != nil {
 		return nil, err
 	}
-	
+	fmt.Println(msg)
+	enclave := make(KeyEnclave)
+	pubPoint, err := getAlicePubPoint(msg)
+	if err != nil {
+		return nil, err
+	}
+
 	addr, err := computeSonrAddr(pubPoint)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	ppJSON, err := marshalPointJSON(pubPoint)
 	if err != nil {
 		return nil, err
 	}
 
-	enclave[kAddrEnclaveKey] = addr
+	enclave[kAddrEnclaveKey] = [](byte)(addr)
 	enclave[kPubKeyEnclaveKey] = ppJSON
-	enclave[kValEnclaveKey] = valShare
-	enclave[kUserEnclaveKey] = userShare
-	
+	enclave[kValEnclaveKey] = valShare.Bytes()
+	enclave[kUserEnclaveKey] = userShare.Bytes()
 	return enclave, nil
 }
 
 func (k KeyEnclave) Address() string {
-	return k[kAddrEnclaveKey].(string)
+	addr := k[kAddrEnclaveKey]
+	if addr == nil {
+		return ""
+	}
+	return string(addr)
 }
 
 func (k KeyEnclave) PubKey() keys.PubKey {
-	pp, err := unmarshalPointJSON(k[kPubKeyEnclaveKey].([]byte))
+	ppbz, ok := k[kPubKeyEnclaveKey]
+	if !ok {
+		return nil
+	}
+	pp, err := unmarshalPointJSON(ppbz)
 	if err != nil {
 		return nil
 	}
@@ -61,13 +74,21 @@ func (k KeyEnclave) PubKey() keys.PubKey {
 }
 
 func (k KeyEnclave) Sign(data []byte) ([]byte, error) {
-	uks, ok := k[kUserEnclaveKey].(KeyShare)
+	ukstr, ok := k[kUserEnclaveKey]
 	if !ok {
-		return nil, nil
+		return nil, fmt.Errorf("user share not found")
 	}
-	vks, ok := k[kValEnclaveKey].(KeyShare)
+	uks, err := DecodeKeyshare(string(ukstr))
+	if err != nil {
+		return nil, err
+	}
+	vkstr, ok := k[kValEnclaveKey]
 	if !ok {
-		return nil, nil
+		return nil, fmt.Errorf("validator share not found")
+	}
+	vks, err := DecodeKeyshare(string(vkstr))
+	if err != nil {
+		return nil, err
 	}
 	userSign, err := getSignFunc(uks, data)
 	if err != nil {
