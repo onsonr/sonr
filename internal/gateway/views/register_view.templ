@@ -36,7 +36,7 @@ templ LoadingVaultView() {
 }
 
 templ formCreatePasskey(data models.CreatePasskeyData) {
-	@form.Root("/register/finish", "POST", "passkey-form") {
+	@form.Root("/register/finish", "passkey-form") {
 		<input type="hidden" name="credential" id="credential-data" required/>
 		@form.Body() {
 			@form.Header() {
@@ -52,13 +52,16 @@ templ formCreatePasskey(data models.CreatePasskeyData) {
 }
 
 templ formCreateProfile(data models.CreateProfileData) {
-	@form.Root("/register/passkey", "POST", "create-profile") {
+	@form.Root("/register/passkey", "create-profile") {
 		@form.Body() {
 			@form.Header() {
-				<sl-progress-bar value="50"></sl-progress-bar>
+				<div class="w-full py-2">
+					<sl-icon name="at-sign" library="sonr"></sl-icon>
+					<sl-avatar shape="circle" size="large" src="https://avatars.githubusercontent.com/u/101929?v=4"></sl-avatar>
+				</div>
 			}
-			@input.Name()
 			@input.Handle()
+			@input.Name()
 			@input.HumanSlider(data.FirstNumber, data.LastNumber)
 			@form.Footer() {
 				@form.CancelButton()

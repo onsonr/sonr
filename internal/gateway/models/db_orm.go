@@ -24,8 +24,9 @@ type Session struct {
 	IsTablet       bool   `json:"isTablet"`
 	IsTV           bool   `json:"isTV"`
 	IsBot          bool   `json:"isBot"`
-	IsHumanSum     int    `json:"isHumanSum"`
 	Challenge      string `json:"challenge"`
+	IsHumanFirst   int    `json:"isHumanFirst"`
+	IsHumanLast    int    `json:"isHumanLast"`
 }
 
 type User struct {

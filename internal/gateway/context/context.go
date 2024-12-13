@@ -1,14 +1,22 @@
 package context
 
 import (
+	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/onsonr/sonr/internal/gateway/models"
 	"github.com/onsonr/sonr/pkg/common"
 	"github.com/segmentio/ksuid"
+	"golang.org/x/exp/rand"
 )
 
 // initSession initializes or loads an existing session
 func (s *HTTPContext) initSession() error {
 	sessionID := s.getOrCreateSessionID()
+	f := rand.Intn(5) + 1
+	l := rand.Intn(4) + 1
+	challenge, err := protocol.CreateChallenge()
+	if err != nil {
+		return err
+	}
 
 	// Try to load existing session
 	var sess models.Session
@@ -25,6 +33,9 @@ func (s *HTTPContext) initSession() error {
 			IsDesktop:      s.IsDesktop(),
 			IsBot:          s.IsBot(),
 			IsTV:           s.IsTV(),
+			IsHumanFirst:   f,
+			IsHumanLast:    l,
+			Challenge:      challenge.String(),
 		}
 		if err := s.db.Create(&sess).Error; err != nil {
 			return err

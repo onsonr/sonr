@@ -11,8 +11,8 @@ import (
 
 // ValidateProfileHandle finds the chosen handle and verifies it is unique
 func ValidateProfileSubmit(c echo.Context) error {
-	if err := context.VerifyIsHumanSum(c); err != nil {
-		return err
+	if ok := context.VerifyIsHumanSum(c); !ok {
+		return echo.NewHTTPError(400, "invalid human sum")
 	}
 	handle := c.FormValue("handle")
 	ok, err := context.HandleExists(c, handle)

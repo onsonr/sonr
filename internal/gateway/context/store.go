@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/internal/gateway/models"
 )
@@ -39,40 +38,23 @@ func InsertProfile(c echo.Context, addr string, handle string, name string) erro
 	}).Error
 }
 
-func SetIsHumanSum(c echo.Context, isHumanSum int) error {
-	sess, err := Get(c)
-	if err != nil {
-		return err
-	}
-	challenge, err := protocol.CreateChallenge()
-	if err != nil {
-		return err
-	}
-	return sess.db.Save(&models.Session{
-		Challenge:  challenge.String(),
-		IsHumanSum: isHumanSum,
-	}).Error
-}
-
-func VerifyIsHumanSum(c echo.Context) error {
+func VerifyIsHumanSum(c echo.Context) bool {
 	sum := c.FormValue("is_human")
 	sess, err := Get(c)
 	if err != nil {
-		return err
+		return false
 	}
 	sumInt, err := strconv.Atoi(sum)
 	if err != nil {
-		return err
+		return false
 	}
 	// Get the current session
 	var session models.Session
 	if err := sess.db.Where("id = ?", sess.Session().ID).First(&session).Error; err != nil {
-		return err
+		return false
 	}
-	if session.IsHumanSum != sumInt {
-		return echo.NewHTTPError(400, "invalid human sum")
-	}
-	return nil
+	sessionSum := sess.Session().IsHumanFirst + sess.Session().IsHumanLast
+	return sessionSum == sumInt
 }
 
 // GetProfile returns the current user profile from the address cookie

@@ -13,8 +13,8 @@ func (s HandleState) string() string {
 }
 
 templ Handle() {
-	<div>
-		<sl-input name="handle" placeholder="digitalgold" type="text" label="Handle" minlength="4" maxlength="12" required>
+	<div hx-target="this" hx-swap="outerHTML">
+		<sl-input name="handle" placeholder="digitalgold" type="text" label="Handle" minlength="4" maxlength="12" required hx-post="/register/profile/submit" hx-indicator="#handle-indicator">
 			<div slot="prefix">
 				<sl-icon name="at-sign" library="sonr"></sl-icon>
 			</div>
