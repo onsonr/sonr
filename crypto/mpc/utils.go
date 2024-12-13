@@ -92,29 +92,31 @@ func serializeSignature(sig *curves.EcdsaSignature) ([]byte, error) {
 	if sig == nil {
 		return nil, errors.New("nil signature")
 	}
-	hash := sha3.New256()
-	_, err := hash.Write(sig.R.Bytes())
-	if err != nil {
-		return nil, err
-	}
-	_, err = hash.Write(sig.S.Bytes())
-	if err != nil {
-		return nil, err
-	}
-	return hash.Sum(nil), nil
+	
+	rBytes := sig.R.Bytes()
+	sBytes := sig.S.Bytes()
+	
+	// Ensure both components are 32 bytes
+	rPadded := make([]byte, 32)
+	sPadded := make([]byte, 32)
+	copy(rPadded[32-len(rBytes):], rBytes)
+	copy(sPadded[32-len(sBytes):], sBytes)
+	
+	// Concatenate R and S
+	result := make([]byte, 64)
+	copy(result[0:32], rPadded)
+	copy(result[32:64], sPadded)
+	
+	return result, nil
 }
 
 func deserializeSignature(sigBytes []byte) (*curves.EcdsaSignature, error) {
-	if len(sigBytes) == 0 {
-		return nil, errors.New("empty signature bytes")
+	if len(sigBytes) != 64 {
+		return nil, fmt.Errorf("invalid signature length: expected 64 bytes, got %d", len(sigBytes))
 	}
 	
-	// Split the signature bytes into R and S components
-	rBytes := sigBytes[:len(sigBytes)/2]
-	sBytes := sigBytes[len(sigBytes)/2:]
-	
-	r := new(big.Int).SetBytes(rBytes)
-	s := new(big.Int).SetBytes(sBytes)
+	r := new(big.Int).SetBytes(sigBytes[:32])
+	s := new(big.Int).SetBytes(sigBytes[32:])
 	
 	return &curves.EcdsaSignature{
 		R: r,

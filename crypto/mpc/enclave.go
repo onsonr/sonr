@@ -97,7 +97,13 @@ func (k *KeyEnclave) Verify(data []byte, sig []byte) (bool, error) {
 		X:     ePub.X,
 		Y:     ePub.Y,
 	}
-	return ecdsa.Verify(pk, data, edSig.R, edSig.S), nil
+	
+	// Hash the message using SHA3-256
+	hash := sha3.New256()
+	hash.Write(data)
+	digest := hash.Sum(nil)
+	
+	return ecdsa.Verify(pk, digest, edSig.R, edSig.S), nil
 }
 
 func (k *KeyEnclave) userSignFunc(bz []byte) (SignFunc, error) {
