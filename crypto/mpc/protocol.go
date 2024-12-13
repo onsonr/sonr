@@ -1,13 +1,14 @@
 package mpc
 
 import (
+	"github.com/ipfs/kubo/client/rpc"
 	"github.com/onsonr/sonr/crypto/core/curves"
 	"github.com/onsonr/sonr/crypto/core/protocol"
 	"github.com/onsonr/sonr/crypto/tecdsa/dklsv1"
 )
 
 // NewKeyshareSource generates a new MPC keyshare
-func NewKeyset() (Keyset, error) {
+func NewIPFSKeyset(ipc *rpc.HttpApi) (KeyEnclave, error) {
 	curve := curves.K256()
 	valKs := dklsv1.NewAliceDkg(curve, protocol.Version1)
 	userKs := dklsv1.NewBobDkg(curve, protocol.Version1)
@@ -19,7 +20,7 @@ func NewKeyset() (Keyset, error) {
 	if err != nil {
 		return nil, err
 	}
-	valShare, err := NewValKeyshare(valRes)
+	valShare, err := EncodeKeyshare(valRes, RoleValidator)
 	if err != nil {
 		return nil, err
 	}
@@ -27,12 +28,39 @@ func NewKeyset() (Keyset, error) {
 	if err != nil {
 		return nil, err
 	}
-	userShare, err := NewUserKeyshare(userRes)
+	userShare, err := EncodeKeyshare(userRes, RoleUser)
 	if err != nil {
 		return nil, err
 	}
+	return initKeyEnclave(valShare, userShare)
+}
 
-	return keyset{val: valShare, user: userShare}, nil
+// NewKeyshareSource generates a new MPC keyshare
+func NewKeyset() (KeyEnclave, error) {
+	curve := curves.K256()
+	valKs := dklsv1.NewAliceDkg(curve, protocol.Version1)
+	userKs := dklsv1.NewBobDkg(curve, protocol.Version1)
+	aErr, bErr := RunProtocol(userKs, valKs)
+	if err := checkIteratedErrors(aErr, bErr); err != nil {
+		return nil, err
+	}
+	valRes, err := valKs.Result(protocol.Version1)
+	if err != nil {
+		return nil, err
+	}
+	valShare, err := EncodeKeyshare(valRes, RoleValidator)
+	if err != nil {
+		return nil, err
+	}
+	userRes, err := userKs.Result(protocol.Version1)
+	if err != nil {
+		return nil, err
+	}
+	userShare, err := EncodeKeyshare(userRes, RoleUser)
+	if err != nil {
+		return nil, err
+	}
+	return initKeyEnclave(valShare, userShare)
 }
 
 // ExecuteSigning runs the MPC signing protocol
@@ -57,7 +85,7 @@ func ExecuteSigning(signFuncVal SignFunc, signFuncUser SignFunc) ([]byte, error)
 }
 
 // ExecuteRefresh runs the MPC refresh protocol
-func ExecuteRefresh(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc) (Keyset, error) {
+func ExecuteRefresh(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc) (KeyEnclave, error) {
 	aErr, bErr := RunProtocol(refreshFuncVal, refreshFuncUser)
 	if err := checkIteratedErrors(aErr, bErr); err != nil {
 		return nil, err
@@ -66,7 +94,7 @@ func ExecuteRefresh(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc) (Ke
 	if err != nil {
 		return nil, err
 	}
-	valShare, err := NewValKeyshare(valRefreshResult)
+	valShare, err := EncodeKeyshare(valRefreshResult, RoleValidator)
 	if err != nil {
 		return nil, err
 	}
@@ -74,12 +102,11 @@ func ExecuteRefresh(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc) (Ke
 	if err != nil {
 		return nil, err
 	}
-	userShare, err := NewUserKeyshare(userRefreshResult)
+	userShare, err := EncodeKeyshare(userRefreshResult, RoleUser)
 	if err != nil {
 		return nil, err
 	}
-
-	return keyset{val: valShare, user: userShare}, nil
+	return initKeyEnclave(valShare, userShare)
 }
 
 // For DKG bob starts first. For refresh and sign, Alice starts first.
@@ -103,29 +130,4 @@ func RunProtocol(firstParty protocol.Iterator, secondParty protocol.Iterator) (e
 		}
 	}
 	return aErr, bErr
-}
-
-func checkIteratedErrors(aErr, bErr error) error {
-	if aErr == protocol.ErrProtocolFinished && bErr == protocol.ErrProtocolFinished {
-		return nil
-	}
-	if aErr != protocol.ErrProtocolFinished {
-		return aErr
-	}
-	if bErr != protocol.ErrProtocolFinished {
-		return bErr
-	}
-	return nil
-}
-
-// SerializeSecp256k1Signature serializes an ECDSA signature into a byte slice
-func serializeSignature(sig *curves.EcdsaSignature) ([]byte, error) {
-	rBytes := sig.R.Bytes()
-	sBytes := sig.S.Bytes()
-
-	sigBytes := make([]byte, 66) // V (1 byte) + R (32 bytes) + S (32 bytes)
-	sigBytes[0] = byte(sig.V)
-	copy(sigBytes[33-len(rBytes):33], rBytes)
-	copy(sigBytes[66-len(sBytes):66], sBytes)
-	return sigBytes, nil
 }

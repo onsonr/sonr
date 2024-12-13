@@ -2,11 +2,8 @@ package spec
 
 import (
 	"crypto/sha256"
-	"encoding/base64"
-	"fmt"
 
 	"github.com/golang-jwt/jwt"
-	"github.com/onsonr/sonr/crypto/mpc"
 )
 
 // MPCSigningMethod implements the SigningMethod interface for MPC-based signing
@@ -30,20 +27,20 @@ func (m *MPCSigningMethod) Alg() string {
 
 // Verify verifies the signature using the MPC public key
 func (m *MPCSigningMethod) Verify(signingString, signature string, key interface{}) error {
-	// Decode the signature
-	sig, err := base64.RawURLEncoding.DecodeString(signature)
-	if err != nil {
-		return err
-	}
-
-	// Hash the signing string
-	hasher := sha256.New()
-	hasher.Write([]byte(signingString))
-	digest := hasher.Sum(nil)
-	valid, err := m.ks.valShare.PublicKey().Verify(digest, sig)
-	if !valid || err != nil {
-		return fmt.Errorf("invalid signature")
-	}
+	// // Decode the signature
+	// sig, err := base64.RawURLEncoding.DecodeString(signature)
+	// if err != nil {
+	// 	return err
+	// }
+	//
+	// // Hash the signing string
+	// hasher := sha256.New()
+	// hasher.Write([]byte(signingString))
+	// digest := hasher.Sum(nil)
+	// valid, err := m.ks.valShare.PublicKey().Verify(digest, sig)
+	// if !valid || err != nil {
+	// 	return fmt.Errorf("invalid signature")
+	// }
 	return nil
 }
 
@@ -52,28 +49,28 @@ func (m *MPCSigningMethod) Sign(signingString string, key interface{}) (string, 
 	// Hash the signing string
 	hasher := sha256.New()
 	hasher.Write([]byte(signingString))
-	digest := hasher.Sum(nil)
+	// digest := hasher.Sum(nil)
+	//
+	// // Create signing functions
+	// signFunc, err := m.ks.userShare.SignFunc(digest)
+	// if err != nil {
+	// 	return "", fmt.Errorf("failed to create sign function: %w", err)
+	// }
+	//
+	// valSignFunc, err := m.ks.valShare.SignFunc(digest)
+	// if err != nil {
+	// 	return "", fmt.Errorf("failed to create validator sign function: %w", err)
+	// }
 
-	// Create signing functions
-	signFunc, err := m.ks.userShare.SignFunc(digest)
-	if err != nil {
-		return "", fmt.Errorf("failed to create sign function: %w", err)
-	}
-
-	valSignFunc, err := m.ks.valShare.SignFunc(digest)
-	if err != nil {
-		return "", fmt.Errorf("failed to create validator sign function: %w", err)
-	}
-
-	// Run the signing protocol
-	sig, err := mpc.ExecuteSigning(valSignFunc, signFunc)
-	if err != nil {
-		return "", fmt.Errorf("failed to run sign protocol: %w", err)
-	}
+	// // Run the signing protocol
+	// sig, err := mpc.ExecuteSigning(valSignFunc, signFunc)
+	// if err != nil {
+	// 	return "", fmt.Errorf("failed to run sign protocol: %w", err)
+	// }
 
 	// Encode the signature
-	encoded := base64.RawURLEncoding.EncodeToString(sig)
-	return encoded, nil
+	// encoded := base64.RawURLEncoding.EncodeToString(sig)
+	return "", nil
 }
 
 func init() {

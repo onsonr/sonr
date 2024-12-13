@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/onsonr/sonr/crypto/keys"
-	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/crypto/ucan"
 	"lukechampine.com/blake3"
 )
@@ -23,22 +22,18 @@ type KeyshareSource interface {
 	UCANParser() *ucan.TokenParser
 }
 
-func NewSource(ks mpc.Keyset) (KeyshareSource, error) {
-	val := ks.Val()
-	user := ks.User()
-	iss, addr, err := getIssuerDID(val.PublicKey())
-	if err != nil {
-		return nil, err
-	}
-
-	return ucanKeyshare{
-		userShare: user,
-		valShare:  val,
-		issuerDID: iss,
-		addr:      addr,
-	}, nil
-}
-
+//	func NewSource(ks mpc.KeyEnclave) (KeyshareSource, error) {
+//		iss, addr, err := getIssuerDID(val.PublicKey())
+//		if err != nil {
+//			return nil, err
+//		}
+//
+//		return ucanKeyshare{
+//			issuerDID: iss,
+//			addr:      addr,
+//		}, nil
+//	}
+//
 // Address returns the address of the keyshare
 func (k ucanKeyshare) Address() string {
 	return k.addr
@@ -68,23 +63,25 @@ func (k ucanKeyshare) OriginToken() (*Token, error) {
 }
 
 func (k ucanKeyshare) SignData(data []byte) ([]byte, error) {
-	// Create signing functions
-	signFunc, err := k.userShare.SignFunc(data)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create sign function: %w", err)
-	}
-
-	valSignFunc, err := k.valShare.SignFunc(data)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create validator sign function: %w", err)
-	}
+	// // Create signing functions
+	// signFunc, err := k.userShare.SignFunc(data)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("failed to create sign function: %w", err)
+	// }
+	//
+	// valSignFunc, err := k.valShare.SignFunc(data)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("failed to create validator sign function: %w", err)
+	// }
 
 	// Run the signing protocol
-	return mpc.ExecuteSigning(valSignFunc, signFunc)
+	// return mpc.ExecuteSigning(valSignFunc, signFunc)
+	return nil, nil
 }
 
 func (k ucanKeyshare) VerifyData(data []byte, sig []byte) (bool, error) {
-	return k.valShare.PublicKey().Verify(data, sig)
+	return false, nil
+	// return k.valShare.PublicKey().Verify(data, sig)
 }
 
 // TokenParser returns a token parser that can be used to parse tokens

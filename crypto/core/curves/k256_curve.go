@@ -653,11 +653,11 @@ func (p *PointK256) UnmarshalText(input []byte) error {
 }
 
 func (p *PointK256) MarshalJSON() ([]byte, error) {
-	return pointMarshalJson(p)
+	return pointMarshalJSON(p)
 }
 
 func (p *PointK256) UnmarshalJSON(input []byte) error {
-	pt, err := pointUnmarshalJson(input)
+	pt, err := pointUnmarshalJSON(input)
 	if err != nil {
 		return err
 	}

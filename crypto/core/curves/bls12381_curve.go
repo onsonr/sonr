@@ -573,11 +573,11 @@ func (p *PointBls12381G1) UnmarshalText(input []byte) error {
 }
 
 func (p *PointBls12381G1) MarshalJSON() ([]byte, error) {
-	return pointMarshalJson(p)
+	return pointMarshalJSON(p)
 }
 
 func (p *PointBls12381G1) UnmarshalJSON(input []byte) error {
-	pt, err := pointUnmarshalJson(input)
+	pt, err := pointUnmarshalJSON(input)
 	if err != nil {
 		return err
 	}
@@ -823,11 +823,11 @@ func (p *PointBls12381G2) UnmarshalText(input []byte) error {
 }
 
 func (p *PointBls12381G2) MarshalJSON() ([]byte, error) {
-	return pointMarshalJson(p)
+	return pointMarshalJSON(p)
 }
 
 func (p *PointBls12381G2) UnmarshalJSON(input []byte) error {
-	pt, err := pointUnmarshalJson(input)
+	pt, err := pointUnmarshalJSON(input)
 	if err != nil {
 		return err
 	}

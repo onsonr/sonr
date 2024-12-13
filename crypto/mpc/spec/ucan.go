@@ -8,7 +8,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/golang-jwt/jwt"
 	"github.com/onsonr/sonr/crypto/keys"
-	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/crypto/ucan"
 )
 
@@ -31,9 +30,6 @@ var (
 )
 
 type ucanKeyshare struct {
-	userShare *mpc.UserKeyshare
-	valShare  *mpc.ValKeyshare
-
 	addr      string
 	issuerDID string
 }
