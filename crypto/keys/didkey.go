@@ -100,7 +100,7 @@ func (id DID) VerifyKey() (interface{}, error) {
 		}
 		return nil, fmt.Errorf("invalid Secp256k1 public key length: %d", len(rawPubBytes))
 	default:
-		return nil, fmt.Errorf("unrecognized Public Key type: %s", id.PubKey.Type())
+		return nil, fmt.Errorf("unrecognized Public Key type: %s", id.Type())
 	}
 }
 

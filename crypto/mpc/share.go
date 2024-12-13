@@ -12,21 +12,6 @@ import (
 
 var ErrInvalidKeyshareRole = errors.New("invalid keyshare role")
 
-// Message is the protocol.Message that is used for MPC
-type Message *protocol.Message
-
-type Signature *curves.EcdsaSignature
-
-// RefreshFunc is the type for the refresh function
-type RefreshFunc interface {
-	protocol.Iterator
-}
-
-// SignFunc is the type for the sign function
-type SignFunc interface {
-	protocol.Iterator
-}
-
 type ValKeyshare struct {
 	BaseKeyshare
 	encoded string

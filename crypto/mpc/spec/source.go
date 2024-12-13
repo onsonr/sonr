@@ -26,7 +26,7 @@ type KeyshareSource interface {
 func NewSource(ks mpc.Keyset) (KeyshareSource, error) {
 	val := ks.Val()
 	user := ks.User()
-	iss, addr, err := mpc.ComputeIssuerDID(val.PublicKey())
+	iss, addr, err := getIssuerDID(val.PublicKey())
 	if err != nil {
 		return nil, err
 	}
