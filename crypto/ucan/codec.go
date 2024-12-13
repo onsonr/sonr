@@ -98,12 +98,9 @@ func ServiceCapabilities() []string {
 
 // NewVault creates default attenuations for a smart account
 func NewVault(
-	kss mpc.Keyset,
+	kss mpc.KeyEnclave,
 ) Attenuations {
-	accountAddr, err := mpc.ComputeSonrAddr(kss.User().GetPublicKey())
-	if err != nil {
-		return nil
-	}
+	accountAddr := kss.Address()
 	caps := VaultPermissions.GetCapabilities()
 	return Attenuations{
 		// Owner capabilities

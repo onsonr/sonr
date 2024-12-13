@@ -36,56 +36,6 @@ templ View(title string) {
 	</html>
 }
 
-templ Head(title string, nebulaVersion string) {
-	<head>
-		@Turnstile()
-		@Tailwind()
-		@Alpine()
-		@Htmx()
-		@Dexie()
-		@Nebula(nebulaVersion)
-		<meta charset="UTF-8"/>
-		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-		<title>{ title }</title>
-		<!-- Sets the status bar style to transparent -->
-		<meta name="apple-mobile-web-app-capable" content="yes"/>
-		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-		<link rel="icon" type="image/png" href="https://cdn.sonr.id/favicon.png"/>
-		<style>
-   		@keyframes fade-in {
-     		from { opacity: 0; }
-   		}
-
-   		@keyframes fade-out {
-     		to { opacity: 0; }
-   		}
-
-   		@keyframes slide-from-right {
-     		from { transform: translateX(90px); }
-   		}
-
-   		@keyframes slide-to-left {
-     		to { transform: translateX(-90px); }
-   		}
-
-   		.slide-it {
-     		view-transition-name: slide-it;
-   		}
-
-   		::view-transition-old(slide-it) {
-     		animation: 180ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
-     		600ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
-   		}
-   		::view-transition-new(slide-it) {
-     		animation: 420ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in,
-     		600ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
-   		}
-		</style>
-		{ children... }
-	</head>
-}
-
 templ Body(align Alignment, screenWidth ScreenWidth) {
 	<style>
 		.sl-toast-stack {

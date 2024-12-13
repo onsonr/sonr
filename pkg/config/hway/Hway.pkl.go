@@ -1,4 +1,4 @@
-// Code generated from Pkl module `sonr.conf.Hway`. DO NOT EDIT.
+// Code generated from Pkl module `sonr.net.Hway`. DO NOT EDIT.
 package hway
 
 import (
@@ -9,8 +9,6 @@ import (
 
 type Hway interface {
 	GetServePort() int
-
-	GetConfigDir() string
 
 	GetSqliteFile() string
 
@@ -23,14 +21,14 @@ type Hway interface {
 	GetSonrGrpcUrl() string
 
 	GetSonrRpcUrl() string
+
+	GetPsqlDSN() string
 }
 
 var _ Hway = (*HwayImpl)(nil)
 
 type HwayImpl struct {
 	ServePort int `pkl:"servePort"`
-
-	ConfigDir string `pkl:"configDir"`
 
 	SqliteFile string `pkl:"sqliteFile"`
 
@@ -43,14 +41,12 @@ type HwayImpl struct {
 	SonrGrpcUrl string `pkl:"sonrGrpcUrl"`
 
 	SonrRpcUrl string `pkl:"sonrRpcUrl"`
+
+	PsqlDSN string `pkl:"psqlDSN"`
 }
 
 func (rcv *HwayImpl) GetServePort() int {
 	return rcv.ServePort
-}
-
-func (rcv *HwayImpl) GetConfigDir() string {
-	return rcv.ConfigDir
 }
 
 func (rcv *HwayImpl) GetSqliteFile() string {
@@ -75,6 +71,10 @@ func (rcv *HwayImpl) GetSonrGrpcUrl() string {
 
 func (rcv *HwayImpl) GetSonrRpcUrl() string {
 	return rcv.SonrRpcUrl
+}
+
+func (rcv *HwayImpl) GetPsqlDSN() string {
+	return rcv.PsqlDSN
 }
 
 // LoadFromPath loads the pkl module at the given path and evaluates it into a Hway

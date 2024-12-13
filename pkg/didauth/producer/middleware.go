@@ -3,16 +3,15 @@ package producer
 import (
 	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/crypto/ucan"
-	"github.com/onsonr/sonr/crypto/ucan/store"
-	"github.com/onsonr/sonr/pkg/common/ipfs"
+	"github.com/onsonr/sonr/pkg/ipfsapi"
 
 	"github.com/labstack/echo/v4"
 )
 
 // Middleware returns middleware to spawn controllers and validate UCAN tokens
-func Middleware(ipfs ipfs.Client, perms ucan.Permissions) echo.MiddlewareFunc {
+func Middleware(ipc ipfsapi.Client, perms ucan.Permissions) echo.MiddlewareFunc {
 	// Setup token store and parser
-	store := store.NewIPFSTokenStore(ipfs)
+	store := ipfsapi.NewUCANStore(ipc)
 	parser := ucan.NewTokenParser(perms.GetConstructor(), store, store)
 
 	// Return middleware
@@ -20,7 +19,7 @@ func Middleware(ipfs ipfs.Client, perms ucan.Permissions) echo.MiddlewareFunc {
 		return func(c echo.Context) error {
 			ctx := ProducerContext{
 				Context:     c,
-				IPFSClient:  ipfs,
+				IPFSClient:  ipc,
 				TokenParser: parser,
 				TokenStore:  store,
 			}
@@ -29,8 +28,8 @@ func Middleware(ipfs ipfs.Client, perms ucan.Permissions) echo.MiddlewareFunc {
 	}
 }
 
-func NewKeyset(c echo.Context) (mpc.Keyset, error) {
-	ks, err := mpc.NewKeyset()
+func NewKeyset(c echo.Context) (mpc.Enclave, error) {
+	ks, err := mpc.GenEnclave()
 	if err != nil {
 		return nil, err
 	}

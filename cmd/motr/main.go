@@ -11,7 +11,7 @@ import (
 	"github.com/onsonr/sonr/internal/vault"
 	"github.com/onsonr/sonr/pkg/common/wasm"
 	"github.com/onsonr/sonr/pkg/config/motr"
-	"github.com/onsonr/sonr/pkg/didauth/controller"
+	// "github.com/onsonr/sonr/pkg/didauth/controller"
 )
 
 var (
@@ -49,7 +49,7 @@ func main() {
 
 	e := echo.New()
 	e.Use(wasm.ContextMiddleware)
-	e.Use(controller.Middleware(nil))
+	// e.Use(controller.Middleware(nil))
 	vault.RegisterRoutes(e, config)
 	wasm.ServeFetch(e)
 }

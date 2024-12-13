@@ -1,0 +1,121 @@
+name: Run All Checks
+
+on:
+  pull_request:
+  merge_group:
+
+jobs:
+  test-builds:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    name: Run Build Tests
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: onsonr/sonr
+          fetch-depth: 0
+          fetch-tags: true
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+          check-latest: true
+      - name: Run Sonrd Build
+        run: make build
+      - name: Run Hway Build
+        run: make build-hway
+      - name: Run Motr Build
+        run: make build-motr
+
+  test-unit:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    name: Run Unit Tests
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: onsonr/sonr
+          fetch-depth: 0
+          fetch-tags: true
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+          check-latest: true
+      - run: make test-unit
+
+  test-race:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'merge_group'
+    name: Run Race Tests
+    continue-on-error: true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: onsonr/sonr
+          fetch-depth: 0
+          fetch-tags: true
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+          check-latest: true
+      - run: make test-race
+
+  test-cover:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'merge_group'
+    name: Run Coverage Tests
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: onsonr/sonr
+          fetch-depth: 0
+          fetch-tags: true
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+          check-latest: true
+      - run: make test-cover
+
+  goreleaser-check:
+    if: github.event_name == 'merge_group'
+    runs-on: ubuntu-latest
+    name: Check GoReleaser Config
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: onsonr/sonr
+          fetch-depth: 0
+          fetch-tags: true
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+          check-latest: true
+
+      - name: Check GoReleaser Config
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser-pro
+          version: latest
+          args: check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+
+      - name: GoReleaser Dry Run
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser-pro
+          version: latest
+          args: release --snapshot --clean --skip=publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}

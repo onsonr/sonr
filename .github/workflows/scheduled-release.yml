@@ -2,9 +2,11 @@ name: Versioned Release
 
 on:
   push:
-    tags: ["v*"]
-    branches: ["develop"]
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
   workflow_dispatch:
+  repository_dispatch:
+    types: [trigger-release]
 
 permissions:
   contents: write

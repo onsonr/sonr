@@ -701,11 +701,11 @@ func (p *BenchPointP256) UnmarshalText(input []byte) error {
 }
 
 func (p *BenchPointP256) MarshalJSON() ([]byte, error) {
-	return pointMarshalJson(p)
+	return pointMarshalJSON(p)
 }
 
 func (p *BenchPointP256) UnmarshalJSON(input []byte) error {
-	pt, err := pointUnmarshalJson(input)
+	pt, err := pointUnmarshalJSON(input)
 	if err != nil {
 		return err
 	}

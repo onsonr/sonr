@@ -21,7 +21,7 @@ import (
 	"github.com/ipfs/go-cid"
 	"github.com/libp2p/go-libp2p/core/crypto"
 	mh "github.com/multiformats/go-multihash"
-	"github.com/onsonr/sonr/crypto/ucan/didkey"
+	"github.com/onsonr/sonr/crypto/keys"
 )
 
 // ErrInvalidToken indicates an access token is invalid
@@ -47,8 +47,8 @@ const (
 type Token struct {
 	// Entire UCAN as a signed JWT string
 	Raw      string
-	Issuer   didkey.ID
-	Audience didkey.ID
+	Issuer   keys.DID
+	Audience keys.DID
 	// the "inputs" to this token, a chain UCAN tokens with broader scopes &
 	// deadlines than this token
 	Proofs []Proof `json:"prf,omitempty"`
@@ -261,12 +261,12 @@ func (a *pkSource) newToken(audienceDID string, prf []Proof, att Attenuations, f
 // DIDPubKeyResolver turns did:key Decentralized IDentifiers into a public key,
 // possibly using a network request
 type DIDPubKeyResolver interface {
-	ResolveDIDKey(ctx context.Context, did string) (didkey.ID, error)
+	ResolveDIDKey(ctx context.Context, did string) (keys.DID, error)
 }
 
 // DIDStringFromPublicKey creates a did:key identifier string from a public key
 func DIDStringFromPublicKey(pub crypto.PubKey) (string, error) {
-	id, err := didkey.NewID(pub)
+	id, err := keys.NewDID(pub)
 	if err != nil {
 		return "", err
 	}
@@ -279,8 +279,8 @@ func DIDStringFromPublicKey(pub crypto.PubKey) (string, error) {
 type StringDIDPubKeyResolver struct{}
 
 // ResolveDIDKey extracts a public key from  a did:key string
-func (StringDIDPubKeyResolver) ResolveDIDKey(ctx context.Context, didStr string) (didkey.ID, error) {
-	return didkey.Parse(didStr)
+func (StringDIDPubKeyResolver) ResolveDIDKey(ctx context.Context, didStr string) (keys.DID, error) {
+	return keys.Parse(didStr)
 }
 
 // TokenParser parses a raw string into a Token
@@ -315,11 +315,11 @@ func (p *TokenParser) parseAndVerify(ctx context.Context, raw string, child *Tok
 		return nil, fmt.Errorf("parser fail")
 	}
 
-	var iss didkey.ID
+	var iss keys.DID
 	// TODO(b5): we're double parsing here b/c the jwt lib we're using doesn't expose
 	// an API (that I know of) for storing parsed issuer / audience
 	if issStr, ok := mc["iss"].(string); ok {
-		iss, err = didkey.Parse(issStr)
+		iss, err = keys.Parse(issStr)
 		if err != nil {
 			return nil, err
 		}
@@ -327,11 +327,11 @@ func (p *TokenParser) parseAndVerify(ctx context.Context, raw string, child *Tok
 		return nil, fmt.Errorf(`"iss" key is not in claims`)
 	}
 
-	var aud didkey.ID
+	var aud keys.DID
 	// TODO(b5): we're double parsing here b/c the jwt lib we're using doesn't expose
 	// an API (that I know of) for storing parsed issuer / audience
 	if audStr, ok := mc["aud"].(string); ok {
-		aud, err = didkey.Parse(audStr)
+		aud, err = keys.Parse(audStr)
 		if err != nil {
 			return nil, err
 		}

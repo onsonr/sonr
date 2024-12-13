@@ -2,7 +2,7 @@ package controller
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/crypto/ucan/spec"
+	"github.com/onsonr/sonr/crypto/mpc/spec"
 )
 
 // ControllerConfig defines the configuration for UCAN middleware

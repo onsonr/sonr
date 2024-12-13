@@ -336,14 +336,14 @@ func pointUnmarshalText(input []byte) (Point, error) {
 	return curve.Point.FromAffineCompressed(buffer)
 }
 
-func pointMarshalJson(point Point) ([]byte, error) {
+func pointMarshalJSON(point Point) ([]byte, error) {
 	m := make(map[string]string, 2)
 	m["type"] = point.CurveName()
 	m["value"] = hex.EncodeToString(point.ToAffineCompressed())
 	return json.Marshal(m)
 }
 
-func pointUnmarshalJson(input []byte) (Point, error) {
+func pointUnmarshalJSON(input []byte) (Point, error) {
 	var m map[string]string
 
 	err := json.Unmarshal(input, &m)
