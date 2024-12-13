@@ -31,30 +31,36 @@ func TestKeyShareGeneration(t *testing.T) {
 }
 
 func TestKeyShareRoles(t *testing.T) {
-	t.Run("Role Determination", func(t *testing.T) {
+	t.Run("Role Determination via Enclave", func(t *testing.T) {
 		// Generate valid shares first
 		enclave, err := GenEnclave()
 		require.NoError(t, err)
 
-		userShare := enclave[kUserEnclaveKey].(KeyShare)
-		valShare := enclave[kValEnclaveKey].(KeyShare)
+		// Test that shares are stored in correct enclave keys
+		userShare, ok := enclave[kUserEnclaveKey].(KeyShare)
+		require.True(t, ok, "User share should exist in enclave")
+		assert.Equal(t, RoleUser, userShare.Role())
 
-		tests := []struct {
-			name     string
-			share    KeyShare
-			expected Role
-		}{
-			{"User Share", userShare, RoleUser},
-			{"Validator Share", valShare, RoleValidator},
-			{"Invalid Share", KeyShare("invalid.data"), RoleUnknown},
-		}
+		valShare, ok := enclave[kValEnclaveKey].(KeyShare)
+		require.True(t, ok, "Validator share should exist in enclave")
+		assert.Equal(t, RoleValidator, valShare.Role())
 
-		for _, tt := range tests {
-			t.Run(tt.name, func(t *testing.T) {
-				role := tt.share.Role()
-				assert.Equal(t, tt.expected, role)
-			})
-		}
+		// Test manual enclave initialization
+		manualEnclave, err := initKeyEnclave(userShare, valShare)
+		require.NoError(t, err)
+		
+		// Verify manual initialization matches generated enclave
+		assert.Equal(t, enclave[kUserEnclaveKey], manualEnclave[kUserEnclaveKey])
+		assert.Equal(t, enclave[kValEnclaveKey], manualEnclave[kValEnclaveKey])
+	})
+
+	t.Run("Invalid Role Handling", func(t *testing.T) {
+		invalidShare := KeyShare("invalid.data")
+		_, err := initKeyEnclave(invalidShare)
+		assert.Error(t, err, "Should error on invalid share")
+
+		// Test role determination directly
+		assert.Equal(t, RoleUnknown, invalidShare.Role())
 	})
 }
 
