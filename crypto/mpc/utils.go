@@ -2,7 +2,7 @@ package mpc
 
 import (
 	"context"
-	"encoding/json" 
+	"encoding/json"
 	"errors"
 	"fmt"
 	"math/big"
@@ -13,7 +13,6 @@ import (
 	"github.com/onsonr/sonr/crypto/core/curves"
 	"github.com/onsonr/sonr/crypto/core/protocol"
 	"github.com/onsonr/sonr/crypto/tecdsa/dklsv1"
-	"golang.org/x/crypto/sha3"
 )
 
 func addEnclaveIPFS(enclave *KeyEnclave, ipc *rpc.HttpApi) (Enclave, error) {
@@ -92,21 +91,21 @@ func serializeSignature(sig *curves.EcdsaSignature) ([]byte, error) {
 	if sig == nil {
 		return nil, errors.New("nil signature")
 	}
-	
+
 	rBytes := sig.R.Bytes()
 	sBytes := sig.S.Bytes()
-	
+
 	// Ensure both components are 32 bytes
 	rPadded := make([]byte, 32)
 	sPadded := make([]byte, 32)
 	copy(rPadded[32-len(rBytes):], rBytes)
 	copy(sPadded[32-len(sBytes):], sBytes)
-	
+
 	// Concatenate R and S
 	result := make([]byte, 64)
 	copy(result[0:32], rPadded)
 	copy(result[32:64], sPadded)
-	
+
 	return result, nil
 }
 
@@ -114,10 +113,10 @@ func deserializeSignature(sigBytes []byte) (*curves.EcdsaSignature, error) {
 	if len(sigBytes) != 64 {
 		return nil, fmt.Errorf("invalid signature length: expected 64 bytes, got %d", len(sigBytes))
 	}
-	
+
 	r := new(big.Int).SetBytes(sigBytes[:32])
 	s := new(big.Int).SetBytes(sigBytes[32:])
-	
+
 	return &curves.EcdsaSignature{
 		R: r,
 		S: s,

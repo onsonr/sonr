@@ -8,7 +8,7 @@ import (
 )
 
 // GenEnclave generates a new MPC keyshare
-func GenEnclave() (*KeyEnclave, error) {
+func GenEnclave() (Enclave, error) {
 	curve := curves.K256()
 	valKs := dklsv1.NewAliceDkg(curve, protocol.Version1)
 	userKs := dklsv1.NewBobDkg(curve, protocol.Version1)
