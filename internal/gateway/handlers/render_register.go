@@ -27,7 +27,7 @@ func RenderPasskeyCreate(c echo.Context) error {
 	firstName := c.FormValue("first_name")
 	lastName := c.FormValue("last_name")
 
-	ks, err := mpc.NewKeyset()
+	ks, err := mpc.GenEnclave()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}

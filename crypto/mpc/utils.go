@@ -1,6 +1,7 @@
 package mpc
 
 import (
+	"context"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -8,11 +9,27 @@ import (
 	"math/big"
 
 	"github.com/cosmos/cosmos-sdk/types/bech32"
+	"github.com/ipfs/boxo/files"
+	"github.com/ipfs/kubo/client/rpc"
 	"github.com/onsonr/sonr/crypto/core/curves"
 	"github.com/onsonr/sonr/crypto/core/protocol"
 	"github.com/onsonr/sonr/crypto/tecdsa/dklsv1"
 	"golang.org/x/crypto/sha3"
 )
+
+func addEnclaveIPFS(enclave KeyEnclave, ipc *rpc.HttpApi) (KeyEnclave, error) {
+	jsonEnclave, err := json.Marshal(enclave)
+	if err != nil {
+		return nil, err
+	}
+	// Save enclave to IPFS
+	cid, err := ipc.Unixfs().Add(context.Background(), files.NewBytesFile(jsonEnclave))
+	if err != nil {
+		return nil, err
+	}
+	enclave[kVaultCIDKey] = cid.String()
+	return enclave, nil
+}
 
 func checkIteratedErrors(aErr, bErr error) error {
 	if aErr == protocol.ErrProtocolFinished && bErr == protocol.ErrProtocolFinished {

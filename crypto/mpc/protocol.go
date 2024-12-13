@@ -7,34 +7,6 @@ import (
 	"github.com/onsonr/sonr/crypto/tecdsa/dklsv1"
 )
 
-// GenIPFSEnclave generates a new MPC keyshare
-func GenIPFSEnclave(ipc *rpc.HttpApi) (KeyEnclave, error) {
-	curve := curves.K256()
-	valKs := dklsv1.NewAliceDkg(curve, protocol.Version1)
-	userKs := dklsv1.NewBobDkg(curve, protocol.Version1)
-	aErr, bErr := RunProtocol(userKs, valKs)
-	if err := checkIteratedErrors(aErr, bErr); err != nil {
-		return nil, err
-	}
-	valRes, err := valKs.Result(protocol.Version1)
-	if err != nil {
-		return nil, err
-	}
-	valShare, err := EncodeKeyshare(valRes, RoleValidator)
-	if err != nil {
-		return nil, err
-	}
-	userRes, err := userKs.Result(protocol.Version1)
-	if err != nil {
-		return nil, err
-	}
-	userShare, err := EncodeKeyshare(userRes, RoleUser)
-	if err != nil {
-		return nil, err
-	}
-	return initKeyEnclave(valShare, userShare)
-}
-
 // GenEnclave generates a new MPC keyshare
 func GenEnclave() (KeyEnclave, error) {
 	curve := curves.K256()
@@ -61,6 +33,38 @@ func GenEnclave() (KeyEnclave, error) {
 		return nil, err
 	}
 	return initKeyEnclave(valShare, userShare)
+}
+
+// GenEnclaveIPFS generates a new MPC keyshare
+func GenEnclaveIPFS(ipc *rpc.HttpApi) (KeyEnclave, error) {
+	curve := curves.K256()
+	valKs := dklsv1.NewAliceDkg(curve, protocol.Version1)
+	userKs := dklsv1.NewBobDkg(curve, protocol.Version1)
+	aErr, bErr := RunProtocol(userKs, valKs)
+	if err := checkIteratedErrors(aErr, bErr); err != nil {
+		return nil, err
+	}
+	valRes, err := valKs.Result(protocol.Version1)
+	if err != nil {
+		return nil, err
+	}
+	valShare, err := EncodeKeyshare(valRes, RoleValidator)
+	if err != nil {
+		return nil, err
+	}
+	userRes, err := userKs.Result(protocol.Version1)
+	if err != nil {
+		return nil, err
+	}
+	userShare, err := EncodeKeyshare(userRes, RoleUser)
+	if err != nil {
+		return nil, err
+	}
+	e, err := initKeyEnclave(valShare, userShare)
+	if err != nil {
+		return nil, err
+	}
+	return addEnclaveIPFS(e, ipc)
 }
 
 // ExecuteSigning runs the MPC signing protocol
