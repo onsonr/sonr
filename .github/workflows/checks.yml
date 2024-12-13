@@ -28,7 +28,7 @@ jobs:
         run: make build-motr
 
   test-unit:
-    needs: [build]
+    needs: [test-builds]
     runs-on: ubuntu-latest
     name: Run Unit Tests
     steps:
