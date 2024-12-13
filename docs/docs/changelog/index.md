@@ -1,3 +1,9 @@
+## v0.5.26 (2024-12-13)
+
+### Fix
+
+- Correct regular expression for version tags in release workflow
+
 ## v0.5.25 (2024-12-11)
 
 ### Feat
