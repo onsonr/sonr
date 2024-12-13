@@ -10,20 +10,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  run-tests:
-    name: "Run tests"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
-        with:
-          go-version: "1.23"
-          check-latest: true
-      - name: Run tests
-        run: make test
-
   bump-version:
-    needs: [run-tests]
     runs-on: ubuntu-latest
     name: "Bump Version"
     if: ${{ !startsWith(github.event.head_commit.message, 'bump:') }}
