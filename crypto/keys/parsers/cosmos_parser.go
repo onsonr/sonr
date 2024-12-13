@@ -1,4 +1,4 @@
-package address
+package parsers
 
 type CosmosPrefix string
 
