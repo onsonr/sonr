@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 
 	"github.com/onsonr/sonr/crypto/core/curves"
+	"golang.org/x/crypto/sha3"
 )
 
 type PubKey interface {
@@ -37,7 +38,7 @@ func (p pubKey) Type() string {
 	return "secp256k1"
 }
 
-func (p pubKey) Verify(msgBz []byte, sigBz []byte) (bool, error) {
+func (p pubKey) Verify(data []byte, sigBz []byte) (bool, error) {
 	sig, err := deserializeSignature(sigBz)
 	if err != nil {
 		return false, err
@@ -51,5 +52,11 @@ func (p pubKey) Verify(msgBz []byte, sigBz []byte) (bool, error) {
 		X:     pp.X,
 		Y:     pp.Y,
 	}
-	return ecdsa.Verify(pk, msgBz, sig.R, sig.S), nil
+
+	// Hash the message using SHA3-256
+	hash := sha3.New256()
+	hash.Write(data)
+	digest := hash.Sum(nil)
+
+	return ecdsa.Verify(pk, digest, sig.R, sig.S), nil
 }
