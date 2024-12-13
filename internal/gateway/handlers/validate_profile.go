@@ -26,9 +26,9 @@ func ValidateProfileHandle(c echo.Context) error {
 	}
 	err = context.InsertProfile(c, ks.Address(), handle, fmt.Sprintf("%s %s", c.FormValue("first_name"), c.FormValue("last_name")))
 	if err != nil {
-		return err
+		return response.TemplEcho(c, input.HandleError(handle))
 	}
-	return nil
+	return response.TemplEcho(c, input.HandleSuccess(handle))
 }
 
 // ValidateProfileHandle finds the chosen handle and verifies it is unique

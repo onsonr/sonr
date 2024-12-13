@@ -31,20 +31,20 @@ func HumanSlider(firstNumber int, lastNumber int) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-range name=\"is_human\" label=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div hx-target=\"this\" hx-swap=\"outerHTML\"><sl-range name=\"is_human\" label=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(formatHumanSliderLabel(firstNumber, lastNumber))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/nebula/input/slider_isHuman.templ`, Line: 6, Col: 82}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/nebula/input/slider_isHuman.templ`, Line: 7, Col: 83}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" help-text=\"Prove you are a human.\" min=\"0\" max=\"9\" step=\"1\"></sl-range>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" help-text=\"Prove you are a human.\" min=\"0\" max=\"9\" step=\"1\" hx-post=\"/register/profile/is_human\"></sl-range></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -80,7 +80,7 @@ func HumanSliderError(firstNumber int, lastNumber int) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(formatHumanSliderLabel(firstNumber, lastNumber))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/nebula/input/slider_isHuman.templ`, Line: 10, Col: 82}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/nebula/input/slider_isHuman.templ`, Line: 12, Col: 82}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
