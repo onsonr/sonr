@@ -6,6 +6,7 @@ on:
 
 jobs:
   test-builds:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     name: Run Build Tests
     steps:
@@ -28,7 +29,7 @@ jobs:
         run: make build-motr
 
   test-unit:
-    needs: [test-builds]
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     name: Run Unit Tests
     steps:
@@ -47,7 +48,7 @@ jobs:
 
   test-race:
     runs-on: ubuntu-latest
-    needs: [test-builds]
+    if: github.event_name == 'merge_group'
     name: Run Race Tests
     continue-on-error: true
     steps:
@@ -66,9 +67,8 @@ jobs:
 
   test-cover:
     runs-on: ubuntu-latest
-    needs: [test-builds]
+    if: github.event_name == 'merge_group'
     name: Run Coverage Tests
-    continue-on-error: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -85,7 +85,6 @@ jobs:
 
   goreleaser-check:
     if: github.event_name == 'merge_group'
-    needs: [test-unit]
     runs-on: ubuntu-latest
     name: Check GoReleaser Config
     steps:
@@ -102,7 +101,7 @@ jobs:
           check-latest: true
 
       - name: Check GoReleaser Config
-        uses: goreleaser/goreleaser-action@v5
+        uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser-pro
           version: latest
@@ -112,7 +111,7 @@ jobs:
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
 
       - name: GoReleaser Dry Run
-        uses: goreleaser/goreleaser-action@v5
+        uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser-pro
           version: latest
