@@ -8,15 +8,13 @@ import (
 	"github.com/onsonr/sonr/internal/gateway/models"
 	"github.com/onsonr/sonr/internal/gateway/views"
 	"github.com/onsonr/sonr/pkg/common/response"
-	"golang.org/x/exp/rand"
 )
 
 func RenderProfileCreate(c echo.Context) error {
-	d := models.CreateProfileData{
-		FirstNumber: rand.Intn(5) + 1,
-		LastNumber:  rand.Intn(4) + 1,
+	d, err := context.GetCreateProfileData(c)
+	if err != nil {
+		return err
 	}
-	context.SetIsHumanSum(c, d.Sum())
 	return response.TemplEcho(c, views.CreateProfileForm(d))
 }
 

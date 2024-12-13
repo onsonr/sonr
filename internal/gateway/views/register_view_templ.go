@@ -414,7 +414,7 @@ func formCreateProfile(data models.CreateProfileData) templ.Component {
 						}()
 					}
 					ctx = templ.InitializeContext(ctx)
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-progress-bar value=\"50\"></sl-progress-bar>")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"w-full py-2\"><sl-icon name=\"at-sign\" library=\"sonr\"></sl-icon> <sl-avatar shape=\"circle\" size=\"large\" src=\"https://avatars.githubusercontent.com/u/101929?v=4\"></sl-avatar></div>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
