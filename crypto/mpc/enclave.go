@@ -6,17 +6,24 @@ import (
 	"github.com/onsonr/sonr/crypto/keys"
 )
 
-type KeyEnclave map[string]string
+// Enclave defines the interface for key management operations
+type Enclave interface {
+	Address() string
+	PubKey() keys.PubKey
+	Sign(data []byte) ([]byte, error)
+	Verify(data []byte, sig []byte) (bool, error)
+}
 
-const (
-	kUserEnclaveKey = "user"
-	kValEnclaveKey  = "val" 
-	kAddrEnclaveKey = "addr"
-	kPubKeyKey      = "pub"
-	kVaultCIDKey    = "cid"
-)
+// KeyEnclave implements the Enclave interface
+type KeyEnclave struct {
+	Address     string `json:"address"`
+	PubKeyData  string `json:"pub_key"`
+	ValShare    string `json:"val_share"`
+	UserShare   string `json:"user_share"`
+	VaultCID    string `json:"vault_cid,omitempty"`
+}
 
-func initKeyEnclave(valShare, userShare KeyShare) (KeyEnclave, error) {
+func initKeyEnclave(valShare, userShare KeyShare) (*KeyEnclave, error) {
 	if valShare.Role() != RoleValidator {
 		return nil, fmt.Errorf("first argument must be validator share")
 	}
@@ -27,8 +34,6 @@ func initKeyEnclave(valShare, userShare KeyShare) (KeyEnclave, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(msg)
-	enclave := make(KeyEnclave)
 	pubPoint, err := getAlicePubPoint(msg)
 	if err != nil {
 		return nil, err
@@ -44,43 +49,32 @@ func initKeyEnclave(valShare, userShare KeyShare) (KeyEnclave, error) {
 		return nil, err
 	}
 
-	enclave[kAddrEnclaveKey] = addr
-	enclave[kPubKeyKey] = string(ppJSON)
-	enclave[kValEnclaveKey] = valShare.String()
-	enclave[kUserEnclaveKey] = userShare.String()
-	return enclave, nil
+	return &KeyEnclave{
+		Address:    addr,
+		PubKeyData: string(ppJSON),
+		ValShare:   valShare.String(),
+		UserShare:  userShare.String(),
+	}, nil
 }
 
-func (k KeyEnclave) Address() string {
-	return k[kAddrEnclaveKey]
+func (k *KeyEnclave) Address() string {
+	return k.Address
 }
 
-func (k KeyEnclave) PubKey() keys.PubKey {
-	ppbz, ok := k[kPubKeyKey]
-	if !ok {
-		return nil
-	}
-	pp, err := unmarshalPointJSON([]byte(ppbz))
+func (k *KeyEnclave) PubKey() keys.PubKey {
+	pp, err := unmarshalPointJSON([]byte(k.PubKeyData))
 	if err != nil {
 		return nil
 	}
 	return keys.NewPubKey(pp)
 }
 
-func (k KeyEnclave) Sign(data []byte) ([]byte, error) {
-	userShare, ok := k[kUserEnclaveKey]
-	if !ok {
-		return nil, fmt.Errorf("user share not found")
-	}
-	uks, err := DecodeKeyshare(userShare)
+func (k *KeyEnclave) Sign(data []byte) ([]byte, error) {
+	uks, err := DecodeKeyshare(k.UserShare)
 	if err != nil {
 		return nil, err
 	}
-	valShare, ok := k[kValEnclaveKey]
-	if !ok {
-		return nil, fmt.Errorf("validator share not found")
-	}
-	vks, err := DecodeKeyshare(valShare)
+	vks, err := DecodeKeyshare(k.ValShare)
 	if err != nil {
 		return nil, err
 	}
@@ -95,6 +89,6 @@ func (k KeyEnclave) Sign(data []byte) ([]byte, error) {
 	return ExecuteSigning(valSign, userSign)
 }
 
-func (k KeyEnclave) Verify(data []byte, sig []byte) (bool, error) {
+func (k *KeyEnclave) Verify(data []byte, sig []byte) (bool, error) {
 	return k.PubKey().Verify(data, sig)
 }

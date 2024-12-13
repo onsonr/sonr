@@ -17,7 +17,7 @@ import (
 	"golang.org/x/crypto/sha3"
 )
 
-func addEnclaveIPFS(enclave KeyEnclave, ipc *rpc.HttpApi) (KeyEnclave, error) {
+func addEnclaveIPFS(enclave *KeyEnclave, ipc *rpc.HttpApi) (*KeyEnclave, error) {
 	jsonEnclave, err := json.Marshal(enclave)
 	if err != nil {
 		return nil, err
@@ -27,7 +27,7 @@ func addEnclaveIPFS(enclave KeyEnclave, ipc *rpc.HttpApi) (KeyEnclave, error) {
 	if err != nil {
 		return nil, err
 	}
-	enclave[kVaultCIDKey] = cid.String()
+	enclave.VaultCID = cid.String()
 	return enclave, nil
 }
 
