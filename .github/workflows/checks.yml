@@ -1,10 +1,32 @@
-name: Run Tests
+name: Run All Checks
 
 on:
   pull_request:
   merge_group:
 
 jobs:
+  test-builds:
+    runs-on: ubuntu-latest
+    name: Run Build Tests
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: onsonr/sonr
+          fetch-depth: 0
+          fetch-tags: true
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+          check-latest: true
+      - name: Run Sonrd Build
+        run: make build
+      - name: Run Hway Build
+        run: make build-hway
+      - name: Run Motr Build
+        run: make build-motr
+
   test-unit:
     runs-on: ubuntu-latest
     name: Run Unit Tests
