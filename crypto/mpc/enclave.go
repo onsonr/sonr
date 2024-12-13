@@ -33,9 +33,6 @@ func initKeyEnclave(shares ...KeyShare) (KeyEnclave, error) {
 	enclave[kAddrEnclaveKey] = addr
 	enclave[kPubKeyEnclaveKey] = ppJSON
 	for _, share := range shares {
-		if share.Role() == RoleUnknown {
-			continue
-		}
 		if share.Role() == RoleUser {
 			enclave[kUserEnclaveKey] = share
 		}
