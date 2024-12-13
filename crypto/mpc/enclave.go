@@ -44,7 +44,7 @@ func initKeyEnclave(valShare, userShare KeyShare) (KeyEnclave, error) {
 	}
 
 	enclave[kAddrEnclaveKey] = addr
-	enclave[kPubKeyKey] = ppJSON
+	enclave[kPubKeyKey] = string(ppJSON)
 	enclave[kValEnclaveKey] = valShare.String()
 	enclave[kUserEnclaveKey] = userShare.String()
 	return enclave, nil
@@ -59,7 +59,7 @@ func (k KeyEnclave) PubKey() keys.PubKey {
 	if !ok {
 		return nil
 	}
-	pp, err := unmarshalPointJSON(ppbz)
+	pp, err := unmarshalPointJSON([]byte(ppbz))
 	if err != nil {
 		return nil
 	}

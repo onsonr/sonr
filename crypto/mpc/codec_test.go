@@ -16,7 +16,7 @@ func TestKeyShareGeneration(t *testing.T) {
 
 		// Validate enclave contents
 		assert.Contains(t, enclave, kAddrEnclaveKey)
-		assert.Contains(t, enclave, kPubKeyEnclaveKey)
+		assert.Contains(t, enclave, kPubKeyKey)
 		assert.Contains(t, enclave, kValEnclaveKey)
 		assert.Contains(t, enclave, kUserEnclaveKey)
 	})
