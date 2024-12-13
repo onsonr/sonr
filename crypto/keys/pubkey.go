@@ -21,6 +21,13 @@ type pubKey struct {
 	method      string
 }
 
+func NewPubKey(pk curves.Point, method DIDMethod) PubKey {
+	return &pubKey{
+		publicPoint: pk,
+		method:      method.String(),
+	}
+}
+
 func (p pubKey) Bytes() []byte {
 	return p.publicPoint.ToAffineCompressed()
 }

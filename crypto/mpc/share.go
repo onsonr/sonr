@@ -131,16 +131,6 @@ func (u *UserKeyshare) String() string {
 	return u.encoded
 }
 
-// PublicKey returns the uncompressed public key (65 bytes)
-func (u *UserKeyshare) PublicKey() []byte {
-	return u.UncompressedPubKey
-}
-
-// CompressedPublicKey returns the compressed public key (33 bytes)
-func (u *UserKeyshare) CompressedPublicKey() []byte {
-	return u.CompressedPubKey
-}
-
 func encodeMessage(m *protocol.Message) (string, error) {
 	return protocol.EncodeMessage(m)
 }

@@ -1,8 +1,6 @@
 package mpc
 
 import (
-	"crypto/ecdsa"
-
 	"github.com/onsonr/sonr/crypto/core/protocol"
 	"github.com/onsonr/sonr/crypto/tecdsa/dklsv1/dkg"
 )
@@ -55,10 +53,6 @@ func (b *BaseKeyshare) GetRole() int32 {
 
 func (b *BaseKeyshare) GetVersion() uint32 {
 	return uint32(b.Message.Version)
-}
-
-func (b *BaseKeyshare) ECDSAPublicKey() (*ecdsa.PublicKey, error) {
-	return ComputeEcdsaPublicKey(b.UncompressedPubKey)
 }
 
 func (b *BaseKeyshare) ExtractMessage() *protocol.Message {
