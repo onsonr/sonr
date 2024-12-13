@@ -23,8 +23,8 @@ templ Handle() {
 	<br/>
 }
 
-templ HandleError() {
-	<sl-input name="handle" placeholder="digitalgold" type="text" label="Handle" minlength="4" maxlength="12" required class="border-red-500">
+templ HandleError(value string) {
+	<sl-input name="handle" placeholder="digitalgold" type="text" label="Handle" minlength="4" maxlength="12" required class="border-red-500" value={ value }>
 		<div slot="prefix">
 			<sl-icon name="at-sign" library="sonr"></sl-icon>
 		</div>
@@ -35,8 +35,8 @@ templ HandleError() {
 	<br/>
 }
 
-templ HandleValid() {
-	<sl-input name="handle" placeholder="digitalgold" type="text" label="Handle" minlength="4" maxlength="12" required class="border-green-500">
+templ HandleValid(value string) {
+	<sl-input name="handle" placeholder="digitalgold" type="text" label="Handle" minlength="4" maxlength="12" required class="border-green-500" value={ value }>
 		<div slot="prefix" style="color: #46A758;">
 			<sl-icon name="at-sign" library="sonr"></sl-icon>
 		</div>

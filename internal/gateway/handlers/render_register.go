@@ -26,6 +26,9 @@ func RenderPasskeyCreate(c echo.Context) error {
 	handle := c.FormValue("handle")
 	firstName := c.FormValue("first_name")
 	lastName := c.FormValue("last_name")
+	isHuman := c.FormValue("is_human")
+	c.Logger().Infof("isHuman: %s", isHuman)
+	c.Logger().Infof("handle: %s", handle)
 
 	ks, err := mpc.GenEnclave()
 	if err != nil {

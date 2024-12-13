@@ -1,33 +1,16 @@
 package mpc
 
 import (
-	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"math/big"
 
 	"github.com/cosmos/cosmos-sdk/types/bech32"
-	"github.com/ipfs/boxo/files"
-	"github.com/ipfs/kubo/client/rpc"
 	"github.com/onsonr/sonr/crypto/core/curves"
 	"github.com/onsonr/sonr/crypto/core/protocol"
 	"github.com/onsonr/sonr/crypto/tecdsa/dklsv1"
+	"golang.org/x/crypto/sha3"
 )
-
-func addEnclaveIPFS(enclave *KeyEnclave, ipc *rpc.HttpApi) (Enclave, error) {
-	jsonEnclave, err := json.Marshal(enclave)
-	if err != nil {
-		return nil, err
-	}
-	// Save enclave to IPFS
-	cid, err := ipc.Unixfs().Add(context.Background(), files.NewBytesFile(jsonEnclave))
-	if err != nil {
-		return nil, err
-	}
-	enclave.VaultCID = cid.String()
-	return enclave, nil
-}
 
 func checkIteratedErrors(aErr, bErr error) error {
 	if aErr == protocol.ErrProtocolFinished && bErr == protocol.ErrProtocolFinished {
@@ -87,6 +70,24 @@ func getEcdsaPoint(pubKey []byte) (*curves.EcPoint, error) {
 	return &curves.EcPoint{X: x, Y: y, Curve: ecCurve}, nil
 }
 
+func initKeyEnclave(valShare, userShare Message) (*KeyEnclave, error) {
+	pubPoint, err := getAlicePubPoint(valShare)
+	if err != nil {
+		return nil, err
+	}
+
+	addr, err := computeSonrAddr(pubPoint)
+	if err != nil {
+		return nil, err
+	}
+	return &KeyEnclave{
+		Addr:      addr,
+		PubPoint:  pubPoint,
+		ValShare:  valShare,
+		UserShare: userShare,
+	}, nil
+}
+
 func serializeSignature(sig *curves.EcdsaSignature) ([]byte, error) {
 	if sig == nil {
 		return nil, errors.New("nil signature")
@@ -121,4 +122,24 @@ func deserializeSignature(sigBytes []byte) (*curves.EcdsaSignature, error) {
 		R: r,
 		S: s,
 	}, nil
+}
+
+func userSignFunc(k *KeyEnclave, bz []byte) (SignFunc, error) {
+	curve := curves.K256()
+	return dklsv1.NewBobSign(curve, sha3.New256(), bz, k.UserShare, protocol.Version1)
+}
+
+func userRefreshFunc(k *KeyEnclave) (RefreshFunc, error) {
+	curve := curves.K256()
+	return dklsv1.NewBobRefresh(curve, k.UserShare, protocol.Version1)
+}
+
+func valSignFunc(k *KeyEnclave, bz []byte) (SignFunc, error) {
+	curve := curves.K256()
+	return dklsv1.NewAliceSign(curve, sha3.New256(), bz, k.ValShare, protocol.Version1)
+}
+
+func valRefreshFunc(k *KeyEnclave) (RefreshFunc, error) {
+	curve := curves.K256()
+	return dklsv1.NewAliceRefresh(curve, k.ValShare, protocol.Version1)
 }
