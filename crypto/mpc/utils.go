@@ -14,10 +14,9 @@ import (
 	"github.com/onsonr/sonr/crypto/core/curves"
 	"github.com/onsonr/sonr/crypto/core/protocol"
 	"github.com/onsonr/sonr/crypto/tecdsa/dklsv1"
-	"golang.org/x/crypto/sha3"
 )
 
-func addEnclaveIPFS(enclave *KeyEnclave, ipc *rpc.HttpApi) (*KeyEnclave, error) {
+func addEnclaveIPFS(enclave *KeyEnclave, ipc *rpc.HttpApi) (Enclave, error) {
 	jsonEnclave, err := json.Marshal(enclave)
 	if err != nil {
 		return nil, err
@@ -77,26 +76,6 @@ func getBobPubPoint(msg *protocol.Message) (Point, error) {
 	return out.PublicKey, nil
 }
 
-func getKeyShareArrayPoint(kss []KeyShare) (Point, error) {
-	for _, ks := range kss {
-		if ks.Role() == RoleUser {
-			msg, err := ks.Message()
-			if err != nil {
-				return nil, err
-			}
-			return getBobPubPoint(msg)
-		}
-		if ks.Role() == RoleValidator {
-			msg, err := ks.Message()
-			if err != nil {
-				return nil, err
-			}
-			return getAlicePubPoint(msg)
-		}
-	}
-	return nil, fmt.Errorf("invalid share role")
-}
-
 // getEcdsaPoint builds an elliptic curve point from a compressed byte slice
 func getEcdsaPoint(pubKey []byte) (*curves.EcPoint, error) {
 	crv := curves.K256()
@@ -107,38 +86,6 @@ func getEcdsaPoint(pubKey []byte) (*curves.EcPoint, error) {
 		return nil, fmt.Errorf("error converting curve: %v", err)
 	}
 	return &curves.EcPoint{X: x, Y: y, Curve: ecCurve}, nil
-}
-
-func getRefreshFunc(ks KeyShare) (RefreshFunc, error) {
-	curve := curves.K256()
-	msg, err := ks.Message()
-	if err != nil {
-		return nil, err
-	}
-	switch ks.Role() {
-	case RoleUser:
-		return dklsv1.NewBobRefresh(curve, msg, protocol.Version1)
-	case RoleValidator:
-		return dklsv1.NewAliceRefresh(curve, msg, protocol.Version1)
-	default:
-		return nil, fmt.Errorf("invalid share role")
-	}
-}
-
-func getSignFunc(ks KeyShare, msgBz []byte) (SignFunc, error) {
-	curve := curves.K256()
-	msg, err := ks.Message()
-	if err != nil {
-		return nil, err
-	}
-	switch ks.Role() {
-	case RoleUser:
-		return dklsv1.NewBobSign(curve, sha3.New256(), msgBz, msg, protocol.Version1)
-	case RoleValidator:
-		return dklsv1.NewAliceSign(curve, sha3.New256(), msgBz, msg, protocol.Version1)
-	default:
-		return nil, fmt.Errorf("invalid share role")
-	}
 }
 
 // SerializeSecp256k1Signature serializes an ECDSA signature into a byte slice

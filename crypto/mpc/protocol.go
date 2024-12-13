@@ -20,23 +20,15 @@ func GenEnclave() (*KeyEnclave, error) {
 	if err != nil {
 		return nil, err
 	}
-	valShare, err := EncodeKeyshare(valRes, RoleValidator)
-	if err != nil {
-		return nil, err
-	}
 	userRes, err := userKs.Result(protocol.Version1)
 	if err != nil {
 		return nil, err
 	}
-	userShare, err := EncodeKeyshare(userRes, RoleUser)
-	if err != nil {
-		return nil, err
-	}
-	return initKeyEnclave(valShare, userShare)
+	return initKeyEnclave(valRes, userRes)
 }
 
 // GenEnclaveIPFS generates a new MPC keyshare
-func GenEnclaveIPFS(ipc *rpc.HttpApi) (*KeyEnclave, error) {
+func GenEnclaveIPFS(ipc *rpc.HttpApi) (Enclave, error) {
 	curve := curves.K256()
 	valKs := dklsv1.NewAliceDkg(curve, protocol.Version1)
 	userKs := dklsv1.NewBobDkg(curve, protocol.Version1)
@@ -48,19 +40,11 @@ func GenEnclaveIPFS(ipc *rpc.HttpApi) (*KeyEnclave, error) {
 	if err != nil {
 		return nil, err
 	}
-	valShare, err := EncodeKeyshare(valRes, RoleValidator)
-	if err != nil {
-		return nil, err
-	}
 	userRes, err := userKs.Result(protocol.Version1)
 	if err != nil {
 		return nil, err
 	}
-	userShare, err := EncodeKeyshare(userRes, RoleUser)
-	if err != nil {
-		return nil, err
-	}
-	e, err := initKeyEnclave(valShare, userShare)
+	e, err := initKeyEnclave(valRes, userRes)
 	if err != nil {
 		return nil, err
 	}
@@ -98,19 +82,11 @@ func ExecuteRefresh(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc) (*K
 	if err != nil {
 		return nil, err
 	}
-	valShare, err := EncodeKeyshare(valRefreshResult, RoleValidator)
-	if err != nil {
-		return nil, err
-	}
 	userRefreshResult, err := refreshFuncUser.Result(protocol.Version1)
 	if err != nil {
 		return nil, err
 	}
-	userShare, err := EncodeKeyshare(userRefreshResult, RoleUser)
-	if err != nil {
-		return nil, err
-	}
-	return initKeyEnclave(valShare, userShare)
+	return initKeyEnclave(valRefreshResult, userRefreshResult)
 }
 
 // For DKG bob starts first. For refresh and sign, Alice starts first.

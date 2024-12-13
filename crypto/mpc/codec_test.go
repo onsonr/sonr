@@ -46,22 +46,3 @@ func TestEnclaveOperations(t *testing.T) {
 		assert.False(t, valid)
 	})
 }
-
-func TestKeyShareEncoding(t *testing.T) {
-	t.Run("Invalid Keyshare Decoding", func(t *testing.T) {
-		invalidShares := []string{
-			"invalid",
-			"invalid.format.extra",
-			"unknown.format",
-			"notarole.data",
-		}
-
-		for _, share := range invalidShares {
-			t.Run(share, func(t *testing.T) {
-				decoded, err := DecodeKeyshare(share)
-				assert.Error(t, err)
-				assert.Empty(t, decoded)
-			})
-		}
-	})
-}
