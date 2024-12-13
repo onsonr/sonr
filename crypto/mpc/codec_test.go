@@ -15,10 +15,7 @@ func TestKeyShareGeneration(t *testing.T) {
 		require.NotNil(t, enclave)
 
 		// Validate enclave contents
-		assert.NotEmpty(t, enclave.Addr)
-		assert.NotEmpty(t, enclave.PubKeyData)
-		assert.NotEmpty(t, enclave.ValShare)
-		assert.NotEmpty(t, enclave.UserShare)
+		assert.True(t, enclave.IsValid())
 	})
 }
 
