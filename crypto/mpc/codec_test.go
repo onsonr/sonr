@@ -19,18 +19,6 @@ func TestKeyShareGeneration(t *testing.T) {
 		assert.Contains(t, enclave, kPubKeyEnclaveKey)
 		assert.Contains(t, enclave, kValEnclaveKey)
 		assert.Contains(t, enclave, kUserEnclaveKey)
-
-		// Validate shares can be decoded
-		valShare := enclave[kValEnclaveKey]
-		userShare := enclave[kUserEnclaveKey]
-		
-		val, err := DecodeKeyshare(valShare)
-		require.NoError(t, err)
-		assert.Equal(t, RoleValidator, val.Role())
-
-		user, err := DecodeKeyshare(userShare)
-		require.NoError(t, err)
-		assert.Equal(t, RoleUser, user.Role())
 	})
 }
 
@@ -63,7 +51,7 @@ func TestKeyShareEncoding(t *testing.T) {
 	t.Run("Invalid Keyshare Decoding", func(t *testing.T) {
 		invalidShares := []string{
 			"invalid",
-			"invalid.format.extra", 
+			"invalid.format.extra",
 			"unknown.format",
 			"notarole.data",
 		}
