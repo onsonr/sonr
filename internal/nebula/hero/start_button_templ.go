@@ -8,7 +8,7 @@ package hero
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-func GetStartedButton() templ.Component {
+func StartButton() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -29,7 +29,7 @@ func GetStartedButton() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"pt-1.5 mb-3 flex flex-col items-center justify-center h-full\"><sl-button size=\"large\" hx-target=\"#container\" hx-get=\"/register\" hx-push-url=\"/register\" type=\"button\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"sonr\"></sl-icon> Get Started <sl-icon slot=\"suffix\" library=\"sonr\" name=\"arrow-right\"></sl-icon></sl-button></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"pt-1.5 mb-3 flex flex-col items-center justify-center h-full\"><sl-button size=\"large\" hx-target=\"#container\" hx-get=\"/register\" hx-push-url=\"/register\" type=\"button\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"sonr\"></sl-icon> Create Vault <sl-icon slot=\"suffix\" library=\"sonr\" name=\"arrow-right\"></sl-icon></sl-button></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
