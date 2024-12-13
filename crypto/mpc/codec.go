@@ -30,6 +30,27 @@ type (
 
 type KeyShare string
 
+func EncodeKeyshare(m Message, role Role) (KeyShare, error) {
+	enc, err := protocol.EncodeMessage(m)
+	if err != nil {
+		return "", err
+	}
+	return KeyShare(fmt.Sprintf("%s.%s", role.String(), enc)), nil
+}
+
+func DecodeKeyshare(s string) (KeyShare, error) {
+	parts := strings.Split(s, ".")
+	role := Role(parts[0])
+	if role != RoleUser && role != RoleValidator {
+		return "", fmt.Errorf("invalid share role")
+	}
+	_, err := protocol.DecodeMessage(parts[1])
+	if err != nil {
+		return "", err
+	}
+	return KeyShare(fmt.Sprintf("%s.%s", role.String(), parts[1])), nil
+}
+
 func (k KeyShare) AliceOut() (AliceOut, error) {
 	if k.Role() != RoleValidator {
 		return nil, fmt.Errorf("invalid share role")
@@ -49,41 +70,28 @@ func (k KeyShare) BobOut() (BobOut, error) {
 	if err != nil {
 		return nil, err
 	}
-	bobOut, err := getBobOut(msg)
-	if err != nil {
-		return nil, err
-	}
-	return bobOut, nil
+	return getBobOut(msg)
+}
+
+func (k KeyShare) Bytes() []byte {
+	return []byte(k)
 }
 
 func (k KeyShare) Message() (*protocol.Message, error) {
-	r := k.Role()
-	return r.Parse(k)
+	parts := strings.Split(k.String(), ".")
+	if len(parts) != 2 {
+		return nil, fmt.Errorf("invalid share format")
+	}
+	return protocol.DecodeMessage(parts[1])
 }
 
 func (k KeyShare) Role() Role {
 	parts := strings.Split(k.String(), ".")
-	return determineRole(parts[0])
+	return Role(parts[0])
 }
 
 func (k KeyShare) String() string {
 	return string(k)
-}
-
-func EncodeKeyshare(m Message, role Role) (KeyShare, error) {
-	enc, err := protocol.EncodeMessage(m)
-	if err != nil {
-		return "", err
-	}
-	return role.Format(enc), nil
-}
-
-func DecodeKeyshare(s string) (KeyShare, error) {
-	role := determineRole(s)
-	if role == RoleUnknown {
-		return "", fmt.Errorf("invalid share role")
-	}
-	return role.Format(s), nil
 }
 
 // ╭───────────────────────────────────────────────────────────╮
@@ -91,41 +99,13 @@ func DecodeKeyshare(s string) (KeyShare, error) {
 // ╰───────────────────────────────────────────────────────────╯
 
 const (
-	RoleUser      Role = "user."
-	RoleValidator Role = "validator."
-	RoleUnknown   Role = ""
+	RoleUser      Role = "user"
+	RoleValidator Role = "validator"
+	RoleUnknown   Role = "nahh"
 )
-
-func determineRole(s string) Role {
-	if strings.Contains(s, "user") {
-		return RoleUser
-	}
-	if strings.Contains(s, "validator") {
-		return RoleValidator
-	}
-	return RoleUnknown
-}
 
 func (r Role) String() string {
 	return string(r)
-}
-
-func (r Role) Format(encodedKeyShare string) KeyShare {
-	return KeyShare(fmt.Sprintf("%s%s", r.String(), encodedKeyShare))
-}
-
-func (r Role) Parse(share KeyShare) (Message, error) {
-	if r == RoleUnknown {
-		return nil, fmt.Errorf("invalid share role")
-	}
-	parts := strings.Split(share.String(), ".")
-	if len(parts) != 2 {
-		return nil, fmt.Errorf("invalid share format")
-	}
-	if parts[0] != r.String() {
-		return nil, fmt.Errorf("invalid share role")
-	}
-	return protocol.DecodeMessage(parts[1])
 }
 
 func (r Role) IsUser() bool      { return r == RoleUser }
