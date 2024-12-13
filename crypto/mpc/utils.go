@@ -27,7 +27,7 @@ func addEnclaveIPFS(enclave KeyEnclave, ipc *rpc.HttpApi) (KeyEnclave, error) {
 	if err != nil {
 		return nil, err
 	}
-	enclave[kVaultCIDKey] = []byte(cid.String())
+	enclave[kVaultCIDKey] = cid.String()
 	return enclave, nil
 }
 

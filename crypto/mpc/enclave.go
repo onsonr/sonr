@@ -13,6 +13,7 @@ const (
 	kValEnclaveKey  = "val" 
 	kAddrEnclaveKey = "addr"
 	kPubKeyKey      = "pub"
+	kVaultCIDKey    = "cid"
 )
 
 func initKeyEnclave(valShare, userShare KeyShare) (KeyEnclave, error) {
