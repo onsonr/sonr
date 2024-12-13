@@ -14,9 +14,23 @@ func TestKeyShareGeneration(t *testing.T) {
 		require.NoError(t, err)
 		require.NotNil(t, enclave)
 
-		// Validate exported properties
-		assert.NotEmpty(t, enclave.Address())
-		assert.NotNil(t, enclave.PubKey())
+		// Validate enclave contents
+		assert.Contains(t, enclave, kAddrEnclaveKey)
+		assert.Contains(t, enclave, kPubKeyEnclaveKey)
+		assert.Contains(t, enclave, kValEnclaveKey)
+		assert.Contains(t, enclave, kUserEnclaveKey)
+
+		// Validate shares can be decoded
+		valShare := enclave[kValEnclaveKey]
+		userShare := enclave[kUserEnclaveKey]
+		
+		val, err := DecodeKeyshare(valShare)
+		require.NoError(t, err)
+		assert.Equal(t, RoleValidator, val.Role())
+
+		user, err := DecodeKeyshare(userShare)
+		require.NoError(t, err)
+		assert.Equal(t, RoleUser, user.Role())
 	})
 }
 
