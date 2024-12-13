@@ -82,7 +82,23 @@ func (k KeyShare) Message() (*protocol.Message, error) {
 	if len(parts) != 2 {
 		return nil, fmt.Errorf("invalid share format")
 	}
-	return protocol.DecodeMessage(parts[1])
+	msg := &protocol.Message{
+		Payloads: make(map[string][]byte),
+		Metadata: make(map[string]string),
+	}
+	decoded, err := protocol.DecodeMessage(parts[1])
+	if err != nil {
+		return nil, err
+	}
+	msg.Protocol = decoded.Protocol
+	msg.Version = decoded.Version
+	for k, v := range decoded.Metadata {
+		msg.Metadata[k] = v
+	}
+	for k, v := range decoded.Payloads {
+		msg.Payloads[k] = v
+	}
+	return msg, nil
 }
 
 func (k KeyShare) Role() Role {
