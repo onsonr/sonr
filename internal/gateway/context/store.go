@@ -1,6 +1,7 @@
 package context
 
 import (
+	"net/http"
 	"strconv"
 
 	"github.com/go-webauthn/webauthn/protocol"
@@ -21,6 +22,15 @@ func InsertProfile(c echo.Context, addr string, handle string, name string) erro
 	if err != nil {
 		return err
 	}
+
+	// Set Address as cookie
+	c.SetCookie(&http.Cookie{
+		Name:   "sonr.address",
+		Value:  addr,
+		Path:   "/",
+		Secure: true,
+	})
+
 	return sess.db.Save(&models.User{
 		Origin:  c.Request().Host,
 		Address: addr,
@@ -29,7 +39,7 @@ func InsertProfile(c echo.Context, addr string, handle string, name string) erro
 	}).Error
 }
 
-func RefreshChallenge(c echo.Context) error {
+func SetIsHumanSum(c echo.Context, isHumanSum int) error {
 	sess, err := Get(c)
 	if err != nil {
 		return err
@@ -38,18 +48,8 @@ func RefreshChallenge(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-
 	return sess.db.Save(&models.Session{
-		Challenge: challenge.String(),
-	}).Error
-}
-
-func SetIsHumanSum(c echo.Context, isHumanSum int) error {
-	sess, err := Get(c)
-	if err != nil {
-		return err
-	}
-	return sess.db.Save(&models.Session{
+		Challenge:  challenge.String(),
 		IsHumanSum: isHumanSum,
 	}).Error
 }
@@ -75,13 +75,18 @@ func VerifyIsHumanSum(c echo.Context) error {
 	return nil
 }
 
+// GetProfile returns the current user profile from the address cookie
 func GetProfile(c echo.Context) (models.User, error) {
 	sess, err := Get(c)
 	if err != nil {
 		return models.User{}, err
 	}
+	addr, err := c.Cookie("sonr.address")
+	if err != nil {
+		return models.User{}, err
+	}
 	var user models.User
-	if err := sess.db.Where("id = ?", sess.Session().ID).First(&user).Error; err != nil {
+	if err := sess.db.Where("address = ?", addr).First(&user).Error; err != nil {
 		return models.User{}, err
 	}
 	return user, nil

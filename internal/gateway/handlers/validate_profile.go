@@ -26,10 +26,6 @@ func ValidateProfileSubmit(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	err = context.RefreshChallenge(c)
-	if err != nil {
-		return err
-	}
 	err = context.InsertProfile(c, ks.Address(), handle, fmt.Sprintf("%s %s", c.FormValue("first_name"), c.FormValue("last_name")))
 	if err != nil {
 		return err
