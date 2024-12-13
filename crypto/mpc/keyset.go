@@ -19,11 +19,9 @@ type Keyset interface {
 }
 
 type keyset struct {
-	val            *ValKeyshare
-	user           *UserKeyshare
-	compressedPK   []byte
-	uncompressedPK []byte
-	addr           string
+	val  *ValKeyshare
+	user *UserKeyshare
+	addr string
 }
 
 func (k keyset) Address() string {
