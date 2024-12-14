@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	_ "embed"
 	"fmt"
 	"os"
@@ -13,7 +14,6 @@ import (
 	config "github.com/onsonr/sonr/pkg/config/hway"
 	"github.com/onsonr/sonr/pkg/didauth/producer"
 	"github.com/onsonr/sonr/pkg/ipfsapi"
-	"gorm.io/gorm"
 )
 
 // main is the entry point for the application
@@ -26,7 +26,7 @@ func main() {
 	os.Exit(0)
 }
 
-func initDeps(env config.Hway) (*gorm.DB, ipfsapi.Client, error) {
+func initDeps(env config.Hway) (*sql.DB, ipfsapi.Client, error) {
 	db, err := gateway.NewDB(env)
 	if err != nil {
 		return nil, nil, err
@@ -60,7 +60,7 @@ func loadEnvImplFromArgs(args []string) (config.Hway, error) {
 }
 
 // setupServer sets up the server
-func setupServer(env config.Hway, db *gorm.DB, ipc ipfsapi.Client) (*echo.Echo, error) {
+func setupServer(env config.Hway, db *sql.DB, ipc ipfsapi.Client) (*echo.Echo, error) {
 	e := echo.New()
 	e.Use(echoprometheus.NewMiddleware("hway"))
 	e.IPExtractor = echo.ExtractIPDirect()

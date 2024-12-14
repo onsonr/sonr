@@ -3,6 +3,8 @@ package models
 import (
 	"encoding/json"
 	"fmt"
+
+	"github.com/onsonr/sonr/internal/gateway/repository"
 )
 
 // Define the credential structure matching our frontend data
@@ -19,13 +21,13 @@ type CredentialDescriptor struct {
 	} `json:"response"`
 }
 
-func (c *CredentialDescriptor) ToDBModel(handle, origin string) *Credential {
-	return &Credential{
-		Handle:     handle,
-		Origin:     origin,
-		ID:         c.ID,
-		Type:       c.Type,
-		Transports: c.Transports,
+func (c *CredentialDescriptor) ToDBModel(handle, origin string) *repository.Credential {
+	return &repository.Credential{
+		Handle:       handle,
+		Origin:       origin,
+		CredentialID: c.ID,
+		Type:         c.Type,
+		Transports:   c.Transports,
 	}
 }
 

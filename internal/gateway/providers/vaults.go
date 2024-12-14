@@ -8,7 +8,7 @@ import (
 	"github.com/onsonr/sonr/pkg/ipfsapi"
 )
 
-type Vaults interface {
+type VaultProvider interface {
 	New(ctx context.Context, handle string, origin string) (models.CreatePasskeyData, error)
 }
 
@@ -17,7 +17,7 @@ type VaultService struct {
 	challengeCache map[string]protocol.URLEncodedBase64
 }
 
-func NewVaultService(ipc ipfsapi.Client) Vaults {
+func NewVaultService(ipc ipfsapi.Client) VaultProvider {
 	svc := &VaultService{
 		tokenStore: ipfsapi.NewUCANStore(ipc),
 	}

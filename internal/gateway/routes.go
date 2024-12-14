@@ -4,16 +4,15 @@ package gateway
 import (
 	"os"
 	"path/filepath"
-	"strings"
+
+	"database/sql"
 
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/internal/gateway/context"
 	"github.com/onsonr/sonr/internal/gateway/handlers"
-	"github.com/onsonr/sonr/internal/gateway/models"
 	"github.com/onsonr/sonr/pkg/common/response"
 	config "github.com/onsonr/sonr/pkg/config/hway"
 	"github.com/onsonr/sonr/pkg/ipfsapi"
-	"database/sql"
 	_ "modernc.org/sqlite"
 )
 

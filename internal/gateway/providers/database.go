@@ -10,7 +10,7 @@ type DatabaseProvider struct {
 	*repository.Queries
 }
 
-func NewDatabaseService(conn *sql.Conn) DatabaseProvider {
+func NewDatabaseService(conn *sql.DB) DatabaseProvider {
 	return DatabaseProvider{
 		Queries: repository.New(conn),
 	}

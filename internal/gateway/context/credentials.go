@@ -3,16 +3,17 @@ package context
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/internal/gateway/models"
+	"golang.org/x/exp/rand"
 )
 
 func GetCreateProfileData(c echo.Context) models.CreateProfileData {
-	sess, err := Get(c)
+	_, err := Get(c)
 	if err != nil {
 		return models.CreateProfileData{}
 	}
 	return models.CreateProfileData{
-		FirstNumber: sess.Session().IsHumanFirst,
-		LastNumber:  sess.Session().IsHumanLast,
+		FirstNumber: rand.Intn(5) + 1,
+		LastNumber:  rand.Intn(4) + 1,
 	}
 }
 

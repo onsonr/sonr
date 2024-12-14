@@ -21,7 +21,7 @@ func InsertCredential(c echo.Context, handle string, cred *models.CredentialDesc
 		CredentialID: cred.ID,
 		Origin:       c.Request().Host,
 		Type:         cred.Type,
-		Transports:   cred.GetTransportsString(),
+		Transports:   cred.Transports,
 	}
 
 	_, err = sess.db.InsertCredential(context.Background(), params)
