@@ -1,17 +1,17 @@
 package providers
 
 import (
-	"gorm.io/gorm"
+	"database/sql"
+
+	"github.com/onsonr/sonr/internal/gateway/repository"
 )
 
-type Database interface{}
-
-type DatabaseService struct {
-	db *gorm.DB
+type DatabaseProvider struct {
+	*repository.Queries
 }
 
-func NewDatabaseService(db *gorm.DB) Database {
-	return &DatabaseService{
-		db: db,
+func NewDatabaseService(conn *sql.Conn) DatabaseProvider {
+	return DatabaseProvider{
+		Queries: repository.New(conn),
 	}
 }
