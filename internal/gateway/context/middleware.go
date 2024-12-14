@@ -9,11 +9,11 @@ import (
 	"github.com/onsonr/sonr/internal/gateway/providers"
 	config "github.com/onsonr/sonr/pkg/config/hway"
 	"github.com/onsonr/sonr/pkg/ipfsapi"
-	"gorm.io/gorm"
+	"database/sql"
 )
 
 // Middleware creates a new session middleware
-func Middleware(db *gorm.DB, env config.Hway, ipc ipfsapi.Client) echo.MiddlewareFunc {
+func Middleware(db *sql.DB, env config.Hway, ipc ipfsapi.Client) echo.MiddlewareFunc {
 	ua := useragent.NewParser()
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
@@ -32,7 +32,7 @@ type HTTPContext struct {
 	echo.Context
 	providers.VaultProvider
 	providers.Resolver
-	db   *gorm.DB
+	db   providers.DatabaseProvider
 	sess *models.Session
 	user *models.User
 	env  config.Hway
@@ -52,7 +52,7 @@ func Get(c echo.Context) (*HTTPContext, error) {
 func NewHTTPContext(c echo.Context, db *gorm.DB, a useragent.UserAgent, grpcAddr string, ipc ipfsapi.Client) *HTTPContext {
 	return &HTTPContext{
 		Context:       c,
-		db:            db,
+		db:            providers.NewDatabaseService(db),
 		Resolver:      providers.NewResolverService(grpcAddr),
 		UserAgent:     a,
 		VaultProvider: providers.NewVaultService(ipc),

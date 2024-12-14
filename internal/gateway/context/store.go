@@ -4,8 +4,11 @@ import (
 	"net/http"
 	"strconv"
 
+	"context"
+
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/internal/gateway/models"
+	"github.com/onsonr/sonr/internal/gateway/repository"
 )
 
 func InsertCredential(c echo.Context, handle string, cred *models.CredentialDescriptor) error {
@@ -13,7 +16,17 @@ func InsertCredential(c echo.Context, handle string, cred *models.CredentialDesc
 	if err != nil {
 		return err
 	}
-	return sess.db.Save(cred.ToDBModel(handle, c.Request().Host)).Error
+	
+	params := repository.InsertCredentialParams{
+		Handle:       handle,
+		CredentialID: cred.ID,
+		Origin:      c.Request().Host,
+		Type:        cred.Type,
+		Transports:  cred.GetTransportsString(),
+	}
+	
+	_, err = sess.db.InsertCredential(context.Background(), params)
+	return err
 }
 
 func InsertProfile(c echo.Context, addr string, handle string, name string) error {
@@ -30,12 +43,15 @@ func InsertProfile(c echo.Context, addr string, handle string, name string) erro
 		Secure: true,
 	})
 
-	return sess.db.Save(&models.User{
-		Origin:  c.Request().Host,
+	params := repository.InsertUserParams{
 		Address: addr,
 		Handle:  handle,
+		Origin:  c.Request().Host,
 		Name:    name,
-	}).Error
+	}
+
+	_, err = sess.db.InsertUser(context.Background(), params)
+	return err
 }
 
 func VerifyIsHumanSum(c echo.Context) bool {
@@ -58,20 +74,17 @@ func VerifyIsHumanSum(c echo.Context) bool {
 }
 
 // GetProfile returns the current user profile from the address cookie
-func GetProfile(c echo.Context) (models.User, error) {
+func GetProfile(c echo.Context) (repository.User, error) {
 	sess, err := Get(c)
 	if err != nil {
-		return models.User{}, err
+		return repository.User{}, err
 	}
 	addr, err := c.Cookie("sonr.address")
 	if err != nil {
-		return models.User{}, err
+		return repository.User{}, err
 	}
-	var user models.User
-	if err := sess.db.Where("address = ?", addr).First(&user).Error; err != nil {
-		return models.User{}, err
-	}
-	return user, nil
+	
+	return sess.db.GetUserByAddress(context.Background(), addr.Value)
 }
 
 // ╭───────────────────────────────────────────────────────╮
@@ -94,9 +107,5 @@ func HandleExists(c echo.Context, handle string) (bool, error) {
 		return false, err
 	}
 
-	var count int64
-	if err := sess.db.Model(&models.User{}).Where("handle = ?", handle).Count(&count).Error; err != nil {
-		return false, err
-	}
-	return count > 0, nil
+	return sess.db.CheckHandleExists(context.Background(), handle)
 }
