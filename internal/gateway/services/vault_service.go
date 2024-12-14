@@ -9,7 +9,8 @@ type VaultService struct {
 }
 
 func NewVaultService(ipc ipfsapi.Client) *VaultService {
-	return &VaultService{
+	svc := &VaultService{
 		tokenStore: ipfsapi.NewUCANStore(ipc),
 	}
+	return svc
 }
