@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/medama-io/go-useragent"
 	"github.com/onsonr/sonr/internal/gateway/models"
-	"github.com/onsonr/sonr/internal/gateway/services"
+	"github.com/onsonr/sonr/internal/gateway/providers"
 	config "github.com/onsonr/sonr/pkg/config/hway"
 	"github.com/onsonr/sonr/pkg/ipfsapi"
 	"gorm.io/gorm"
@@ -30,8 +30,8 @@ func Middleware(db *gorm.DB, env config.Hway, ipc ipfsapi.Client) echo.Middlewar
 // HTTPContext is the context for HTTP endpoints.
 type HTTPContext struct {
 	echo.Context
-	services.Vaults
-	services.Resolver
+	providers.Vaults
+	providers.Resolver
 	db   *gorm.DB
 	sess *models.Session
 	user *models.User
@@ -53,9 +53,9 @@ func NewHTTPContext(c echo.Context, db *gorm.DB, a useragent.UserAgent, grpcAddr
 	return &HTTPContext{
 		Context:   c,
 		db:        db,
-		Resolver:  services.NewResolverService(grpcAddr),
+		Resolver:  providers.NewResolverService(grpcAddr),
 		UserAgent: a,
-		Vaults:    services.NewVaultService(ipc),
+		Vaults:    providers.NewVaultService(ipc),
 	}
 }
 
