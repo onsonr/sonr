@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/go-webauthn/webauthn/protocol"
-	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 	"github.com/labstack/echo/v4"
 	"github.com/segmentio/ksuid"
 
@@ -97,21 +96,12 @@ func extractBrowserInfo(c echo.Context) (string, string) {
 			browserName := matches[1]
 			version := matches[2]
 
-			// Skip "Not A;Brand"
-			if !validBrowser(browserName) {
-				continue
-			}
-
 			// Store the first valid browser info as fallback
 			name = browserName
 			ver = version
 		}
 	}
 	return name, ver
-}
-
-func validBrowser(name string) bool {
-	return name != common.BrowserNameUnknown.String() && name != common.BrowserNameChromium.String()
 }
 
 // ╭───────────────────────────────────────────────────────────╮
@@ -121,33 +111,6 @@ func validBrowser(name string) bool {
 func buildUserEntity(userID string) protocol.UserEntity {
 	return protocol.UserEntity{
 		ID: userID,
-	}
-}
-
-// returns the base options for registering a new user without challenge or user entity.
-func baseRegisterOptions() *protocol.PublicKeyCredentialCreationOptions {
-	return &protocol.PublicKeyCredentialCreationOptions{
-		Timeout:     kWebAuthnTimeout,
-		Attestation: protocol.PreferDirectAttestation,
-		AuthenticatorSelection: protocol.AuthenticatorSelection{
-			AuthenticatorAttachment: "platform",
-			ResidentKey:             protocol.ResidentKeyRequirementPreferred,
-			UserVerification:        "preferred",
-		},
-		Parameters: []protocol.CredentialParameter{
-			{
-				Type:      "public-key",
-				Algorithm: webauthncose.AlgES256,
-			},
-			{
-				Type:      "public-key",
-				Algorithm: webauthncose.AlgES256K,
-			},
-			{
-				Type:      "public-key",
-				Algorithm: webauthncose.AlgEdDSA,
-			},
-		},
 	}
 }
 

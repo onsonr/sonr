@@ -13,17 +13,6 @@ type LargeBlob struct {
 	Write   string `json:"write"`
 }
 
-type BrowserName string
-
-const (
-	BrowserNameUnknown  BrowserName = " Not A;Brand"
-	BrowserNameChromium BrowserName = "Chromium"
-)
-
-func (n BrowserName) String() string {
-	return string(n)
-}
-
 type PeerRole string
 
 const (

@@ -26,5 +26,5 @@ func ValidateIsHumanSum(c echo.Context) error {
 	if ok := context.VerifyIsHumanSum(c); !ok {
 		return response.TemplEcho(c, input.HumanSliderError(context.GetCreateProfileData(c)))
 	}
-	return nil
+	return response.TemplEcho(c, input.HumanSliderSuccess())
 }

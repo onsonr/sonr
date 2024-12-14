@@ -4,8 +4,6 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/internal/gateway/context"
 	"github.com/onsonr/sonr/internal/gateway/views"
-	"net/http"
-		"github.com/onsonr/sonr/internal/gateway/models"
 
 	"github.com/onsonr/sonr/pkg/common/response"
 )
@@ -23,13 +21,5 @@ func RenderPasskeyCreate(c echo.Context) error {
 }
 
 func RenderVaultLoading(c echo.Context) error {
-	credentialJSON := c.FormValue("credential")
-	if credentialJSON == "" {
-		return echo.NewHTTPError(http.StatusBadRequest, "missing credential data")
-	}
-	_, err := models.ExtractCredentialDescriptor(credentialJSON)
-	if err != nil {
-		return err
-	}
 	return response.TemplEcho(c, views.LoadingVaultView())
 }

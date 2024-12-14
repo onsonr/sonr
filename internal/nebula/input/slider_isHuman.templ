@@ -19,6 +19,10 @@ templ HumanSliderError(d models.CreateProfileData) {
 	</div>
 }
 
+templ HumanSliderSuccess() {
+	<sl-range name="is_human" label="Success! Welcome Human." help-text="Prove you are a human." min="0" max="9" step="1" value="9" disabled></sl-range>
+}
+
 func formatHumanSliderLabel(firstNumber int, lastNumber int) string {
 	return fmt.Sprintf("What is %d + %d?", firstNumber, lastNumber)
 }
