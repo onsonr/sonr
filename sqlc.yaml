@@ -1,0 +1,9 @@
+version: "2"
+sql:
+  - engine: "sqlite"
+    queries: "./deploy/sink/gateway/query.sql"
+    schema: "./deploy/sink/gateway/schema.sql"
+    gen:
+      go:
+        package: "repository"
+        out: "internal/repository"
