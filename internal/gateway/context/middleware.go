@@ -30,12 +30,12 @@ func Middleware(db *gorm.DB, env config.Hway, ipc ipfsapi.Client) echo.Middlewar
 // HTTPContext is the context for HTTP endpoints.
 type HTTPContext struct {
 	echo.Context
-	vaultsvc *services.VaultService
-	resolver *services.ResolverService
-	db       *gorm.DB
-	sess     *models.Session
-	user     *models.User
-	env      config.Hway
+	services.Vaults
+	services.Resolver
+	db   *gorm.DB
+	sess *models.Session
+	user *models.User
+	env  config.Hway
 	useragent.UserAgent
 }
 
@@ -50,14 +50,12 @@ func Get(c echo.Context) (*HTTPContext, error) {
 
 // NewHTTPContext creates a new session context
 func NewHTTPContext(c echo.Context, db *gorm.DB, a useragent.UserAgent, grpcAddr string, ipc ipfsapi.Client) *HTTPContext {
-	rsv := services.NewResolverService(grpcAddr)
-	vsvc := services.NewVaultService(ipc)
 	return &HTTPContext{
 		Context:   c,
 		db:        db,
-		resolver:  rsv,
+		Resolver:  services.NewResolverService(grpcAddr),
 		UserAgent: a,
-		vaultsvc:  vsvc,
+		Vaults:    services.NewVaultService(ipc),
 	}
 }
 
