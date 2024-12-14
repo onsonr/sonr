@@ -34,7 +34,6 @@ type HTTPContext struct {
 	providers.Resolver
 	db   providers.DatabaseProvider
 	sess *repository.Session
-	user *repository.User
 	env  config.Hway
 	useragent.UserAgent
 }

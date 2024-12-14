@@ -64,7 +64,7 @@ func VerifyIsHumanSum(c echo.Context) bool {
 		return false
 	}
 	// Get the current session
-	sessionSum := sess.Session().IsHumanFirst + sess.Session().IsHumanLast
+	sessionSum := int(sess.Session().IsHumanFirst + sess.Session().IsHumanLast)
 	return sessionSum == sumInt
 }
 

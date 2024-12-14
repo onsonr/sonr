@@ -54,20 +54,7 @@ func (s *HTTPContext) initSession() error {
 		}
 	}
 
-	s.sess = &repository.Session{
-		ID:             dbSession.ID,
-		BrowserName:    dbSession.BrowserName,
-		BrowserVersion: dbSession.BrowserVersion,
-		Platform:       dbSession.Platform,
-		IsMobile:       dbSession.IsMobile == 1,
-		IsTablet:       dbSession.IsTablet == 1,
-		IsDesktop:      dbSession.IsDesktop == 1,
-		IsBot:          dbSession.IsBot == 1,
-		IsTV:           dbSession.IsTv == 1,
-		IsHumanFirst:   int(dbSession.IsHumanFirst),
-		IsHumanLast:    int(dbSession.IsHumanLast),
-		Challenge:      dbSession.Challenge,
-	}
+	s.sess = &dbSession
 	return nil
 }
 
