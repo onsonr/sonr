@@ -1,9 +1,11 @@
 package context
 
 import (
+	"context"
+
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/gateway/models"
+	"github.com/onsonr/sonr/internal/gateway/repository"
 	"github.com/onsonr/sonr/pkg/common"
 	"github.com/segmentio/ksuid"
 	"golang.org/x/exp/rand"
@@ -37,22 +39,22 @@ func (s *HTTPContext) initSession() error {
 			BrowserName:    s.GetBrowser(),
 			BrowserVersion: s.GetMajorVersion(),
 			Platform:       s.GetOS(),
-			IsMobile:      boolToInt64(s.IsMobile()),
-			IsTablet:      boolToInt64(s.IsTablet()),
-			IsDesktop:     boolToInt64(s.IsDesktop()),
-			IsBot:         boolToInt64(s.IsBot()),
-			IsTv:          boolToInt64(s.IsTV()),
-			IsHumanFirst:  int64(f),
-			IsHumanLast:   int64(l),
-			Challenge:     challenge.String(),
+			IsMobile:       boolToInt64(s.IsMobile()),
+			IsTablet:       boolToInt64(s.IsTablet()),
+			IsDesktop:      boolToInt64(s.IsDesktop()),
+			IsBot:          boolToInt64(s.IsBot()),
+			IsTv:           boolToInt64(s.IsTV()),
+			IsHumanFirst:   int64(f),
+			IsHumanLast:    int64(l),
+			Challenge:      challenge.String(),
 		}
 		dbSession, err = s.db.CreateSession(context.Background(), params)
 		if err != nil {
 			return err
 		}
 	}
-	
-	s.sess = &models.Session{
+
+	s.sess = &repository.Session{
 		ID:             dbSession.ID,
 		BrowserName:    dbSession.BrowserName,
 		BrowserVersion: dbSession.BrowserVersion,
@@ -83,6 +85,7 @@ func (s *HTTPContext) getOrCreateSessionID() string {
 	}
 	return sessionID
 }
+
 func boolToInt64(b bool) int64 {
 	if b {
 		return 1

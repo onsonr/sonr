@@ -1,10 +1,9 @@
 package context
 
 import (
+	"context"
 	"net/http"
 	"strconv"
-
-	"context"
 
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/internal/gateway/models"
@@ -16,15 +15,15 @@ func InsertCredential(c echo.Context, handle string, cred *models.CredentialDesc
 	if err != nil {
 		return err
 	}
-	
+
 	params := repository.InsertCredentialParams{
 		Handle:       handle,
 		CredentialID: cred.ID,
-		Origin:      c.Request().Host,
-		Type:        cred.Type,
-		Transports:  cred.GetTransportsString(),
+		Origin:       c.Request().Host,
+		Type:         cred.Type,
+		Transports:   cred.GetTransportsString(),
 	}
-	
+
 	_, err = sess.db.InsertCredential(context.Background(), params)
 	return err
 }
@@ -65,10 +64,6 @@ func VerifyIsHumanSum(c echo.Context) bool {
 		return false
 	}
 	// Get the current session
-	var session models.Session
-	if err := sess.db.Where("id = ?", sess.Session().ID).First(&session).Error; err != nil {
-		return false
-	}
 	sessionSum := sess.Session().IsHumanFirst + sess.Session().IsHumanLast
 	return sessionSum == sumInt
 }
@@ -83,7 +78,7 @@ func GetProfile(c echo.Context) (repository.User, error) {
 	if err != nil {
 		return repository.User{}, err
 	}
-	
+
 	return sess.db.GetUserByAddress(context.Background(), addr.Value)
 }
 

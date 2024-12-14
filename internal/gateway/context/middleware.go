@@ -1,15 +1,15 @@
 package context
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 	"github.com/medama-io/go-useragent"
-	"github.com/onsonr/sonr/internal/gateway/models"
 	"github.com/onsonr/sonr/internal/gateway/providers"
+	"github.com/onsonr/sonr/internal/gateway/repository"
 	config "github.com/onsonr/sonr/pkg/config/hway"
 	"github.com/onsonr/sonr/pkg/ipfsapi"
-	"database/sql"
 )
 
 // Middleware creates a new session middleware
@@ -33,8 +33,8 @@ type HTTPContext struct {
 	providers.VaultProvider
 	providers.Resolver
 	db   providers.DatabaseProvider
-	sess *models.Session
-	user *models.User
+	sess *repository.Session
+	user *repository.User
 	env  config.Hway
 	useragent.UserAgent
 }
@@ -60,6 +60,6 @@ func NewHTTPContext(c echo.Context, db *sql.DB, a useragent.UserAgent, grpcAddr 
 }
 
 // Session returns the current session
-func (s *HTTPContext) Session() *models.Session {
+func (s *HTTPContext) Session() *repository.Session {
 	return s.sess
 }
