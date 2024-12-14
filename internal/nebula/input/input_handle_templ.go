@@ -83,7 +83,7 @@ func HandleError(value string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><div slot=\"prefix\"><sl-icon name=\"at-sign\" library=\"sonr\"></sl-icon></div><div slot=\"suffix\" style=\"color: #B54549;\"><sl-icon name=\"at-sign\" library=\"sonr\"></sl-icon></div></sl-input><br>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><div slot=\"prefix\"><sl-icon name=\"at-sign\" library=\"sonr\"></sl-icon></div><div slot=\"suffix\" style=\"color: #B54549;\"><sl-icon name=\"x\"></sl-icon></div></sl-input><br>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

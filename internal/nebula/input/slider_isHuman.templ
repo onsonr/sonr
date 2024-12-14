@@ -1,15 +1,18 @@
 package input
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/onsonr/sonr/internal/gateway/models"
+)
 
-templ HumanSlider(firstNumber int, lastNumber int) {
+templ HumanSlider(d models.CreateProfileData) {
 	<div hx-target="this" hx-swap="outerHTML">
-		<sl-range name="is_human" label={ formatHumanSliderLabel(firstNumber, lastNumber) } help-text="Prove you are a human." min="0" max="9" step="1" hx-post="/register/profile/is_human"></sl-range>
+		<sl-range name="is_human" label={ formatHumanSliderLabel(d.FirstNumber, d.LastNumber) } help-text="Prove you are a human." min="0" max="9" step="1" hx-post="/register/profile/is_human"></sl-range>
 	</div>
 }
 
-templ HumanSliderError(firstNumber int, lastNumber int) {
-	<sl-range name="is_human" label={ formatHumanSliderLabel(firstNumber, lastNumber) } help-text="Prove you are a human." min="0" max="9" step="1"></sl-range>
+templ HumanSliderError(d models.CreateProfileData) {
+	<sl-range name="is_human" label={ formatHumanSliderLabel(d.FirstNumber, d.LastNumber) } help-text="Prove you are a human." min="0" max="9" step="1"></sl-range>
 	<div slot="help-text">
 		<sl-icon name="x-lg" library="sonr"></sl-icon>
 		Invalid Human Sum

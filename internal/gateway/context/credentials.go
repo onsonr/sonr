@@ -5,25 +5,25 @@ import (
 	"github.com/onsonr/sonr/internal/gateway/models"
 )
 
-func GetCreateProfileData(c echo.Context) (models.CreateProfileData, error) {
+func GetCreateProfileData(c echo.Context) models.CreateProfileData {
 	sess, err := Get(c)
 	if err != nil {
-		return models.CreateProfileData{}, err
+		return models.CreateProfileData{}
 	}
 	return models.CreateProfileData{
 		FirstNumber: sess.Session().IsHumanFirst,
 		LastNumber:  sess.Session().IsHumanLast,
-	}, nil
+	}
 }
 
-func GetPasskeyCreateData(c echo.Context) (models.CreatePasskeyData, error) {
+func GetPasskeyCreateData(c echo.Context) models.CreatePasskeyData {
 	sess, err := Get(c)
 	if err != nil {
-		return models.CreatePasskeyData{}, err
+		return models.CreatePasskeyData{}
 	}
 	profile, err := GetProfile(c)
 	if err != nil {
-		return models.CreatePasskeyData{}, err
+		return models.CreatePasskeyData{}
 	}
 	return models.CreatePasskeyData{
 		Address:       profile.Address,
@@ -31,5 +31,5 @@ func GetPasskeyCreateData(c echo.Context) (models.CreatePasskeyData, error) {
 		Name:          profile.Name,
 		Challenge:     sess.Session().Challenge,
 		CreationBlock: "00001",
-	}, nil
+	}
 }

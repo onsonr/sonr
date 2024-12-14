@@ -2,11 +2,21 @@ package context
 
 import (
 	"github.com/go-webauthn/webauthn/protocol"
+	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/internal/gateway/models"
 	"github.com/onsonr/sonr/pkg/common"
 	"github.com/segmentio/ksuid"
 	"golang.org/x/exp/rand"
 )
+
+// isUnavailableDevice returns true if the device is unavailable
+func IsUnavailableDevice(c echo.Context) bool {
+	s, err := Get(c)
+	if err != nil {
+		return true
+	}
+	return s.IsBot() || s.IsTV()
+}
 
 // initSession initializes or loads an existing session
 func (s *HTTPContext) initSession() error {

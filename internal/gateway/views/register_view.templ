@@ -62,7 +62,7 @@ templ formCreateProfile(data models.CreateProfileData) {
 			}
 			@input.Handle()
 			@input.Name()
-			@input.HumanSlider(data.FirstNumber, data.LastNumber)
+			@input.HumanSlider(data)
 			@form.Footer() {
 				@form.CancelButton()
 				@form.SubmitButton("Next")
