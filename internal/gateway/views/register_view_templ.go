@@ -9,7 +9,6 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/onsonr/sonr/internal/gateway/models"
 	"github.com/onsonr/sonr/internal/nebula/card"
 	"github.com/onsonr/sonr/internal/nebula/form"
 	"github.com/onsonr/sonr/internal/nebula/hero"
@@ -17,7 +16,25 @@ import (
 	"github.com/onsonr/sonr/internal/nebula/layout"
 )
 
-func CreateProfileForm(data models.CreateProfileData) templ.Component {
+type CreatePasskeyData struct {
+	Address       string
+	Handle        string
+	Name          string
+	Challenge     string
+	CreationBlock string
+}
+
+type CreateProfileData struct {
+	TurnstileSiteKey string
+	FirstNumber      int
+	LastNumber       int
+}
+
+func (d CreateProfileData) Sum() int {
+	return d.FirstNumber + d.LastNumber
+}
+
+func CreateProfileForm(data CreateProfileData) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -90,7 +107,7 @@ func CreateProfileForm(data models.CreateProfileData) templ.Component {
 	})
 }
 
-func CreatePasskeyForm(data models.CreatePasskeyData) templ.Component {
+func CreatePasskeyForm(data CreatePasskeyData) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -228,7 +245,7 @@ func LoadingVaultView() templ.Component {
 	})
 }
 
-func formCreatePasskey(data models.CreatePasskeyData) templ.Component {
+func formCreatePasskey(data CreatePasskeyData) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -357,7 +374,7 @@ func formCreatePasskey(data models.CreatePasskeyData) templ.Component {
 	})
 }
 
-func formCreateProfile(data models.CreateProfileData) templ.Component {
+func formCreateProfile(data CreateProfileData) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -444,7 +461,7 @@ func formCreateProfile(data models.CreateProfileData) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = input.HumanSlider(data).Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = input.HumanSlider(data.FirstNumber, data.LastNumber).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

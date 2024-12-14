@@ -2,31 +2,31 @@ package context
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/gateway/models"
+	"github.com/onsonr/sonr/internal/gateway/views"
 	"golang.org/x/exp/rand"
 )
 
-func GetCreateProfileData(c echo.Context) models.CreateProfileData {
+func GetCreateProfileData(c echo.Context) views.CreateProfileData {
 	_, err := Get(c)
 	if err != nil {
-		return models.CreateProfileData{}
+		return views.CreateProfileData{}
 	}
-	return models.CreateProfileData{
+	return views.CreateProfileData{
 		FirstNumber: rand.Intn(5) + 1,
 		LastNumber:  rand.Intn(4) + 1,
 	}
 }
 
-func GetPasskeyCreateData(c echo.Context) models.CreatePasskeyData {
+func GetPasskeyCreateData(c echo.Context) views.CreatePasskeyData {
 	sess, err := Get(c)
 	if err != nil {
-		return models.CreatePasskeyData{}
+		return views.CreatePasskeyData{}
 	}
 	profile, err := GetProfile(c)
 	if err != nil {
-		return models.CreatePasskeyData{}
+		return views.CreatePasskeyData{}
 	}
-	return models.CreatePasskeyData{
+	return views.CreatePasskeyData{
 		Address:       profile.Address,
 		Handle:        profile.Handle,
 		Name:          profile.Name,

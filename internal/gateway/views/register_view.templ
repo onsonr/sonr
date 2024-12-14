@@ -1,7 +1,6 @@
 package views
 
 import (
-	"github.com/onsonr/sonr/internal/gateway/models"
 	"github.com/onsonr/sonr/internal/nebula/card"
 	"github.com/onsonr/sonr/internal/nebula/form"
 	"github.com/onsonr/sonr/internal/nebula/hero"
@@ -9,7 +8,25 @@ import (
 	"github.com/onsonr/sonr/internal/nebula/layout"
 )
 
-templ CreateProfileForm(data models.CreateProfileData) {
+type CreatePasskeyData struct {
+	Address       string
+	Handle        string
+	Name          string
+	Challenge     string
+	CreationBlock string
+}
+
+type CreateProfileData struct {
+	TurnstileSiteKey string
+	FirstNumber      int
+	LastNumber       int
+}
+
+func (d CreateProfileData) Sum() int {
+	return d.FirstNumber + d.LastNumber
+}
+
+templ CreateProfileForm(data CreateProfileData) {
 	@layout.View("New Profile | Sonr.ID") {
 		@layout.Container() {
 			@hero.TitleDesc("Basic Info", "Tell us a little about yourself.")
@@ -18,7 +35,7 @@ templ CreateProfileForm(data models.CreateProfileData) {
 	}
 }
 
-templ CreatePasskeyForm(data models.CreatePasskeyData) {
+templ CreatePasskeyForm(data CreatePasskeyData) {
 	@layout.View("Register | Sonr.ID") {
 		@layout.Container() {
 			@hero.TitleDesc("Link a PassKey", "This will be used to login to your vault.")
@@ -35,7 +52,7 @@ templ LoadingVaultView() {
 	}
 }
 
-templ formCreatePasskey(data models.CreatePasskeyData) {
+templ formCreatePasskey(data CreatePasskeyData) {
 	@form.Root("/register/finish", "passkey-form") {
 		<input type="hidden" name="credential" id="credential-data" required/>
 		@form.Body() {
@@ -51,7 +68,7 @@ templ formCreatePasskey(data models.CreatePasskeyData) {
 	}
 }
 
-templ formCreateProfile(data models.CreateProfileData) {
+templ formCreateProfile(data CreateProfileData) {
 	@form.Root("/register/passkey", "create-profile") {
 		@form.Body() {
 			@form.Header() {
@@ -62,7 +79,7 @@ templ formCreateProfile(data models.CreateProfileData) {
 			}
 			@input.Handle()
 			@input.Name()
-			@input.HumanSlider(data)
+			@input.HumanSlider(data.FirstNumber, data.LastNumber)
 			@form.Footer() {
 				@form.CancelButton()
 				@form.SubmitButton("Next")

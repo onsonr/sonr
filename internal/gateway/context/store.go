@@ -6,8 +6,8 @@ import (
 	"strconv"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/gateway/models"
 	"github.com/onsonr/sonr/internal/gateway/repository"
+	"github.com/onsonr/sonr/pkg/common/models"
 )
 
 func InsertCredential(c echo.Context, handle string, cred *models.CredentialDescriptor) error {

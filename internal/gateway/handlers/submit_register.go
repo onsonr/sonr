@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/gateway/models"
+	"github.com/onsonr/sonr/pkg/common/models"
 )
 
 // SubmitPublicKeyCredential submits a public key credential

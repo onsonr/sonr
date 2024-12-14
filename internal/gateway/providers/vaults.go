@@ -4,12 +4,12 @@ import (
 	"context"
 
 	"github.com/go-webauthn/webauthn/protocol"
-	"github.com/onsonr/sonr/internal/gateway/models"
+	"github.com/onsonr/sonr/internal/gateway/views"
 	"github.com/onsonr/sonr/pkg/ipfsapi"
 )
 
 type VaultProvider interface {
-	New(ctx context.Context, handle string, origin string) (models.CreatePasskeyData, error)
+	New(ctx context.Context, handle string, origin string) (views.CreatePasskeyData, error)
 }
 
 type VaultService struct {
@@ -24,6 +24,6 @@ func NewVaultService(ipc ipfsapi.Client) VaultProvider {
 	return svc
 }
 
-func (s *VaultService) New(ctx context.Context, handle string, origin string) (models.CreatePasskeyData, error) {
-	return models.CreatePasskeyData{}, nil
+func (s *VaultService) New(ctx context.Context, handle string, origin string) (views.CreatePasskeyData, error) {
+	return views.CreatePasskeyData{}, nil
 }

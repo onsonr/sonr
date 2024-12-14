@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"strconv"
+
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/internal/gateway/context"
 	"github.com/onsonr/sonr/internal/nebula/input"
@@ -23,8 +25,14 @@ func ValidateProfileHandle(c echo.Context) error {
 
 // ValidateProfileHandle finds the chosen handle and verifies it is unique
 func ValidateIsHumanSum(c echo.Context) error {
-	if ok := context.VerifyIsHumanSum(c); !ok {
-		return response.TemplEcho(c, input.HumanSliderError(context.GetCreateProfileData(c)))
+	data := context.GetCreateProfileData(c)
+	value := c.FormValue("is_human")
+	intValue, err := strconv.Atoi(value)
+	if err != nil {
+		return response.TemplEcho(c, input.HumanSliderError(data.FirstNumber, data.LastNumber))
+	}
+	if intValue != data.Sum() {
+		return response.TemplEcho(c, input.HumanSliderError(data.FirstNumber, data.LastNumber))
 	}
 	return response.TemplEcho(c, input.HumanSliderSuccess())
 }
