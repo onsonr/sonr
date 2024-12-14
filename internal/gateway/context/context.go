@@ -29,29 +29,43 @@ func (s *HTTPContext) initSession() error {
 	}
 
 	// Try to load existing session
-	var sess models.Session
-	result := s.db.Where("id = ?", sessionID).First(&sess)
-	if result.Error != nil {
+	dbSession, err := s.db.GetSessionByID(context.Background(), sessionID)
+	if err != nil {
 		// Create new session if not found
-		sess = models.Session{
+		params := repository.CreateSessionParams{
 			ID:             sessionID,
 			BrowserName:    s.GetBrowser(),
 			BrowserVersion: s.GetMajorVersion(),
 			Platform:       s.GetOS(),
-			IsMobile:       s.IsMobile(),
-			IsTablet:       s.IsTablet(),
-			IsDesktop:      s.IsDesktop(),
-			IsBot:          s.IsBot(),
-			IsTV:           s.IsTV(),
-			IsHumanFirst:   f,
-			IsHumanLast:    l,
-			Challenge:      challenge.String(),
+			IsMobile:      boolToInt64(s.IsMobile()),
+			IsTablet:      boolToInt64(s.IsTablet()),
+			IsDesktop:     boolToInt64(s.IsDesktop()),
+			IsBot:         boolToInt64(s.IsBot()),
+			IsTv:          boolToInt64(s.IsTV()),
+			IsHumanFirst:  int64(f),
+			IsHumanLast:   int64(l),
+			Challenge:     challenge.String(),
 		}
-		if err := s.db.Create(&sess).Error; err != nil {
+		dbSession, err = s.db.CreateSession(context.Background(), params)
+		if err != nil {
 			return err
 		}
 	}
-	s.sess = &sess
+	
+	s.sess = &models.Session{
+		ID:             dbSession.ID,
+		BrowserName:    dbSession.BrowserName,
+		BrowserVersion: dbSession.BrowserVersion,
+		Platform:       dbSession.Platform,
+		IsMobile:       dbSession.IsMobile == 1,
+		IsTablet:       dbSession.IsTablet == 1,
+		IsDesktop:      dbSession.IsDesktop == 1,
+		IsBot:          dbSession.IsBot == 1,
+		IsTV:           dbSession.IsTv == 1,
+		IsHumanFirst:   int(dbSession.IsHumanFirst),
+		IsHumanLast:    int(dbSession.IsHumanLast),
+		Challenge:      dbSession.Challenge,
+	}
 	return nil
 }
 
@@ -68,4 +82,10 @@ func (s *HTTPContext) getOrCreateSessionID() string {
 		common.WriteCookie(s.Context, common.SessionID, sessionID)
 	}
 	return sessionID
+}
+func boolToInt64(b bool) int64 {
+	if b {
+		return 1
+	}
+	return 0
 }
