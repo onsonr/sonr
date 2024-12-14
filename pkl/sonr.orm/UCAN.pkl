@@ -31,3 +31,11 @@ typealias ResourceType = "RES_ACCOUNT"|"RES_TRANSACTION"|"RES_POLICY"|"RES_RECOV
 typealias PolicyType = "POLICY_THRESHOLD"|"POLICY_TIMELOCK"|"POLICY_WHITELIST" | "POLICY_KEYGEN"
 
 
+typealias CapVault = "crud/asset" | "crud/authzgrant" | "crud/profile" | "crud/record" | "use/recovery" | "use/sync" | "use/signer"
+typealias CapAccount = "exec/broadcast" | "exec/query" | "exec/simulate" | "exec/vote" | "exec/delegate" | "exec/invoke" | "exec/send"
+typealias CapInterchain = "transfer/swap" | "transfer/send" | "transfer/atomic" | "transfer/batch" | "transfer/p2p" | "transfer/send"
+
+
+typealias ResVault =  "ks/user" | "ks/val" | "loc/cid" | "loc/entity" | "loc/ipns" | "loc/sonr"
+typealias ResAccount = "acc/sequence" | "acc/number"
+typealias ResInterchain = "channnel/port"

@@ -2,58 +2,11 @@ package ucan
 
 import (
 	"fmt"
-
-	"github.com/onsonr/sonr/crypto/ucan/attns/capability"
-	"github.com/onsonr/sonr/crypto/ucan/attns/policytype"
-	"github.com/onsonr/sonr/crypto/ucan/attns/resourcetype"
 )
 
 var EmptyAttenuation = Attenuation{
 	Cap: Capability(nil),
 	Rsc: Resource(nil),
-}
-
-const (
-	// Owner
-	CapOwner    = capability.CAPOWNER
-	CapOperator = capability.CAPOPERATOR
-	CapObserver = capability.CAPOBSERVER
-
-	// Auth
-	CapAuthenticate = capability.CAPAUTHENTICATE
-	CapAuthorize    = capability.CAPAUTHORIZE
-	CapDelegate     = capability.CAPDELEGATE
-	CapInvoke       = capability.CAPINVOKE
-	CapExecute      = capability.CAPEXECUTE
-	CapPropose      = capability.CAPPROPOSE
-	CapSign         = capability.CAPSIGN
-	CapSetPolicy    = capability.CAPSETPOLICY
-	CapSetThreshold = capability.CAPSETTHRESHOLD
-	CapRecover      = capability.CAPRECOVER
-	CapSocial       = capability.CAPSOCIAL
-	CapResolver     = capability.CAPRESOLVER
-	CapProducer     = capability.CAPPRODUCER
-
-	// Resources
-	ResAccount     = resourcetype.RESACCOUNT
-	ResTransaction = resourcetype.RESTRANSACTION
-	ResPolicy      = resourcetype.RESPOLICY
-	ResRecovery    = resourcetype.RESRECOVERY
-	ResVault       = resourcetype.RESVAULT
-	ResIPFS        = resourcetype.RESIPFS
-	ResIPNS        = resourcetype.RESIPNS
-	ResKeyShare    = resourcetype.RESKEYSHARE
-
-	// PolicyTypes
-	PolicyThreshold = policytype.POLICYTHRESHOLD
-	PolicyTimelock  = policytype.POLICYTIMELOCK
-	PolicyWhitelist = policytype.POLICYWHITELIST
-	PolicyKeyShare  = policytype.POLICYKEYGEN
-)
-
-// NewVaultResource creates a new resource identifier
-func NewResource(resType resourcetype.ResourceType, path string) Resource {
-	return NewStringLengthResource(string(resType), path)
 }
 
 // Permissions represents the type of attenuation
@@ -71,8 +24,13 @@ const (
 )
 
 // Cap returns the capability for the given AttenuationPreset
-func (a Permissions) NewCap(c capability.Capability) Capability {
-	return a.GetCapabilities().Cap(c.String())
+func (a Permissions) NewCap(c string) Capability {
+	return a.GetCapabilities().Cap(c)
+}
+
+// NewResource returns a new resource identifier
+func NewResource(resType string, path string) Resource {
+	return NewStringLengthResource(resType, path)
 }
 
 // NestedCapabilities returns the nested capabilities for the given AttenuationPreset
@@ -80,9 +38,9 @@ func (a Permissions) GetCapabilities() NestedCapabilities {
 	var caps []string
 	switch a {
 	case AccountPermissions:
-		caps = SmartAccountCapabilities()
+		// caps = SmartAccountCapabilities()
 	case VaultPermissions:
-		caps = VaultCapabilities()
+		// caps = VaultCapabilities()
 	}
 	return NewNestedCapabilities(caps...)
 }
@@ -122,13 +80,13 @@ func NewAttenuationFromPreset(preset Permissions) AttenuationConstructorFunc {
 		}
 
 		// Create capability from preset
-		cap := preset.NewCap(capability.Capability(capStr))
+		cap := preset.NewCap(capStr)
 		if cap == nil {
 			return EmptyAttenuation, fmt.Errorf("invalid capability %s for preset %s", capStr, preset)
 		}
 
 		// Create resource
-		resource := NewResource(resourcetype.ResourceType(resType), path)
+		resource := NewResource(resType, path)
 
 		return Attenuation{
 			Cap: cap,
