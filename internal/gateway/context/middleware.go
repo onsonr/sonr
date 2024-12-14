@@ -49,7 +49,7 @@ func Get(c echo.Context) (*HTTPContext, error) {
 }
 
 // NewHTTPContext creates a new session context
-func NewHTTPContext(c echo.Context, db *gorm.DB, a useragent.UserAgent, grpcAddr string, ipc ipfsapi.Client) *HTTPContext {
+func NewHTTPContext(c echo.Context, db *sql.DB, a useragent.UserAgent, grpcAddr string, ipc ipfsapi.Client) *HTTPContext {
 	return &HTTPContext{
 		Context:       c,
 		db:            providers.NewDatabaseService(db),
