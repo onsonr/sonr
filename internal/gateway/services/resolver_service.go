@@ -6,6 +6,7 @@ import (
 	dwnv1 "github.com/onsonr/sonr/api/dwn/v1"
 	svcv1 "github.com/onsonr/sonr/api/svc/v1"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type ResolverService struct {
@@ -19,7 +20,7 @@ func NewResolverService(grpcAddr string) *ResolverService {
 }
 
 func (s *ResolverService) getClientConn() (*grpc.ClientConn, error) {
-	grpcConn, err := grpc.NewClient(s.grpcAddr, grpc.WithInsecure())
+	grpcConn, err := grpc.NewClient(s.grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err
 	}
