@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 	config "github.com/onsonr/sonr/pkg/config/hway"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type ClientsContext struct {
@@ -18,7 +19,7 @@ func GetClientConn(c echo.Context) (*grpc.ClientConn, error) {
 	if !ok {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "ClientsContext not found")
 	}
-	grpcConn, err := grpc.NewClient(cc.addr, grpc.WithInsecure())
+	grpcConn, err := grpc.NewClient(cc.addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Failed to dial gRPC")
 	}

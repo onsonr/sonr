@@ -7,12 +7,6 @@ import (
 	"github.com/onsonr/sonr/pkg/common/response"
 )
 
-// ValidateCredentialLink finds the user credential and validates it against the
-// session challenge
-func ValidateCredentialLink(c echo.Context) error {
-	return nil
-}
-
 // ValidateProfileHandle finds the chosen handle and verifies it is unique
 func ValidateProfileHandle(c echo.Context) error {
 	handle := c.FormValue("handle")
