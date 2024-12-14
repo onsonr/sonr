@@ -315,7 +315,7 @@ gen-pkl: init-env
 	pkl-gen-go pkl/sonr.net/Motr.pkl
 
 gen-sqlc: init-env
-	@sqlc generate
+	@cd internal/gateway && sqlc generate
 
 gen-templ: init-env
 	@templ generate
