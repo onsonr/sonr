@@ -5,7 +5,7 @@ INSERT INTO credentials (
     origin,
     type,
     transports
-) VALUES ($1, $2, $3, $4, $5)
+) VALUES (?, ?, ?, ?, ?)
 RETURNING *;
 
 -- name: InsertUser :one
@@ -14,67 +14,67 @@ INSERT INTO users (
     handle,
     origin,
     name
-) VALUES ($1, $2, $3, $4)
+) VALUES (?, ?, ?, ?)
 RETURNING *;
 
 -- name: GetUserByAddress :one
 SELECT * FROM users
-WHERE address = $1 AND deleted_at IS NULL
+WHERE address = ? AND deleted_at IS NULL
 LIMIT 1;
 
 -- name: GetSessionByID :one
 SELECT * FROM sessions
-WHERE id = $1 AND deleted_at IS NULL
+WHERE id = ? AND deleted_at IS NULL
 LIMIT 1;
 
 -- name: UpdateSessionHumanVerification :one
 UPDATE sessions
 SET 
-    is_human_first = $1,
-    is_human_last = $2,
+    is_human_first = ?,
+    is_human_last = ?,
     updated_at = CURRENT_TIMESTAMP
-WHERE id = $3
+WHERE id = ?
 RETURNING *;
 
 -- name: CheckHandleExists :one
 SELECT COUNT(*) > 0 as handle_exists FROM users 
-WHERE handle = $1 
+WHERE handle = ? 
 AND deleted_at IS NULL;
 
 -- name: GetCredentialsByHandle :many
 SELECT * FROM credentials
-WHERE handle = $1
+WHERE handle = ?
 AND deleted_at IS NULL;
 
 -- name: GetCredentialByID :one
 SELECT * FROM credentials
-WHERE credential_id = $1
+WHERE credential_id = ?
 AND deleted_at IS NULL
 LIMIT 1;
 
 -- name: SoftDeleteCredential :exec
 UPDATE credentials
 SET deleted_at = CURRENT_TIMESTAMP
-WHERE credential_id = $1;
+WHERE credential_id = ?;
 
 -- name: SoftDeleteUser :exec
 UPDATE users
 SET deleted_at = CURRENT_TIMESTAMP
-WHERE address = $1;
+WHERE address = ?;
 
 -- name: UpdateUser :one
 UPDATE users
 SET 
-    name = $1,
-    handle = $2,
+    name = ?,
+    handle = ?,
     updated_at = CURRENT_TIMESTAMP
-WHERE address = $3 
+WHERE address = ? 
 AND deleted_at IS NULL
 RETURNING *;
 
 -- name: GetUserByHandle :one
 SELECT * FROM users
-WHERE handle = $1 
+WHERE handle = ? 
 AND deleted_at IS NULL
 LIMIT 1;
 
@@ -92,14 +92,5 @@ INSERT INTO sessions (
     challenge,
     is_human_first,
     is_human_last
-) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
-    ABS(RANDOM() % 5) + 1,  -- Random number between 1-5
-    ABS(RANDOM() % 4) + 1   -- Random number between 1-4
-)
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 RETURNING *;
-
--- name: InitializeProfile :one
-SELECT 
-    ABS(RANDOM() % 5) + 1 as first_number,
-    ABS(RANDOM() % 4) + 1 as last_number;
