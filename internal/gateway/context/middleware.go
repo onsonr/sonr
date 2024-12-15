@@ -30,6 +30,7 @@ func Middleware(db *sql.DB, env config.Hway, ipc ipfsapi.Client) echo.Middleware
 // HTTPContext is the context for HTTP endpoints.
 type HTTPContext struct {
 	echo.Context
+	id string
 	providers.VaultProvider
 	providers.Resolver
 	*repository.Queries
@@ -44,6 +45,12 @@ func Get(c echo.Context) (*HTTPContext, error) {
 	if !ok {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Session Context not found")
 	}
+	// load session
+	sess, err := ctx.GetSessionByID(c.Request().Context(), ctx.id)
+	if err != nil {
+		return nil, err
+	}
+	ctx.sess = &sess
 	return ctx, nil
 }
 

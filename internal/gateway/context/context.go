@@ -29,6 +29,7 @@ func (s *HTTPContext) initSession() error {
 	if err != nil {
 		return err
 	}
+	s.id = sessionID
 
 	// Try to load existing session
 	dbSession, err := s.GetSessionByID(context.Background(), sessionID)

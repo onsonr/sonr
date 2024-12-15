@@ -14,7 +14,7 @@ func RenderIndex(c echo.Context) error {
 }
 
 func RenderProfileCreate(c echo.Context) error {
-	return response.TemplEcho(c, views.CreateProfileForm(getCreateProfileData(c)))
+	return response.TemplEcho(c, views.CreateProfileForm(getCreateProfileData()))
 }
 
 func RenderPasskeyCreate(c echo.Context) error {
@@ -25,7 +25,7 @@ func RenderVaultLoading(c echo.Context) error {
 	return response.TemplEcho(c, views.LoadingVaultView())
 }
 
-func getCreateProfileData(c echo.Context) views.CreateProfileData {
+func getCreateProfileData() views.CreateProfileData {
 	return views.CreateProfileData{
 		FirstNumber: rand.Intn(5) + 1,
 		LastNumber:  rand.Intn(4) + 1,
