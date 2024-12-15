@@ -4,8 +4,6 @@ import (
 	"github.com/onsonr/sonr/crypto/core/curves"
 	"github.com/onsonr/sonr/crypto/core/protocol"
 	"github.com/onsonr/sonr/crypto/tecdsa/dklsv1/dkg"
-	"github.com/onsonr/sonr/crypto/ucan"
-	"github.com/onsonr/sonr/crypto/ucan/attns"
 )
 
 // ╭───────────────────────────────────────────────────────────╮
@@ -22,7 +20,3 @@ type (
 	RefreshFunc interface{ protocol.Iterator } // RefreshFunc is the type for the refresh function
 	SignFunc    interface{ protocol.Iterator } // SignFunc is the type for the sign function
 )
-
-func ucanAttentuations(enc Enclave) ucan.Attenuations {
-	return attns.CreateArray()
-}

@@ -21,8 +21,8 @@ type Enclave interface {
 	Verify(data []byte, sig []byte) (bool, error)
 }
 
-// KeyEnclave implements the Enclave interface
-type KeyEnclave struct {
+// keyEnclave implements the Enclave interface
+type keyEnclave struct {
 	Addr      string       `json:"address"`
 	PubPoint  curves.Point `json:"-"`
 	PubBytes  []byte       `json:"pub_key"`
@@ -31,28 +31,28 @@ type KeyEnclave struct {
 	VaultCID  string       `json:"vault_cid,omitempty"`
 }
 
-// Address returns the Sonr address of the KeyEnclave
-func (k *KeyEnclave) Address() string {
+// Address returns the Sonr address of the keyEnclave
+func (k *keyEnclave) Address() string {
 	return k.Addr
 }
 
-// DID returns the DID of the KeyEnclave
-func (k *KeyEnclave) DID() keys.DID {
+// DID returns the DID of the keyEnclave
+func (k *keyEnclave) DID() keys.DID {
 	return keys.NewFromPubKey(k.PubKey())
 }
 
-// IsValid returns true if the KeyEnclave is valid
-func (k *KeyEnclave) IsValid() bool {
+// IsValid returns true if the keyEnclave is valid
+func (k *keyEnclave) IsValid() bool {
 	return k.PubPoint != nil && k.ValShare != nil && k.UserShare != nil && k.Addr != ""
 }
 
-// PubKey returns the public key of the KeyEnclave
-func (k *KeyEnclave) PubKey() keys.PubKey {
+// PubKey returns the public key of the keyEnclave
+func (k *keyEnclave) PubKey() keys.PubKey {
 	return keys.NewPubKey(k.PubPoint)
 }
 
-// Refresh returns a new KeyEnclave
-func (k *KeyEnclave) Refresh() (Enclave, error) {
+// Refresh returns a new keyEnclave
+func (k *keyEnclave) Refresh() (Enclave, error) {
 	refreshFuncVal, err := valRefreshFunc(k)
 	if err != nil {
 		return nil, err
@@ -65,7 +65,7 @@ func (k *KeyEnclave) Refresh() (Enclave, error) {
 }
 
 // Sign returns the signature of the data
-func (k *KeyEnclave) Sign(data []byte) ([]byte, error) {
+func (k *keyEnclave) Sign(data []byte) ([]byte, error) {
 	userSign, err := userSignFunc(k, data)
 	if err != nil {
 		return nil, err
@@ -78,7 +78,7 @@ func (k *KeyEnclave) Sign(data []byte) ([]byte, error) {
 }
 
 // Verify returns true if the signature is valid
-func (k *KeyEnclave) Verify(data []byte, sig []byte) (bool, error) {
+func (k *keyEnclave) Verify(data []byte, sig []byte) (bool, error) {
 	edSig, err := deserializeSignature(sig)
 	if err != nil {
 		return false, err
@@ -101,15 +101,15 @@ func (k *KeyEnclave) Verify(data []byte, sig []byte) (bool, error) {
 	return ecdsa.Verify(pk, digest, edSig.R, edSig.S), nil
 }
 
-// Marshal returns the JSON encoding of KeyEnclave
-func (k *KeyEnclave) Marshal() ([]byte, error) {
+// Marshal returns the JSON encoding of keyEnclave
+func (k *keyEnclave) Marshal() ([]byte, error) {
 	// Store compressed public point bytes before marshaling
 	k.PubBytes = k.PubPoint.ToAffineCompressed()
 	return json.Marshal(k)
 }
 
 // Unmarshal parses the JSON-encoded data and stores the result
-func (k *KeyEnclave) Unmarshal(data []byte) error {
+func (k *keyEnclave) Unmarshal(data []byte) error {
 	if err := json.Unmarshal(data, k); err != nil {
 		return err
 	}

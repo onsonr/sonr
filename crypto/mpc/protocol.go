@@ -23,7 +23,7 @@ func GenEnclave() (Enclave, error) {
 	if err != nil {
 		return nil, err
 	}
-	return initKeyEnclave(valRes, userRes)
+	return initkeyEnclave(valRes, userRes)
 }
 
 // ExecuteSigning runs the MPC signing protocol
@@ -48,7 +48,7 @@ func ExecuteSigning(signFuncVal SignFunc, signFuncUser SignFunc) ([]byte, error)
 }
 
 // ExecuteRefresh runs the MPC refresh protocol
-func ExecuteRefresh(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc) (*KeyEnclave, error) {
+func ExecuteRefresh(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc) (Enclave, error) {
 	aErr, bErr := RunProtocol(refreshFuncVal, refreshFuncUser)
 	if err := checkIteratedErrors(aErr, bErr); err != nil {
 		return nil, err
@@ -61,7 +61,7 @@ func ExecuteRefresh(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc) (*K
 	if err != nil {
 		return nil, err
 	}
-	return initKeyEnclave(valRefreshResult, userRefreshResult)
+	return initkeyEnclave(valRefreshResult, userRefreshResult)
 }
 
 // For DKG bob starts first. For refresh and sign, Alice starts first.

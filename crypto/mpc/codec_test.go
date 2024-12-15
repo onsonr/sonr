@@ -67,10 +67,10 @@ func TestEnclaveOperations(t *testing.T) {
 		refreshedEnclave, err := enclave.Refresh()
 		require.NoError(t, err)
 		require.NotNil(t, refreshedEnclave)
-		
+
 		// Verify refreshed enclave is valid
 		assert.True(t, refreshedEnclave.IsValid())
-		
+
 		// Verify it maintains the same address
 		assert.Equal(t, enclave.Address(), refreshedEnclave.Address())
 	})
@@ -84,22 +84,22 @@ func TestEnclaveSerialization(t *testing.T) {
 		require.NotNil(t, original)
 
 		// Marshal
-		keyEnclave, ok := original.(*KeyEnclave)
+		keyclave, ok := original.(*keyEnclave)
 		require.True(t, ok)
-		
-		data, err := keyEnclave.Marshal()
+
+		data, err := keyclave.Marshal()
 		require.NoError(t, err)
 		require.NotEmpty(t, data)
 
 		// Unmarshal
-		restored := &KeyEnclave{}
+		restored := &keyEnclave{}
 		err = restored.Unmarshal(data)
 		require.NoError(t, err)
 
 		// Verify restored enclave
-		assert.Equal(t, keyEnclave.Addr, restored.Addr)
-		assert.True(t, keyEnclave.PubPoint.Equal(restored.PubPoint))
-		assert.Equal(t, keyEnclave.VaultCID, restored.VaultCID)
+		assert.Equal(t, keyclave.Addr, restored.Addr)
+		assert.True(t, keyclave.PubPoint.Equal(restored.PubPoint))
+		assert.Equal(t, keyclave.VaultCID, restored.VaultCID)
 		assert.True(t, restored.IsValid())
 	})
 }
