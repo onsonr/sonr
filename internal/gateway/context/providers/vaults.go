@@ -13,15 +13,16 @@ type VaultProvider interface {
 	Claim(sessionID string, handle string, origin string) (models.CreatePasskeyData, error)
 }
 
-type VaultService struct {
-	ipfsClient     ipfsapi.Client
-	tokenStore     ipfsapi.IPFSTokenStore
+type VaultProviderService struct {
+	ipfsClient ipfsapi.Client
+	tokenStore ipfsapi.IPFSTokenStore
+
 	challengeCache map[string]protocol.URLEncodedBase64
 	stagedEnclaves map[string]mpc.Enclave
 }
 
 func NewVaultService(ipc ipfsapi.Client) VaultProvider {
-	svc := &VaultService{
+	svc := &VaultProviderService{
 		ipfsClient:     ipc,
 		challengeCache: make(map[string]protocol.URLEncodedBase64),
 		stagedEnclaves: make(map[string]mpc.Enclave),
@@ -30,10 +31,16 @@ func NewVaultService(ipc ipfsapi.Client) VaultProvider {
 	return svc
 }
 
-func (s *VaultService) Spawn(sessionID string, handle string, origin string, challenge string) (models.CreatePasskeyData, error) {
-	nonce, err := computeNonceFromSessionID(sessionID)
+func (s *VaultProviderService) Spawn(sessionID string, handle string, origin string, challenge string) (models.CreatePasskeyData, error) {
+	nonce, err := calcNonce(sessionID)
 	if err != nil {
-		return models.CreatePasskeyData{}, err
+		return models.CreatePasskeyData{
+			Address:       "",
+			Handle:        handle,
+			Name:          origin,
+			Challenge:     challenge,
+			CreationBlock: "00001",
+		}, err
 	}
 	encl, err := mpc.GenEnclave(nonce)
 	if err != nil {
@@ -49,12 +56,12 @@ func (s *VaultService) Spawn(sessionID string, handle string, origin string, cha
 	}, nil
 }
 
-func (s *VaultService) Claim(sessionID string, handle string, origin string) (models.CreatePasskeyData, error) {
+func (s *VaultProviderService) Claim(sessionID string, handle string, origin string) (models.CreatePasskeyData, error) {
 	return models.CreatePasskeyData{}, nil
 }
 
 // Uses blake3 to hash the sessionID to generate a nonce of length 12 bytes
-func computeNonceFromSessionID(sessionID string) ([]byte, error) {
+func calcNonce(sessionID string) ([]byte, error) {
 	hash := blake3.New(32, nil)
 	_, err := hash.Write([]byte(sessionID))
 	if err != nil {
