@@ -9,8 +9,8 @@ import (
 )
 
 type VaultProvider interface {
-	Spawn(sessionID string, handle string, origin string, challenge string) (models.CreatePasskeyData, error)
-	Claim(sessionID string, handle string, origin string) (models.CreatePasskeyData, error)
+	Spawn(sessionID string, handle string, origin string, challenge string) (models.CreatePasskeyParams, error)
+	Claim(sessionID string, handle string, origin string) (models.CreatePasskeyParams, error)
 }
 
 type VaultProviderService struct {
@@ -31,10 +31,10 @@ func NewVaultService(ipc ipfsapi.Client) VaultProvider {
 	return svc
 }
 
-func (s *VaultProviderService) Spawn(sessionID string, handle string, origin string, challenge string) (models.CreatePasskeyData, error) {
+func (s *VaultProviderService) Spawn(sessionID string, handle string, origin string, challenge string) (models.CreatePasskeyParams, error) {
 	nonce, err := calcNonce(sessionID)
 	if err != nil {
-		return models.CreatePasskeyData{
+		return models.CreatePasskeyParams{
 			Address:       "",
 			Handle:        handle,
 			Name:          origin,
@@ -44,10 +44,10 @@ func (s *VaultProviderService) Spawn(sessionID string, handle string, origin str
 	}
 	encl, err := mpc.GenEnclave(nonce)
 	if err != nil {
-		return models.CreatePasskeyData{}, err
+		return models.CreatePasskeyParams{}, err
 	}
 	s.stagedEnclaves[sessionID] = encl
-	return models.CreatePasskeyData{
+	return models.CreatePasskeyParams{
 		Address:       encl.Address(),
 		Handle:        handle,
 		Name:          origin,
@@ -56,8 +56,8 @@ func (s *VaultProviderService) Spawn(sessionID string, handle string, origin str
 	}, nil
 }
 
-func (s *VaultProviderService) Claim(sessionID string, handle string, origin string) (models.CreatePasskeyData, error) {
-	return models.CreatePasskeyData{}, nil
+func (s *VaultProviderService) Claim(sessionID string, handle string, origin string) (models.CreatePasskeyParams, error) {
+	return models.CreatePasskeyParams{}, nil
 }
 
 // Uses blake3 to hash the sessionID to generate a nonce of length 12 bytes

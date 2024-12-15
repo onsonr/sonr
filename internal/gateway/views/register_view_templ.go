@@ -17,7 +17,7 @@ import (
 	"github.com/onsonr/sonr/internal/nebula/layout"
 )
 
-func CreateProfileForm(data models.CreateProfileData) templ.Component {
+func CreateProfileForm(data models.CreateProfileParams) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -90,7 +90,7 @@ func CreateProfileForm(data models.CreateProfileData) templ.Component {
 	})
 }
 
-func CreatePasskeyForm(data models.CreatePasskeyData) templ.Component {
+func CreatePasskeyForm(data models.CreatePasskeyParams) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -228,7 +228,7 @@ func LoadingVaultView() templ.Component {
 	})
 }
 
-func formCreatePasskey(data models.CreatePasskeyData) templ.Component {
+func formCreatePasskey(data models.CreatePasskeyParams) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -357,7 +357,7 @@ func formCreatePasskey(data models.CreatePasskeyData) templ.Component {
 	})
 }
 
-func formCreateProfile(data models.CreateProfileData) templ.Component {
+func formCreateProfile(data models.CreateProfileParams) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {

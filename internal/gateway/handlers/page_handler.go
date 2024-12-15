@@ -19,15 +19,15 @@ func RenderProfileCreate(c echo.Context) error {
 }
 
 func RenderPasskeyCreate(c echo.Context) error {
-	return response.TemplEcho(c, views.CreatePasskeyForm(models.CreatePasskeyData{}))
+	return response.TemplEcho(c, views.CreatePasskeyForm(models.CreatePasskeyParams{}))
 }
 
 func RenderVaultLoading(c echo.Context) error {
 	return response.TemplEcho(c, views.LoadingVaultView())
 }
 
-func getCreateProfileData() models.CreateProfileData {
-	return models.CreateProfileData{
+func getCreateProfileData() models.CreateProfileParams {
+	return models.CreateProfileParams{
 		FirstNumber: rand.Intn(5) + 1,
 		LastNumber:  rand.Intn(4) + 1,
 	}
