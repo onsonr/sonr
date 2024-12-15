@@ -2,10 +2,9 @@
 package gateway
 
 import (
+	"database/sql"
 	"os"
 	"path/filepath"
-
-	"database/sql"
 
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/internal/gateway/context"
@@ -13,7 +12,8 @@ import (
 	"github.com/onsonr/sonr/pkg/common/response"
 	config "github.com/onsonr/sonr/pkg/config/hway"
 	"github.com/onsonr/sonr/pkg/ipfsapi"
-	_ "modernc.org/sqlite"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func RegisterRoutes(e *echo.Echo, env config.Hway, db *sql.DB, ipc ipfsapi.Client) error {
@@ -32,14 +32,18 @@ func RegisterRoutes(e *echo.Echo, env config.Hway, db *sql.DB, ipc ipfsapi.Clien
 	// Register Validation Handlers
 	e.POST("/register/profile/handle", handlers.ValidateProfileHandle)
 	e.POST("/register/profile/is_human", handlers.ValidateIsHumanSum)
-	e.POST("/register/submit/credential", handlers.SubmitPublicKeyCredential)
+	e.POST("/submit/profile/handle", handlers.SubmitProfileHandle)
+	e.POST("/submit/credential", handlers.SubmitPublicKeyCredential)
 	return nil
 }
 
 // NewDB initializes and returns a configured database connection
 func NewDB(env config.Hway) (*sql.DB, error) {
-	path := formatDBPath(env.GetSqliteFile())
-	return sql.Open("sqlite3", path)
+	db, err := sql.Open("sqlite3", ":memory:")
+	if err != nil {
+		return nil, err
+	}
+	return db, nil
 }
 
 func formatDBPath(fileName string) string {

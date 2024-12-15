@@ -32,7 +32,7 @@ type HTTPContext struct {
 	echo.Context
 	providers.VaultProvider
 	providers.Resolver
-	db   providers.DatabaseProvider
+	*repository.Queries
 	sess *repository.Session
 	env  config.Hway
 	useragent.UserAgent
@@ -51,7 +51,7 @@ func Get(c echo.Context) (*HTTPContext, error) {
 func NewHTTPContext(c echo.Context, db *sql.DB, a useragent.UserAgent, grpcAddr string, ipc ipfsapi.Client) *HTTPContext {
 	return &HTTPContext{
 		Context:       c,
-		db:            providers.NewDatabaseService(db),
+		Queries:       repository.New(db),
 		Resolver:      providers.NewResolverService(grpcAddr),
 		UserAgent:     a,
 		VaultProvider: providers.NewVaultService(ipc),

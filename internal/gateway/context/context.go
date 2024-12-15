@@ -31,7 +31,7 @@ func (s *HTTPContext) initSession() error {
 	}
 
 	// Try to load existing session
-	dbSession, err := s.db.GetSessionByID(context.Background(), sessionID)
+	dbSession, err := s.GetSessionByID(context.Background(), sessionID)
 	if err != nil {
 		// Create new session if not found
 		params := repository.CreateSessionParams{
@@ -48,7 +48,7 @@ func (s *HTTPContext) initSession() error {
 			IsHumanLast:    int64(l),
 			Challenge:      challenge.String(),
 		}
-		dbSession, err = s.db.CreateSession(context.Background(), params)
+		dbSession, err = s.CreateSession(context.Background(), params)
 		if err != nil {
 			return err
 		}

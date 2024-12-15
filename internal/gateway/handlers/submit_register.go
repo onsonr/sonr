@@ -5,31 +5,29 @@ import (
 	"fmt"
 
 	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/internal/gateway/context"
 	"github.com/onsonr/sonr/internal/gateway/context/repository"
 )
 
-// Define the credential structure matching our frontend data
-type CredentialDescriptor struct {
-	ID                      string            `json:"id"`
-	RawID                   string            `json:"rawId"`
-	Type                    string            `json:"type"`
-	AuthenticatorAttachment string            `json:"authenticatorAttachment"`
-	Transports              string            `json:"transports"`
-	ClientExtensionResults  map[string]string `json:"clientExtensionResults"`
-	Response                struct {
-		AttestationObject string `json:"attestationObject"`
-		ClientDataJSON    string `json:"clientDataJSON"`
-	} `json:"response"`
-}
-
-func (c *CredentialDescriptor) convertToDBModel(handle, origin string) *repository.Credential {
-	return &repository.Credential{
-		Handle:       handle,
-		Origin:       origin,
-		CredentialID: c.ID,
-		Type:         c.Type,
-		Transports:   c.Transports,
+// SubmitProfileHandle submits a profile handle
+func SubmitProfileHandle(c echo.Context) error {
+	firstName := c.FormValue("first_name")
+	lastName := c.FormValue("last_name")
+	handle := c.FormValue("handle")
+	ctx, err := context.Get(c)
+	if err != nil {
+		return err
 	}
+	_, err = ctx.InsertUser(c.Request().Context(), repository.InsertUserParams{
+		Address: "",
+		Handle:  handle,
+		Origin:  "",
+		Name:    firstName + " " + lastName,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // SubmitPublicKeyCredential submits a public key credential
@@ -74,4 +72,28 @@ func extractCredentialDescriptor(jsonString string) (*CredentialDescriptor, erro
 		cred.Transports,
 	)
 	return cred, nil
+}
+
+// Define the credential structure matching our frontend data
+type CredentialDescriptor struct {
+	ID                      string            `json:"id"`
+	RawID                   string            `json:"rawId"`
+	Type                    string            `json:"type"`
+	AuthenticatorAttachment string            `json:"authenticatorAttachment"`
+	Transports              string            `json:"transports"`
+	ClientExtensionResults  map[string]string `json:"clientExtensionResults"`
+	Response                struct {
+		AttestationObject string `json:"attestationObject"`
+		ClientDataJSON    string `json:"clientDataJSON"`
+	} `json:"response"`
+}
+
+func (c *CredentialDescriptor) convertToDBModel(handle, origin string) *repository.Credential {
+	return &repository.Credential{
+		Handle:       handle,
+		Origin:       origin,
+		CredentialID: c.ID,
+		Type:         c.Type,
+		Transports:   c.Transports,
+	}
 }
