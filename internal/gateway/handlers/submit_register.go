@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/gateway/internal/repository"
+	"github.com/onsonr/sonr/internal/gateway/context/repository"
 )
 
 // Define the credential structure matching our frontend data
