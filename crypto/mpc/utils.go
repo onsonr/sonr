@@ -36,11 +36,15 @@ func computeSonrAddr(pp Point) (string, error) {
 	return sonrAddr, nil
 }
 
+func hashKey(key []byte) []byte {
+	hash := sha3.New256()
+	hash.Write(key)
+	return hash.Sum(nil)[:32] // Use first 32 bytes of hash
+}
+
 func decryptKeyshare(msg []byte, key []byte, nonce []byte) ([]byte, error) {
-	if len(key) != 16 && len(key) != 24 && len(key) != 32 {
-		return nil, fmt.Errorf("invalid key length: must be 16, 24, or 32 bytes")
-	}
-	block, err := aes.NewCipher(key)
+	hashedKey := hashKey(key)
+	block, err := aes.NewCipher(hashedKey)
 	if err != nil {
 		return nil, err
 	}
@@ -56,9 +60,7 @@ func decryptKeyshare(msg []byte, key []byte, nonce []byte) ([]byte, error) {
 }
 
 func encryptKeyshare(msg Message, key []byte, nonce []byte) ([]byte, error) {
-	if len(key) != 16 && len(key) != 24 && len(key) != 32 {
-		return nil, fmt.Errorf("invalid key length: must be 16, 24, or 32 bytes")
-	}
+	hashedKey := hashKey(key)
 	msgBytes, err := protocol.EncodeMessage(msg)
 	if err != nil {
 		return nil, err
