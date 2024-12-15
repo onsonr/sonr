@@ -24,21 +24,21 @@ LIMIT 1;
 
 -- name: GetSessionByID :one
 SELECT * FROM sessions
-WHERE id = ? AND deleted_at IS NULL
+WHERE id = $1 AND deleted_at IS NULL
 LIMIT 1;
 
 -- name: UpdateSessionHumanVerification :one
 UPDATE sessions
 SET 
-    is_human_first = ?,
-    is_human_last = ?,
+    is_human_first = $1,
+    is_human_last = $2,
     updated_at = CURRENT_TIMESTAMP
-WHERE id = ?
+WHERE id = $3
 RETURNING *;
 
 -- name: CheckHandleExists :one
 SELECT COUNT(*) > 0 as handle_exists FROM users 
-WHERE handle = ? 
+WHERE handle = $1 
 AND deleted_at IS NULL;
 
 -- name: GetCredentialsByHandle :many
