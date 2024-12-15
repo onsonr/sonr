@@ -7,6 +7,7 @@ import (
 )
 
 type Resolver interface {
+	CurrentBlock() (uint64, error)
 	GetBankParams() (*query.BankParamsResponse, error)
 	GetDIDParams() (*query.DIDParamsResponse, error)
 	GetDWNParams() (*query.DWNParamsResponse, error)

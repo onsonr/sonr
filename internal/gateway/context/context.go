@@ -11,13 +11,22 @@ import (
 	"golang.org/x/exp/rand"
 )
 
-// IsForbiddenDevice returns true if the device is unavailable
-func IsForbiddenDevice(c echo.Context) bool {
+// ForbiddenDevice returns true if the device is unavailable
+func ForbiddenDevice(c echo.Context) bool {
 	s, err := Get(c)
 	if err != nil {
 		return true
 	}
 	return s.IsBot() || s.IsTV()
+}
+
+// CurrentBlock returns the current block
+func CurrentBlock(c echo.Context) (uint64, error) {
+	s, err := Get(c)
+	if err != nil {
+		return 0, err
+	}
+	return s.CurrentBlock()
 }
 
 // initSession initializes or loads an existing session

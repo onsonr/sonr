@@ -11,7 +11,7 @@ import (
 )
 
 func RenderIndex(c echo.Context) error {
-	return response.TemplEcho(c, views.InitialView(context.IsForbiddenDevice(c)))
+	return response.TemplEcho(c, views.InitialView(context.ForbiddenDevice(c)))
 }
 
 func RenderProfileCreate(c echo.Context) error {

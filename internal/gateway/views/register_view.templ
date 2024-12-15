@@ -9,7 +9,7 @@ import (
 	"github.com/onsonr/sonr/internal/nebula/layout"
 )
 
-templ CreateProfileForm(data models.CreateProfileData) {
+templ CreateProfileForm(data models.CreateProfileParams) {
 	@layout.View("New Profile | Sonr.ID") {
 		@layout.Container() {
 			@hero.TitleDesc("Basic Info", "Tell us a little about yourself.")
@@ -18,7 +18,7 @@ templ CreateProfileForm(data models.CreateProfileData) {
 	}
 }
 
-templ CreatePasskeyForm(data models.CreatePasskeyData) {
+templ CreatePasskeyForm(data models.CreatePasskeyParams) {
 	@layout.View("Register | Sonr.ID") {
 		@layout.Container() {
 			@hero.TitleDesc("Link a PassKey", "This will be used to login to your vault.")
@@ -35,7 +35,7 @@ templ LoadingVaultView() {
 	}
 }
 
-templ formCreatePasskey(data models.CreatePasskeyData) {
+templ formCreatePasskey(data models.CreatePasskeyParams) {
 	@form.Root("/register/finish", "passkey-form") {
 		<input type="hidden" name="credential" id="credential-data" required/>
 		@form.Body() {
@@ -51,7 +51,7 @@ templ formCreatePasskey(data models.CreatePasskeyData) {
 	}
 }
 
-templ formCreateProfile(data models.CreateProfileData) {
+templ formCreateProfile(data models.CreateProfileParams) {
 	@form.Root("/register/passkey", "create-profile") {
 		@form.Body() {
 			@form.Header() {

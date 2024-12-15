@@ -1,6 +1,6 @@
 package models
 
-type CreatePasskeyData struct {
+type CreatePasskeyParams struct {
 	Address       string
 	Handle        string
 	Name          string
@@ -8,12 +8,12 @@ type CreatePasskeyData struct {
 	CreationBlock string
 }
 
-type CreateProfileData struct {
+type CreateProfileParams struct {
 	TurnstileSiteKey string
 	FirstNumber      int
 	LastNumber       int
 }
 
-func (d CreateProfileData) Sum() int {
+func (d CreateProfileParams) Sum() int {
 	return d.FirstNumber + d.LastNumber
 }
