@@ -1,6 +1,7 @@
 package mpc
 
 import (
+	"crypto/rand"
 	"strings"
 	"testing"
 
@@ -8,10 +9,17 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func randNonce() []byte {
+	nonce := make([]byte, 12)
+	rand.Read(nonce)
+	return nonce
+}
+
 func TestKeyShareGeneration(t *testing.T) {
 	t.Run("Generate Valid Enclave", func(t *testing.T) {
+		nonce := randNonce()
 		// Generate enclave
-		enclave, err := GenEnclave()
+		enclave, err := GenEnclave(nonce)
 		require.NoError(t, err)
 		require.NotNil(t, enclave)
 
@@ -22,8 +30,9 @@ func TestKeyShareGeneration(t *testing.T) {
 
 func TestEnclaveOperations(t *testing.T) {
 	t.Run("Signing and Verification", func(t *testing.T) {
+		nonce := randNonce()
 		// Generate valid enclave
-		enclave, err := GenEnclave()
+		enclave, err := GenEnclave(nonce)
 		require.NoError(t, err)
 
 		// Test signing
@@ -45,7 +54,8 @@ func TestEnclaveOperations(t *testing.T) {
 	})
 
 	t.Run("Address and Public Key", func(t *testing.T) {
-		enclave, err := GenEnclave()
+		nonce := randNonce()
+		enclave, err := GenEnclave(nonce)
 		require.NoError(t, err)
 
 		// Test Address
@@ -60,7 +70,8 @@ func TestEnclaveOperations(t *testing.T) {
 	})
 
 	t.Run("Refresh Operation", func(t *testing.T) {
-		enclave, err := GenEnclave()
+		nonce := randNonce()
+		enclave, err := GenEnclave(nonce)
 		require.NoError(t, err)
 
 		// Test refresh
@@ -78,8 +89,9 @@ func TestEnclaveOperations(t *testing.T) {
 
 func TestEnclaveSerialization(t *testing.T) {
 	t.Run("Marshal and Unmarshal", func(t *testing.T) {
+		nonce := randNonce()
 		// Generate original enclave
-		original, err := GenEnclave()
+		original, err := GenEnclave(nonce)
 		require.NoError(t, err)
 		require.NotNil(t, original)
 
@@ -87,7 +99,7 @@ func TestEnclaveSerialization(t *testing.T) {
 		keyclave, ok := original.(*keyEnclave)
 		require.True(t, ok)
 
-		data, err := keyclave.Marshal()
+		data, err := keyclave.Serialize()
 		require.NoError(t, err)
 		require.NotEmpty(t, data)
 
@@ -99,7 +111,6 @@ func TestEnclaveSerialization(t *testing.T) {
 		// Verify restored enclave
 		assert.Equal(t, keyclave.Addr, restored.Addr)
 		assert.True(t, keyclave.PubPoint.Equal(restored.PubPoint))
-		assert.Equal(t, keyclave.VaultCID, restored.VaultCID)
 		assert.True(t, restored.IsValid())
 	})
 }

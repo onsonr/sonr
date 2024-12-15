@@ -3,6 +3,7 @@ package handlers
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/internal/gateway/context"
+	"github.com/onsonr/sonr/internal/gateway/models"
 	"github.com/onsonr/sonr/internal/gateway/views"
 	"golang.org/x/exp/rand"
 
@@ -18,15 +19,15 @@ func RenderProfileCreate(c echo.Context) error {
 }
 
 func RenderPasskeyCreate(c echo.Context) error {
-	return response.TemplEcho(c, views.CreatePasskeyForm(context.GetPasskeyCreateData(c)))
+	return response.TemplEcho(c, views.CreatePasskeyForm(models.CreatePasskeyData{}))
 }
 
 func RenderVaultLoading(c echo.Context) error {
 	return response.TemplEcho(c, views.LoadingVaultView())
 }
 
-func getCreateProfileData() views.CreateProfileData {
-	return views.CreateProfileData{
+func getCreateProfileData() models.CreateProfileData {
+	return models.CreateProfileData{
 		FirstNumber: rand.Intn(5) + 1,
 		LastNumber:  rand.Intn(4) + 1,
 	}

@@ -9,6 +9,7 @@ import (
 	"github.com/ipfs/boxo/files"
 	"github.com/ipfs/boxo/path"
 	"github.com/ipfs/kubo/client/rpc"
+	"github.com/ipfs/kubo/core/coreiface/options"
 )
 
 type client struct {
@@ -55,7 +56,7 @@ func (c *client) Get(cid string) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-func (c *client) IsPublished(ipns string) (bool, error) {
+func (c *client) IsPinned(ipns string) (bool, error) {
 	_, err := c.api.Name().Resolve(context.Background(), ipns)
 	if err != nil {
 		return false, nil
@@ -75,12 +76,12 @@ func (c *client) Exists(cid string) (bool, error) {
 	return true, nil
 }
 
-func (c *client) Pin(cid string) error {
+func (c *client) Pin(cid string, name string) error {
 	p, err := path.NewPath(cid)
 	if err != nil {
 		return err
 	}
-	return c.api.Pin().Add(context.Background(), p)
+	return c.api.Pin().Add(context.Background(), p, options.Pin.Name(name))
 }
 
 func (c *client) Unpin(cid string) error {
@@ -89,18 +90,6 @@ func (c *client) Unpin(cid string) error {
 		return err
 	}
 	return c.api.Pin().Rm(context.Background(), p)
-}
-
-func (c *client) Publish(cid string, name string) (string, error) {
-	p, err := path.NewPath(cid)
-	if err != nil {
-		return "", err
-	}
-	result, err := c.api.Name().Publish(context.Background(), p)
-	if err != nil {
-		return "", err
-	}
-	return result.String(), nil
 }
 
 func (c *client) Ls(cid string) ([]string, error) {

@@ -7,7 +7,7 @@ import (
 )
 
 // GenEnclave generates a new MPC keyshare
-func GenEnclave() (Enclave, error) {
+func GenEnclave(nonce []byte) (Enclave, error) {
 	curve := curves.K256()
 	valKs := dklsv1.NewAliceDkg(curve, protocol.Version1)
 	userKs := dklsv1.NewBobDkg(curve, protocol.Version1)
@@ -23,7 +23,7 @@ func GenEnclave() (Enclave, error) {
 	if err != nil {
 		return nil, err
 	}
-	return initkeyEnclave(valRes, userRes)
+	return newEnclave(valRes, userRes, nonce)
 }
 
 // ExecuteSigning runs the MPC signing protocol
@@ -48,7 +48,7 @@ func ExecuteSigning(signFuncVal SignFunc, signFuncUser SignFunc) ([]byte, error)
 }
 
 // ExecuteRefresh runs the MPC refresh protocol
-func ExecuteRefresh(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc) (Enclave, error) {
+func ExecuteRefresh(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc, nonce []byte) (Enclave, error) {
 	aErr, bErr := RunProtocol(refreshFuncVal, refreshFuncUser)
 	if err := checkIteratedErrors(aErr, bErr); err != nil {
 		return nil, err
@@ -61,7 +61,7 @@ func ExecuteRefresh(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc) (En
 	if err != nil {
 		return nil, err
 	}
-	return initkeyEnclave(valRefreshResult, userRefreshResult)
+	return newEnclave(valRefreshResult, userRefreshResult, nonce)
 }
 
 // For DKG bob starts first. For refresh and sign, Alice starts first.

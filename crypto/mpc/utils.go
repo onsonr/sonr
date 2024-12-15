@@ -1,6 +1,8 @@
 package mpc
 
 import (
+	"crypto/aes"
+	"crypto/cipher"
 	"errors"
 	"fmt"
 	"math/big"
@@ -32,6 +34,39 @@ func computeSonrAddr(pp Point) (string, error) {
 		return "", err
 	}
 	return sonrAddr, nil
+}
+
+func decryptKeyshare(msg []byte, key []byte, nonce []byte) ([]byte, error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	aesgcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, err
+	}
+	plaintext, err := aesgcm.Open(nil, nonce, msg, nil)
+	if err != nil {
+		return nil, err
+	}
+	return plaintext, nil
+}
+
+func encryptKeyshare(msg Message, key []byte, nonce []byte) ([]byte, error) {
+	msgBytes, err := protocol.EncodeMessage(msg)
+	if err != nil {
+		return nil, err
+	}
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	aesgcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, err
+	}
+	ciphertext := aesgcm.Seal(nil, nonce, []byte(msgBytes), nil)
+	return ciphertext, nil
 }
 
 func getAliceOut(msg *protocol.Message) (AliceOut, error) {
@@ -68,24 +103,6 @@ func getEcdsaPoint(pubKey []byte) (*curves.EcPoint, error) {
 		return nil, fmt.Errorf("error converting curve: %v", err)
 	}
 	return &curves.EcPoint{X: x, Y: y, Curve: ecCurve}, nil
-}
-
-func initkeyEnclave(valShare, userShare Message) (*keyEnclave, error) {
-	pubPoint, err := getAlicePubPoint(valShare)
-	if err != nil {
-		return nil, err
-	}
-
-	addr, err := computeSonrAddr(pubPoint)
-	if err != nil {
-		return nil, err
-	}
-	return &keyEnclave{
-		Addr:      addr,
-		PubPoint:  pubPoint,
-		ValShare:  valShare,
-		UserShare: userShare,
-	}, nil
 }
 
 func serializeSignature(sig *curves.EcdsaSignature) ([]byte, error) {

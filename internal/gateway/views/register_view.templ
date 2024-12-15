@@ -1,6 +1,7 @@
 package views
 
 import (
+	"github.com/onsonr/sonr/internal/gateway/models"
 	"github.com/onsonr/sonr/internal/nebula/card"
 	"github.com/onsonr/sonr/internal/nebula/form"
 	"github.com/onsonr/sonr/internal/nebula/hero"
@@ -8,25 +9,7 @@ import (
 	"github.com/onsonr/sonr/internal/nebula/layout"
 )
 
-type CreatePasskeyData struct {
-	Address       string
-	Handle        string
-	Name          string
-	Challenge     string
-	CreationBlock string
-}
-
-type CreateProfileData struct {
-	TurnstileSiteKey string
-	FirstNumber      int
-	LastNumber       int
-}
-
-func (d CreateProfileData) Sum() int {
-	return d.FirstNumber + d.LastNumber
-}
-
-templ CreateProfileForm(data CreateProfileData) {
+templ CreateProfileForm(data models.CreateProfileData) {
 	@layout.View("New Profile | Sonr.ID") {
 		@layout.Container() {
 			@hero.TitleDesc("Basic Info", "Tell us a little about yourself.")
@@ -35,7 +18,7 @@ templ CreateProfileForm(data CreateProfileData) {
 	}
 }
 
-templ CreatePasskeyForm(data CreatePasskeyData) {
+templ CreatePasskeyForm(data models.CreatePasskeyData) {
 	@layout.View("Register | Sonr.ID") {
 		@layout.Container() {
 			@hero.TitleDesc("Link a PassKey", "This will be used to login to your vault.")
@@ -52,7 +35,7 @@ templ LoadingVaultView() {
 	}
 }
 
-templ formCreatePasskey(data CreatePasskeyData) {
+templ formCreatePasskey(data models.CreatePasskeyData) {
 	@form.Root("/register/finish", "passkey-form") {
 		<input type="hidden" name="credential" id="credential-data" required/>
 		@form.Body() {
@@ -68,7 +51,7 @@ templ formCreatePasskey(data CreatePasskeyData) {
 	}
 }
 
-templ formCreateProfile(data CreateProfileData) {
+templ formCreateProfile(data models.CreateProfileData) {
 	@form.Root("/register/passkey", "create-profile") {
 		@form.Body() {
 			@form.Header() {

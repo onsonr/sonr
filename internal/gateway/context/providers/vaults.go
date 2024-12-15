@@ -3,8 +3,9 @@ package providers
 import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/onsonr/sonr/crypto/mpc"
-	"github.com/onsonr/sonr/internal/gateway/views"
+	views "github.com/onsonr/sonr/internal/gateway/models"
 	"github.com/onsonr/sonr/pkg/ipfsapi"
+	"lukechampine.com/blake3"
 )
 
 type VaultProvider interface {
@@ -30,7 +31,11 @@ func NewVaultService(ipc ipfsapi.Client) VaultProvider {
 }
 
 func (s *VaultService) Spawn(sessionID string, handle string, origin string, challenge string) (views.CreatePasskeyData, error) {
-	encl, err := mpc.GenEnclave()
+	nonce, err := computeNonceFromSessionID(sessionID)
+	if err != nil {
+		return views.CreatePasskeyData{}, err
+	}
+	encl, err := mpc.GenEnclave(nonce)
 	if err != nil {
 		return views.CreatePasskeyData{}, err
 	}
@@ -46,4 +51,20 @@ func (s *VaultService) Spawn(sessionID string, handle string, origin string, cha
 
 func (s *VaultService) Claim(sessionID string, handle string, origin string) (views.CreatePasskeyData, error) {
 	return views.CreatePasskeyData{}, nil
+}
+
+// Uses blake3 to hash the sessionID to generate a nonce of length 12 bytes
+func computeNonceFromSessionID(sessionID string) ([]byte, error) {
+	hash := blake3.New(32, nil)
+	_, err := hash.Write([]byte(sessionID))
+	if err != nil {
+		return nil, err
+	}
+	// Read the hash into a byte slice
+	nonce := make([]byte, 12)
+	_, err = hash.Write(nonce)
+	if err != nil {
+		return nil, err
+	}
+	return nonce, nil
 }

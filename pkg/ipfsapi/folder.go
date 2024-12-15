@@ -9,7 +9,7 @@ import (
 type Folder = files.Directory
 
 func NewFolder(fs ...File) Folder {
-	return files.NewMapDirectory(convertFilesToMap(fs))
+	return files.NewMapDirectory(NewFileMap(fs))
 }
 
 func (c *client) AddFolder(folder Folder) (string, error) {

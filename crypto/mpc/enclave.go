@@ -3,32 +3,43 @@ package mpc
 import (
 	"crypto/ecdsa"
 	"encoding/json"
+	"fmt"
 
 	"github.com/onsonr/sonr/crypto/core/curves"
 	"github.com/onsonr/sonr/crypto/keys"
 	"golang.org/x/crypto/sha3"
 )
 
-// Enclave defines the interface for key management operations
-type Enclave interface {
-	Address() string
-	DID() keys.DID
-	IsValid() bool
-	Marshal() ([]byte, error)
-	PubKey() keys.PubKey
-	Refresh() (Enclave, error)
-	Sign(data []byte) ([]byte, error)
-	Verify(data []byte, sig []byte) (bool, error)
-}
-
 // keyEnclave implements the Enclave interface
 type keyEnclave struct {
+	// Serialized fields
 	Addr      string       `json:"address"`
 	PubPoint  curves.Point `json:"-"`
 	PubBytes  []byte       `json:"pub_key"`
 	ValShare  Message      `json:"val_share"`
 	UserShare Message      `json:"user_share"`
-	VaultCID  string       `json:"vault_cid,omitempty"`
+
+	// Extra fields
+	nonce []byte
+}
+
+func newEnclave(valShare, userShare Message, nonce []byte) (Enclave, error) {
+	pubPoint, err := getAlicePubPoint(valShare)
+	if err != nil {
+		return nil, err
+	}
+
+	addr, err := computeSonrAddr(pubPoint)
+	if err != nil {
+		return nil, err
+	}
+	return &keyEnclave{
+		Addr:      addr,
+		PubPoint:  pubPoint,
+		ValShare:  valShare,
+		UserShare: userShare,
+		nonce:     nonce,
+	}, nil
 }
 
 // Address returns the Sonr address of the keyEnclave
@@ -39,6 +50,18 @@ func (k *keyEnclave) Address() string {
 // DID returns the DID of the keyEnclave
 func (k *keyEnclave) DID() keys.DID {
 	return keys.NewFromPubKey(k.PubKey())
+}
+
+// Export returns role specific key encoded and encrypted
+func (k *keyEnclave) Export(role Role, key []byte) ([]byte, error) {
+	switch role {
+	case RoleVal:
+		return encryptKeyshare(k.ValShare, key, k.nonce)
+	case RoleUser:
+		return encryptKeyshare(k.UserShare, key, k.nonce)
+	default:
+		return nil, fmt.Errorf("invalid role")
+	}
 }
 
 // IsValid returns true if the keyEnclave is valid
@@ -61,7 +84,7 @@ func (k *keyEnclave) Refresh() (Enclave, error) {
 	if err != nil {
 		return nil, err
 	}
-	return ExecuteRefresh(refreshFuncVal, refreshFuncUser)
+	return ExecuteRefresh(refreshFuncVal, refreshFuncUser, k.nonce)
 }
 
 // Sign returns the signature of the data
@@ -102,7 +125,7 @@ func (k *keyEnclave) Verify(data []byte, sig []byte) (bool, error) {
 }
 
 // Marshal returns the JSON encoding of keyEnclave
-func (k *keyEnclave) Marshal() ([]byte, error) {
+func (k *keyEnclave) Serialize() ([]byte, error) {
 	// Store compressed public point bytes before marshaling
 	k.PubBytes = k.PubPoint.ToAffineCompressed()
 	return json.Marshal(k)
