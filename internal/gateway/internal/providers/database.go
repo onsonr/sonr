@@ -3,7 +3,7 @@ package providers
 import (
 	"database/sql"
 
-	"github.com/onsonr/sonr/internal/gateway/repository"
+	"github.com/onsonr/sonr/internal/gateway/internal/repository"
 )
 
 type DatabaseProvider struct {

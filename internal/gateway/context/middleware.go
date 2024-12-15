@@ -6,8 +6,8 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/medama-io/go-useragent"
-	"github.com/onsonr/sonr/internal/gateway/providers"
-	"github.com/onsonr/sonr/internal/gateway/repository"
+	"github.com/onsonr/sonr/internal/gateway/internal/providers"
+	"github.com/onsonr/sonr/internal/gateway/internal/repository"
 	config "github.com/onsonr/sonr/pkg/config/hway"
 	"github.com/onsonr/sonr/pkg/ipfsapi"
 )

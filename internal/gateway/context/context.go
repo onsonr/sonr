@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/gateway/repository"
+	"github.com/onsonr/sonr/internal/gateway/internal/repository"
 	"github.com/onsonr/sonr/pkg/common"
 	"github.com/segmentio/ksuid"
 	"golang.org/x/exp/rand"
