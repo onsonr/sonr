@@ -37,6 +37,9 @@ func computeSonrAddr(pp Point) (string, error) {
 }
 
 func decryptKeyshare(msg []byte, key []byte, nonce []byte) ([]byte, error) {
+	if len(key) != 16 && len(key) != 24 && len(key) != 32 {
+		return nil, fmt.Errorf("invalid key length: must be 16, 24, or 32 bytes")
+	}
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
@@ -53,6 +56,9 @@ func decryptKeyshare(msg []byte, key []byte, nonce []byte) ([]byte, error) {
 }
 
 func encryptKeyshare(msg Message, key []byte, nonce []byte) ([]byte, error) {
+	if len(key) != 16 && len(key) != 24 && len(key) != 32 {
+		return nil, fmt.Errorf("invalid key length: must be 16, 24, or 32 bytes")
+	}
 	msgBytes, err := protocol.EncodeMessage(msg)
 	if err != nil {
 		return nil, err

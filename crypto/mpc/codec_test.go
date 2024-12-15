@@ -33,8 +33,8 @@ func TestKeyShareGeneration(t *testing.T) {
 		original, err := GenEnclave(nonce)
 		require.NoError(t, err)
 
-		// Test key for encryption/decryption
-		testKey := []byte("test-key-12345678")
+		// Test key for encryption/decryption (32 bytes)
+		testKey := []byte("test-key-12345678-test-key-123456")
 
 		// Test Export/Import for Validator role
 		t.Run("Validator Role", func(t *testing.T) {
