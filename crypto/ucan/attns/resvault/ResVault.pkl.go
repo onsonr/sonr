@@ -9,8 +9,7 @@ import (
 type ResVault string
 
 const (
-	KsUser    ResVault = "ks/user"
-	KsVal     ResVault = "ks/val"
+	KsEnclave ResVault = "ks/enclave"
 	LocCid    ResVault = "loc/cid"
 	LocEntity ResVault = "loc/entity"
 	LocIpns   ResVault = "loc/ipns"
@@ -28,10 +27,8 @@ var _ encoding.BinaryUnmarshaler = new(ResVault)
 // UnmarshalBinary implements encoding.BinaryUnmarshaler for ResVault.
 func (rcv *ResVault) UnmarshalBinary(data []byte) error {
 	switch str := string(data); str {
-	case "ks/user":
-		*rcv = KsUser
-	case "ks/val":
-		*rcv = KsVal
+	case "ks/enclave":
+		*rcv = KsEnclave
 	case "loc/cid":
 		*rcv = LocCid
 	case "loc/entity":
