@@ -64,6 +64,24 @@ func (k *keyEnclave) Export(role Role, key []byte) ([]byte, error) {
 	}
 }
 
+// Import decrypts and imports an encrypted keyshare for the given role
+func (k *keyEnclave) Import(role Role, data []byte, key []byte) error {
+	decrypted, err := decryptKeyshare(data, key, k.nonce)
+	if err != nil {
+		return fmt.Errorf("failed to decrypt keyshare: %w", err)
+	}
+
+	switch role {
+	case RoleVal:
+		k.ValShare = decrypted
+	case RoleUser:
+		k.UserShare = decrypted
+	default:
+		return fmt.Errorf("invalid role")
+	}
+	return nil
+}
+
 // IsValid returns true if the keyEnclave is valid
 func (k *keyEnclave) IsValid() bool {
 	return k.PubPoint != nil && k.ValShare != nil && k.UserShare != nil && k.Addr != ""

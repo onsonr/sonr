@@ -38,4 +38,5 @@ type Enclave interface {
 	Serialize() ([]byte, error)                   // Marshal returns the JSON encoding of keyEnclave
 	Sign(data []byte) ([]byte, error)             // Sign returns the signature of the data
 	Verify(data []byte, sig []byte) (bool, error) // Verify returns true if the signature is valid
+	Import(role Role, data []byte, key []byte) error // Import imports an encrypted keyshare for the given role
 }
