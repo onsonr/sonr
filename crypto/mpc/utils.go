@@ -65,7 +65,7 @@ func encryptKeyshare(msg Message, key []byte, nonce []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	block, err := aes.NewCipher(key)
+	block, err := aes.NewCipher(hashedKey)
 	if err != nil {
 		return nil, err
 	}

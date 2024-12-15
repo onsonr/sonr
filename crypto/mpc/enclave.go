@@ -1,12 +1,13 @@
 package mpc
 
 import (
+	"crypto/aes"
+	"crypto/cipher"
 	"crypto/ecdsa"
 	"encoding/json"
 	"fmt"
 
 	"github.com/onsonr/sonr/crypto/core/curves"
-	"github.com/onsonr/sonr/crypto/core/protocol"
 	"github.com/onsonr/sonr/crypto/keys"
 	"golang.org/x/crypto/sha3"
 )
@@ -19,7 +20,6 @@ type keyEnclave struct {
 	PubBytes  []byte       `json:"pub_key"`
 	ValShare  Message      `json:"val_share"`
 	UserShare Message      `json:"user_share"`
-	Cid       string       `json:"cid,omitempty"`
 
 	// Extra fields
 	nonce []byte
