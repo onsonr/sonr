@@ -9,10 +9,8 @@ import (
 	"github.com/labstack/echo-contrib/echoprometheus"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/onsonr/sonr/crypto/ucan"
 	"github.com/onsonr/sonr/internal/gateway"
 	config "github.com/onsonr/sonr/pkg/config/hway"
-	"github.com/onsonr/sonr/pkg/didauth/producer"
 	"github.com/onsonr/sonr/pkg/ipfsapi"
 )
 
@@ -66,7 +64,6 @@ func setupServer(env config.Hway, db *sql.DB, ipc ipfsapi.Client) (*echo.Echo, e
 	e.IPExtractor = echo.ExtractIPDirect()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	e.Use(producer.Middleware(ipc, ucan.ServicePermissions))
 	gateway.RegisterRoutes(e, env, db, ipc)
 	return e, nil
 }

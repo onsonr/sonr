@@ -11,8 +11,8 @@ import (
 	"golang.org/x/exp/rand"
 )
 
-// isUnavailableDevice returns true if the device is unavailable
-func IsUnavailableDevice(c echo.Context) bool {
+// IsForbiddenDevice returns true if the device is unavailable
+func IsForbiddenDevice(c echo.Context) bool {
 	s, err := Get(c)
 	if err != nil {
 		return true

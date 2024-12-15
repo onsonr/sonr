@@ -2,12 +2,14 @@
 package gateway
 
 import (
+	"context"
 	"database/sql"
 	"os"
 	"path/filepath"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/gateway/context"
+	hwayctx "github.com/onsonr/sonr/internal/gateway/context"
+	"github.com/onsonr/sonr/internal/gateway/context/sink"
 	"github.com/onsonr/sonr/internal/gateway/handlers"
 	"github.com/onsonr/sonr/pkg/common/response"
 	config "github.com/onsonr/sonr/pkg/config/hway"
@@ -21,7 +23,7 @@ func RegisterRoutes(e *echo.Echo, env config.Hway, db *sql.DB, ipc ipfsapi.Clien
 	e.HTTPErrorHandler = response.RedirectOnError("http://localhost:3000")
 
 	// Inject session middleware with database connection
-	e.Use(context.Middleware(db, env, ipc))
+	e.Use(hwayctx.Middleware(db, env, ipc))
 
 	// Register View Handlers
 	e.GET("/", handlers.RenderIndex)
@@ -41,6 +43,11 @@ func RegisterRoutes(e *echo.Echo, env config.Hway, db *sql.DB, ipc ipfsapi.Clien
 func NewDB(env config.Hway) (*sql.DB, error) {
 	db, err := sql.Open("sqlite3", ":memory:")
 	if err != nil {
+		return nil, err
+	}
+
+	// create tables
+	if _, err := db.ExecContext(context.Background(), sink.SchemaSQL); err != nil {
 		return nil, err
 	}
 	return db, nil

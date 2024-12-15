@@ -10,7 +10,7 @@ import (
 )
 
 func RenderIndex(c echo.Context) error {
-	return response.TemplEcho(c, views.InitialView(context.IsUnavailableDevice(c)))
+	return response.TemplEcho(c, views.InitialView(context.IsForbiddenDevice(c)))
 }
 
 func RenderProfileCreate(c echo.Context) error {
