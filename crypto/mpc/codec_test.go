@@ -36,71 +36,37 @@ func TestKeyShareGeneration(t *testing.T) {
 		// Test key for encryption/decryption (32 bytes)
 		testKey := []byte("test-key-12345678-test-key-123456")
 
-		// Test Export/Import for Validator role
-		t.Run("Validator Role", func(t *testing.T) {
-			// Export validator share
-			valData, err := original.Export(RoleVal, testKey)
+		// Test Export/Import
+		t.Run("Full Enclave", func(t *testing.T) {
+			// Export enclave
+			data, err := original.Export(testKey)
 			require.NoError(t, err)
-			require.NotEmpty(t, valData)
+			require.NotEmpty(t, data)
 
 			// Create new empty enclave
 			newEnclave, err := GenEnclave(nonce)
 			require.NoError(t, err)
 
-			// Import validator share
-			err = newEnclave.Import(RoleVal, valData, testKey)
+			// Import enclave
+			err = newEnclave.Import(data, testKey)
 			require.NoError(t, err)
 
-			// Verify the imported share works by signing
+			// Verify the imported enclave works by signing
 			testData := []byte("test message")
 			sig, err := newEnclave.Sign(testData)
 			require.NoError(t, err)
 			valid, err := newEnclave.Verify(testData, sig)
 			require.NoError(t, err)
 			assert.True(t, valid)
-		})
-
-		// Test Export/Import for User role
-		t.Run("User Role", func(t *testing.T) {
-			// Export user share
-			userData, err := original.Export(RoleUser, testKey)
-			require.NoError(t, err)
-			require.NotEmpty(t, userData)
-
-			// Create new empty enclave
-			newEnclave, err := GenEnclave(nonce)
-			require.NoError(t, err)
-
-			// Import user share
-			err = newEnclave.Import(RoleUser, userData, testKey)
-			require.NoError(t, err)
-
-			// Verify the imported share works by signing
-			testData := []byte("test message")
-			sig, err := newEnclave.Sign(testData)
-			require.NoError(t, err)
-			valid, err := newEnclave.Verify(testData, sig)
-			require.NoError(t, err)
-			assert.True(t, valid)
-		})
-
-		// Test Invalid Role
-		t.Run("Invalid Role", func(t *testing.T) {
-			invalidRole := Role("invalid")
-			_, err := original.Export(invalidRole, testKey)
-			assert.Error(t, err)
-
-			err = original.Import(invalidRole, []byte("test"), testKey)
-			assert.Error(t, err)
 		})
 
 		// Test Invalid Key
 		t.Run("Invalid Key", func(t *testing.T) {
-			valData, err := original.Export(RoleVal, testKey)
+			data, err := original.Export(testKey)
 			require.NoError(t, err)
 
 			wrongKey := []byte("wrong-key-12345678")
-			err = original.Import(RoleVal, valData, wrongKey)
+			err = original.Import(data, wrongKey)
 			assert.Error(t, err)
 		})
 	})

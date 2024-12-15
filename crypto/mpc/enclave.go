@@ -19,6 +19,7 @@ type keyEnclave struct {
 	PubBytes  []byte       `json:"pub_key"`
 	ValShare  Message      `json:"val_share"`
 	UserShare Message      `json:"user_share"`
+	Cid       string       `json:"cid,omitempty"`
 
 	// Extra fields
 	nonce []byte
@@ -53,38 +54,46 @@ func (k *keyEnclave) DID() keys.DID {
 	return keys.NewFromPubKey(k.PubKey())
 }
 
-// Export returns role specific key encoded and encrypted
-func (k *keyEnclave) Export(role Role, key []byte) ([]byte, error) {
-	switch role {
-	case RoleVal:
-		return encryptKeyshare(k.ValShare, key, k.nonce)
-	case RoleUser:
-		return encryptKeyshare(k.UserShare, key, k.nonce)
-	default:
-		return nil, fmt.Errorf("invalid role")
+// Export returns encrypted enclave data
+func (k *keyEnclave) Export(key []byte) ([]byte, error) {
+	data, err := k.Serialize()
+	if err != nil {
+		return nil, fmt.Errorf("failed to serialize enclave: %w", err)
 	}
+
+	hashedKey := hashKey(key)
+	block, err := aes.NewCipher(hashedKey)
+	if err != nil {
+		return nil, err
+	}
+
+	aesgcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, err
+	}
+
+	return aesgcm.Seal(nil, k.nonce, data, nil), nil
 }
 
-// Import decrypts and imports an encrypted keyshare for the given role
-func (k *keyEnclave) Import(role Role, data []byte, key []byte) error {
-	decrypted, err := decryptKeyshare(data, key, k.nonce)
+// Import decrypts and loads enclave data
+func (k *keyEnclave) Import(data []byte, key []byte) error {
+	hashedKey := hashKey(key)
+	block, err := aes.NewCipher(hashedKey)
 	if err != nil {
-		return fmt.Errorf("failed to decrypt keyshare: %w", err)
-	}
-	msg, err := protocol.DecodeMessage(string(decrypted))
-	if err != nil {
-		return fmt.Errorf("failed to decode keyshare: %w", err)
+		return err
 	}
 
-	switch role {
-	case RoleVal:
-		k.ValShare = msg
-	case RoleUser:
-		k.UserShare = msg
-	default:
-		return fmt.Errorf("invalid role")
+	aesgcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return err
 	}
-	return nil
+
+	decrypted, err := aesgcm.Open(nil, k.nonce, data, nil)
+	if err != nil {
+		return err
+	}
+
+	return k.Unmarshal(decrypted)
 }
 
 // IsValid returns true if the keyEnclave is valid
