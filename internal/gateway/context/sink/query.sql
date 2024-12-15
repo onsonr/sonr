@@ -92,5 +92,14 @@ INSERT INTO sessions (
     challenge,
     is_human_first,
     is_human_last
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+) VALUES (
+    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+    ABS(RANDOM() % 5) + 1,  -- Random number between 1-5
+    ABS(RANDOM() % 4) + 1   -- Random number between 1-4
+)
 RETURNING *;
+
+-- name: InitializeProfile :one
+SELECT 
+    ABS(RANDOM() % 5) + 1 as first_number,
+    ABS(RANDOM() % 4) + 1 as last_number;
