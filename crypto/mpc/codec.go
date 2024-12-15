@@ -31,12 +31,12 @@ const (
 type Enclave interface {
 	Address() string                              // Address returns the Sonr address of the keyEnclave
 	DID() keys.DID                                // DID returns the DID of the keyEnclave
-	Export(role Role, key []byte) ([]byte, error) // Export returns role specific key encoded and encrypted
+	Export(key []byte) ([]byte, error)            // Export returns encrypted enclave data
+	Import(data []byte, key []byte) error         // Import decrypts and loads enclave data
 	IsValid() bool                                // IsValid returns true if the keyEnclave is valid
 	PubKey() keys.PubKey                          // PubKey returns the public key of the keyEnclave
 	Refresh() (Enclave, error)                    // Refresh returns a new keyEnclave
 	Serialize() ([]byte, error)                   // Marshal returns the JSON encoding of keyEnclave
 	Sign(data []byte) ([]byte, error)             // Sign returns the signature of the data
 	Verify(data []byte, sig []byte) (bool, error) // Verify returns true if the signature is valid
-	Import(role Role, data []byte, key []byte) error // Import imports an encrypted keyshare for the given role
 }
