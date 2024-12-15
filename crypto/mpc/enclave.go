@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/onsonr/sonr/crypto/core/curves"
+	"github.com/onsonr/sonr/crypto/core/protocol"
 	"github.com/onsonr/sonr/crypto/keys"
 	"golang.org/x/crypto/sha3"
 )
@@ -70,12 +71,16 @@ func (k *keyEnclave) Import(role Role, data []byte, key []byte) error {
 	if err != nil {
 		return fmt.Errorf("failed to decrypt keyshare: %w", err)
 	}
+	msg, err := protocol.DecodeMessage(string(decrypted))
+	if err != nil {
+		return fmt.Errorf("failed to decode keyshare: %w", err)
+	}
 
 	switch role {
 	case RoleVal:
-		k.ValShare = decrypted
+		k.ValShare = msg
 	case RoleUser:
-		k.UserShare = decrypted
+		k.UserShare = msg
 	default:
 		return fmt.Errorf("invalid role")
 	}
