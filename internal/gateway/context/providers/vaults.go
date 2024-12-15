@@ -3,14 +3,14 @@ package providers
 import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/onsonr/sonr/crypto/mpc"
-	views "github.com/onsonr/sonr/internal/gateway/models"
+	"github.com/onsonr/sonr/internal/gateway/models"
 	"github.com/onsonr/sonr/pkg/ipfsapi"
 	"lukechampine.com/blake3"
 )
 
 type VaultProvider interface {
-	Spawn(sessionID string, handle string, origin string, challenge string) (views.CreatePasskeyData, error)
-	Claim(sessionID string, handle string, origin string) (views.CreatePasskeyData, error)
+	Spawn(sessionID string, handle string, origin string, challenge string) (models.CreatePasskeyData, error)
+	Claim(sessionID string, handle string, origin string) (models.CreatePasskeyData, error)
 }
 
 type VaultService struct {
@@ -30,17 +30,17 @@ func NewVaultService(ipc ipfsapi.Client) VaultProvider {
 	return svc
 }
 
-func (s *VaultService) Spawn(sessionID string, handle string, origin string, challenge string) (views.CreatePasskeyData, error) {
+func (s *VaultService) Spawn(sessionID string, handle string, origin string, challenge string) (models.CreatePasskeyData, error) {
 	nonce, err := computeNonceFromSessionID(sessionID)
 	if err != nil {
-		return views.CreatePasskeyData{}, err
+		return models.CreatePasskeyData{}, err
 	}
 	encl, err := mpc.GenEnclave(nonce)
 	if err != nil {
-		return views.CreatePasskeyData{}, err
+		return models.CreatePasskeyData{}, err
 	}
 	s.stagedEnclaves[sessionID] = encl
-	return views.CreatePasskeyData{
+	return models.CreatePasskeyData{
 		Address:       encl.Address(),
 		Handle:        handle,
 		Name:          origin,
@@ -49,8 +49,8 @@ func (s *VaultService) Spawn(sessionID string, handle string, origin string, cha
 	}, nil
 }
 
-func (s *VaultService) Claim(sessionID string, handle string, origin string) (views.CreatePasskeyData, error) {
-	return views.CreatePasskeyData{}, nil
+func (s *VaultService) Claim(sessionID string, handle string, origin string) (models.CreatePasskeyData, error) {
+	return models.CreatePasskeyData{}, nil
 }
 
 // Uses blake3 to hash the sessionID to generate a nonce of length 12 bytes

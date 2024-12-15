@@ -35,6 +35,6 @@ typealias CapVault = "crud/asset" | "crud/authzgrant" | "crud/profile" | "crud/r
 typealias CapAccount = "exec/broadcast" | "exec/query" | "exec/simulate" | "exec/vote" | "exec/delegate" | "exec/invoke" | "exec/send"
 typealias CapInterchain = "transfer/swap" | "transfer/send" | "transfer/atomic" | "transfer/batch" | "transfer/p2p" | "transfer/send"
 
-typealias ResVault =  "ks/user" | "ks/val" | "loc/cid" | "loc/entity" | "loc/ipns" | "addr/sonr" | "chain/code" 
+typealias ResVault =  "ks/enclave" | "loc/cid" | "loc/entity" | "loc/ipns" | "addr/sonr" | "chain/code" 
 typealias ResAccount = "acc/sequence" | "acc/number" | "chain/id" | "asset/code" | "authz/grant"
 typealias ResInterchain = "channnel/port" | "chain/id" | "chain/name" | "acc/host" | "acc/controller"
