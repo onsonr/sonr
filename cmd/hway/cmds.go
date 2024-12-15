@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/onsonr/sonr/internal/gateway"
 	"github.com/spf13/cobra"
 )
 
@@ -34,11 +35,11 @@ func rootCmd() *cobra.Command {
 			if err != nil {
 				panic(err)
 			}
-			db, ipc, err := initDeps(env)
+			 ipc, err := initDeps(env)
 			if err != nil {
 				panic(err)
 			}
-			e, err := setupServer(env, db, ipc)
+			e, err := gateway.New(env, ipc)
 			if err != nil {
 				panic(err)
 			}

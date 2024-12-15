@@ -18,6 +18,7 @@ CREATE TABLE sessions (
     deleted_at DATETIME,
     browser_name TEXT NOT NULL,
     browser_version TEXT NOT NULL,
+    client_ipaddr TEXT NOT NULL,
     platform TEXT NOT NULL,
     is_desktop INTEGER NOT NULL, -- SQLite doesn't have boolean, using INTEGER (0/1)
     is_mobile INTEGER NOT NULL,
@@ -29,7 +30,7 @@ CREATE TABLE sessions (
     is_human_last INTEGER NOT NULL
 );
 
-CREATE TABLE users (
+CREATE TABLE profiles (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -44,8 +45,8 @@ CREATE TABLE users (
 -- Add indexes for common query patterns
 CREATE INDEX idx_credentials_handle ON credentials(handle);
 CREATE INDEX idx_credentials_origin ON credentials(origin);
-CREATE INDEX idx_users_handle ON users(handle);
-CREATE INDEX idx_users_address ON users(address);
+CREATE INDEX idx_profiles_handle ON profiles(handle);
+CREATE INDEX idx_profiles_address ON profiles(address);
 CREATE INDEX idx_sessions_deleted_at ON sessions(deleted_at);
 CREATE INDEX idx_credentials_deleted_at ON credentials(deleted_at);
-CREATE INDEX idx_users_deleted_at ON users(deleted_at);
+CREATE INDEX idx_profiles_deleted_at ON profiles(deleted_at);

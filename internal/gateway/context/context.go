@@ -1,15 +1,41 @@
 package context
 
 import (
-	"context"
+	"net/http"
 
-	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/gateway/context/repository"
-	"github.com/onsonr/sonr/pkg/common"
-	"github.com/segmentio/ksuid"
-	"golang.org/x/exp/rand"
+	"github.com/medama-io/go-useragent"
+	config "github.com/onsonr/sonr/pkg/config/hway"
 )
+
+// Middleware creates a new session middleware
+func Middleware(env config.Hway) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			ua := useragent.NewParser()
+			agent := ua.Parse(c.Request().UserAgent())
+			cc := &HTTPContext{Context: c, env: env, agent: agent}
+			return next(cc)
+		}
+	}
+}
+
+// HTTPContext is the context for HTTP endpoints.
+type HTTPContext struct {
+	echo.Context
+	id    string
+	env   config.Hway
+	agent useragent.UserAgent
+}
+
+// Get returns the HTTPContext from the echo context
+func Get(c echo.Context) (*HTTPContext, error) {
+	ctx, ok := c.(*HTTPContext)
+	if !ok {
+		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Session Context not found")
+	}
+	return ctx, nil
+}
 
 // ForbiddenDevice returns true if the device is unavailable
 func ForbiddenDevice(c echo.Context) bool {
@@ -17,75 +43,5 @@ func ForbiddenDevice(c echo.Context) bool {
 	if err != nil {
 		return true
 	}
-	return s.IsBot() || s.IsTV()
-}
-
-// CurrentBlock returns the current block
-func CurrentBlock(c echo.Context) (uint64, error) {
-	s, err := Get(c)
-	if err != nil {
-		return 0, err
-	}
-	return s.CurrentBlock()
-}
-
-// initSession initializes or loads an existing session
-func (s *HTTPContext) initSession() error {
-	sessionID := s.getOrCreateSessionID()
-	f := rand.Intn(5) + 1
-	l := rand.Intn(4) + 1
-	challenge, err := protocol.CreateChallenge()
-	if err != nil {
-		return err
-	}
-	s.id = sessionID
-
-	// Try to load existing session
-	dbSession, err := s.GetSessionByID(context.Background(), sessionID)
-	if err != nil {
-		// Create new session if not found
-		params := repository.CreateSessionParams{
-			ID:             sessionID,
-			BrowserName:    s.GetBrowser(),
-			BrowserVersion: s.GetMajorVersion(),
-			Platform:       s.GetOS(),
-			IsMobile:       boolToInt64(s.IsMobile()),
-			IsTablet:       boolToInt64(s.IsTablet()),
-			IsDesktop:      boolToInt64(s.IsDesktop()),
-			IsBot:          boolToInt64(s.IsBot()),
-			IsTv:           boolToInt64(s.IsTV()),
-			IsHumanFirst:   int64(f),
-			IsHumanLast:    int64(l),
-			Challenge:      challenge.String(),
-		}
-		dbSession, err = s.CreateSession(context.Background(), params)
-		if err != nil {
-			return err
-		}
-	}
-
-	s.sess = &dbSession
-	return nil
-}
-
-func (s *HTTPContext) getOrCreateSessionID() string {
-	if ok := common.CookieExists(s.Context, common.SessionID); !ok {
-		sessionID := ksuid.New().String()
-		common.WriteCookie(s.Context, common.SessionID, sessionID)
-		return sessionID
-	}
-
-	sessionID, err := common.ReadCookie(s.Context, common.SessionID)
-	if err != nil {
-		sessionID = ksuid.New().String()
-		common.WriteCookie(s.Context, common.SessionID, sessionID)
-	}
-	return sessionID
-}
-
-func boolToInt64(b bool) int64 {
-	if b {
-		return 1
-	}
-	return 0
+	return s.agent.IsBot() || s.agent.IsTV()
 }

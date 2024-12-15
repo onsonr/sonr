@@ -1,9 +1,0 @@
-version: "2"
-sql:
-  - engine: "sqlite"
-    queries: "./context/sink/query.sql"
-    schema: "./context/sink/schema.sql"
-    gen:
-      go:
-        package: "repository"
-        out: "context/repository"

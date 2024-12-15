@@ -8,8 +8,8 @@ INSERT INTO credentials (
 ) VALUES (?, ?, ?, ?, ?)
 RETURNING *;
 
--- name: InsertUser :one
-INSERT INTO users (
+-- name: InsertProfile :one
+INSERT INTO profiles (
     address,
     handle,
     origin,
@@ -17,14 +17,29 @@ INSERT INTO users (
 ) VALUES (?, ?, ?, ?)
 RETURNING *;
 
--- name: GetUserByAddress :one
-SELECT * FROM users
+-- name: GetProfileByAddress :one
+SELECT * FROM profiles
 WHERE address = ? AND deleted_at IS NULL
+LIMIT 1;
+
+-- name: GetChallengeBySessionID :one
+SELECT challenge FROM sessions
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1;
+
+-- name: GetHumanVerificationNumbers :one
+SELECT is_human_first, is_human_last FROM sessions
+WHERE id = ? AND deleted_at IS NULL
 LIMIT 1;
 
 -- name: GetSessionByID :one
 SELECT * FROM sessions
 WHERE id = ? AND deleted_at IS NULL
+LIMIT 1;
+
+-- name: GetSessionByClientIP :one
+SELECT * FROM sessions
+WHERE client_ipaddr = ? AND deleted_at IS NULL
 LIMIT 1;
 
 -- name: UpdateSessionHumanVerification :one
@@ -37,7 +52,7 @@ WHERE id = ?
 RETURNING *;
 
 -- name: CheckHandleExists :one
-SELECT COUNT(*) > 0 as handle_exists FROM users 
+SELECT COUNT(*) > 0 as handle_exists FROM profiles 
 WHERE handle = ? 
 AND deleted_at IS NULL;
 
@@ -57,13 +72,13 @@ UPDATE credentials
 SET deleted_at = CURRENT_TIMESTAMP
 WHERE credential_id = ?;
 
--- name: SoftDeleteUser :exec
-UPDATE users
+-- name: SoftDeleteProfile :exec
+UPDATE profiles
 SET deleted_at = CURRENT_TIMESTAMP
 WHERE address = ?;
 
--- name: UpdateUser :one
-UPDATE users
+-- name: UpdateProfile :one
+UPDATE profiles
 SET 
     name = ?,
     handle = ?,
@@ -72,8 +87,8 @@ WHERE address = ?
 AND deleted_at IS NULL
 RETURNING *;
 
--- name: GetUserByHandle :one
-SELECT * FROM users
+-- name: GetProfileByHandle :one
+SELECT * FROM profiles
 WHERE handle = ? 
 AND deleted_at IS NULL
 LIMIT 1;
@@ -83,6 +98,7 @@ INSERT INTO sessions (
     id,
     browser_name,
     browser_version,
+    client_ipaddr,
     platform,
     is_desktop,
     is_mobile,
@@ -92,5 +108,5 @@ INSERT INTO sessions (
     challenge,
     is_human_first,
     is_human_last
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 RETURNING *;

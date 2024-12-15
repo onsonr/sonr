@@ -1,39 +1,35 @@
-package providers
+package middleware
 
 import (
 	"context"
 
+	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/common/query"
 )
 
-type Resolver interface {
-	CurrentBlock() (uint64, error)
-	GetBankParams() (*query.BankParamsResponse, error)
-	GetDIDParams() (*query.DIDParamsResponse, error)
-	GetDWNParams() (*query.DWNParamsResponse, error)
-	GetNodeStatus() (*query.StatusResponse, error)
-	GetSVCParams() (*query.SVCParamsResponse, error)
-}
-
-type ResolverService struct {
+type ResolverContext struct {
+	echo.Context
 	grpcAddr string
 }
 
 // NewResolverService creates a new ResolverService
-func NewResolverService(grpcAddr string) Resolver {
-	return &ResolverService{
-		grpcAddr: grpcAddr,
+func NewResolverService(grpcAddr string) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			cc := &ResolverContext{grpcAddr: grpcAddr, Context: c}
+			return next(cc)
+		}
 	}
 }
 
 // CurrentBlock returns the current block
-func (s *ResolverService) CurrentBlock() (uint64, error) {
-	ctx := context.Background()
-	c, err := query.NewNodeClient(s.grpcAddr)
+func CurrentBlock(c echo.Context) (uint64, error) {
+  s := c.(*ResolverContext)
+	qc, err := query.NewNodeClient(s.grpcAddr)
 	if err != nil {
 		return 0, err
 	}
-	resp, err := c.Status(ctx, &query.StatusRequest{})
+	resp, err := qc.Status(c.Request().Context(), &query.StatusRequest{})
 	if err != nil {
 		return 0, err
 	}
@@ -41,7 +37,7 @@ func (s *ResolverService) CurrentBlock() (uint64, error) {
 }
 
 // GetBankParams returns the bank params
-func (s *ResolverService) GetBankParams() (*query.BankParamsResponse, error) {
+func (s *ResolverContext) GetBankParams() (*query.BankParamsResponse, error) {
 	ctx := context.Background()
 	c, err := query.NewBankClient(s.grpcAddr)
 	if err != nil {
@@ -55,7 +51,7 @@ func (s *ResolverService) GetBankParams() (*query.BankParamsResponse, error) {
 }
 
 // GetDIDParams returns the DID params
-func (s *ResolverService) GetDIDParams() (*query.DIDParamsResponse, error) {
+func (s *ResolverContext) GetDIDParams() (*query.DIDParamsResponse, error) {
 	ctx := context.Background()
 	c, err := query.NewDIDClient(s.grpcAddr)
 	if err != nil {
@@ -69,7 +65,7 @@ func (s *ResolverService) GetDIDParams() (*query.DIDParamsResponse, error) {
 }
 
 // GetDWNParams returns the DWN params
-func (s *ResolverService) GetDWNParams() (*query.DWNParamsResponse, error) {
+func (s *ResolverContext) GetDWNParams() (*query.DWNParamsResponse, error) {
 	ctx := context.Background()
 	c, err := query.NewDWNClient(s.grpcAddr)
 	if err != nil {
@@ -83,7 +79,7 @@ func (s *ResolverService) GetDWNParams() (*query.DWNParamsResponse, error) {
 }
 
 // GetNodeStatus returns the node status
-func (s *ResolverService) GetNodeStatus() (*query.StatusResponse, error) {
+func (s *ResolverContext) GetNodeStatus() (*query.StatusResponse, error) {
 	ctx := context.Background()
 	c, err := query.NewNodeClient(s.grpcAddr)
 	if err != nil {
@@ -97,7 +93,7 @@ func (s *ResolverService) GetNodeStatus() (*query.StatusResponse, error) {
 }
 
 // GetSVCParams returns the SVC params
-func (s *ResolverService) GetSVCParams() (*query.SVCParamsResponse, error) {
+func (s *ResolverContext) GetSVCParams() (*query.SVCParamsResponse, error) {
 	ctx := context.Background()
 	c, err := query.NewSVCClient(s.grpcAddr)
 	if err != nil {

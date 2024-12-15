@@ -4,28 +4,11 @@ import (
 	"encoding/json"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/gateway/context"
 	"github.com/onsonr/sonr/internal/gateway/context/repository"
 )
 
 // SubmitProfileHandle submits a profile handle
 func SubmitProfileHandle(c echo.Context) error {
-	firstName := c.FormValue("first_name")
-	lastName := c.FormValue("last_name")
-	handle := c.FormValue("handle")
-	ctx, err := context.Get(c)
-	if err != nil {
-		return err
-	}
-	_, err = ctx.InsertUser(c.Request().Context(), repository.InsertUserParams{
-		Address: "",
-		Handle:  handle,
-		Origin:  "",
-		Name:    firstName + " " + lastName,
-	})
-	if err != nil {
-		return err
-	}
 	return nil
 }
 

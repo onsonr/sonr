@@ -2,14 +2,10 @@
 package gateway
 
 import (
-	"context"
-	"database/sql"
-	"os"
-	"path/filepath"
-
+	"github.com/labstack/echo-contrib/echoprometheus"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	hwayctx "github.com/onsonr/sonr/internal/gateway/context"
-	"github.com/onsonr/sonr/internal/gateway/context/sink"
 	"github.com/onsonr/sonr/internal/gateway/handlers"
 	"github.com/onsonr/sonr/pkg/common/response"
 	config "github.com/onsonr/sonr/pkg/config/hway"
@@ -18,12 +14,17 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func RegisterRoutes(e *echo.Echo, env config.Hway, db *sql.DB, ipc ipfsapi.Client) error {
+type Gateway = *echo.Echo
+
+func New(env config.Hway, ipc ipfsapi.Client) (Gateway, error) {
+}
+
+func RegisterRoutes(e *echo.Echo, env config.Hway, ipc ipfsapi.Client) error {
 	// Custom error handler for gateway
 	e.HTTPErrorHandler = response.RedirectOnError("http://localhost:3000")
 
 	// Inject session middleware with database connection
-	e.Use(hwayctx.Middleware(db, env, ipc))
+	e.Use(hwayctx.Middleware(env))
 
 	// Register View Handlers
 	e.GET("/", handlers.RenderIndex)
@@ -39,26 +40,13 @@ func RegisterRoutes(e *echo.Echo, env config.Hway, db *sql.DB, ipc ipfsapi.Clien
 	return nil
 }
 
-// NewDB initializes and returns a configured database connection
-func NewDB(env config.Hway) (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		return nil, err
-	}
-
-	// create tables
-	if _, err := db.ExecContext(context.Background(), sink.SchemaSQL); err != nil {
-		return nil, err
-	}
-	return db, nil
-}
-
-func formatDBPath(fileName string) string {
-	configDir := filepath.Join(os.Getenv("XDG_CONFIG_HOME"), "hway")
-	if err := os.MkdirAll(configDir, 0o755); err != nil {
-		// If we can't create the directory, fall back to current directory
-		return configDir
-	}
-
-	return filepath.Join(configDir, fileName)
+// createServer sets up the server
+func createServer(env config.Hway, ipc ipfsapi.Client) *echo.Echo {
+	e := echo.New()
+	e.Use(echoprometheus.NewMiddleware("hway"))
+	e.IPExtractor = echo.ExtractIPDirect()
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+	RegisterRoutes(e, env, ipc)
+	return e
 }

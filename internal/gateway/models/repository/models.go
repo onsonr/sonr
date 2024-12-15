@@ -21,25 +21,7 @@ type Credential struct {
 	Transports   string
 }
 
-type Session struct {
-	ID             string
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
-	DeletedAt      sql.NullTime
-	BrowserName    string
-	BrowserVersion string
-	Platform       string
-	IsDesktop      int64
-	IsMobile       int64
-	IsTablet       int64
-	IsTv           int64
-	IsBot          int64
-	Challenge      string
-	IsHumanFirst   int64
-	IsHumanLast    int64
-}
-
-type User struct {
+type Profile struct {
 	ID        int64
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -49,4 +31,23 @@ type User struct {
 	Origin    string
 	Name      string
 	Cid       string
+}
+
+type Session struct {
+	ID             string
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
+	DeletedAt      sql.NullTime
+	BrowserName    string
+	BrowserVersion string
+	ClientIpaddr   string
+	Platform       string
+	IsDesktop      int64
+	IsMobile       int64
+	IsTablet       int64
+	IsTv           int64
+	IsBot          int64
+	Challenge      string
+	IsHumanFirst   int64
+	IsHumanLast    int64
 }

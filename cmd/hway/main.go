@@ -1,15 +1,10 @@
 package main
 
 import (
-	"database/sql"
 	_ "embed"
 	"fmt"
 	"os"
 
-	"github.com/labstack/echo-contrib/echoprometheus"
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
-	"github.com/onsonr/sonr/internal/gateway"
 	config "github.com/onsonr/sonr/pkg/config/hway"
 	"github.com/onsonr/sonr/pkg/ipfsapi"
 )
@@ -24,18 +19,13 @@ func main() {
 	os.Exit(0)
 }
 
-func initDeps(env config.Hway) (*sql.DB, ipfsapi.Client, error) {
-	db, err := gateway.NewDB(env)
-	if err != nil {
-		return nil, nil, err
-	}
-
+func initDeps(env config.Hway) (ipfsapi.Client, error) {
 	ipc, err := ipfsapi.NewClient()
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	return db, ipc, nil
+	return ipc, nil
 }
 
 func loadEnvImplFromArgs(args []string) (config.Hway, error) {
@@ -55,15 +45,4 @@ func loadEnvImplFromArgs(args []string) (config.Hway, error) {
 		PsqlDSN:        formatPsqlDSN(),
 	}
 	return env, nil
-}
-
-// setupServer sets up the server
-func setupServer(env config.Hway, db *sql.DB, ipc ipfsapi.Client) (*echo.Echo, error) {
-	e := echo.New()
-	e.Use(echoprometheus.NewMiddleware("hway"))
-	e.IPExtractor = echo.ExtractIPDirect()
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-	gateway.RegisterRoutes(e, env, db, ipc)
-	return e, nil
 }

@@ -10,7 +10,7 @@ import (
 )
 
 const checkHandleExists = `-- name: CheckHandleExists :one
-SELECT COUNT(*) > 0 as handle_exists FROM users 
+SELECT COUNT(*) > 0 as handle_exists FROM profiles 
 WHERE handle = ? 
 AND deleted_at IS NULL
 `
@@ -27,6 +27,7 @@ INSERT INTO sessions (
     id,
     browser_name,
     browser_version,
+    client_ipaddr,
     platform,
     is_desktop,
     is_mobile,
@@ -36,14 +37,15 @@ INSERT INTO sessions (
     challenge,
     is_human_first,
     is_human_last
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-RETURNING id, created_at, updated_at, deleted_at, browser_name, browser_version, platform, is_desktop, is_mobile, is_tablet, is_tv, is_bot, challenge, is_human_first, is_human_last
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+RETURNING id, created_at, updated_at, deleted_at, browser_name, browser_version, client_ipaddr, platform, is_desktop, is_mobile, is_tablet, is_tv, is_bot, challenge, is_human_first, is_human_last
 `
 
 type CreateSessionParams struct {
 	ID             string
 	BrowserName    string
 	BrowserVersion string
+	ClientIpaddr   string
 	Platform       string
 	IsDesktop      int64
 	IsMobile       int64
@@ -60,6 +62,7 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 		arg.ID,
 		arg.BrowserName,
 		arg.BrowserVersion,
+		arg.ClientIpaddr,
 		arg.Platform,
 		arg.IsDesktop,
 		arg.IsMobile,
@@ -78,6 +81,7 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 		&i.DeletedAt,
 		&i.BrowserName,
 		&i.BrowserVersion,
+		&i.ClientIpaddr,
 		&i.Platform,
 		&i.IsDesktop,
 		&i.IsMobile,
@@ -89,6 +93,19 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 		&i.IsHumanLast,
 	)
 	return i, err
+}
+
+const getChallengeBySessionID = `-- name: GetChallengeBySessionID :one
+SELECT challenge FROM sessions
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetChallengeBySessionID(ctx context.Context, id string) (string, error) {
+	row := q.db.QueryRowContext(ctx, getChallengeBySessionID, id)
+	var challenge string
+	err := row.Scan(&challenge)
+	return challenge, err
 }
 
 const getCredentialByID = `-- name: GetCredentialByID :one
@@ -154,8 +171,103 @@ func (q *Queries) GetCredentialsByHandle(ctx context.Context, handle string) ([]
 	return items, nil
 }
 
+const getHumanVerificationNumbers = `-- name: GetHumanVerificationNumbers :one
+SELECT is_human_first, is_human_last FROM sessions
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+type GetHumanVerificationNumbersRow struct {
+	IsHumanFirst int64
+	IsHumanLast  int64
+}
+
+func (q *Queries) GetHumanVerificationNumbers(ctx context.Context, id string) (GetHumanVerificationNumbersRow, error) {
+	row := q.db.QueryRowContext(ctx, getHumanVerificationNumbers, id)
+	var i GetHumanVerificationNumbersRow
+	err := row.Scan(&i.IsHumanFirst, &i.IsHumanLast)
+	return i, err
+}
+
+const getProfileByAddress = `-- name: GetProfileByAddress :one
+SELECT id, created_at, updated_at, deleted_at, address, handle, origin, name, cid FROM profiles
+WHERE address = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetProfileByAddress(ctx context.Context, address string) (Profile, error) {
+	row := q.db.QueryRowContext(ctx, getProfileByAddress, address)
+	var i Profile
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Address,
+		&i.Handle,
+		&i.Origin,
+		&i.Name,
+		&i.Cid,
+	)
+	return i, err
+}
+
+const getProfileByHandle = `-- name: GetProfileByHandle :one
+SELECT id, created_at, updated_at, deleted_at, address, handle, origin, name, cid FROM profiles
+WHERE handle = ? 
+AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetProfileByHandle(ctx context.Context, handle string) (Profile, error) {
+	row := q.db.QueryRowContext(ctx, getProfileByHandle, handle)
+	var i Profile
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Address,
+		&i.Handle,
+		&i.Origin,
+		&i.Name,
+		&i.Cid,
+	)
+	return i, err
+}
+
+const getSessionByClientIP = `-- name: GetSessionByClientIP :one
+SELECT id, created_at, updated_at, deleted_at, browser_name, browser_version, client_ipaddr, platform, is_desktop, is_mobile, is_tablet, is_tv, is_bot, challenge, is_human_first, is_human_last FROM sessions
+WHERE client_ipaddr = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetSessionByClientIP(ctx context.Context, clientIpaddr string) (Session, error) {
+	row := q.db.QueryRowContext(ctx, getSessionByClientIP, clientIpaddr)
+	var i Session
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.BrowserName,
+		&i.BrowserVersion,
+		&i.ClientIpaddr,
+		&i.Platform,
+		&i.IsDesktop,
+		&i.IsMobile,
+		&i.IsTablet,
+		&i.IsTv,
+		&i.IsBot,
+		&i.Challenge,
+		&i.IsHumanFirst,
+		&i.IsHumanLast,
+	)
+	return i, err
+}
+
 const getSessionByID = `-- name: GetSessionByID :one
-SELECT id, created_at, updated_at, deleted_at, browser_name, browser_version, platform, is_desktop, is_mobile, is_tablet, is_tv, is_bot, challenge, is_human_first, is_human_last FROM sessions
+SELECT id, created_at, updated_at, deleted_at, browser_name, browser_version, client_ipaddr, platform, is_desktop, is_mobile, is_tablet, is_tv, is_bot, challenge, is_human_first, is_human_last FROM sessions
 WHERE id = ? AND deleted_at IS NULL
 LIMIT 1
 `
@@ -170,6 +282,7 @@ func (q *Queries) GetSessionByID(ctx context.Context, id string) (Session, error
 		&i.DeletedAt,
 		&i.BrowserName,
 		&i.BrowserVersion,
+		&i.ClientIpaddr,
 		&i.Platform,
 		&i.IsDesktop,
 		&i.IsMobile,
@@ -179,53 +292,6 @@ func (q *Queries) GetSessionByID(ctx context.Context, id string) (Session, error
 		&i.Challenge,
 		&i.IsHumanFirst,
 		&i.IsHumanLast,
-	)
-	return i, err
-}
-
-const getUserByAddress = `-- name: GetUserByAddress :one
-SELECT id, created_at, updated_at, deleted_at, address, handle, origin, name, cid FROM users
-WHERE address = ? AND deleted_at IS NULL
-LIMIT 1
-`
-
-func (q *Queries) GetUserByAddress(ctx context.Context, address string) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUserByAddress, address)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.DeletedAt,
-		&i.Address,
-		&i.Handle,
-		&i.Origin,
-		&i.Name,
-		&i.Cid,
-	)
-	return i, err
-}
-
-const getUserByHandle = `-- name: GetUserByHandle :one
-SELECT id, created_at, updated_at, deleted_at, address, handle, origin, name, cid FROM users
-WHERE handle = ? 
-AND deleted_at IS NULL
-LIMIT 1
-`
-
-func (q *Queries) GetUserByHandle(ctx context.Context, handle string) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUserByHandle, handle)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.DeletedAt,
-		&i.Address,
-		&i.Handle,
-		&i.Origin,
-		&i.Name,
-		&i.Cid,
 	)
 	return i, err
 }
@@ -272,8 +338,8 @@ func (q *Queries) InsertCredential(ctx context.Context, arg InsertCredentialPara
 	return i, err
 }
 
-const insertUser = `-- name: InsertUser :one
-INSERT INTO users (
+const insertProfile = `-- name: InsertProfile :one
+INSERT INTO profiles (
     address,
     handle,
     origin,
@@ -282,21 +348,21 @@ INSERT INTO users (
 RETURNING id, created_at, updated_at, deleted_at, address, handle, origin, name, cid
 `
 
-type InsertUserParams struct {
+type InsertProfileParams struct {
 	Address string
 	Handle  string
 	Origin  string
 	Name    string
 }
 
-func (q *Queries) InsertUser(ctx context.Context, arg InsertUserParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, insertUser,
+func (q *Queries) InsertProfile(ctx context.Context, arg InsertProfileParams) (Profile, error) {
+	row := q.db.QueryRowContext(ctx, insertProfile,
 		arg.Address,
 		arg.Handle,
 		arg.Origin,
 		arg.Name,
 	)
-	var i User
+	var i Profile
 	err := row.Scan(
 		&i.ID,
 		&i.CreatedAt,
@@ -322,15 +388,49 @@ func (q *Queries) SoftDeleteCredential(ctx context.Context, credentialID string)
 	return err
 }
 
-const softDeleteUser = `-- name: SoftDeleteUser :exec
-UPDATE users
+const softDeleteProfile = `-- name: SoftDeleteProfile :exec
+UPDATE profiles
 SET deleted_at = CURRENT_TIMESTAMP
 WHERE address = ?
 `
 
-func (q *Queries) SoftDeleteUser(ctx context.Context, address string) error {
-	_, err := q.db.ExecContext(ctx, softDeleteUser, address)
+func (q *Queries) SoftDeleteProfile(ctx context.Context, address string) error {
+	_, err := q.db.ExecContext(ctx, softDeleteProfile, address)
 	return err
+}
+
+const updateProfile = `-- name: UpdateProfile :one
+UPDATE profiles
+SET 
+    name = ?,
+    handle = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE address = ? 
+AND deleted_at IS NULL
+RETURNING id, created_at, updated_at, deleted_at, address, handle, origin, name, cid
+`
+
+type UpdateProfileParams struct {
+	Name    string
+	Handle  string
+	Address string
+}
+
+func (q *Queries) UpdateProfile(ctx context.Context, arg UpdateProfileParams) (Profile, error) {
+	row := q.db.QueryRowContext(ctx, updateProfile, arg.Name, arg.Handle, arg.Address)
+	var i Profile
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Address,
+		&i.Handle,
+		&i.Origin,
+		&i.Name,
+		&i.Cid,
+	)
+	return i, err
 }
 
 const updateSessionHumanVerification = `-- name: UpdateSessionHumanVerification :one
@@ -340,7 +440,7 @@ SET
     is_human_last = ?,
     updated_at = CURRENT_TIMESTAMP
 WHERE id = ?
-RETURNING id, created_at, updated_at, deleted_at, browser_name, browser_version, platform, is_desktop, is_mobile, is_tablet, is_tv, is_bot, challenge, is_human_first, is_human_last
+RETURNING id, created_at, updated_at, deleted_at, browser_name, browser_version, client_ipaddr, platform, is_desktop, is_mobile, is_tablet, is_tv, is_bot, challenge, is_human_first, is_human_last
 `
 
 type UpdateSessionHumanVerificationParams struct {
@@ -359,6 +459,7 @@ func (q *Queries) UpdateSessionHumanVerification(ctx context.Context, arg Update
 		&i.DeletedAt,
 		&i.BrowserName,
 		&i.BrowserVersion,
+		&i.ClientIpaddr,
 		&i.Platform,
 		&i.IsDesktop,
 		&i.IsMobile,
@@ -368,40 +469,6 @@ func (q *Queries) UpdateSessionHumanVerification(ctx context.Context, arg Update
 		&i.Challenge,
 		&i.IsHumanFirst,
 		&i.IsHumanLast,
-	)
-	return i, err
-}
-
-const updateUser = `-- name: UpdateUser :one
-UPDATE users
-SET 
-    name = ?,
-    handle = ?,
-    updated_at = CURRENT_TIMESTAMP
-WHERE address = ? 
-AND deleted_at IS NULL
-RETURNING id, created_at, updated_at, deleted_at, address, handle, origin, name, cid
-`
-
-type UpdateUserParams struct {
-	Name    string
-	Handle  string
-	Address string
-}
-
-func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, updateUser, arg.Name, arg.Handle, arg.Address)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.DeletedAt,
-		&i.Address,
-		&i.Handle,
-		&i.Origin,
-		&i.Name,
-		&i.Cid,
 	)
 	return i, err
 }

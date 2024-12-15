@@ -1,4 +1,4 @@
-package providers
+package middleware
 
 import (
 	"github.com/go-webauthn/webauthn/protocol"
@@ -36,10 +36,10 @@ func (s *VaultProviderService) Spawn(sessionID string, handle string, origin str
 	if err != nil {
 		return models.CreatePasskeyParams{
 			Address:       "",
-			Handle:        handle,
-			Name:          origin,
-			Challenge:     challenge,
-			CreationBlock: "00001",
+			Handle:        "",
+			Name:          "",
+			Challenge:     "",
+			CreationBlock: "",
 		}, err
 	}
 	encl, err := mpc.GenEnclave(nonce)
