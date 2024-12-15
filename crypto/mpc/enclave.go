@@ -12,6 +12,7 @@ import (
 // Enclave defines the interface for key management operations
 type Enclave interface {
 	Address() string
+	DID() keys.DID
 	IsValid() bool
 	Marshal() ([]byte, error)
 	PubKey() keys.PubKey
@@ -33,6 +34,11 @@ type KeyEnclave struct {
 // Address returns the Sonr address of the KeyEnclave
 func (k *KeyEnclave) Address() string {
 	return k.Addr
+}
+
+// DID returns the DID of the KeyEnclave
+func (k *KeyEnclave) DID() keys.DID {
+	return keys.NewFromPubKey(k.PubKey())
 }
 
 // IsValid returns true if the KeyEnclave is valid

@@ -14,7 +14,8 @@ const (
 	LocCid    ResVault = "loc/cid"
 	LocEntity ResVault = "loc/entity"
 	LocIpns   ResVault = "loc/ipns"
-	LocSonr   ResVault = "loc/sonr"
+	AddrSonr  ResVault = "addr/sonr"
+	ChainCode ResVault = "chain/code"
 )
 
 // String returns the string representation of ResVault
@@ -37,8 +38,10 @@ func (rcv *ResVault) UnmarshalBinary(data []byte) error {
 		*rcv = LocEntity
 	case "loc/ipns":
 		*rcv = LocIpns
-	case "loc/sonr":
-		*rcv = LocSonr
+	case "addr/sonr":
+		*rcv = AddrSonr
+	case "chain/code":
+		*rcv = ChainCode
 	default:
 		return fmt.Errorf(`illegal: "%s" is not a valid ResVault`, str)
 	}

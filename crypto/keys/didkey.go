@@ -38,6 +38,11 @@ func NewDID(pub crypto.PubKey) (DID, error) {
 	}
 }
 
+// NewFromPubKey constructs an Identifier from a public key
+func NewFromPubKey(pub PubKey) DID {
+	return DID{PubKey: pub}
+}
+
 // MulticodecType indicates the type for this multicodec
 func (id DID) MulticodecType() uint64 {
 	switch id.Type() {

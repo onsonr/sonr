@@ -10,8 +10,8 @@ import (
 )
 
 type VaultProvider interface {
-	New(ctx context.Context, handle string, origin string, challenge string) (views.CreatePasskeyData, error)
-	Push(ctx context.Context, handle string, origin string) (views.CreatePasskeyData, error)
+	Spawn(ctx context.Context, handle string, origin string, challenge string) (views.CreatePasskeyData, error)
+	Claim(ctx context.Context, handle string, origin string) (views.CreatePasskeyData, error)
 }
 
 type VaultService struct {
@@ -27,7 +27,7 @@ func NewVaultService(ipc ipfsapi.Client) VaultProvider {
 	return svc
 }
 
-func (s *VaultService) New(ctx context.Context, handle string, origin string, challenge string) (views.CreatePasskeyData, error) {
+func (s *VaultService) Spawn(ctx context.Context, handle string, origin string, challenge string) (views.CreatePasskeyData, error) {
 	return views.CreatePasskeyData{
 		Address:       "",
 		Handle:        handle,
@@ -37,6 +37,6 @@ func (s *VaultService) New(ctx context.Context, handle string, origin string, ch
 	}, nil
 }
 
-func (s *VaultService) Push(ctx context.Context, handle string, origin string) (views.CreatePasskeyData, error) {
+func (s *VaultService) Claim(ctx context.Context, handle string, origin string) (views.CreatePasskeyData, error) {
 	return views.CreatePasskeyData{}, nil
 }

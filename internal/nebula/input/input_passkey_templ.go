@@ -52,8 +52,8 @@ func Passkey(addr string, userHandle string, challenge string) templ.Component {
 
 func navigatorCredentialsCreate(userId string, userHandle string, challenge string) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_navigatorCredentialsCreate_7340`,
-		Function: `function __templ_navigatorCredentialsCreate_7340(userId, userHandle, challenge){const publicKey = {
+		Name: `__templ_navigatorCredentialsCreate_63c0`,
+		Function: `function __templ_navigatorCredentialsCreate_63c0(userId, userHandle, challenge){const publicKey = {
     challenge: Uint8Array.from(challenge, (c) => c.charCodeAt(0)),
     rp: {
       name: "Sonr.ID",
@@ -83,6 +83,9 @@ func navigatorCredentialsCreate(userId string, userHandle string, challenge stri
     extensions: {
       payment: {
         isPayment: true,
+      },
+      largeBlob: {
+        supported: "preferred",
       },
     },
   };
@@ -137,8 +140,8 @@ navigator.credentials
     alert(` + "`" + `Failed to create passkey: ${err.message || 'Unknown error'}` + "`" + `);
   });
 }`,
-		Call:       templ.SafeScript(`__templ_navigatorCredentialsCreate_7340`, userId, userHandle, challenge),
-		CallInline: templ.SafeScriptInline(`__templ_navigatorCredentialsCreate_7340`, userId, userHandle, challenge),
+		Call:       templ.SafeScript(`__templ_navigatorCredentialsCreate_63c0`, userId, userHandle, challenge),
+		CallInline: templ.SafeScriptInline(`__templ_navigatorCredentialsCreate_63c0`, userId, userHandle, challenge),
 	}
 }
 

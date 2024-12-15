@@ -4,30 +4,37 @@ module sonr.orm.UCAN
 
 import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
 
-
 // Capability hierarchy for smart account operations
 // ----------------------------------------------
-// OWNER
-//   └─ OPERATOR
-//        └─ AUTHENTICATE
-//        └─ AUTHORIZE
-//        └─ DELEGATE
-//        ├─ EXECUTE
-//        └─ INVOKE
-//        ├─ PROPOSE
-//        └─ SIGN
-//        └─ VOTE
-//   └─ SET_POLICY
-//        └─ SET_THRESHOLD
-//   └─ RECOVER
-//        └─ SOCIAL
-//        └─ VAULT
+// VAULT
+//   └─ CRUD/ASSET
+//   └─ CRUD/AUTHZGRANT
+//   └─ CRUD/PROFILE
+//   └─ CRUD/RECORD
+//   └─ USE/RECOVERY
+//   └─ USE/SYNC
+//   └─ USE/SIGNER
+// ACCOUNT
+//   └─ EXEC/BROADCAST
+//   └─ EXEC/QUERY
+//   └─ EXEC/SIMULATE
+//   └─ EXEC/VOTE
+//   └─ EXEC/DELEGATE
+//   └─ EXEC/INVOKE
+//   └─ EXEC/SEND
+// INTERCHAIN
+//   └─ TRANSFER/SWAP
+//   └─ TRANSFER/SEND
+//   └─ TRANSFER/ATOMIC
+//   └─ TRANSFER/BATCH
+//   └─ TRANSFER/P2P
+//   └─ TRANSFER/SEND
 
 
 typealias CapVault = "crud/asset" | "crud/authzgrant" | "crud/profile" | "crud/record" | "use/recovery" | "use/sync" | "use/signer"
 typealias CapAccount = "exec/broadcast" | "exec/query" | "exec/simulate" | "exec/vote" | "exec/delegate" | "exec/invoke" | "exec/send"
 typealias CapInterchain = "transfer/swap" | "transfer/send" | "transfer/atomic" | "transfer/batch" | "transfer/p2p" | "transfer/send"
 
-typealias ResVault =  "ks/user" | "ks/val" | "loc/cid" | "loc/entity" | "loc/ipns" | "loc/sonr"
-typealias ResAccount = "acc/sequence" | "acc/number" | "chain/id" | "asset/code"
+typealias ResVault =  "ks/user" | "ks/val" | "loc/cid" | "loc/entity" | "loc/ipns" | "addr/sonr" | "chain/code" 
+typealias ResAccount = "acc/sequence" | "acc/number" | "chain/id" | "asset/code" | "authz/grant"
 typealias ResInterchain = "channnel/port" | "chain/id" | "chain/name" | "acc/host" | "acc/controller"

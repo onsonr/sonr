@@ -102,7 +102,6 @@ func (k ucanKeyshare) UCANParser() *ucan.TokenParser {
 			if key == ucan.CapKey {
 				cap = val
 			} else {
-				rsc = ucan.NewStringLengthResource(key, val)
 			}
 		}
 

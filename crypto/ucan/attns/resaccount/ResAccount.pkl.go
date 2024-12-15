@@ -13,6 +13,7 @@ const (
 	AccNumber   ResAccount = "acc/number"
 	ChainId     ResAccount = "chain/id"
 	AssetCode   ResAccount = "asset/code"
+	AuthzGrant  ResAccount = "authz/grant"
 )
 
 // String returns the string representation of ResAccount
@@ -33,6 +34,8 @@ func (rcv *ResAccount) UnmarshalBinary(data []byte) error {
 		*rcv = ChainId
 	case "asset/code":
 		*rcv = AssetCode
+	case "authz/grant":
+		*rcv = AuthzGrant
 	default:
 		return fmt.Errorf(`illegal: "%s" is not a valid ResAccount`, str)
 	}
