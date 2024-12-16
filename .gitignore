@@ -1,4 +1,5 @@
 # Binaries
+no
 .data
 schemas
 *.db
@@ -95,4 +96,8 @@ sonr.wiki
 !buf.lock
 
 .air.toml
+mprocs.yaml
+mprocs.log
+tools-stamp
+sonr.log
 

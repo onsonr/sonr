@@ -1,0 +1,19 @@
+package views
+
+import (
+	"github.com/onsonr/sonr/internal/nebula/hero"
+	"github.com/onsonr/sonr/internal/nebula/layout"
+)
+
+templ ErrorView(err string) {
+	@layout.View("Error | Sonr.ID") {
+		@layout.Container() {
+			@hero.TitleDesc("Uh oh!", "Something went wrong.")
+			<div class="pt-3 flex flex-col items-center justify-center h-full">
+				<p class="text-red-500">
+					{ err }
+				</p>
+			</div>
+		}
+	}
+}

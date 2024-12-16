@@ -1,4 +1,4 @@
-@go.Package { name = "github.com/onsonr/sonr/pkg/config/motr" }
+@go.Package { name = "github.com/onsonr/sonr/internal/config/motr" }
 
 module sonr.net.Motr
 

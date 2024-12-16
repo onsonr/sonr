@@ -41,7 +41,7 @@ func Name() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div hx-target=\"this\" hx-swap=\"outerHTML\" class=\"grid grid-cols-1 lg:grid-cols-2 gap-4\"><sl-input name=\"first_name\" placeholder=\"Satoshi\" type=\"text\" label=\"First Name\" required autofocus></sl-input> <sl-input name=\"last_name\" placeholder=\"N\" maxlength=\"1\" type=\"text\" label=\"Last Initial\"></sl-input></div><br>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div hx-target=\"this\" hx-swap=\"outerHTML\" class=\"grid grid-cols-1 lg:grid-cols-2 gap-4\"><sl-input name=\"first_name\" placeholder=\"Satoshi\" type=\"text\" label=\"First Name\" required></sl-input> <sl-input name=\"last_name\" placeholder=\"N\" maxlength=\"1\" type=\"text\" label=\"Last Initial\"></sl-input></div><br>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -306,7 +306,7 @@ sh-testnet: mod-tidy
 ###############################################################################
 ###                                generation                               ###
 ###############################################################################
-.PHONY: gen-pkl gen-templ
+.PHONY: gen-pkl gen-templ gen-sqlc
 
 gen-pkl: init-env
 	pkl-gen-go pkl/sonr.orm/UCAN.pkl
@@ -314,8 +314,11 @@ gen-pkl: init-env
 	pkl-gen-go pkl/sonr.net/Hway.pkl
 	pkl-gen-go pkl/sonr.net/Motr.pkl
 
+gen-sqlc: init-env
+	@cd internal/database && sqlc generate
+
 gen-templ: init-env
-	templ generate
+	@templ generate
 
 
 ###############################################################################

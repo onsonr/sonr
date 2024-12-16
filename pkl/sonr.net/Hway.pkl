@@ -1,4 +1,4 @@
-@go.Package { name = "github.com/onsonr/sonr/pkg/config/hway" }
+@go.Package { name = "github.com/onsonr/sonr/internal/config/hway" }
 
 
 open module sonr.net.Hway

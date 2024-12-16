@@ -1,14 +1,13 @@
 package mpc
 
 import (
-	"github.com/ipfs/kubo/client/rpc"
 	"github.com/onsonr/sonr/crypto/core/curves"
 	"github.com/onsonr/sonr/crypto/core/protocol"
 	"github.com/onsonr/sonr/crypto/tecdsa/dklsv1"
 )
 
 // GenEnclave generates a new MPC keyshare
-func GenEnclave() (Enclave, error) {
+func GenEnclave(nonce []byte) (Enclave, error) {
 	curve := curves.K256()
 	valKs := dklsv1.NewAliceDkg(curve, protocol.Version1)
 	userKs := dklsv1.NewBobDkg(curve, protocol.Version1)
@@ -24,31 +23,7 @@ func GenEnclave() (Enclave, error) {
 	if err != nil {
 		return nil, err
 	}
-	return initKeyEnclave(valRes, userRes)
-}
-
-// GenEnclaveIPFS generates a new MPC keyshare
-func GenEnclaveIPFS(ipc *rpc.HttpApi) (Enclave, error) {
-	curve := curves.K256()
-	valKs := dklsv1.NewAliceDkg(curve, protocol.Version1)
-	userKs := dklsv1.NewBobDkg(curve, protocol.Version1)
-	aErr, bErr := RunProtocol(userKs, valKs)
-	if err := checkIteratedErrors(aErr, bErr); err != nil {
-		return nil, err
-	}
-	valRes, err := valKs.Result(protocol.Version1)
-	if err != nil {
-		return nil, err
-	}
-	userRes, err := userKs.Result(protocol.Version1)
-	if err != nil {
-		return nil, err
-	}
-	e, err := initKeyEnclave(valRes, userRes)
-	if err != nil {
-		return nil, err
-	}
-	return addEnclaveIPFS(e, ipc)
+	return newEnclave(valRes, userRes, nonce)
 }
 
 // ExecuteSigning runs the MPC signing protocol
@@ -73,7 +48,7 @@ func ExecuteSigning(signFuncVal SignFunc, signFuncUser SignFunc) ([]byte, error)
 }
 
 // ExecuteRefresh runs the MPC refresh protocol
-func ExecuteRefresh(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc) (*KeyEnclave, error) {
+func ExecuteRefresh(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc, nonce []byte) (Enclave, error) {
 	aErr, bErr := RunProtocol(refreshFuncVal, refreshFuncUser)
 	if err := checkIteratedErrors(aErr, bErr); err != nil {
 		return nil, err
@@ -86,7 +61,7 @@ func ExecuteRefresh(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc) (*K
 	if err != nil {
 		return nil, err
 	}
-	return initKeyEnclave(valRefreshResult, userRefreshResult)
+	return newEnclave(valRefreshResult, userRefreshResult, nonce)
 }
 
 // For DKG bob starts first. For refresh and sign, Alice starts first.

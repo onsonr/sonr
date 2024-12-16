@@ -1,0 +1,16 @@
+package views
+
+import (
+	"github.com/onsonr/sonr/internal/nebula/hero"
+	"github.com/onsonr/sonr/internal/nebula/layout"
+)
+
+templ InitialView() {
+	@layout.View("Sonr.ID") {
+		@layout.Container() {
+			@hero.TitleDesc("Sonr.ID", "The decentralized identity layer for the web.")
+			@hero.StartButton()
+			@hero.SocialButtonsRow()
+		}
+	}
+}

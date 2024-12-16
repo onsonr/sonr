@@ -57,9 +57,10 @@ func (k ucanKeyshare) ChainCode() ([]byte, error) {
 
 // DefaultOriginToken returns a default token with the keyshare's issuer as the audience
 func (k ucanKeyshare) OriginToken() (*Token, error) {
-	att := ucan.NewSmartAccount(k.addr)
+	// att := ucan.NewSmartAccount(k.addr)
 	zero := time.Time{}
-	return k.NewOriginToken(k.issuerDID, att, nil, zero, zero)
+	// return k.NewOriginToken(k.issuerDID, att, nil, zero, zero)
+	return k.newToken(k.issuerDID, nil, nil, nil, zero, zero)
 }
 
 func (k ucanKeyshare) SignData(data []byte) ([]byte, error) {
@@ -101,7 +102,6 @@ func (k ucanKeyshare) UCANParser() *ucan.TokenParser {
 			if key == ucan.CapKey {
 				cap = val
 			} else {
-				rsc = ucan.NewStringLengthResource(key, val)
 			}
 		}
 

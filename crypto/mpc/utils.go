@@ -1,33 +1,18 @@
 package mpc
 
 import (
-	"context"
-	"encoding/json"
+	"crypto/aes"
+	"crypto/cipher"
 	"errors"
 	"fmt"
 	"math/big"
 
 	"github.com/cosmos/cosmos-sdk/types/bech32"
-	"github.com/ipfs/boxo/files"
-	"github.com/ipfs/kubo/client/rpc"
 	"github.com/onsonr/sonr/crypto/core/curves"
 	"github.com/onsonr/sonr/crypto/core/protocol"
 	"github.com/onsonr/sonr/crypto/tecdsa/dklsv1"
+	"golang.org/x/crypto/sha3"
 )
-
-func addEnclaveIPFS(enclave *KeyEnclave, ipc *rpc.HttpApi) (Enclave, error) {
-	jsonEnclave, err := json.Marshal(enclave)
-	if err != nil {
-		return nil, err
-	}
-	// Save enclave to IPFS
-	cid, err := ipc.Unixfs().Add(context.Background(), files.NewBytesFile(jsonEnclave))
-	if err != nil {
-		return nil, err
-	}
-	enclave.VaultCID = cid.String()
-	return enclave, nil
-}
 
 func checkIteratedErrors(aErr, bErr error) error {
 	if aErr == protocol.ErrProtocolFinished && bErr == protocol.ErrProtocolFinished {
@@ -49,6 +34,47 @@ func computeSonrAddr(pp Point) (string, error) {
 		return "", err
 	}
 	return sonrAddr, nil
+}
+
+func hashKey(key []byte) []byte {
+	hash := sha3.New256()
+	hash.Write(key)
+	return hash.Sum(nil)[:32] // Use first 32 bytes of hash
+}
+
+func decryptKeyshare(msg []byte, key []byte, nonce []byte) ([]byte, error) {
+	hashedKey := hashKey(key)
+	block, err := aes.NewCipher(hashedKey)
+	if err != nil {
+		return nil, err
+	}
+	aesgcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, err
+	}
+	plaintext, err := aesgcm.Open(nil, nonce, msg, nil)
+	if err != nil {
+		return nil, err
+	}
+	return plaintext, nil
+}
+
+func encryptKeyshare(msg Message, key []byte, nonce []byte) ([]byte, error) {
+	hashedKey := hashKey(key)
+	msgBytes, err := protocol.EncodeMessage(msg)
+	if err != nil {
+		return nil, err
+	}
+	block, err := aes.NewCipher(hashedKey)
+	if err != nil {
+		return nil, err
+	}
+	aesgcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, err
+	}
+	ciphertext := aesgcm.Seal(nil, nonce, []byte(msgBytes), nil)
+	return ciphertext, nil
 }
 
 func getAliceOut(msg *protocol.Message) (AliceOut, error) {
@@ -121,4 +147,24 @@ func deserializeSignature(sigBytes []byte) (*curves.EcdsaSignature, error) {
 		R: r,
 		S: s,
 	}, nil
+}
+
+func userSignFunc(k *keyEnclave, bz []byte) (SignFunc, error) {
+	curve := curves.K256()
+	return dklsv1.NewBobSign(curve, sha3.New256(), bz, k.UserShare, protocol.Version1)
+}
+
+func userRefreshFunc(k *keyEnclave) (RefreshFunc, error) {
+	curve := curves.K256()
+	return dklsv1.NewBobRefresh(curve, k.UserShare, protocol.Version1)
+}
+
+func valSignFunc(k *keyEnclave, bz []byte) (SignFunc, error) {
+	curve := curves.K256()
+	return dklsv1.NewAliceSign(curve, sha3.New256(), bz, k.ValShare, protocol.Version1)
+}
+
+func valRefreshFunc(k *keyEnclave) (RefreshFunc, error) {
+	curve := curves.K256()
+	return dklsv1.NewAliceRefresh(curve, k.ValShare, protocol.Version1)
 }

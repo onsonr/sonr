@@ -41,7 +41,7 @@ func Handle() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div><sl-input name=\"handle\" placeholder=\"digitalgold\" type=\"text\" label=\"Handle\" minlength=\"4\" maxlength=\"12\" required><div slot=\"prefix\"><sl-icon name=\"at-sign\" library=\"sonr\"></sl-icon></div></sl-input></div><br>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div hx-target=\"this\" hx-swap=\"outerHTML\"><sl-input name=\"handle\" placeholder=\"digitalgold\" type=\"text\" label=\"Handle\" minlength=\"4\" maxlength=\"12\" required hx-post=\"/register/profile/handle\" hx-indicator=\"#handle-indicator\" autofocus><div slot=\"prefix\"><sl-icon name=\"at-sign\" library=\"sonr\"></sl-icon></div></sl-input></div><br>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -49,7 +49,7 @@ func Handle() templ.Component {
 	})
 }
 
-func HandleError() templ.Component {
+func HandleError(value string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -70,7 +70,20 @@ func HandleError() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-input name=\"handle\" placeholder=\"digitalgold\" type=\"text\" label=\"Handle\" minlength=\"4\" maxlength=\"12\" required class=\"border-red-500\"><div slot=\"prefix\"><sl-icon name=\"at-sign\" library=\"sonr\"></sl-icon></div><div slot=\"suffix\" style=\"color: #B54549;\"><sl-icon name=\"at-sign\" library=\"sonr\"></sl-icon></div></sl-input><br>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-input name=\"handle\" placeholder=\"digitalgold\" type=\"text\" label=\"Handle\" minlength=\"4\" maxlength=\"12\" required class=\"border-red-500\" value=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var3 string
+		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(value)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/nebula/input/input_handle.templ`, Line: 27, Col: 152}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><div slot=\"prefix\"><sl-icon name=\"at-sign\" library=\"sonr\"></sl-icon></div><div slot=\"suffix\" style=\"color: #B54549;\"><sl-icon name=\"x\"></sl-icon></div></sl-input><br>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -78,7 +91,7 @@ func HandleError() templ.Component {
 	})
 }
 
-func HandleValid() templ.Component {
+func HandleSuccess(value string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -94,12 +107,25 @@ func HandleValid() templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var3 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var3 == nil {
-			templ_7745c5c3_Var3 = templ.NopComponent
+		templ_7745c5c3_Var4 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var4 == nil {
+			templ_7745c5c3_Var4 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-input name=\"handle\" placeholder=\"digitalgold\" type=\"text\" label=\"Handle\" minlength=\"4\" maxlength=\"12\" required class=\"border-green-500\"><div slot=\"prefix\" style=\"color: #46A758;\"><sl-icon name=\"at-sign\" library=\"sonr\"></sl-icon></div></sl-input><br>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-input name=\"handle\" placeholder=\"digitalgold\" type=\"text\" label=\"Handle\" minlength=\"4\" maxlength=\"12\" required class=\"border-green-500\" value=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var5 string
+		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(value)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/nebula/input/input_handle.templ`, Line: 39, Col: 154}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" disabled><div slot=\"prefix\" style=\"color: #46A758;\"><sl-icon name=\"at-sign\" library=\"sonr\"></sl-icon></div></sl-input><br>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -13,8 +13,8 @@ func (s HandleState) string() string {
 }
 
 templ Handle() {
-	<div>
-		<sl-input name="handle" placeholder="digitalgold" type="text" label="Handle" minlength="4" maxlength="12" required>
+	<div hx-target="this" hx-swap="outerHTML">
+		<sl-input name="handle" placeholder="digitalgold" type="text" label="Handle" minlength="4" maxlength="12" required hx-post="/register/profile/handle" hx-indicator="#handle-indicator" autofocus>
 			<div slot="prefix">
 				<sl-icon name="at-sign" library="sonr"></sl-icon>
 			</div>
@@ -23,20 +23,20 @@ templ Handle() {
 	<br/>
 }
 
-templ HandleError() {
-	<sl-input name="handle" placeholder="digitalgold" type="text" label="Handle" minlength="4" maxlength="12" required class="border-red-500">
+templ HandleError(value string) {
+	<sl-input name="handle" placeholder="digitalgold" type="text" label="Handle" minlength="4" maxlength="12" required class="border-red-500" value={ value }>
 		<div slot="prefix">
 			<sl-icon name="at-sign" library="sonr"></sl-icon>
 		</div>
 		<div slot="suffix" style="color: #B54549;">
-			<sl-icon name="at-sign" library="sonr"></sl-icon>
+			<sl-icon name="x"></sl-icon>
 		</div>
 	</sl-input>
 	<br/>
 }
 
-templ HandleValid() {
-	<sl-input name="handle" placeholder="digitalgold" type="text" label="Handle" minlength="4" maxlength="12" required class="border-green-500">
+templ HandleSuccess(value string) {
+	<sl-input name="handle" placeholder="digitalgold" type="text" label="Handle" minlength="4" maxlength="12" required class="border-green-500" value={ value } disabled>
 		<div slot="prefix" style="color: #46A758;">
 			<sl-icon name="at-sign" library="sonr"></sl-icon>
 		</div>

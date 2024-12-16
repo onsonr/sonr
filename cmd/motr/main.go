@@ -8,10 +8,9 @@ import (
 	"syscall/js"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/vault"
-	"github.com/onsonr/sonr/pkg/common/wasm"
-	"github.com/onsonr/sonr/pkg/config/motr"
-	// "github.com/onsonr/sonr/pkg/didauth/controller"
+	"github.com/onsonr/sonr/pkg/vault/routes"
+	"github.com/onsonr/sonr/cmd/motr/wasm"
+	"github.com/onsonr/sonr/internal/config/motr"
 )
 
 var (
@@ -28,7 +27,7 @@ func simulateTx(this js.Value, args []js.Value) interface{} {
 	return nil
 }
 
-func processConfig(this js.Value, args []js.Value) interface{} {
+func syncData(this js.Value, args []js.Value) interface{} {
 	if len(args) < 1 {
 		return nil
 	}
@@ -45,7 +44,7 @@ func main() {
 	// Load dwn config
 	js.Global().Set("broadcastTx", js.FuncOf(broadcastTx))
 	js.Global().Set("simulateTx", js.FuncOf(simulateTx))
-	js.Global().Set("processConfig", js.FuncOf(processConfig))
+	js.Global().Set("syncData", js.FuncOf(syncData))
 
 	e := echo.New()
 	e.Use(wasm.ContextMiddleware)

@@ -1,0 +1,14 @@
+package views
+
+import (
+	"github.com/onsonr/sonr/internal/nebula/hero"
+	"github.com/onsonr/sonr/internal/nebula/layout"
+)
+
+templ LoadingView() {
+	@layout.View("Loading... | Sonr.ID") {
+		@layout.Container() {
+			@hero.TitleDesc("Loading Vault", "This will be used to login to your vault.")
+		}
+	}
+}
