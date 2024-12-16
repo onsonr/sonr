@@ -5,7 +5,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	config "github.com/onsonr/sonr/internal/config/hway"
-	"github.com/onsonr/sonr/internal/models"
+	"github.com/onsonr/sonr/pkg/common"
 )
 
 type ResolverContext struct {
@@ -26,11 +26,11 @@ func UseResolvers(env config.Hway) echo.MiddlewareFunc {
 // CurrentBlock returns the current block
 func CurrentBlock(c echo.Context) uint64 {
 	s := c.(*ResolverContext)
-	qc, err := models.NewNodeClient(s.grpcAddr)
+	qc, err := common.NewNodeClient(s.grpcAddr)
 	if err != nil {
 		return 0
 	}
-	resp, err := qc.Status(c.Request().Context(), &models.StatusRequest{})
+	resp, err := qc.Status(c.Request().Context(), &common.StatusRequest{})
 	if err != nil {
 		return 0
 	}
@@ -38,13 +38,13 @@ func CurrentBlock(c echo.Context) uint64 {
 }
 
 // GetBankParams returns the bank params
-func (s *ResolverContext) GetBankParams() (*models.BankParamsResponse, error) {
+func (s *ResolverContext) GetBankParams() (*common.BankParamsResponse, error) {
 	ctx := context.Background()
-	c, err := models.NewBankClient(s.grpcAddr)
+	c, err := common.NewBankClient(s.grpcAddr)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := c.Params(ctx, &models.BankParamsRequest{})
+	resp, err := c.Params(ctx, &common.BankParamsRequest{})
 	if err != nil {
 		return nil, err
 	}
@@ -52,13 +52,13 @@ func (s *ResolverContext) GetBankParams() (*models.BankParamsResponse, error) {
 }
 
 // GetDIDParams returns the DID params
-func (s *ResolverContext) GetDIDParams() (*models.DIDParamsResponse, error) {
+func (s *ResolverContext) GetDIDParams() (*common.DIDParamsResponse, error) {
 	ctx := context.Background()
-	c, err := models.NewDIDClient(s.grpcAddr)
+	c, err := common.NewDIDClient(s.grpcAddr)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := c.Params(ctx, &models.DIDParamsRequest{})
+	resp, err := c.Params(ctx, &common.DIDParamsRequest{})
 	if err != nil {
 		return nil, err
 	}
@@ -66,13 +66,13 @@ func (s *ResolverContext) GetDIDParams() (*models.DIDParamsResponse, error) {
 }
 
 // GetDWNParams returns the DWN params
-func (s *ResolverContext) GetDWNParams() (*models.DWNParamsResponse, error) {
+func (s *ResolverContext) GetDWNParams() (*common.DWNParamsResponse, error) {
 	ctx := context.Background()
-	c, err := models.NewDWNClient(s.grpcAddr)
+	c, err := common.NewDWNClient(s.grpcAddr)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := c.Params(ctx, &models.DWNParamsRequest{})
+	resp, err := c.Params(ctx, &common.DWNParamsRequest{})
 	if err != nil {
 		return nil, err
 	}
@@ -80,13 +80,13 @@ func (s *ResolverContext) GetDWNParams() (*models.DWNParamsResponse, error) {
 }
 
 // GetNodeStatus returns the node status
-func (s *ResolverContext) GetNodeStatus() (*models.StatusResponse, error) {
+func (s *ResolverContext) GetNodeStatus() (*common.StatusResponse, error) {
 	ctx := context.Background()
-	c, err := models.NewNodeClient(s.grpcAddr)
+	c, err := common.NewNodeClient(s.grpcAddr)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := c.Status(ctx, &models.StatusRequest{})
+	resp, err := c.Status(ctx, &common.StatusRequest{})
 	if err != nil {
 		return nil, err
 	}
@@ -94,13 +94,13 @@ func (s *ResolverContext) GetNodeStatus() (*models.StatusResponse, error) {
 }
 
 // GetSVCParams returns the SVC params
-func (s *ResolverContext) GetSVCParams() (*models.SVCParamsResponse, error) {
+func (s *ResolverContext) GetSVCParams() (*common.SVCParamsResponse, error) {
 	ctx := context.Background()
-	c, err := models.NewSVCClient(s.grpcAddr)
+	c, err := common.NewSVCClient(s.grpcAddr)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := c.Params(ctx, &models.SVCParamsRequest{})
+	resp, err := c.Params(ctx, &common.SVCParamsRequest{})
 	if err != nil {
 		return nil, err
 	}

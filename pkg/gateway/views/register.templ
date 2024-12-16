@@ -1,7 +1,7 @@
 package views
 
 import (
-	"github.com/onsonr/sonr/internal/models"
+	"github.com/onsonr/sonr/pkg/gateway/types"
 	"github.com/onsonr/sonr/internal/nebula/card"
 	"github.com/onsonr/sonr/internal/nebula/form"
 	"github.com/onsonr/sonr/internal/nebula/hero"
@@ -9,7 +9,7 @@ import (
 	"github.com/onsonr/sonr/internal/nebula/layout"
 )
 
-templ RegisterProfileView(data models.CreateProfileParams) {
+templ RegisterProfileView(data types.CreateProfileParams) {
 	@layout.View("New Profile | Sonr.ID") {
 		@layout.Container() {
 			@hero.TitleDesc("Basic Info", "Tell us a little about yourself.")
@@ -34,7 +34,7 @@ templ RegisterProfileView(data models.CreateProfileParams) {
 	}
 }
 
-templ RegisterPasskeyView(data models.CreatePasskeyParams) {
+templ RegisterPasskeyView(data types.CreatePasskeyParams) {
 	@layout.View("Register | Sonr.ID") {
 		@layout.Container() {
 			@hero.TitleDesc("Link a PassKey", "This will be used to login to your vault.")

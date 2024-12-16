@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/models"
+	"github.com/onsonr/sonr/pkg/gateway/types"
 	"github.com/onsonr/sonr/internal/database/repository"
 )
 
@@ -26,7 +26,7 @@ func UseCredentials(dbq *sql.DB) echo.MiddlewareFunc {
 	}
 }
 
-func ListCredentials(c echo.Context, handle string) ([]*models.CredentialDescriptor, error) {
+func ListCredentials(c echo.Context, handle string) ([]*types.CredentialDescriptor, error) {
 	cc, ok := c.(*CredentialsContext)
 	if !ok {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Credentials Context not found")
@@ -35,10 +35,10 @@ func ListCredentials(c echo.Context, handle string) ([]*models.CredentialDescrip
 	if err != nil {
 		return nil, err
 	}
-	return models.CredentialArrayToDescriptors(creds), nil
+	return types.CredentialArrayToDescriptors(creds), nil
 }
 
-func SubmitCredential(c echo.Context, cred *models.CredentialDescriptor) error {
+func SubmitCredential(c echo.Context, cred *types.CredentialDescriptor) error {
 	origin := GetOrigin(c)
 	handle := GetHandle(c)
 	md := cred.ToModel(handle, origin)

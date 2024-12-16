@@ -2,14 +2,14 @@ package handlers
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/models"
+	"github.com/onsonr/sonr/pkg/gateway/types"
 	"github.com/onsonr/sonr/pkg/gateway/middleware"
 	"github.com/onsonr/sonr/pkg/gateway/views"
 )
 
 func RenderProfileCreate(c echo.Context) error {
 	numF, numL := middleware.GetHumanVerificationNumbers(c)
-	params := models.CreateProfileParams{
+	params := types.CreateProfileParams{
 		FirstNumber: int(numF),
 		LastNumber:  int(numL),
 	}
@@ -17,7 +17,7 @@ func RenderProfileCreate(c echo.Context) error {
 }
 
 func RenderPasskeyCreate(c echo.Context) error {
-	return middleware.Render(c, views.RegisterPasskeyView(models.CreatePasskeyParams{}))
+	return middleware.Render(c, views.RegisterPasskeyView(types.CreatePasskeyParams{}))
 }
 
 func RenderVaultLoading(c echo.Context) error {

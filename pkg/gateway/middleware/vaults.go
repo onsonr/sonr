@@ -6,8 +6,8 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/internal/context"
-	"github.com/onsonr/sonr/internal/models"
 	"github.com/onsonr/sonr/pkg/common"
+	"github.com/onsonr/sonr/pkg/gateway/types"
 	"lukechampine.com/blake3"
 )
 
@@ -32,7 +32,7 @@ func UseVaultProvider(ipc common.IPFS) echo.MiddlewareFunc {
 	}
 }
 
-func Spawn(c echo.Context) (models.CreatePasskeyParams, error) {
+func Spawn(c echo.Context) (types.CreatePasskeyParams, error) {
 	cc := c.(*VaultProviderContext)
 	block := fmt.Sprintf("%d", CurrentBlock(c))
 	handle := GetHandle(c)
@@ -41,15 +41,15 @@ func Spawn(c echo.Context) (models.CreatePasskeyParams, error) {
 	sid := GetSessionID(c)
 	nonce, err := calcNonce(sid)
 	if err != nil {
-		return models.DefaultCreatePasskeyParams(), err
+		return types.DefaultCreatePasskeyParams(), err
 	}
 	encl, err := mpc.GenEnclave(nonce)
 	if err != nil {
-		return models.DefaultCreatePasskeyParams(), err
+		return types.DefaultCreatePasskeyParams(), err
 	}
 	cc.stagedEnclaves[sid] = encl
 	context.WriteCookie(c, context.SonrAddress, encl.Address())
-	return models.CreatePasskeyParams{
+	return types.CreatePasskeyParams{
 		Address:       encl.Address(),
 		Handle:        handle,
 		Name:          origin,
@@ -58,8 +58,8 @@ func Spawn(c echo.Context) (models.CreatePasskeyParams, error) {
 	}, nil
 }
 
-func Claim() (models.CreatePasskeyParams, error) {
-	return models.CreatePasskeyParams{}, nil
+func Claim() (types.CreatePasskeyParams, error) {
+	return types.CreatePasskeyParams{}, nil
 }
 
 // Uses blake3 to hash the sessionID to generate a nonce of length 12 bytes

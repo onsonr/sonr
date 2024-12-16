@@ -1,4 +1,4 @@
-package models
+package types
 
 import "github.com/onsonr/sonr/internal/database/repository"
 
