@@ -56,8 +56,7 @@ CREATE TABLE credentials (
     authenticator_attachment TEXT NOT NULL,
     origin TEXT NOT NULL,
     type TEXT NOT NULL,
-    transports TEXT NOT NULL,
-    FOREIGN KEY(handle) REFERENCES profiles(handle) ON DELETE CASCADE
+    transports TEXT NOT NULL
 );
 
 -- Sessions track user authentication state
@@ -78,8 +77,7 @@ CREATE TABLE sessions (
     challenge TEXT NOT NULL,
     is_human_first BOOLEAN NOT NULL DEFAULT FALSE CHECK(is_human_first IN (0,1)),
     is_human_last BOOLEAN NOT NULL DEFAULT FALSE CHECK(is_human_last IN (0,1)),
-    profile_id INTEGER NOT NULL,
-    FOREIGN KEY(profile_id) REFERENCES profiles(id) ON DELETE CASCADE
+    profile_id INTEGER NOT NULL
 );
 
 -- Vaults store encrypted data
@@ -94,9 +92,7 @@ CREATE TABLE vaults (
     cid TEXT NOT NULL UNIQUE,
     config TEXT NOT NULL CHECK(json_valid(config)),
     session_id TEXT NOT NULL,
-    redirect_uri TEXT NOT NULL,
-    FOREIGN KEY(handle) REFERENCES profiles(handle) ON DELETE CASCADE,
-    FOREIGN KEY(session_id) REFERENCES sessions(id) ON DELETE CASCADE
+    redirect_uri TEXT NOT NULL
 );
 
 -- Indexes for common queries
