@@ -9,6 +9,37 @@ import (
 	"time"
 )
 
+type Account struct {
+	ID            string
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	DeletedAt     sql.NullTime
+	Number        int64
+	Sequence      int64
+	Address       string
+	PublicKey     string
+	ChainID       string
+	Controller    string
+	IsSubsidiary  bool
+	IsValidator   bool
+	IsDelegator   bool
+	IsAccountable bool
+}
+
+type Asset struct {
+	ID          string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	DeletedAt   sql.NullTime
+	Name        string
+	Symbol      string
+	Decimals    int64
+	ChainID     string
+	Channel     string
+	AssetType   string
+	CoingeckoID sql.NullString
+}
+
 type Credential struct {
 	ID                      int64
 	CreatedAt               time.Time
@@ -42,14 +73,14 @@ type Session struct {
 	BrowserVersion string
 	ClientIpaddr   string
 	Platform       string
-	IsDesktop      int64
-	IsMobile       int64
-	IsTablet       int64
-	IsTv           int64
-	IsBot          int64
+	IsDesktop      bool
+	IsMobile       bool
+	IsTablet       bool
+	IsTv           bool
+	IsBot          bool
 	Challenge      string
-	IsHumanFirst   int64
-	IsHumanLast    int64
+	IsHumanFirst   bool
+	IsHumanLast    bool
 	ProfileID      int64
 }
 
@@ -62,7 +93,7 @@ type Vault struct {
 	Origin      string
 	Address     string
 	Cid         string
-	Config      interface{}
+	Config      string
 	SessionID   string
 	RedirectUri string
 }

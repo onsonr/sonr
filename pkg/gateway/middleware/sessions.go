@@ -110,17 +110,18 @@ func GetHandle(c echo.Context) string {
 	return profile.Handle
 }
 
-func GetHumanVerificationNumbers(c echo.Context) (int64, int64) {
-	cc, ok := c.(*SessionsContext)
-	if !ok {
-		return 0, 0
-	}
-	s, err := cc.dbq.GetHumanVerificationNumbers(bgCtx(), cc.id)
-	if err != nil {
-		return 0, 0
-	}
-	return s.IsHumanFirst, s.IsHumanLast
-}
+//
+// func GetHumanVerificationNumbers(c echo.Context) (int64, int64) {
+// 	cc, ok := c.(*SessionsContext)
+// 	if !ok {
+// 		return 0, 0
+// 	}
+// 	s, err := cc.dbq.GetHumanVerificationNumbers(bgCtx(), cc.id)
+// 	if err != nil {
+// 		return 0, 0
+// 	}
+// 	return s.IsHumanFirst, s.IsHumanLast
+// }
 
 // utility function to get a context
 func bgCtx() gocontext.Context {

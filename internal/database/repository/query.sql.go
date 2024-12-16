@@ -48,14 +48,14 @@ type CreateSessionParams struct {
 	BrowserVersion string
 	ClientIpaddr   string
 	Platform       string
-	IsDesktop      int64
-	IsMobile       int64
-	IsTablet       int64
-	IsTv           int64
-	IsBot          int64
+	IsDesktop      bool
+	IsMobile       bool
+	IsTablet       bool
+	IsTv           bool
+	IsBot          bool
 	Challenge      string
-	IsHumanFirst   int64
-	IsHumanLast    int64
+	IsHumanFirst   bool
+	IsHumanLast    bool
 	ProfileID      int64
 }
 
@@ -184,8 +184,8 @@ LIMIT 1
 `
 
 type GetHumanVerificationNumbersRow struct {
-	IsHumanFirst int64
-	IsHumanLast  int64
+	IsHumanFirst bool
+	IsHumanLast  bool
 }
 
 func (q *Queries) GetHumanVerificationNumbers(ctx context.Context, id string) (GetHumanVerificationNumbersRow, error) {
@@ -511,8 +511,8 @@ RETURNING id, created_at, updated_at, deleted_at, browser_name, browser_version,
 `
 
 type UpdateSessionHumanVerificationParams struct {
-	IsHumanFirst int64
-	IsHumanLast  int64
+	IsHumanFirst bool
+	IsHumanLast  bool
 	ID           string
 }
 
