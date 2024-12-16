@@ -1,33 +1,15 @@
 package middleware
 
 import (
-	"database/sql"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/pkg/gateway/types"
 	"github.com/onsonr/sonr/internal/database/repository"
+	"github.com/onsonr/sonr/pkg/gateway/types"
 )
 
-type CredentialsContext struct {
-	echo.Context
-	dbq *repository.Queries
-}
-
-func UseCredentials(dbq *sql.DB) echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			ctx := &CredentialsContext{
-				Context: c,
-				dbq:     repository.New(dbq),
-			}
-			return next(ctx)
-		}
-	}
-}
-
 func ListCredentials(c echo.Context, handle string) ([]*types.CredentialDescriptor, error) {
-	cc, ok := c.(*CredentialsContext)
+	cc, ok := c.(*GatewayContext)
 	if !ok {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Credentials Context not found")
 	}
@@ -43,7 +25,7 @@ func SubmitCredential(c echo.Context, cred *types.CredentialDescriptor) error {
 	handle := GetHandle(c)
 	md := cred.ToModel(handle, origin)
 
-	cc, ok := c.(*CredentialsContext)
+	cc, ok := c.(*GatewayContext)
 	if !ok {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Credentials Context not found")
 	}

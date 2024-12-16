@@ -27,7 +27,7 @@ func simulateTx(this js.Value, args []js.Value) interface{} {
 	return nil
 }
 
-func processConfig(this js.Value, args []js.Value) interface{} {
+func syncData(this js.Value, args []js.Value) interface{} {
 	if len(args) < 1 {
 		return nil
 	}
@@ -44,7 +44,7 @@ func main() {
 	// Load dwn config
 	js.Global().Set("broadcastTx", js.FuncOf(broadcastTx))
 	js.Global().Set("simulateTx", js.FuncOf(simulateTx))
-	js.Global().Set("processConfig", js.FuncOf(processConfig))
+	js.Global().Set("syncData", js.FuncOf(syncData))
 
 	e := echo.New()
 	e.Use(wasm.ContextMiddleware)

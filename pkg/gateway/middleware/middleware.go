@@ -1,34 +1,40 @@
 package middleware
 
 import (
-	"net/http"
+	"database/sql"
 
-	"github.com/labstack/echo-contrib/echoprometheus"
 	"github.com/labstack/echo/v4"
-	echomiddleware "github.com/labstack/echo/v4/middleware"
+	"github.com/medama-io/go-useragent"
+	"github.com/onsonr/sonr/crypto/mpc"
+	"github.com/onsonr/sonr/internal/config/hway"
+	"github.com/onsonr/sonr/internal/database/repository"
+	"github.com/onsonr/sonr/pkg/common"
 )
 
-func InitServer(grpcAddr string) *echo.Echo {
-	grpcEndpoint = grpcAddr
-	e := echo.New()
-	// Override default behaviors
-	e.IPExtractor = echo.ExtractIPDirect()
-	e.HTTPErrorHandler = redirectOnError("http://localhost:3000")
-
-	// Built-in middleware
-	e.Use(echoprometheus.NewMiddleware("hway"))
-	e.Use(echomiddleware.Logger())
-	e.Use(echomiddleware.Recover())
-	return e
+type GatewayContext struct {
+	echo.Context
+	agent          useragent.UserAgent
+	id             string
+	dbq            *repository.Queries
+	ipfsClient     common.IPFS
+	tokenStore     common.IPFSTokenStore
+	stagedEnclaves map[string]mpc.Enclave
+	grpcAddr       string
 }
 
-func redirectOnError(target string) echo.HTTPErrorHandler {
-	return func(err error, c echo.Context) {
-		if he, ok := err.(*echo.HTTPError); ok {
-			// Log the error if needed
-			c.Logger().Errorf("Error: %v", he.Message)
+func UseGateway(env hway.Hway, ipc common.IPFS, db *sql.DB) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			ua := useragent.NewParser()
+			ctx := &GatewayContext{
+				agent: ua.Parse(c.Request().UserAgent()),
+				Context:    c,
+				dbq:        repository.New(db),
+				ipfsClient: ipc,
+				grpcAddr:   env.GetSonrGrpcUrl(),
+				tokenStore: common.NewUCANStore(ipc),
+			}
+			return next(ctx)
 		}
-		// Redirect to main site
-		c.Redirect(http.StatusFound, target)
 	}
 }

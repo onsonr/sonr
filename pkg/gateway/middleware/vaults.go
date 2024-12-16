@@ -6,34 +6,12 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/internal/context"
-	"github.com/onsonr/sonr/pkg/common"
 	"github.com/onsonr/sonr/pkg/gateway/types"
 	"lukechampine.com/blake3"
 )
 
-type VaultProviderContext struct {
-	echo.Context
-	ipfsClient     common.IPFS
-	tokenStore     common.IPFSTokenStore
-	stagedEnclaves map[string]mpc.Enclave
-}
-
-func UseVaultProvider(ipc common.IPFS) echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			svc := &VaultProviderContext{
-				Context:        c,
-				ipfsClient:     ipc,
-				stagedEnclaves: make(map[string]mpc.Enclave),
-				tokenStore:     common.NewUCANStore(ipc),
-			}
-			return next(svc)
-		}
-	}
-}
-
 func Spawn(c echo.Context) (types.CreatePasskeyParams, error) {
-	cc := c.(*VaultProviderContext)
+	cc := c.(*GatewayContext)
 	block := fmt.Sprintf("%d", CurrentBlock(c))
 	handle := GetHandle(c)
 	origin := GetOrigin(c)

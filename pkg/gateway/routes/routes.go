@@ -5,7 +5,7 @@ import (
 	"github.com/onsonr/sonr/pkg/gateway/handlers"
 )
 
-func RegisterPages(e *echo.Echo) error {
+func Register(e *echo.Echo) error {
 	// Register View Handlers
 	e.GET("/", handlers.RenderIndex)
 	e.GET("/register", handlers.RenderProfileCreate)

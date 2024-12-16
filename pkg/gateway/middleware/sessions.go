@@ -2,35 +2,14 @@ package middleware
 
 import (
 	gocontext "context"
-	"database/sql"
 
 	"github.com/labstack/echo/v4"
-	"github.com/medama-io/go-useragent"
 	"github.com/onsonr/sonr/internal/context"
 	"github.com/onsonr/sonr/internal/database"
-	"github.com/onsonr/sonr/internal/database/repository"
 )
 
-type SessionsContext struct {
-	echo.Context
-	dbq   *repository.Queries
-	id    string
-	agent useragent.UserAgent
-}
-
-func UseSessions(conn *sql.DB) echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			ua := useragent.NewParser()
-			agent := ua.Parse(c.Request().UserAgent())
-			cc := &SessionsContext{dbq: repository.New(conn), Context: c, agent: agent}
-			return next(cc)
-		}
-	}
-}
-
 func NewSession(c echo.Context) error {
-	cc, ok := c.(*SessionsContext)
+	cc, ok := c.(*GatewayContext)
 	if !ok {
 		return nil
 	}
@@ -48,7 +27,7 @@ func NewSession(c echo.Context) error {
 
 // ForbiddenDevice returns true if the device is unavailable
 func ForbiddenDevice(c echo.Context) bool {
-	cc, ok := c.(*SessionsContext)
+	cc, ok := c.(*GatewayContext)
 	if !ok {
 		return true
 	}
@@ -61,7 +40,7 @@ func GetOrigin(c echo.Context) string {
 
 func GetSessionID(c echo.Context) string {
 	// Check from context
-	cc, ok := c.(*SessionsContext)
+	cc, ok := c.(*GatewayContext)
 	if !ok {
 		return ""
 	}
@@ -76,7 +55,7 @@ func GetSessionID(c echo.Context) string {
 }
 
 func GetSessionChallenge(c echo.Context) string {
-	cc, ok := c.(*SessionsContext)
+	cc, ok := c.(*GatewayContext)
 	if !ok {
 		return ""
 	}
@@ -95,7 +74,7 @@ func GetHandle(c echo.Context) string {
 	}
 
 	// Then check the session
-	cc, ok := c.(*SessionsContext)
+	cc, ok := c.(*GatewayContext)
 	if !ok {
 		return ""
 	}
@@ -112,7 +91,7 @@ func GetHandle(c echo.Context) string {
 
 //
 // func GetHumanVerificationNumbers(c echo.Context) (int64, int64) {
-// 	cc, ok := c.(*SessionsContext)
+// 	cc, ok := c.(*GatewayContext)
 // 	if !ok {
 // 		return 0, 0
 // 	}

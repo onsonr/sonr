@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"database/sql"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -9,22 +8,8 @@ import (
 	"github.com/onsonr/sonr/internal/database/repository"
 )
 
-type ProfilesContext struct {
-	echo.Context
-	dbq *repository.Queries
-}
-
-func UseProfiles(conn *sql.DB) echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			ctx := &ProfilesContext{Context: c, dbq: repository.New(conn)}
-			return next(ctx)
-		}
-	}
-}
-
 func CheckHandleUnique(c echo.Context, handle string) bool {
-	ctx, ok := c.(*ProfilesContext)
+	ctx, ok := c.(*GatewayContext)
 	if !ok {
 		return false
 	}
@@ -40,7 +25,7 @@ func CheckHandleUnique(c echo.Context, handle string) bool {
 }
 
 func CreateProfile(c echo.Context) (*repository.Profile, error) {
-	ctx, ok := c.(*ProfilesContext)
+	ctx, ok := c.(*GatewayContext)
 	if !ok {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Profile Context not found")
 	}
@@ -70,7 +55,7 @@ func CreateProfile(c echo.Context) (*repository.Profile, error) {
 }
 
 func UpdateProfile(c echo.Context) (*repository.Profile, error) {
-	ctx, ok := c.(*ProfilesContext)
+	ctx, ok := c.(*GatewayContext)
 	if !ok {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Profile Context not found")
 	}
@@ -89,7 +74,7 @@ func UpdateProfile(c echo.Context) (*repository.Profile, error) {
 }
 
 func ReadProfile(c echo.Context) (*repository.Profile, error) {
-	ctx, ok := c.(*ProfilesContext)
+	ctx, ok := c.(*GatewayContext)
 	if !ok {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Profile Context not found")
 	}
@@ -102,7 +87,7 @@ func ReadProfile(c echo.Context) (*repository.Profile, error) {
 }
 
 func DeleteProfile(c echo.Context) error {
-	ctx, ok := c.(*ProfilesContext)
+	ctx, ok := c.(*GatewayContext)
 	if !ok {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Profile Context not found")
 	}
