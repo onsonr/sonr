@@ -6,7 +6,6 @@
 [![Static Badge](https://img.shields.io/badge/homepage-sonr.io-blue?style=flat-square)](https://sonr.io)
 [![Go Report Card](https://goreportcard.com/badge/github.com/onsonr/sonr)](https://goreportcard.com/report/github.com/onsonr/sonr)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=sonrhq_sonr&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=sonr-io_sonr)
-[![Latest version of 'sonrd' @ Cloudsmith](https://api-prd.cloudsmith.io/v1/badges/version/sonr/sonr/deb/sonrd/latest/a=amd64;xc=main;d=ubuntu%252Fxenial;t=binary/?render=true&show_latest=true)](https://cloudsmith.io/~sonr/repos/sonr/packages/detail/deb/sonrd/latest/a=amd64;xc=main;d=ubuntu%252Fxenial;t=binary/)
 
 > Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS—providing users with a secure, portable decentralized identity.
 
