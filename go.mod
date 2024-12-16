@@ -95,8 +95,8 @@ require (
 	github.com/stretchr/testify v1.10.0
 	golang.org/x/crypto v0.31.0
 	golang.org/x/exp v0.0.0-20241204233417-43b7b7cde48d
-	google.golang.org/genproto/googleapis/api v0.0.0-20241007155032-5fefd90f89a9
-	google.golang.org/grpc v1.67.1
+	google.golang.org/genproto/googleapis/api v0.0.0-20241015192408-796eee8c2d53
+	google.golang.org/grpc v1.69.0
 	google.golang.org/protobuf v1.35.2
 	gorm.io/driver/postgres v1.5.11
 	gorm.io/driver/sqlite v1.5.6
@@ -106,7 +106,7 @@ require (
 
 require (
 	cloud.google.com/go v0.112.1 // indirect
-	cloud.google.com/go/compute/metadata v0.5.0 // indirect
+	cloud.google.com/go/compute/metadata v0.5.2 // indirect
 	cloud.google.com/go/iam v1.1.6 // indirect
 	cloud.google.com/go/storage v1.38.0 // indirect
 	github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4 // indirect
@@ -375,7 +375,7 @@ require (
 	gonum.org/v1/gonum v0.15.0 // indirect
 	google.golang.org/api v0.172.0 // indirect
 	google.golang.org/genproto v0.0.0-20240227224415-6ceb2ff114de // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20241007155032-5fefd90f89a9 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20241015192408-796eee8c2d53 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
