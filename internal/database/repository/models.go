@@ -31,7 +31,6 @@ type Profile struct {
 	Handle    string
 	Origin    string
 	Name      string
-	Cid       string
 }
 
 type Session struct {
@@ -52,4 +51,18 @@ type Session struct {
 	IsHumanFirst   int64
 	IsHumanLast    int64
 	ProfileID      int64
+}
+
+type Vault struct {
+	ID          int64
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	DeletedAt   sql.NullTime
+	Handle      string
+	Origin      string
+	Address     string
+	Cid         string
+	Config      interface{}
+	SessionID   string
+	RedirectUri string
 }

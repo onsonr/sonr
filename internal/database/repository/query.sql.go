@@ -196,7 +196,7 @@ func (q *Queries) GetHumanVerificationNumbers(ctx context.Context, id string) (G
 }
 
 const getProfileByAddress = `-- name: GetProfileByAddress :one
-SELECT id, created_at, updated_at, deleted_at, address, handle, origin, name, cid FROM profiles
+SELECT id, created_at, updated_at, deleted_at, address, handle, origin, name FROM profiles
 WHERE address = ? AND deleted_at IS NULL
 LIMIT 1
 `
@@ -213,13 +213,12 @@ func (q *Queries) GetProfileByAddress(ctx context.Context, address string) (Prof
 		&i.Handle,
 		&i.Origin,
 		&i.Name,
-		&i.Cid,
 	)
 	return i, err
 }
 
 const getProfileByHandle = `-- name: GetProfileByHandle :one
-SELECT id, created_at, updated_at, deleted_at, address, handle, origin, name, cid FROM profiles
+SELECT id, created_at, updated_at, deleted_at, address, handle, origin, name FROM profiles
 WHERE handle = ? 
 AND deleted_at IS NULL
 LIMIT 1
@@ -237,13 +236,12 @@ func (q *Queries) GetProfileByHandle(ctx context.Context, handle string) (Profil
 		&i.Handle,
 		&i.Origin,
 		&i.Name,
-		&i.Cid,
 	)
 	return i, err
 }
 
 const getProfileByID = `-- name: GetProfileByID :one
-SELECT id, created_at, updated_at, deleted_at, address, handle, origin, name, cid FROM profiles
+SELECT id, created_at, updated_at, deleted_at, address, handle, origin, name FROM profiles
 WHERE id = ? AND deleted_at IS NULL
 LIMIT 1
 `
@@ -260,7 +258,6 @@ func (q *Queries) GetProfileByID(ctx context.Context, id int64) (Profile, error)
 		&i.Handle,
 		&i.Origin,
 		&i.Name,
-		&i.Cid,
 	)
 	return i, err
 }
@@ -327,6 +324,46 @@ func (q *Queries) GetSessionByID(ctx context.Context, id string) (Session, error
 	return i, err
 }
 
+const getVaultConfigByCID = `-- name: GetVaultConfigByCID :one
+SELECT id, created_at, updated_at, deleted_at, handle, origin, address, cid, config, session_id, redirect_uri FROM vaults
+WHERE cid = ? 
+AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetVaultConfigByCID(ctx context.Context, cid string) (Vault, error) {
+	row := q.db.QueryRowContext(ctx, getVaultConfigByCID, cid)
+	var i Vault
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Handle,
+		&i.Origin,
+		&i.Address,
+		&i.Cid,
+		&i.Config,
+		&i.SessionID,
+		&i.RedirectUri,
+	)
+	return i, err
+}
+
+const getVaultRedirectURIBySessionID = `-- name: GetVaultRedirectURIBySessionID :one
+SELECT redirect_uri FROM vaults
+WHERE session_id = ? 
+AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetVaultRedirectURIBySessionID(ctx context.Context, sessionID string) (string, error) {
+	row := q.db.QueryRowContext(ctx, getVaultRedirectURIBySessionID, sessionID)
+	var redirect_uri string
+	err := row.Scan(&redirect_uri)
+	return redirect_uri, err
+}
+
 const insertCredential = `-- name: InsertCredential :one
 INSERT INTO credentials (
     handle,
@@ -377,7 +414,7 @@ INSERT INTO profiles (
     origin,
     name
 ) VALUES (?, ?, ?, ?)
-RETURNING id, created_at, updated_at, deleted_at, address, handle, origin, name, cid
+RETURNING id, created_at, updated_at, deleted_at, address, handle, origin, name
 `
 
 type InsertProfileParams struct {
@@ -404,7 +441,6 @@ func (q *Queries) InsertProfile(ctx context.Context, arg InsertProfileParams) (P
 		&i.Handle,
 		&i.Origin,
 		&i.Name,
-		&i.Cid,
 	)
 	return i, err
 }
@@ -439,7 +475,7 @@ SET
     updated_at = CURRENT_TIMESTAMP
 WHERE address = ? 
 AND deleted_at IS NULL
-RETURNING id, created_at, updated_at, deleted_at, address, handle, origin, name, cid
+RETURNING id, created_at, updated_at, deleted_at, address, handle, origin, name
 `
 
 type UpdateProfileParams struct {
@@ -460,7 +496,6 @@ func (q *Queries) UpdateProfile(ctx context.Context, arg UpdateProfileParams) (P
 		&i.Handle,
 		&i.Origin,
 		&i.Name,
-		&i.Cid,
 	)
 	return i, err
 }
