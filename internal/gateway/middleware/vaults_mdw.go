@@ -5,6 +5,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/crypto/mpc"
+	"github.com/onsonr/sonr/internal/gateway/context"
 	"github.com/onsonr/sonr/internal/gateway/models"
 	"github.com/onsonr/sonr/pkg/ipfsapi"
 	"lukechampine.com/blake3"
@@ -47,6 +48,7 @@ func Spawn(c echo.Context) (models.CreatePasskeyParams, error) {
 		return models.DefaultCreatePasskeyParams(), err
 	}
 	cc.stagedEnclaves[sid] = encl
+	context.WriteCookie(c, context.SonrAddress, encl.Address())
 	return models.CreatePasskeyParams{
 		Address:       encl.Address(),
 		Handle:        handle,

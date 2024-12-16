@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/internal/gateway/context"
 	"github.com/onsonr/sonr/internal/gateway/models/repository"
-	"github.com/onsonr/sonr/pkg/common"
 )
 
 type ProfilesContext struct {
@@ -35,7 +35,7 @@ func CheckHandleUnique(c echo.Context, handle string) bool {
 	if ok {
 		return false
 	}
-	common.WriteCookie(c, common.UserHandle, handle)
+	context.WriteCookie(c, context.UserHandle, handle)
 	return true
 }
 

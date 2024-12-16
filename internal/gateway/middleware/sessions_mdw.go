@@ -1,11 +1,12 @@
 package middleware
 
 import (
-	"context"
+	gocontext "context"
 	"database/sql"
 
 	"github.com/labstack/echo/v4"
 	"github.com/medama-io/go-useragent"
+	"github.com/onsonr/sonr/internal/gateway/context"
 	"github.com/onsonr/sonr/internal/gateway/models"
 	"github.com/onsonr/sonr/internal/gateway/models/repository"
 	"github.com/onsonr/sonr/pkg/common"
@@ -30,7 +31,7 @@ func UseSessions(conn *sql.DB) echo.MiddlewareFunc {
 				return err
 			}
 			// Set Cookie
-			if err := common.WriteCookie(c, common.SessionID, cc.id); err != nil {
+			if err := context.WriteCookie(c, context.SessionID, cc.id); err != nil {
 				return err
 			}
 			return next(cc)
@@ -115,7 +116,7 @@ func GetHumanVerificationNumbers(c echo.Context) (int64, int64) {
 }
 
 // utility function to get a context
-func bgCtx() context.Context {
-	ctx := context.Background()
+func bgCtx() gocontext.Context {
+	ctx := gocontext.Background()
 	return ctx
 }

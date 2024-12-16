@@ -5,16 +5,18 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
+	config "github.com/onsonr/sonr/pkg/config/hway"
 )
 
 type RenderContext struct {
 	echo.Context
+	env config.Hway
 }
 
-func UseRender() echo.MiddlewareFunc {
+func UseRender(env config.Hway) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			ctx := &RenderContext{Context: c}
+			ctx := &RenderContext{Context: c, env: env}
 			return next(ctx)
 		}
 	}

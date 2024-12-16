@@ -24,17 +24,20 @@ func New(env config.Hway, ipc ipfsapi.Client) (Gateway, error) {
 	if err != nil {
 		return nil, err
 	}
-	e := createServer(env, ipc, db)
+	e := initServer(env, ipc, db)
 	routes.RegisterPages(e)
 	return e, nil
 }
 
-// createServer sets up the server
-func createServer(env config.Hway, ipc ipfsapi.Client, db *sql.DB) *echo.Echo {
+// initServer sets up the server
+func initServer(env config.Hway, ipc ipfsapi.Client, db *sql.DB) *echo.Echo {
 	e := echo.New()
+	// Overrides
 	e.HTTPErrorHandler = RedirectOnError("http://localhost:3000")
-	e.Use(echoprometheus.NewMiddleware("hway"))
 	e.IPExtractor = echo.ExtractIPDirect()
+
+	// Built-in middleware
+	e.Use(echoprometheus.NewMiddleware("hway"))
 	e.Use(echomiddleware.Logger())
 	e.Use(echomiddleware.Recover())
 
@@ -44,7 +47,8 @@ func createServer(env config.Hway, ipc ipfsapi.Client, db *sql.DB) *echo.Echo {
 	e.Use(middleware.UseResolvers(env))
 	e.Use(middleware.UseProfiles(db))
 	e.Use(middleware.UseVaults(ipc))
-	e.Use(middleware.UseRender())
+	e.Use(middleware.UseRender(env))
+
 	return e
 }
 
