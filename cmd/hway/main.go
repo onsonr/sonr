@@ -5,8 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	config "github.com/onsonr/sonr/pkg/config/hway"
-	"github.com/onsonr/sonr/pkg/ipfsapi"
+	config "github.com/onsonr/sonr/internal/config/hway"
 )
 
 // main is the entry point for the application
@@ -17,15 +16,6 @@ func main() {
 		os.Exit(1)
 	}
 	os.Exit(0)
-}
-
-func initDeps(env config.Hway) (ipfsapi.Client, error) {
-	ipc, err := ipfsapi.NewClient()
-	if err != nil {
-		return nil, err
-	}
-
-	return ipc, nil
 }
 
 func loadEnvImplFromArgs(args []string) (config.Hway, error) {

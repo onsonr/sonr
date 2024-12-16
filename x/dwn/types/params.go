@@ -3,11 +3,11 @@ package types
 import (
 	"encoding/json"
 
-	"github.com/onsonr/sonr/pkg/common/models"
-	"github.com/onsonr/sonr/pkg/common/models/keyalgorithm"
-	"github.com/onsonr/sonr/pkg/common/models/keycurve"
-	"github.com/onsonr/sonr/pkg/common/models/keyencoding"
-	"github.com/onsonr/sonr/pkg/common/models/keyrole"
+	"github.com/onsonr/sonr/internal/models"
+	"github.com/onsonr/sonr/internal/models/keyalgorithm"
+	"github.com/onsonr/sonr/internal/models/keycurve"
+	"github.com/onsonr/sonr/internal/models/keyencoding"
+	"github.com/onsonr/sonr/internal/models/keyrole"
 )
 
 // DefaultParams returns default module parameters.
