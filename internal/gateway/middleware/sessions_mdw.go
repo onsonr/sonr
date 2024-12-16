@@ -25,18 +25,26 @@ func UseSessions(conn *sql.DB) echo.MiddlewareFunc {
 			ua := useragent.NewParser()
 			agent := ua.Parse(c.Request().UserAgent())
 			cc := &SessionsContext{dbq: repository.New(conn), Context: c, agent: agent}
-			baseSessionCreateParams := models.BaseSessionCreateParams(cc)
-			cc.id = baseSessionCreateParams.ID
-			if _, err := cc.dbq.CreateSession(bgCtx(), baseSessionCreateParams); err != nil {
-				return err
-			}
-			// Set Cookie
-			if err := context.WriteCookie(c, context.SessionID, cc.id); err != nil {
-				return err
-			}
 			return next(cc)
 		}
 	}
+}
+
+func InitNewSession(c echo.Context) error {
+	cc, ok := c.(*SessionsContext)
+	if !ok {
+		return nil
+	}
+	baseSessionCreateParams := models.BaseSessionCreateParams(cc)
+	cc.id = baseSessionCreateParams.ID
+	if _, err := cc.dbq.CreateSession(bgCtx(), baseSessionCreateParams); err != nil {
+		return err
+	}
+	// Set Cookie
+	if err := context.WriteCookie(c, context.SessionID, cc.id); err != nil {
+		return err
+	}
+	return nil
 }
 
 // ForbiddenDevice returns true if the device is unavailable

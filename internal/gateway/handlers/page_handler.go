@@ -5,15 +5,20 @@ import (
 	"github.com/onsonr/sonr/internal/gateway/middleware"
 	"github.com/onsonr/sonr/internal/gateway/models"
 	"github.com/onsonr/sonr/internal/gateway/views"
-	"golang.org/x/exp/rand"
 )
 
 func RenderIndex(c echo.Context) error {
-	return middleware.Render(c, views.InitialView(middleware.ForbiddenDevice(c)))
+	isForbidden := middleware.ForbiddenDevice(c)
+	return middleware.Render(c, views.InitialView(isForbidden))
 }
 
 func RenderProfileCreate(c echo.Context) error {
-	return middleware.Render(c, views.CreateProfileForm(getCreateProfileData()))
+	numF, numL := middleware.GetHumanVerificationNumbers(c)
+	params := models.CreateProfileParams{
+		FirstNumber: int(numF),
+		LastNumber:  int(numL),
+	}
+	return middleware.Render(c, views.CreateProfileForm(params))
 }
 
 func RenderPasskeyCreate(c echo.Context) error {
@@ -22,11 +27,4 @@ func RenderPasskeyCreate(c echo.Context) error {
 
 func RenderVaultLoading(c echo.Context) error {
 	return middleware.Render(c, views.LoadingVaultView())
-}
-
-func getCreateProfileData() models.CreateProfileParams {
-	return models.CreateProfileParams{
-		FirstNumber: rand.Intn(5) + 1,
-		LastNumber:  rand.Intn(4) + 1,
-	}
 }
