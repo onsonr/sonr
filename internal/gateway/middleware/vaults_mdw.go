@@ -1,7 +1,8 @@
 package middleware
 
 import (
-	"github.com/go-webauthn/webauthn/protocol"
+	"fmt"
+
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/internal/gateway/models"
@@ -11,10 +12,8 @@ import (
 
 type VaultProviderContext struct {
 	echo.Context
-	ipfsClient ipfsapi.Client
-	tokenStore ipfsapi.IPFSTokenStore
-
-	challengeCache map[string]protocol.URLEncodedBase64
+	ipfsClient     ipfsapi.Client
+	tokenStore     ipfsapi.IPFSTokenStore
 	stagedEnclaves map[string]mpc.Enclave
 }
 
@@ -24,7 +23,6 @@ func UseVaults(ipc ipfsapi.Client) echo.MiddlewareFunc {
 			svc := &VaultProviderContext{
 				Context:        c,
 				ipfsClient:     ipc,
-				challengeCache: make(map[string]protocol.URLEncodedBase64),
 				stagedEnclaves: make(map[string]mpc.Enclave),
 				tokenStore:     ipfsapi.NewUCANStore(ipc),
 			}
@@ -33,31 +31,32 @@ func UseVaults(ipc ipfsapi.Client) echo.MiddlewareFunc {
 	}
 }
 
-func Spawn(sessionID string, handle string, origin string, challenge string) (models.CreatePasskeyParams, error) {
-	nonce, err := calcNonce(sessionID)
+func Spawn(c echo.Context) (models.CreatePasskeyParams, error) {
+	cc := c.(*VaultProviderContext)
+	block := fmt.Sprintf("%d", CurrentBlock(c))
+	handle := GetHandle(c)
+	origin := GetOrigin(c)
+	challenge := GetSessionChallenge(c)
+	sid := GetSessionID(c)
+	nonce, err := calcNonce(sid)
 	if err != nil {
-		return models.CreatePasskeyParams{
-			Address:       "",
-			Handle:        "",
-			Name:          "",
-			Challenge:     "",
-			CreationBlock: "",
-		}, err
+		return models.DefaultCreatePasskeyParams(), err
 	}
 	encl, err := mpc.GenEnclave(nonce)
 	if err != nil {
-		return models.CreatePasskeyParams{}, err
+		return models.DefaultCreatePasskeyParams(), err
 	}
+	cc.stagedEnclaves[sid] = encl
 	return models.CreatePasskeyParams{
 		Address:       encl.Address(),
 		Handle:        handle,
 		Name:          origin,
 		Challenge:     challenge,
-		CreationBlock: "00001",
+		CreationBlock: block,
 	}, nil
 }
 
-func Claim(sessionID string, handle string, origin string) (models.CreatePasskeyParams, error) {
+func Claim() (models.CreatePasskeyParams, error) {
 	return models.CreatePasskeyParams{}, nil
 }
 

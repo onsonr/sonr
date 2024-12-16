@@ -6,8 +6,8 @@ import (
 	"github.com/labstack/echo/v4"
 	// "github.com/onsonr/sonr/internal/gateway/context"
 
+	"github.com/onsonr/sonr/internal/gateway/middleware"
 	"github.com/onsonr/sonr/internal/nebula/input"
-	"github.com/onsonr/sonr/pkg/common/response"
 )
 
 // ValidateProfileHandle finds the chosen handle and verifies it is unique
@@ -15,10 +15,10 @@ func ValidateProfileHandle(c echo.Context) error {
 	handle := c.FormValue("handle")
 	//
 	// if ok {
-	// 	return response.TemplEcho(c, input.HandleError(handle))
+	// 	return middleware.Render(c, input.HandleError(handle))
 	// }
 	//
-	return response.TemplEcho(c, input.HandleSuccess(handle))
+	return middleware.Render(c, input.HandleSuccess(handle))
 }
 
 // ValidateProfileHandle finds the chosen handle and verifies it is unique
@@ -27,10 +27,10 @@ func ValidateIsHumanSum(c echo.Context) error {
 	// value := c.FormValue("is_human")
 	// intValue, err := strconv.Atoi(value)
 	// if err != nil {
-	// 	return response.TemplEcho(c, input.HumanSliderError(data.FirstNumber, data.LastNumber))
+	// 	return middleware.Render(c, input.HumanSliderError(data.FirstNumber, data.LastNumber))
 	// }
 	// if intValue != data.Sum() {
-	// 	return response.TemplEcho(c, input.HumanSliderError(data.FirstNumber, data.LastNumber))
+	// 	return middleware.Render(c, input.HumanSliderError(data.FirstNumber, data.LastNumber))
 	// }
-	return response.TemplEcho(c, input.HumanSliderSuccess())
+	return middleware.Render(c, input.HumanSliderSuccess())
 }

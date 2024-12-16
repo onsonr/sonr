@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -13,12 +14,12 @@ type CredentialsContext struct {
 	dbq *repository.Queries
 }
 
-func Middleware(dbq *repository.Queries) echo.MiddlewareFunc {
+func UseCredentials(dbq *sql.DB) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			ctx := &CredentialsContext{
 				Context: c,
-				dbq:     dbq,
+				dbq:     repository.New(dbq),
 			}
 			return next(ctx)
 		}
