@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 
 	"github.com/ipfs/boxo/files"
-	config "github.com/onsonr/sonr/pkg/config/motr"
+	config "github.com/onsonr/sonr/internal/config/motr"
+	"github.com/onsonr/sonr/internal/models"
 )
 
 const SchemaVersion = 1
@@ -18,7 +19,7 @@ const (
 
 // spawnVaultDirectory creates a new directory with the default files
 func NewVaultFS(cfg *config.Config) (files.Directory, error) {
-	manifestBz, err := newWebManifestBytes()
+	manifestBz, err := models.NewWebManifest()
 	if err != nil {
 		return nil, err
 	}
@@ -45,5 +46,19 @@ func NewVaultConfig(addr string, ucanCID string) *config.Config {
 		SonrRpcUrl:     "http://localhost:26657",
 		SonrChainId:    "sonr-testnet-1",
 		VaultSchema:    DefaultSchema(),
+	}
+}
+
+// DefaultSchema returns the default schema
+func DefaultSchema() *config.Schema {
+	return &config.Schema{
+		Version:    SchemaVersion,
+		Account:    getSchema(&models.Account{}),
+		Asset:      getSchema(&models.Asset{}),
+		Chain:      getSchema(&models.Chain{}),
+		Credential: getSchema(&models.Credential{}),
+		Grant:      getSchema(&models.Grant{}),
+		Keyshare:   getSchema(&models.Keyshare{}),
+		Profile:    getSchema(&models.Profile{}),
 	}
 }

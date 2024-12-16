@@ -1,6 +1,6 @@
 package models
 
-import "github.com/onsonr/sonr/internal/models/repository"
+import "github.com/onsonr/sonr/internal/database/repository"
 
 // Define the credential structure matching our frontend data
 type CredentialDescriptor struct {

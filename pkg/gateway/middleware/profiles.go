@@ -6,7 +6,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/internal/context"
-	"github.com/onsonr/sonr/internal/models/repository"
+	"github.com/onsonr/sonr/internal/database/repository"
 )
 
 type ProfilesContext struct {

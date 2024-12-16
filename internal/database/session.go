@@ -1,4 +1,4 @@
-package models
+package database
 
 import (
 	ctx "github.com/onsonr/sonr/internal/context"
@@ -6,7 +6,7 @@ import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
 	"github.com/medama-io/go-useragent"
-	"github.com/onsonr/sonr/internal/models/repository"
+	"github.com/onsonr/sonr/internal/database/repository"
 	"github.com/segmentio/ksuid"
 	"golang.org/x/exp/rand"
 )

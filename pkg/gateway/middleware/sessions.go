@@ -7,8 +7,8 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/medama-io/go-useragent"
 	"github.com/onsonr/sonr/internal/context"
-	"github.com/onsonr/sonr/internal/models"
-	"github.com/onsonr/sonr/internal/models/repository"
+	"github.com/onsonr/sonr/internal/database"
+	"github.com/onsonr/sonr/internal/database/repository"
 )
 
 type SessionsContext struct {
@@ -34,7 +34,7 @@ func NewSession(c echo.Context) error {
 	if !ok {
 		return nil
 	}
-	baseSessionCreateParams := models.BaseSessionCreateParams(cc)
+	baseSessionCreateParams := database.BaseSessionCreateParams(cc)
 	cc.id = baseSessionCreateParams.ID
 	if _, err := cc.dbq.CreateSession(bgCtx(), baseSessionCreateParams); err != nil {
 		return err

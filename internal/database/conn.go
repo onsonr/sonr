@@ -1,11 +1,12 @@
-package models
+package database
 
 import (
 	"context"
 	"database/sql"
 
-	"github.com/onsonr/sonr/internal/models/sink"
-	config "github.com/onsonr/sonr/pkg/config/hway"
+	_ "github.com/mattn/go-sqlite3"
+	config "github.com/onsonr/sonr/internal/config/hway"
+	"github.com/onsonr/sonr/internal/database/sink"
 )
 
 // NewDB initializes and returns a configured database connection

@@ -1,26 +1,19 @@
 package embed
 
 import (
+	_ "embed"
 	"reflect"
 	"strings"
-
-	"github.com/onsonr/sonr/internal/models"
-	config "github.com/onsonr/sonr/pkg/config/motr"
 )
 
-// DefaultSchema returns the default schema
-func DefaultSchema() *config.Schema {
-	return &config.Schema{
-		Version:    SchemaVersion,
-		Account:    getSchema(&models.Account{}),
-		Asset:      getSchema(&models.Asset{}),
-		Chain:      getSchema(&models.Chain{}),
-		Credential: getSchema(&models.Credential{}),
-		Grant:      getSchema(&models.Grant{}),
-		Keyshare:   getSchema(&models.Keyshare{}),
-		Profile:    getSchema(&models.Profile{}),
-	}
-}
+//go:embed index.html
+var IndexHTML []byte
+
+//go:embed main.js
+var MainJS []byte
+
+//go:embed sw.js
+var WorkerJS []byte
 
 func getSchema(structType interface{}) string {
 	t := reflect.TypeOf(structType)

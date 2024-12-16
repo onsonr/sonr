@@ -1,8 +1,8 @@
-package embed
+package models
 
 import "encoding/json"
 
-func newWebManifestBytes() ([]byte, error) {
+func NewWebManifest() ([]byte, error) {
 	return json.Marshal(baseWebManifest)
 }
 
