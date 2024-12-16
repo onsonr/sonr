@@ -1,10 +1,10 @@
-package common
+package config
 
 import (
 	"context"
 
 	"github.com/apple/pkl-go/pkl"
-	hwayconfig "github.com/onsonr/sonr/pkg/config/hway"
+	hwayconfig "github.com/onsonr/sonr/internal/config/hway"
 )
 
 // LoadFromBytes loads the environment from the given bytes
