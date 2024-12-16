@@ -17,7 +17,7 @@ var (
 	chainID        string // Current chain ID (default sonr-testnet-1)
 	ipfsGatewayURL string // IPFS gateway URL (default localhost:8080)
 	sonrAPIURL     string // Sonr API URL (default localhost:1317)
-	sonrGrpcURL    string // Sonr gRPC URL (default 0.0.0.0:9090)
+	sonrGrpcURL    string // Sonr gRPC URL (default localhost:9090)
 	sonrRPCURL     string // Sonr RPC URL (default localhost:26657)
 
 	psqlHost string // PostgresSQL Host Flag
