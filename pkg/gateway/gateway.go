@@ -2,8 +2,6 @@
 package gateway
 
 import (
-	"net/http"
-
 	"github.com/labstack/echo-contrib/echoprometheus"
 	"github.com/labstack/echo/v4"
 	echomiddleware "github.com/labstack/echo/v4/middleware"
@@ -41,8 +39,7 @@ func redirectOnError(target string) echo.HTTPErrorHandler {
 		if he, ok := err.(*echo.HTTPError); ok {
 			// Log the error if needed
 			c.Logger().Errorf("Error: %v", he.Message)
+			middleware.RenderError(c, he)
 		}
-		// Redirect to main site
-		c.Redirect(http.StatusFound, target)
 	}
 }
