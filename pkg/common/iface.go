@@ -1,8 +1,8 @@
-package ipfs
+package common
 
 import "github.com/ipfs/boxo/files"
 
-type Client interface {
+type IPFS interface {
 	Add(data []byte) (string, error)
 	AddFile(file File) (string, error)
 	AddFolder(folder Folder) (string, error)

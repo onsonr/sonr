@@ -1,4 +1,4 @@
-package ipfs
+package common
 
 import (
 	"bytes"
@@ -16,7 +16,7 @@ type client struct {
 	api *rpc.HttpApi
 }
 
-func NewClient() (Client, error) {
+func NewIPFS() (IPFS, error) {
 	api, err := rpc.NewLocalApi()
 	if err != nil {
 		return nil, err

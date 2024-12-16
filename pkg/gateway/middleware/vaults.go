@@ -7,25 +7,25 @@ import (
 	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/internal/context"
 	"github.com/onsonr/sonr/internal/models"
-	"github.com/onsonr/sonr/pkg/common/ipfs"
+	"github.com/onsonr/sonr/pkg/common"
 	"lukechampine.com/blake3"
 )
 
 type VaultProviderContext struct {
 	echo.Context
-	ipfsClient     ipfs.Client
-	tokenStore     ipfs.IPFSTokenStore
+	ipfsClient     common.IPFS
+	tokenStore     common.IPFSTokenStore
 	stagedEnclaves map[string]mpc.Enclave
 }
 
-func UseVaultProvider(ipc ipfs.Client) echo.MiddlewareFunc {
+func UseVaultProvider(ipc common.IPFS) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			svc := &VaultProviderContext{
 				Context:        c,
 				ipfsClient:     ipc,
 				stagedEnclaves: make(map[string]mpc.Enclave),
-				tokenStore:     ipfs.NewUCANStore(ipc),
+				tokenStore:     common.NewUCANStore(ipc),
 			}
 			return next(svc)
 		}

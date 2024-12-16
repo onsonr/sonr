@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/onsonr/sonr/pkg/common/ipfs"
+	"github.com/onsonr/sonr/pkg/common"
 	"github.com/onsonr/sonr/pkg/gateway"
 	"github.com/spf13/cobra"
 )
@@ -36,11 +36,11 @@ func rootCmd() *cobra.Command {
 			if err != nil {
 				panic(err)
 			}
-			ipc, err := ipfs.NewClient()
-	if err != nil {
-		panic(err)
-	}
-				e, err := gateway.New(env, ipc)
+			ipc, err := common.NewIPFS()
+			if err != nil {
+				panic(err)
+			}
+			e, err := gateway.New(env, ipc)
 			if err != nil {
 				panic(err)
 			}

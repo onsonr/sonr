@@ -8,9 +8,9 @@ import (
 	"syscall/js"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/vault"
-	"github.com/onsonr/sonr/pkg/common/wasm"
-	"github.com/onsonr/sonr/pkg/config/motr"
+	"github.com/onsonr/sonr/pkg/vault/routes"
+	"github.com/onsonr/sonr/cmd/motr/wasm"
+	"github.com/onsonr/sonr/internal/config/motr"
 )
 
 var (

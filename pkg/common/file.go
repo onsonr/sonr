@@ -1,4 +1,4 @@
-package ipfs
+package common
 
 import (
 	"context"

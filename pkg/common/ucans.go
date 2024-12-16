@@ -1,4 +1,4 @@
-package ipfs
+package common
 
 import (
 	"context"
@@ -22,12 +22,12 @@ type IPFSTokenStore interface {
 // for CID strings to be used as keys for retrieving tokens.
 type ipfsUCANStore struct {
 	sync.Mutex
-	ipfs  Client
+	ipfs  IPFS
 	cache map[string]string
 }
 
 // NewUCANStore creates a new IPFS-backed token store
-func NewUCANStore(ipfsClient Client) IPFSTokenStore {
+func NewUCANStore(ipfsClient IPFS) IPFSTokenStore {
 	return &ipfsUCANStore{
 		ipfs:  ipfsClient,
 		cache: make(map[string]string),
