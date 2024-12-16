@@ -2,18 +2,15 @@ package middleware
 
 import (
 	"github.com/go-webauthn/webauthn/protocol"
+	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/internal/gateway/models"
 	"github.com/onsonr/sonr/pkg/ipfsapi"
 	"lukechampine.com/blake3"
 )
 
-type VaultProvider interface {
-	Spawn(sessionID string, handle string, origin string, challenge string) (models.CreatePasskeyParams, error)
-	Claim(sessionID string, handle string, origin string) (models.CreatePasskeyParams, error)
-}
-
-type VaultProviderService struct {
+type VaultProviderContext struct {
+	echo.Context
 	ipfsClient ipfsapi.Client
 	tokenStore ipfsapi.IPFSTokenStore
 
@@ -21,17 +18,22 @@ type VaultProviderService struct {
 	stagedEnclaves map[string]mpc.Enclave
 }
 
-func NewVaultService(ipc ipfsapi.Client) VaultProvider {
-	svc := &VaultProviderService{
-		ipfsClient:     ipc,
-		challengeCache: make(map[string]protocol.URLEncodedBase64),
-		stagedEnclaves: make(map[string]mpc.Enclave),
-		tokenStore:     ipfsapi.NewUCANStore(ipc),
+func UseVaults(ipc ipfsapi.Client) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			svc := &VaultProviderContext{
+				Context:        c,
+				ipfsClient:     ipc,
+				challengeCache: make(map[string]protocol.URLEncodedBase64),
+				stagedEnclaves: make(map[string]mpc.Enclave),
+				tokenStore:     ipfsapi.NewUCANStore(ipc),
+			}
+			return next(svc)
+		}
 	}
-	return svc
 }
 
-func (s *VaultProviderService) Spawn(sessionID string, handle string, origin string, challenge string) (models.CreatePasskeyParams, error) {
+func Spawn(sessionID string, handle string, origin string, challenge string) (models.CreatePasskeyParams, error) {
 	nonce, err := calcNonce(sessionID)
 	if err != nil {
 		return models.CreatePasskeyParams{
@@ -46,7 +48,6 @@ func (s *VaultProviderService) Spawn(sessionID string, handle string, origin str
 	if err != nil {
 		return models.CreatePasskeyParams{}, err
 	}
-	s.stagedEnclaves[sessionID] = encl
 	return models.CreatePasskeyParams{
 		Address:       encl.Address(),
 		Handle:        handle,
@@ -56,7 +57,7 @@ func (s *VaultProviderService) Spawn(sessionID string, handle string, origin str
 	}, nil
 }
 
-func (s *VaultProviderService) Claim(sessionID string, handle string, origin string) (models.CreatePasskeyParams, error) {
+func Claim(sessionID string, handle string, origin string) (models.CreatePasskeyParams, error) {
 	return models.CreatePasskeyParams{}, nil
 }
 

@@ -6,6 +6,7 @@ CREATE TABLE credentials (
     deleted_at DATETIME,
     handle TEXT NOT NULL,
     credential_id TEXT NOT NULL,
+    authenticator_attachment TEXT NOT NULL,
     origin TEXT NOT NULL,
     type TEXT NOT NULL,
     transports TEXT NOT NULL
@@ -27,7 +28,8 @@ CREATE TABLE sessions (
     is_bot INTEGER NOT NULL,
     challenge TEXT NOT NULL,
     is_human_first INTEGER NOT NULL,
-    is_human_last INTEGER NOT NULL
+    is_human_last INTEGER NOT NULL,
+    profile_id INTEGER NOT NULL
 );
 
 CREATE TABLE profiles (

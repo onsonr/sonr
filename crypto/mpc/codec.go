@@ -36,6 +36,7 @@ type Enclave interface {
 	IsValid() bool                                // IsValid returns true if the keyEnclave is valid
 	PubKey() keys.PubKey                          // PubKey returns the public key of the keyEnclave
 	Refresh() (Enclave, error)                    // Refresh returns a new keyEnclave
+	Serialize() ([]byte, error)                   // Serialize returns the serialized keyEnclave
 	Sign(data []byte) ([]byte, error)             // Sign returns the signature of the data
 	Verify(data []byte, sig []byte) (bool, error) // Verify returns true if the signature is valid
 }

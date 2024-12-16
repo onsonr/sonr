@@ -5,6 +5,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/common/query"
+	config "github.com/onsonr/sonr/pkg/config/hway"
 )
 
 type ResolverContext struct {
@@ -13,10 +14,10 @@ type ResolverContext struct {
 }
 
 // NewResolverService creates a new ResolverService
-func NewResolverService(grpcAddr string) echo.MiddlewareFunc {
+func UseResolvers(env config.Hway) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			cc := &ResolverContext{grpcAddr: grpcAddr, Context: c}
+			cc := &ResolverContext{grpcAddr: env.GetSonrGrpcUrl(), Context: c}
 			return next(cc)
 		}
 	}
@@ -24,7 +25,7 @@ func NewResolverService(grpcAddr string) echo.MiddlewareFunc {
 
 // CurrentBlock returns the current block
 func CurrentBlock(c echo.Context) (uint64, error) {
-  s := c.(*ResolverContext)
+	s := c.(*ResolverContext)
 	qc, err := query.NewNodeClient(s.grpcAddr)
 	if err != nil {
 		return 0, err

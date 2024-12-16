@@ -36,9 +36,10 @@ INSERT INTO sessions (
     is_bot,
     challenge,
     is_human_first,
-    is_human_last
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-RETURNING id, created_at, updated_at, deleted_at, browser_name, browser_version, client_ipaddr, platform, is_desktop, is_mobile, is_tablet, is_tv, is_bot, challenge, is_human_first, is_human_last
+    is_human_last,
+    profile_id
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+RETURNING id, created_at, updated_at, deleted_at, browser_name, browser_version, client_ipaddr, platform, is_desktop, is_mobile, is_tablet, is_tv, is_bot, challenge, is_human_first, is_human_last, profile_id
 `
 
 type CreateSessionParams struct {
@@ -55,6 +56,7 @@ type CreateSessionParams struct {
 	Challenge      string
 	IsHumanFirst   int64
 	IsHumanLast    int64
+	ProfileID      int64
 }
 
 func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error) {
@@ -72,6 +74,7 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 		arg.Challenge,
 		arg.IsHumanFirst,
 		arg.IsHumanLast,
+		arg.ProfileID,
 	)
 	var i Session
 	err := row.Scan(
@@ -91,6 +94,7 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 		&i.Challenge,
 		&i.IsHumanFirst,
 		&i.IsHumanLast,
+		&i.ProfileID,
 	)
 	return i, err
 }
@@ -109,7 +113,7 @@ func (q *Queries) GetChallengeBySessionID(ctx context.Context, id string) (strin
 }
 
 const getCredentialByID = `-- name: GetCredentialByID :one
-SELECT id, created_at, updated_at, deleted_at, handle, credential_id, origin, type, transports FROM credentials
+SELECT id, created_at, updated_at, deleted_at, handle, credential_id, authenticator_attachment, origin, type, transports FROM credentials
 WHERE credential_id = ?
 AND deleted_at IS NULL
 LIMIT 1
@@ -125,6 +129,7 @@ func (q *Queries) GetCredentialByID(ctx context.Context, credentialID string) (C
 		&i.DeletedAt,
 		&i.Handle,
 		&i.CredentialID,
+		&i.AuthenticatorAttachment,
 		&i.Origin,
 		&i.Type,
 		&i.Transports,
@@ -133,7 +138,7 @@ func (q *Queries) GetCredentialByID(ctx context.Context, credentialID string) (C
 }
 
 const getCredentialsByHandle = `-- name: GetCredentialsByHandle :many
-SELECT id, created_at, updated_at, deleted_at, handle, credential_id, origin, type, transports FROM credentials
+SELECT id, created_at, updated_at, deleted_at, handle, credential_id, authenticator_attachment, origin, type, transports FROM credentials
 WHERE handle = ?
 AND deleted_at IS NULL
 `
@@ -154,6 +159,7 @@ func (q *Queries) GetCredentialsByHandle(ctx context.Context, handle string) ([]
 			&i.DeletedAt,
 			&i.Handle,
 			&i.CredentialID,
+			&i.AuthenticatorAttachment,
 			&i.Origin,
 			&i.Type,
 			&i.Transports,
@@ -236,8 +242,31 @@ func (q *Queries) GetProfileByHandle(ctx context.Context, handle string) (Profil
 	return i, err
 }
 
+const getProfileByID = `-- name: GetProfileByID :one
+SELECT id, created_at, updated_at, deleted_at, address, handle, origin, name, cid FROM profiles
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1
+`
+
+func (q *Queries) GetProfileByID(ctx context.Context, id int64) (Profile, error) {
+	row := q.db.QueryRowContext(ctx, getProfileByID, id)
+	var i Profile
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.Address,
+		&i.Handle,
+		&i.Origin,
+		&i.Name,
+		&i.Cid,
+	)
+	return i, err
+}
+
 const getSessionByClientIP = `-- name: GetSessionByClientIP :one
-SELECT id, created_at, updated_at, deleted_at, browser_name, browser_version, client_ipaddr, platform, is_desktop, is_mobile, is_tablet, is_tv, is_bot, challenge, is_human_first, is_human_last FROM sessions
+SELECT id, created_at, updated_at, deleted_at, browser_name, browser_version, client_ipaddr, platform, is_desktop, is_mobile, is_tablet, is_tv, is_bot, challenge, is_human_first, is_human_last, profile_id FROM sessions
 WHERE client_ipaddr = ? AND deleted_at IS NULL
 LIMIT 1
 `
@@ -262,12 +291,13 @@ func (q *Queries) GetSessionByClientIP(ctx context.Context, clientIpaddr string)
 		&i.Challenge,
 		&i.IsHumanFirst,
 		&i.IsHumanLast,
+		&i.ProfileID,
 	)
 	return i, err
 }
 
 const getSessionByID = `-- name: GetSessionByID :one
-SELECT id, created_at, updated_at, deleted_at, browser_name, browser_version, client_ipaddr, platform, is_desktop, is_mobile, is_tablet, is_tv, is_bot, challenge, is_human_first, is_human_last FROM sessions
+SELECT id, created_at, updated_at, deleted_at, browser_name, browser_version, client_ipaddr, platform, is_desktop, is_mobile, is_tablet, is_tv, is_bot, challenge, is_human_first, is_human_last, profile_id FROM sessions
 WHERE id = ? AND deleted_at IS NULL
 LIMIT 1
 `
@@ -292,6 +322,7 @@ func (q *Queries) GetSessionByID(ctx context.Context, id string) (Session, error
 		&i.Challenge,
 		&i.IsHumanFirst,
 		&i.IsHumanLast,
+		&i.ProfileID,
 	)
 	return i, err
 }
@@ -304,7 +335,7 @@ INSERT INTO credentials (
     type,
     transports
 ) VALUES (?, ?, ?, ?, ?)
-RETURNING id, created_at, updated_at, deleted_at, handle, credential_id, origin, type, transports
+RETURNING id, created_at, updated_at, deleted_at, handle, credential_id, authenticator_attachment, origin, type, transports
 `
 
 type InsertCredentialParams struct {
@@ -331,6 +362,7 @@ func (q *Queries) InsertCredential(ctx context.Context, arg InsertCredentialPara
 		&i.DeletedAt,
 		&i.Handle,
 		&i.CredentialID,
+		&i.AuthenticatorAttachment,
 		&i.Origin,
 		&i.Type,
 		&i.Transports,
@@ -440,7 +472,7 @@ SET
     is_human_last = ?,
     updated_at = CURRENT_TIMESTAMP
 WHERE id = ?
-RETURNING id, created_at, updated_at, deleted_at, browser_name, browser_version, client_ipaddr, platform, is_desktop, is_mobile, is_tablet, is_tv, is_bot, challenge, is_human_first, is_human_last
+RETURNING id, created_at, updated_at, deleted_at, browser_name, browser_version, client_ipaddr, platform, is_desktop, is_mobile, is_tablet, is_tv, is_bot, challenge, is_human_first, is_human_last, profile_id
 `
 
 type UpdateSessionHumanVerificationParams struct {
@@ -469,6 +501,46 @@ func (q *Queries) UpdateSessionHumanVerification(ctx context.Context, arg Update
 		&i.Challenge,
 		&i.IsHumanFirst,
 		&i.IsHumanLast,
+		&i.ProfileID,
+	)
+	return i, err
+}
+
+const updateSessionWithProfileID = `-- name: UpdateSessionWithProfileID :one
+UPDATE sessions
+SET 
+    profile_id = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ?
+RETURNING id, created_at, updated_at, deleted_at, browser_name, browser_version, client_ipaddr, platform, is_desktop, is_mobile, is_tablet, is_tv, is_bot, challenge, is_human_first, is_human_last, profile_id
+`
+
+type UpdateSessionWithProfileIDParams struct {
+	ProfileID int64
+	ID        string
+}
+
+func (q *Queries) UpdateSessionWithProfileID(ctx context.Context, arg UpdateSessionWithProfileIDParams) (Session, error) {
+	row := q.db.QueryRowContext(ctx, updateSessionWithProfileID, arg.ProfileID, arg.ID)
+	var i Session
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.BrowserName,
+		&i.BrowserVersion,
+		&i.ClientIpaddr,
+		&i.Platform,
+		&i.IsDesktop,
+		&i.IsMobile,
+		&i.IsTablet,
+		&i.IsTv,
+		&i.IsBot,
+		&i.Challenge,
+		&i.IsHumanFirst,
+		&i.IsHumanLast,
+		&i.ProfileID,
 	)
 	return i, err
 }

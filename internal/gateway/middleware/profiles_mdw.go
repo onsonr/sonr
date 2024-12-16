@@ -6,6 +6,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/internal/gateway/models/repository"
+	"github.com/onsonr/sonr/pkg/common"
 )
 
 type ProfilesContext struct {
@@ -22,6 +23,22 @@ func UseProfiles(conn *sql.DB) echo.MiddlewareFunc {
 	}
 }
 
+func CheckHandleUnique(c echo.Context, handle string) bool {
+	ctx, ok := c.(*ProfilesContext)
+	if !ok {
+		return false
+	}
+	ok, err := ctx.dbq.CheckHandleExists(bgCtx(), handle)
+	if err != nil {
+		return false
+	}
+	if ok {
+		return false
+	}
+	common.WriteCookie(c, common.UserHandle, handle)
+	return true
+}
+
 func CreateProfile(c echo.Context) (*repository.Profile, error) {
 	ctx, ok := c.(*ProfilesContext)
 	if !ok {
@@ -36,6 +53,15 @@ func CreateProfile(c echo.Context) (*repository.Profile, error) {
 		Handle:  handle,
 		Origin:  origin,
 		Name:    name,
+	})
+	if err != nil {
+		return nil, err
+	}
+	// Update session with profile id
+	sid := GetSessionID(c)
+	_, err = ctx.dbq.UpdateSessionWithProfileID(bgCtx(), repository.UpdateSessionWithProfileIDParams{
+		ProfileID: profile.ID,
+		ID:        sid,
 	})
 	if err != nil {
 		return nil, err

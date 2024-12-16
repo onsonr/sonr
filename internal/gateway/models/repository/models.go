@@ -10,15 +10,16 @@ import (
 )
 
 type Credential struct {
-	ID           int64
-	CreatedAt    time.Time
-	UpdatedAt    time.Time
-	DeletedAt    sql.NullTime
-	Handle       string
-	CredentialID string
-	Origin       string
-	Type         string
-	Transports   string
+	ID                      int64
+	CreatedAt               time.Time
+	UpdatedAt               time.Time
+	DeletedAt               sql.NullTime
+	Handle                  string
+	CredentialID            string
+	AuthenticatorAttachment string
+	Origin                  string
+	Type                    string
+	Transports              string
 }
 
 type Profile struct {
@@ -50,4 +51,5 @@ type Session struct {
 	Challenge      string
 	IsHumanFirst   int64
 	IsHumanLast    int64
+	ProfileID      int64
 }

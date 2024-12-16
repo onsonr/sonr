@@ -34,6 +34,10 @@ func UseSessions(conn *sql.DB) echo.MiddlewareFunc {
 	}
 }
 
+func GetOrigin(c echo.Context) string {
+	return c.Request().Host
+}
+
 func GetSessionID(c echo.Context) string {
 	// Check from context
 	cc, ok := c.(*SessionsContext)
@@ -60,6 +64,29 @@ func GetSessionChallenge(c echo.Context) string {
 		return ""
 	}
 	return s
+}
+
+func GetHandle(c echo.Context) string {
+	// First check for the cookie
+	handle := common.ReadCookieUnsafe(c, common.UserHandle)
+	if handle != "" {
+		return handle
+	}
+
+	// Then check the session
+	cc, ok := c.(*SessionsContext)
+	if !ok {
+		return ""
+	}
+	s, err := cc.dbq.GetSessionByID(bgCtx(), cc.id)
+	if err != nil {
+		return ""
+	}
+	profile, err := cc.dbq.GetProfileByID(bgCtx(), s.ProfileID)
+	if err != nil {
+		return ""
+	}
+	return profile.Handle
 }
 
 func GetHumanVerificationNumbers(c echo.Context) (int64, int64) {

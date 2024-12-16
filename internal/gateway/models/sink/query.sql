@@ -17,6 +17,11 @@ INSERT INTO profiles (
 ) VALUES (?, ?, ?, ?)
 RETURNING *;
 
+-- name: GetProfileByID :one
+SELECT * FROM profiles
+WHERE id = ? AND deleted_at IS NULL
+LIMIT 1;
+
 -- name: GetProfileByAddress :one
 SELECT * FROM profiles
 WHERE address = ? AND deleted_at IS NULL
@@ -47,6 +52,14 @@ UPDATE sessions
 SET 
     is_human_first = ?,
     is_human_last = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = ?
+RETURNING *;
+
+-- name: UpdateSessionWithProfileID :one
+UPDATE sessions
+SET 
+    profile_id = ?,
     updated_at = CURRENT_TIMESTAMP
 WHERE id = ?
 RETURNING *;
@@ -107,6 +120,7 @@ INSERT INTO sessions (
     is_bot,
     challenge,
     is_human_first,
-    is_human_last
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    is_human_last,
+    profile_id
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
 RETURNING *;
