@@ -8,8 +8,13 @@ import (
 )
 
 func RenderIndex(c echo.Context) error {
-	isForbidden := middleware.ForbiddenDevice(c)
-	return middleware.Render(c, views.InitialView(isForbidden))
+	// Initialize the session
+	err := middleware.NewSession(c)
+	if err != nil {
+		return middleware.RenderError(c, err)
+	}
+	// Render the initial view
+	return middleware.RenderInitial(c)
 }
 
 func RenderProfileCreate(c echo.Context) error {
@@ -18,13 +23,13 @@ func RenderProfileCreate(c echo.Context) error {
 		FirstNumber: int(numF),
 		LastNumber:  int(numL),
 	}
-	return middleware.Render(c, views.CreateProfileForm(params))
+	return middleware.Render(c, views.RegisterProfileView(params))
 }
 
 func RenderPasskeyCreate(c echo.Context) error {
-	return middleware.Render(c, views.CreatePasskeyForm(models.CreatePasskeyParams{}))
+	return middleware.Render(c, views.RegisterPasskeyView(models.CreatePasskeyParams{}))
 }
 
 func RenderVaultLoading(c echo.Context) error {
-	return middleware.Render(c, views.LoadingVaultView())
+	return middleware.Render(c, views.LoadingView())
 }

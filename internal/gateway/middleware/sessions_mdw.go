@@ -30,7 +30,7 @@ func UseSessions(conn *sql.DB) echo.MiddlewareFunc {
 	}
 }
 
-func InitNewSession(c echo.Context) error {
+func NewSession(c echo.Context) error {
 	cc, ok := c.(*SessionsContext)
 	if !ok {
 		return nil

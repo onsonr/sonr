@@ -19,11 +19,11 @@ func SubmitPublicKeyCredential(c echo.Context) error {
 	cred := &models.CredentialDescriptor{}
 	// Unmarshal the credential JSON
 	if err := json.Unmarshal([]byte(credentialJSON), cred); err != nil {
-		return err
+		return middleware.RenderError(c, err)
 	}
 	err := middleware.SubmitCredential(c, cred)
 	if err != nil {
-		return err
+		return middleware.RenderError(c, err)
 	}
 	return nil
 }

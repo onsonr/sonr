@@ -5,6 +5,7 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/internal/gateway/views"
 	config "github.com/onsonr/sonr/pkg/config/hway"
 )
 
@@ -41,4 +42,16 @@ func Render(c echo.Context, cmp templ.Component) error {
 	}
 	c.Response().WriteHeader(200)
 	return nil
+}
+
+func RenderError(c echo.Context, err error) error {
+	return Render(c, views.ErrorView(err.Error()))
+}
+
+func RenderInitial(c echo.Context) error {
+	return Render(c, views.InitialView())
+}
+
+func RenderLoading(c echo.Context) error {
+	return Render(c, views.LoadingView())
 }
