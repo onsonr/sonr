@@ -1,6 +1,3 @@
--- Schema version
-PRAGMA foreign_keys = ON;
-
 -- Profiles represent user identities
 CREATE TABLE profiles (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
