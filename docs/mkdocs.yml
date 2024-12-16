@@ -41,14 +41,14 @@ theme:
       primary: cyan
       accent: cyan
       toggle:
-        icon: material/toggle-switch
+        icon: material/moon-waning-crescent
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       primary: black
       accent: cyan
       toggle:
-        icon: material/toggle-switch-off
+        icon: material/sun
         name: Switch to system preference
   font:
     text: Geist
