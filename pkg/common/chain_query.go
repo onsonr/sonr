@@ -7,7 +7,6 @@ import (
 	dwnv1 "github.com/onsonr/sonr/api/dwn/v1"
 	svcv1 "github.com/onsonr/sonr/api/svc/v1"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
 type (
@@ -33,7 +32,7 @@ type (
 )
 
 func conn(addr string) (*grpc.ClientConn, error) {
-	grpcConn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	grpcConn, err := grpc.NewClient(addr, grpc.WithInsecure())
 	if err != nil {
 		return nil, err
 	}

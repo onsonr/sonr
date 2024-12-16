@@ -26,7 +26,6 @@ func loadEnvImplFromArgs(args []string) (config.Hway, error) {
 
 	env := &config.HwayImpl{
 		ServePort:      servePort,
-		SqliteFile:     sqliteFile,
 		ChainId:        chainID,
 		IpfsGatewayUrl: ipfsGatewayURL,
 		SonrApiUrl:     sonrAPIURL,

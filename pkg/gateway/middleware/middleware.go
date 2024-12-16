@@ -8,7 +8,8 @@ import (
 	echomiddleware "github.com/labstack/echo/v4/middleware"
 )
 
-func UseBase() *echo.Echo {
+func InitServer(grpcAddr string) *echo.Echo {
+	grpcEndpoint = grpcAddr
 	e := echo.New()
 	// Override default behaviors
 	e.IPExtractor = echo.ExtractIPDirect()

@@ -17,14 +17,13 @@ var (
 	chainID        string // Current chain ID (default sonr-testnet-1)
 	ipfsGatewayURL string // IPFS gateway URL (default localhost:8080)
 	sonrAPIURL     string // Sonr API URL (default localhost:1317)
-	sonrGrpcURL    string // Sonr gRPC URL (default localhost:9090)
+	sonrGrpcURL    string // Sonr gRPC URL (default 0.0.0.0:9090)
 	sonrRPCURL     string // Sonr RPC URL (default localhost:26657)
 
-	sqliteFile string // SQLite database file (default hway.db)
-	psqlHost   string // PostgresSQL Host Flag
-	psqlUser   string // PostgresSQL User Flag
-	psqlPass   string // PostgresSQL Password Flag
-	psqlDB     string // PostgresSQL Database Flag
+	psqlHost string // PostgresSQL Host Flag
+	psqlUser string // PostgresSQL User Flag
+	psqlPass string // PostgresSQL Password Flag
+	psqlDB   string // PostgresSQL Database Flag
 )
 
 func rootCmd() *cobra.Command {
@@ -57,7 +56,6 @@ func rootCmd() *cobra.Command {
 	cmd.Flags().StringVar(&sonrAPIURL, "sonr-api-url", "localhost:1317", "Sonr API URL")
 	cmd.Flags().StringVar(&sonrGrpcURL, "sonr-grpc-url", "localhost:9090", "Sonr gRPC URL")
 	cmd.Flags().StringVar(&sonrRPCURL, "sonr-rpc-url", "localhost:26657", "Sonr RPC URL")
-	cmd.Flags().StringVar(&sqliteFile, "sqlite-file", "hway.db", "File to store sqlite database")
 	cmd.Flags().StringVar(&psqlHost, "psql-host", "", "PostgresSQL Host")
 	cmd.Flags().StringVar(&psqlUser, "psql-user", "", "PostgresSQL User")
 	cmd.Flags().StringVar(&psqlPass, "psql-pass", "", "PostgresSQL Password")

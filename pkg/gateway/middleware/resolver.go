@@ -1,36 +1,24 @@
 package middleware
 
 import (
-	"context"
+	"errors"
 
 	"github.com/labstack/echo/v4"
-	config "github.com/onsonr/sonr/internal/config/hway"
 	"github.com/onsonr/sonr/pkg/common"
 )
 
-type ResolverContext struct {
-	echo.Context
-	grpcAddr string
-}
-
-// NewResolverService creates a new ResolverService
-func UseResolvers(env config.Hway) echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			cc := &ResolverContext{grpcAddr: env.GetSonrGrpcUrl(), Context: c}
-			return next(cc)
-		}
-	}
-}
+var grpcEndpoint = ""
 
 // CurrentBlock returns the current block
 func CurrentBlock(c echo.Context) uint64 {
-	s := c.(*ResolverContext)
-	qc, err := common.NewNodeClient(s.grpcAddr)
+	if grpcEndpoint == "" {
+		return 0
+	}
+	qc, err := common.NewNodeClient(grpcEndpoint)
 	if err != nil {
 		return 0
 	}
-	resp, err := qc.Status(c.Request().Context(), &common.StatusRequest{})
+	resp, err := qc.Status(bgCtx(), &common.StatusRequest{})
 	if err != nil {
 		return 0
 	}
@@ -38,13 +26,15 @@ func CurrentBlock(c echo.Context) uint64 {
 }
 
 // GetBankParams returns the bank params
-func (s *ResolverContext) GetBankParams() (*common.BankParamsResponse, error) {
-	ctx := context.Background()
-	c, err := common.NewBankClient(s.grpcAddr)
+func GetBankParams() (*common.BankParamsResponse, error) {
+	if grpcEndpoint == "" {
+		return nil, errors.New("grpc endpoint not set")
+	}
+	c, err := common.NewBankClient(grpcEndpoint)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := c.Params(ctx, &common.BankParamsRequest{})
+	resp, err := c.Params(bgCtx(), &common.BankParamsRequest{})
 	if err != nil {
 		return nil, err
 	}
@@ -52,13 +42,15 @@ func (s *ResolverContext) GetBankParams() (*common.BankParamsResponse, error) {
 }
 
 // GetDIDParams returns the DID params
-func (s *ResolverContext) GetDIDParams() (*common.DIDParamsResponse, error) {
-	ctx := context.Background()
-	c, err := common.NewDIDClient(s.grpcAddr)
+func GetDIDParams() (*common.DIDParamsResponse, error) {
+	if grpcEndpoint == "" {
+		return nil, errors.New("grpc endpoint not set")
+	}
+	c, err := common.NewDIDClient(grpcEndpoint)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := c.Params(ctx, &common.DIDParamsRequest{})
+	resp, err := c.Params(bgCtx(), &common.DIDParamsRequest{})
 	if err != nil {
 		return nil, err
 	}
@@ -66,13 +58,15 @@ func (s *ResolverContext) GetDIDParams() (*common.DIDParamsResponse, error) {
 }
 
 // GetDWNParams returns the DWN params
-func (s *ResolverContext) GetDWNParams() (*common.DWNParamsResponse, error) {
-	ctx := context.Background()
-	c, err := common.NewDWNClient(s.grpcAddr)
+func GetDWNParams() (*common.DWNParamsResponse, error) {
+	if grpcEndpoint == "" {
+		return nil, errors.New("grpc endpoint not set")
+	}
+	c, err := common.NewDWNClient(grpcEndpoint)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := c.Params(ctx, &common.DWNParamsRequest{})
+	resp, err := c.Params(bgCtx(), &common.DWNParamsRequest{})
 	if err != nil {
 		return nil, err
 	}
@@ -80,13 +74,15 @@ func (s *ResolverContext) GetDWNParams() (*common.DWNParamsResponse, error) {
 }
 
 // GetNodeStatus returns the node status
-func (s *ResolverContext) GetNodeStatus() (*common.StatusResponse, error) {
-	ctx := context.Background()
-	c, err := common.NewNodeClient(s.grpcAddr)
+func GetNodeStatus() (*common.StatusResponse, error) {
+	if grpcEndpoint == "" {
+		return nil, errors.New("grpc endpoint not set")
+	}
+	c, err := common.NewNodeClient(grpcEndpoint)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := c.Status(ctx, &common.StatusRequest{})
+	resp, err := c.Status(bgCtx(), &common.StatusRequest{})
 	if err != nil {
 		return nil, err
 	}
@@ -94,13 +90,15 @@ func (s *ResolverContext) GetNodeStatus() (*common.StatusResponse, error) {
 }
 
 // GetSVCParams returns the SVC params
-func (s *ResolverContext) GetSVCParams() (*common.SVCParamsResponse, error) {
-	ctx := context.Background()
-	c, err := common.NewSVCClient(s.grpcAddr)
+func GetSVCParams() (*common.SVCParamsResponse, error) {
+	if grpcEndpoint == "" {
+		return nil, errors.New("grpc endpoint not set")
+	}
+	c, err := common.NewSVCClient(grpcEndpoint)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := c.Params(ctx, &common.SVCParamsRequest{})
+	resp, err := c.Params(bgCtx(), &common.SVCParamsRequest{})
 	if err != nil {
 		return nil, err
 	}

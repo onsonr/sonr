@@ -26,12 +26,10 @@ func New(env config.Hway, ipc common.IPFS) (Gateway, error) {
 
 // initServer sets up the server
 func initServer(env config.Hway, ipc common.IPFS, db *sql.DB) *echo.Echo {
-	e := middleware.UseBase()
+	e := middleware.InitServer(env.GetSonrGrpcUrl())
 	e.Use(middleware.UseSessions(db))
 	e.Use(middleware.UseCredentials(db))
-	e.Use(middleware.UseResolvers(env))
 	e.Use(middleware.UseProfiles(db))
 	e.Use(middleware.UseVaultProvider(ipc))
-	e.Use(middleware.UseRender(env))
 	return e
 }

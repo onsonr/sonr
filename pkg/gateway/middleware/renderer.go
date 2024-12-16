@@ -5,23 +5,8 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
-	config "github.com/onsonr/sonr/internal/config/hway"
 	"github.com/onsonr/sonr/pkg/gateway/views"
 )
-
-type RenderContext struct {
-	echo.Context
-	env config.Hway
-}
-
-func UseRender(env config.Hway) echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			ctx := &RenderContext{Context: c, env: env}
-			return next(ctx)
-		}
-	}
-}
 
 func Render(c echo.Context, cmp templ.Component) error {
 	// Create a buffer to store the rendered HTML
