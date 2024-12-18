@@ -39,7 +39,11 @@ func rootCmd() *cobra.Command {
 			if err != nil {
 				panic(err)
 			}
-			e, err := gateway.New(env, ipc)
+			dbq, err := setupPostgresDB()
+			if err != nil {
+				panic(err)
+			}
+			e, err := gateway.New(env, ipc, dbq)
 			if err != nil {
 				panic(err)
 			}
@@ -56,10 +60,10 @@ func rootCmd() *cobra.Command {
 	cmd.Flags().StringVar(&sonrAPIURL, "sonr-api-url", "localhost:1317", "Sonr API URL")
 	cmd.Flags().StringVar(&sonrGrpcURL, "sonr-grpc-url", "localhost:9090", "Sonr gRPC URL")
 	cmd.Flags().StringVar(&sonrRPCURL, "sonr-rpc-url", "localhost:26657", "Sonr RPC URL")
-	cmd.Flags().StringVar(&psqlHost, "psql-host", "", "PostgresSQL Host")
-	cmd.Flags().StringVar(&psqlUser, "psql-user", "", "PostgresSQL User")
-	cmd.Flags().StringVar(&psqlPass, "psql-pass", "", "PostgresSQL Password")
-	cmd.Flags().StringVar(&psqlDB, "psql-db", "", "PostgresSQL Database")
+	cmd.Flags().StringVar(&psqlHost, "psql-host", "localhost", "PostgresSQL Host")
+	cmd.Flags().StringVar(&psqlUser, "psql-user", "postgres", "PostgresSQL User")
+	cmd.Flags().StringVar(&psqlPass, "psql-pass", "postgres", "PostgresSQL Password")
+	cmd.Flags().StringVar(&psqlDB, "psql-db", "highway", "PostgresSQL Database")
 	return cmd
 }
 

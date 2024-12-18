@@ -2,7 +2,7 @@
 // versions:
 //   sqlc v1.27.0
 
-package postgresql
+package hwayorm
 
 import (
 	"context"

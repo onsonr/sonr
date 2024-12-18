@@ -77,7 +77,7 @@ CREATE TABLE sessions (
     challenge TEXT NOT NULL,
     is_human_first BOOLEAN NOT NULL DEFAULT FALSE,
     is_human_last BOOLEAN NOT NULL DEFAULT FALSE,
-    profile_id BIGINT NOT NULL REFERENCES profiles(id),
+    profile_id TEXT NOT NULL REFERENCES profiles(id),
     FOREIGN KEY (profile_id) REFERENCES profiles(id)
 );
 

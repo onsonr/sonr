@@ -29,23 +29,9 @@ func (k Querier) Params(c context.Context, req *types.QueryParamsRequest) (*type
 	return &types.QueryParamsResponse{Params: &p}, nil
 }
 
-// Schema implements types.QueryServer.
-func (k Querier) Schema(goCtx context.Context, req *types.QuerySchemaRequest) (*types.QuerySchemaResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("Schema is unimplemented")
-	return &types.QuerySchemaResponse{}, nil
-}
-
 // Allocate implements types.QueryServer.
 func (k Querier) Allocate(goCtx context.Context, req *types.QueryAllocateRequest) (*types.QueryAllocateResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
 	panic("Allocate is unimplemented")
 	return &types.QueryAllocateResponse{}, nil
-}
-
-// Sync implements types.QueryServer.
-func (k Querier) Sync(goCtx context.Context, req *types.QuerySyncRequest) (*types.QuerySyncResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("Sync is unimplemented")
-	return &types.QuerySyncResponse{}, nil
 }

@@ -1,6 +1,6 @@
 package types
 
-import "github.com/onsonr/sonr/internal/database/repository"
+import repository "github.com/onsonr/sonr/internal/models/drivers/hwayorm"
 
 // Define the credential structure matching our frontend data
 type CredentialDescriptor struct {

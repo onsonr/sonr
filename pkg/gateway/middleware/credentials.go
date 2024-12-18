@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/database/repository"
+repository	"github.com/onsonr/sonr/internal/models/drivers/hwayorm"
 	"github.com/onsonr/sonr/pkg/gateway/types"
 )
 

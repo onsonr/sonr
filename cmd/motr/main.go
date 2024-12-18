@@ -14,7 +14,7 @@ import (
 	_ "github.com/ncruces/go-sqlite3/embed"
 	"github.com/onsonr/sonr/cmd/motr/wasm"
 	"github.com/onsonr/sonr/internal/config/motr"
-	"github.com/onsonr/sonr/internal/database/sink"
+	sink "github.com/onsonr/sonr/internal/models/sink/sqlite"
 	vault "github.com/onsonr/sonr/pkg/vault/routes"
 )
 
@@ -66,7 +66,7 @@ func NewDB(env motr.Schema) (*sql.DB, error) {
 	}
 
 	// create tables
-	if _, err := db.ExecContext(context.Background(), sink.SchemaHwaySQL); err != nil {
+	if _, err := db.ExecContext(context.Background(), sink.SchemaMotrSQL); err != nil {
 		return nil, err
 	}
 	return db, nil

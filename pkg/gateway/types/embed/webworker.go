@@ -1,4 +1,4 @@
-package models
+package embed
 
 import "encoding/json"
 

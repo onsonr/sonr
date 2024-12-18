@@ -5,7 +5,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/internal/context"
-	"github.com/onsonr/sonr/internal/database/repository"
+	repository "github.com/onsonr/sonr/internal/models/drivers/hwayorm"
 )
 
 func CheckHandleUnique(c echo.Context, handle string) bool {

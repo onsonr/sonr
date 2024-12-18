@@ -310,12 +310,11 @@ sh-testnet: mod-tidy
 
 gen-pkl: init-env
 	pkl-gen-go pkl/sonr.orm/UCAN.pkl
-	pkl-gen-go pkl/sonr.orm/Models.pkl
 	pkl-gen-go pkl/sonr.net/Hway.pkl
 	pkl-gen-go pkl/sonr.net/Motr.pkl
 
 gen-sqlc: init-env
-	@cd internal/database && sqlc generate
+	@cd internal/models && sqlc generate
 
 gen-templ: init-env
 	@templ generate
