@@ -14,7 +14,7 @@ func Register(e *echo.Echo) error {
 
 	// Register Validation Handlers
 	e.POST("/register/profile/handle", handlers.CheckProfileHandle)
-	e.POST("/register/profile/is_human", handlers.ValidateIsHumanSum)
+	e.POST("/register/profile/is_human", handlers.CheckIsHumanSum)
 	e.POST("/submit/profile/handle", handlers.SubmitProfileHandle)
 	e.POST("/submit/credential", handlers.SubmitPublicKeyCredential)
 	return nil

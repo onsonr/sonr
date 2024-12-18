@@ -22,7 +22,7 @@ func CheckProfileHandle(c echo.Context) error {
 }
 
 // ValidateProfileHandle finds the chosen handle and verifies it is unique
-func ValidateIsHumanSum(c echo.Context) error {
+func CheckIsHumanSum(c echo.Context) error {
 	// data := context.GetCreateProfileData(c)
 	// value := c.FormValue("is_human")
 	// intValue, err := strconv.Atoi(value)
