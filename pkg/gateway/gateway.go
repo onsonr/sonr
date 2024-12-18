@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 	echomiddleware "github.com/labstack/echo/v4/middleware"
 	config "github.com/onsonr/sonr/internal/config/hway"
-	"github.com/onsonr/sonr/internal/database"
+	"github.com/onsonr/sonr/internal/models/drivers/hwayorm"
 	"github.com/onsonr/sonr/pkg/common"
 	"github.com/onsonr/sonr/pkg/gateway/middleware"
 	"github.com/onsonr/sonr/pkg/gateway/routes"
@@ -15,11 +15,8 @@ import (
 type Gateway = *echo.Echo
 
 // New returns a new Gateway instance
-func New(env config.Hway, ipc common.IPFS) (Gateway, error) {
-	db, err := database.NewDB(env)
-	if err != nil {
-		return nil, err
-	}
+func New(env config.Hway, ipc common.IPFS, dbq *hwayorm.Queries) (Gateway, error) {
+	
 	e := echo.New()
 	// Override default behaviors
 	e.IPExtractor = echo.ExtractIPDirect()
@@ -29,7 +26,7 @@ func New(env config.Hway, ipc common.IPFS) (Gateway, error) {
 	e.Use(echoprometheus.NewMiddleware("hway"))
 	e.Use(echomiddleware.Logger())
 	e.Use(echomiddleware.Recover())
-	e.Use(middleware.UseGateway(env, ipc, db))
+	e.Use(middleware.UseGateway(env, ipc, dbq))
 	routes.Register(e)
 	return e, nil
 }

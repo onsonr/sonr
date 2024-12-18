@@ -3,13 +3,16 @@ package handlers
 import (
 	"github.com/labstack/echo/v4"
 
-	"github.com/onsonr/sonr/pkg/gateway/middleware"
 	"github.com/onsonr/sonr/internal/nebula/input"
+	"github.com/onsonr/sonr/pkg/gateway/middleware"
 )
 
-// ValidateProfileHandle finds the chosen handle and verifies it is unique
-func ValidateProfileHandle(c echo.Context) error {
+// CheckProfileHandle finds the chosen handle and verifies it is unique
+func CheckProfileHandle(c echo.Context) error {
 	handle := c.FormValue("handle")
+	if handle == "" {
+		return middleware.Render(c, input.HandleError(handle, "Please enter a valid handle"))
+	}
 	//
 	// if ok {
 	// 	return middleware.Render(c, input.HandleError(handle))
@@ -19,7 +22,7 @@ func ValidateProfileHandle(c echo.Context) error {
 }
 
 // ValidateProfileHandle finds the chosen handle and verifies it is unique
-func ValidateIsHumanSum(c echo.Context) error {
+func CheckIsHumanSum(c echo.Context) error {
 	// data := context.GetCreateProfileData(c)
 	// value := c.FormValue("is_human")
 	// intValue, err := strconv.Atoi(value)

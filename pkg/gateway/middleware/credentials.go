@@ -4,11 +4,10 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/database/repository"
-	"github.com/onsonr/sonr/pkg/gateway/types"
+	"github.com/onsonr/sonr/internal/models/drivers/hwayorm"
 )
 
-func ListCredentials(c echo.Context, handle string) ([]*types.CredentialDescriptor, error) {
+func ListCredentials(c echo.Context, handle string) ([]*CredentialDescriptor, error) {
 	cc, ok := c.(*GatewayContext)
 	if !ok {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Credentials Context not found")
@@ -17,10 +16,10 @@ func ListCredentials(c echo.Context, handle string) ([]*types.CredentialDescript
 	if err != nil {
 		return nil, err
 	}
-	return types.CredentialArrayToDescriptors(creds), nil
+	return CredentialArrayToDescriptors(creds), nil
 }
 
-func SubmitCredential(c echo.Context, cred *types.CredentialDescriptor) error {
+func SubmitCredential(c echo.Context, cred *CredentialDescriptor) error {
 	origin := GetOrigin(c)
 	handle := GetHandle(c)
 	md := cred.ToModel(handle, origin)
@@ -30,7 +29,7 @@ func SubmitCredential(c echo.Context, cred *types.CredentialDescriptor) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Credentials Context not found")
 	}
 
-	_, err := cc.dbq.InsertCredential(bgCtx(), repository.InsertCredentialParams{
+	_, err := cc.dbq.InsertCredential(bgCtx(), hwayorm.InsertCredentialParams{
 		Handle:       handle,
 		CredentialID: md.CredentialID,
 		Origin:       origin,
@@ -41,4 +40,44 @@ func SubmitCredential(c echo.Context, cred *types.CredentialDescriptor) error {
 		return err
 	}
 	return nil
+}
+
+// Define the credential structure matching our frontend data
+type CredentialDescriptor struct {
+	ID                      string            `json:"id"`
+	RawID                   string            `json:"rawId"`
+	Type                    string            `json:"type"`
+	AuthenticatorAttachment string            `json:"authenticatorAttachment"`
+	Transports              string            `json:"transports"`
+	ClientExtensionResults  map[string]string `json:"clientExtensionResults"`
+	Response                struct {
+		AttestationObject string `json:"attestationObject"`
+		ClientDataJSON    string `json:"clientDataJSON"`
+	} `json:"response"`
+}
+
+func (c *CredentialDescriptor) ToModel(handle, origin string) *hwayorm.Credential {
+	return &hwayorm.Credential{
+		Handle:                  handle,
+		Origin:                  origin,
+		CredentialID:            c.ID,
+		Type:                    c.Type,
+		Transports:              c.Transports,
+		AuthenticatorAttachment: c.AuthenticatorAttachment,
+	}
+}
+
+func CredentialArrayToDescriptors(credentials []hwayorm.Credential) []*CredentialDescriptor {
+	var descriptors []*CredentialDescriptor
+	for _, cred := range credentials {
+		cd := &CredentialDescriptor{
+			ID:                      cred.CredentialID,
+			RawID:                   cred.CredentialID,
+			Type:                    cred.Type,
+			AuthenticatorAttachment: cred.AuthenticatorAttachment,
+			Transports:              cred.Transports,
+		}
+		descriptors = append(descriptors, cd)
+	}
+	return descriptors
 }

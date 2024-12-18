@@ -17,22 +17,11 @@ service Query {
     option (google.api.http).get = "/vault/v1/params";
   }
 
-  // Schema queries the DID document by its id. And returns the required PKL
-  // information
-  rpc Schema(QuerySchemaRequest) returns (QuerySchemaResponse) {
-    option (google.api.http).get = "/vault/v1/schema";
-  }
 
   // Allocate initializes a Target Vault available for claims with a compatible
   // Authentication mechanism. The default authentication mechanism is WebAuthn.
   rpc Allocate(QueryAllocateRequest) returns (QueryAllocateResponse) {
     option (google.api.http).get = "/vault/v1/allocate";
-  }
-
-  // Sync queries the DID document by its id. And returns the required PKL
-  // information
-  rpc Sync(QuerySyncRequest) returns (QuerySyncResponse) {
-    option (google.api.http).get = "/vault/v1/sync";
   }
 }
 
@@ -49,15 +38,6 @@ message QueryParamsResponse {
   Params params = 1;
 }
 
-// QuerySchemaRequest is the request type for the Query/Schema RPC method.
-message QuerySchemaRequest {}
-
-// QuerySchemaResponse is the response type for the Query/Schema RPC method.
-message QuerySchemaResponse {
-  // Schema is the DID document.
-  Schema schema = 1;
-}
-
 // QueryAllocateRequest is the request type for the Allocate RPC method.
 message QueryAllocateRequest {}
 
@@ -70,21 +50,3 @@ message QueryAllocateResponse {
   int64 expiry_block = 5;
 }
 
-// SyncRequest is the request type for the Sync RPC method.
-message QuerySyncRequest {
-  string did = 1;
-}
-
-// SyncResponse is the response type for the Sync RPC method.
-message QuerySyncResponse {
-  bool success = 1;
-
-  // Schema is the DID document.
-  Schema schema = 2;
-
-  // Address is the address of the calling DID.
-  string address = 3;
-
-  // ChainID is the chain ID of the current network.
-  string chainID = 4;
-}

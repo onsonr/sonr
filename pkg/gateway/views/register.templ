@@ -1,7 +1,6 @@
 package views
 
 import (
-	"github.com/onsonr/sonr/pkg/gateway/types"
 	"github.com/onsonr/sonr/internal/nebula/card"
 	"github.com/onsonr/sonr/internal/nebula/form"
 	"github.com/onsonr/sonr/internal/nebula/hero"
@@ -9,7 +8,7 @@ import (
 	"github.com/onsonr/sonr/internal/nebula/layout"
 )
 
-templ RegisterProfileView(data types.CreateProfileParams) {
+templ RegisterProfileView(firstNumber int, lastNumber int) {
 	@layout.View("New Profile | Sonr.ID") {
 		@layout.Container() {
 			@hero.TitleDesc("Basic Info", "Tell us a little about yourself.")
@@ -23,7 +22,7 @@ templ RegisterProfileView(data types.CreateProfileParams) {
 					}
 					@input.Handle()
 					@input.Name()
-					@input.HumanSlider(data.FirstNumber, data.LastNumber)
+					@input.HumanSlider(firstNumber, lastNumber)
 					@form.Footer() {
 						@form.CancelButton()
 						@form.SubmitButton("Next")
@@ -34,7 +33,7 @@ templ RegisterProfileView(data types.CreateProfileParams) {
 	}
 }
 
-templ RegisterPasskeyView(data types.CreatePasskeyParams) {
+templ RegisterPasskeyView(address string, handle string, name string, challenge string, creationBlock string) {
 	@layout.View("Register | Sonr.ID") {
 		@layout.Container() {
 			@hero.TitleDesc("Link a PassKey", "This will be used to login to your vault.")
@@ -42,11 +41,11 @@ templ RegisterPasskeyView(data types.CreatePasskeyParams) {
 				<input type="hidden" name="credential" id="credential-data" required/>
 				@form.Body() {
 					@form.Header() {
-						@card.SonrProfile(data.Address, data.Name, data.Handle, data.CreationBlock)
+						@card.SonrProfile(address, name, handle, creationBlock)
 					}
 					@input.CoinSelect()
 					@form.Footer() {
-						@input.Passkey(data.Address, data.Handle, data.Challenge)
+						@input.Passkey(address, handle, challenge)
 						@form.CancelButton()
 					}
 				}

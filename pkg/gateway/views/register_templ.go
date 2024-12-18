@@ -14,10 +14,9 @@ import (
 	"github.com/onsonr/sonr/internal/nebula/hero"
 	"github.com/onsonr/sonr/internal/nebula/input"
 	"github.com/onsonr/sonr/internal/nebula/layout"
-	"github.com/onsonr/sonr/pkg/gateway/types"
 )
 
-func RegisterProfileView(data types.CreateProfileParams) templ.Component {
+func RegisterProfileView(firstNumber int, lastNumber int) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -136,7 +135,7 @@ func RegisterProfileView(data types.CreateProfileParams) templ.Component {
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
-						templ_7745c5c3_Err = input.HumanSlider(data.FirstNumber, data.LastNumber).Render(ctx, templ_7745c5c3_Buffer)
+						templ_7745c5c3_Err = input.HumanSlider(firstNumber, lastNumber).Render(ctx, templ_7745c5c3_Buffer)
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
@@ -202,7 +201,7 @@ func RegisterProfileView(data types.CreateProfileParams) templ.Component {
 	})
 }
 
-func RegisterPasskeyView(data types.CreatePasskeyParams) templ.Component {
+func RegisterPasskeyView(address string, handle string, name string, challenge string, creationBlock string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -295,7 +294,7 @@ func RegisterPasskeyView(data types.CreatePasskeyParams) templ.Component {
 								}()
 							}
 							ctx = templ.InitializeContext(ctx)
-							templ_7745c5c3_Err = card.SonrProfile(data.Address, data.Name, data.Handle, data.CreationBlock).Render(ctx, templ_7745c5c3_Buffer)
+							templ_7745c5c3_Err = card.SonrProfile(address, name, handle, creationBlock).Render(ctx, templ_7745c5c3_Buffer)
 							if templ_7745c5c3_Err != nil {
 								return templ_7745c5c3_Err
 							}
@@ -329,7 +328,7 @@ func RegisterPasskeyView(data types.CreatePasskeyParams) templ.Component {
 								}()
 							}
 							ctx = templ.InitializeContext(ctx)
-							templ_7745c5c3_Err = input.Passkey(data.Address, data.Handle, data.Challenge).Render(ctx, templ_7745c5c3_Buffer)
+							templ_7745c5c3_Err = input.Passkey(address, handle, challenge).Render(ctx, templ_7745c5c3_Buffer)
 							if templ_7745c5c3_Err != nil {
 								return templ_7745c5c3_Err
 							}

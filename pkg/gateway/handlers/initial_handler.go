@@ -5,12 +5,24 @@ import (
 	"github.com/onsonr/sonr/pkg/gateway/middleware"
 )
 
-func RenderIndex(c echo.Context) error {
+func HandleIndex(c echo.Context) error {
+	id := middleware.GetSessionID(c)
+	if id == "" {
+		return startNewSession(c)
+	}
+	return middleware.RenderInitial(c)
+}
+
+func startNewSession(c echo.Context) error {
 	// Initialize the session
 	err := middleware.NewSession(c)
 	if err != nil {
 		return middleware.RenderError(c, err)
 	}
-	// Render the initial view
+	return middleware.RenderInitial(c)
+}
+
+func continueExistingSession(c echo.Context, id string) error {
+	// Do some auth checks here
 	return middleware.RenderInitial(c)
 }

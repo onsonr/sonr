@@ -4,13 +4,18 @@
 package main
 
 import (
+	"context"
+	"database/sql"
 	"encoding/json"
 	"syscall/js"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/pkg/vault/routes"
+	_ "github.com/ncruces/go-sqlite3/driver"
+	_ "github.com/ncruces/go-sqlite3/embed"
 	"github.com/onsonr/sonr/cmd/motr/wasm"
 	"github.com/onsonr/sonr/internal/config/motr"
+	sink "github.com/onsonr/sonr/internal/models/sink/sqlite"
+	vault "github.com/onsonr/sonr/pkg/vault/routes"
 )
 
 var (
@@ -51,4 +56,18 @@ func main() {
 	// e.Use(controller.Middleware(nil))
 	vault.RegisterRoutes(e, config)
 	wasm.ServeFetch(e)
+}
+
+// NewDB initializes and returns a configured database connection
+func NewDB() (*sql.DB, error) {
+	db, err := sql.Open("sqlite3", ":memory:")
+	if err != nil {
+		return nil, err
+	}
+
+	// create tables
+	if _, err := db.ExecContext(context.Background(), sink.SchemaMotrSQL); err != nil {
+		return nil, err
+	}
+	return db, nil
 }

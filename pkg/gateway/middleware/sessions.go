@@ -3,9 +3,12 @@ package middleware
 import (
 	gocontext "context"
 
+	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/context"
-	"github.com/onsonr/sonr/internal/database"
+	"github.com/medama-io/go-useragent"
+	ctx "github.com/onsonr/sonr/internal/context"
+	"github.com/onsonr/sonr/internal/models/drivers/hwayorm"
+	"github.com/segmentio/ksuid"
 )
 
 func NewSession(c echo.Context) error {
@@ -13,13 +16,13 @@ func NewSession(c echo.Context) error {
 	if !ok {
 		return nil
 	}
-	baseSessionCreateParams := database.BaseSessionCreateParams(cc)
+	baseSessionCreateParams := BaseSessionCreateParams(cc)
 	cc.id = baseSessionCreateParams.ID
 	if _, err := cc.dbq.CreateSession(bgCtx(), baseSessionCreateParams); err != nil {
 		return err
 	}
 	// Set Cookie
-	if err := context.WriteCookie(c, context.SessionID, cc.id); err != nil {
+	if err := ctx.WriteCookie(c, ctx.SessionID, cc.id); err != nil {
 		return err
 	}
 	return nil
@@ -46,10 +49,10 @@ func GetSessionID(c echo.Context) string {
 	}
 	// check from cookie
 	if cc.id == "" {
-		if ok := context.CookieExists(c, context.SessionID); !ok {
+		if ok := ctx.CookieExists(c, ctx.SessionID); !ok {
 			return ""
 		}
-		cc.id = context.ReadCookieUnsafe(c, context.SessionID)
+		cc.id = ctx.ReadCookieUnsafe(c, ctx.SessionID)
 	}
 	return cc.id
 }
@@ -68,7 +71,7 @@ func GetSessionChallenge(c echo.Context) string {
 
 func GetHandle(c echo.Context) string {
 	// First check for the cookie
-	handle := context.ReadCookieUnsafe(c, context.UserHandle)
+	handle := ctx.ReadCookieUnsafe(c, ctx.UserHandle)
 	if handle != "" {
 		return handle
 	}
@@ -106,4 +109,51 @@ func GetHandle(c echo.Context) string {
 func bgCtx() gocontext.Context {
 	ctx := gocontext.Background()
 	return ctx
+}
+
+func BaseSessionCreateParams(e echo.Context) hwayorm.CreateSessionParams {
+	// f := rand.Intn(5) + 1
+	// l := rand.Intn(4) + 1
+	challenge, _ := protocol.CreateChallenge()
+	id := getOrCreateSessionID(e)
+	ua := useragent.NewParser()
+	s := ua.Parse(e.Request().UserAgent())
+
+	return hwayorm.CreateSessionParams{
+		ID:             id,
+		BrowserName:    s.GetBrowser(),
+		BrowserVersion: s.GetMajorVersion(),
+		ClientIpaddr:   e.RealIP(),
+		Platform:       s.GetOS(),
+		IsMobile:       s.IsMobile(),
+		IsTablet:       s.IsTablet(),
+		IsDesktop:      s.IsDesktop(),
+		IsBot:          s.IsBot(),
+		IsTv:           s.IsTV(),
+		// IsHumanFirst:   int64(f),
+		// IsHumanLast:    int64(l),
+		Challenge: challenge.String(),
+	}
+}
+
+func getOrCreateSessionID(c echo.Context) string {
+	if ok := ctx.CookieExists(c, ctx.SessionID); !ok {
+		sessionID := ksuid.New().String()
+		ctx.WriteCookie(c, ctx.SessionID, sessionID)
+		return sessionID
+	}
+
+	sessionID, err := ctx.ReadCookie(c, ctx.SessionID)
+	if err != nil {
+		sessionID = ksuid.New().String()
+		ctx.WriteCookie(c, ctx.SessionID, sessionID)
+	}
+	return sessionID
+}
+
+func boolToInt64(b bool) int64 {
+	if b {
+		return 1
+	}
+	return 0
 }

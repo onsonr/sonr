@@ -1,0 +1,38 @@
+version: '3'
+
+vars:
+  VERSION:
+    sh: git describe --tags --abbrev=0
+  COMMIT:
+    sh: git rev-parse --short HEAD
+  ROOT_DIR:
+    sh: git rev-parse --show-toplevel
+tasks:
+  default:
+    cmds:
+      - echo "{{.VERSION}}"
+      - echo "{{.COMMIT}}"
+      - echo "{{.ROOT_DIR}}"
+    silent: true
+
+  build:
+    silent: true
+    cmds:
+      - task: build:motr
+      - task: build:sonr
+      - task: build:hway
+
+  build:motr:
+    internal: true
+    silent: true
+    cmd: goreleaser build --snapshot --id motr --clean -o ./static/wasm/app.wasm
+
+  build:sonr:
+    internal: true
+    silent: true
+    cmd: goreleaser build --snapshot --id sonr --single-target --clean -o ./build/sonrd
+
+  build:hway:
+    internal: true
+    silent: true
+    cmd: goreleaser build --snapshot --id hway --single-target --clean -o ./build/hway

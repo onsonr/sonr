@@ -13,6 +13,4 @@ type Config struct {
 	SonrRpcUrl string `pkl:"sonrRpcUrl" json:"sonrRpcUrl,omitempty"`
 
 	SonrChainId string `pkl:"sonrChainId" json:"sonrChainId,omitempty"`
-
-	VaultSchema *Schema `pkl:"vaultSchema" json:"vaultSchema,omitempty"`
 }

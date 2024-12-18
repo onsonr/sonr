@@ -5,7 +5,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/internal/context"
-	"github.com/onsonr/sonr/internal/database/repository"
+	repository "github.com/onsonr/sonr/internal/models/drivers/hwayorm"
 )
 
 func CheckHandleUnique(c echo.Context, handle string) bool {
@@ -97,4 +97,29 @@ func DeleteProfile(c echo.Context) error {
 		return err
 	}
 	return nil
+}
+
+// ╭───────────────────────────────────────────────────────────╮
+// │            Create Profile (/register/profile)             │
+// ╰───────────────────────────────────────────────────────────╯
+
+// DefaultCreateProfileParams returns a default CreateProfileParams
+func DefaultCreateProfileParams() CreateProfileParams {
+	return CreateProfileParams{
+		TurnstileSiteKey: "",
+		FirstNumber:      0,
+		LastNumber:       0,
+	}
+}
+
+// CreateProfileParams represents the parameters for creating a profile
+type CreateProfileParams struct {
+	TurnstileSiteKey string
+	FirstNumber      int
+	LastNumber       int
+}
+
+// Sum returns the sum of the first and last number
+func (d CreateProfileParams) Sum() int {
+	return d.FirstNumber + d.LastNumber
 }

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/pkg/gateway/types"
 	"github.com/onsonr/sonr/pkg/gateway/middleware"
 )
 
@@ -16,7 +15,7 @@ func SubmitProfileHandle(c echo.Context) error {
 // SubmitPublicKeyCredential submits a public key credential
 func SubmitPublicKeyCredential(c echo.Context) error {
 	credentialJSON := c.FormValue("credential")
-	cred := &types.CredentialDescriptor{}
+	cred := &middleware.CredentialDescriptor{}
 	// Unmarshal the credential JSON
 	if err := json.Unmarshal([]byte(credentialJSON), cred); err != nil {
 		return middleware.RenderError(c, err)

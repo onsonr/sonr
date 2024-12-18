@@ -30,9 +30,6 @@ class Config {
 
   @JsonField
   sonrChainId: String
-
-  @JsonField
-  vaultSchema: Schema
 }
 
 class Environment {
@@ -52,30 +49,3 @@ class Environment {
   wasmPath: String
 }
 
-class Schema {
-  version: Int
-
-  @JsonField
-  account: String
-
-  @JsonField
-  asset: String
-
-  @JsonField
-  chain: String
-
-  @JsonField
-  credential: String
-
-  @JsonField
-  jwk: String
-
-  @JsonField
-  grant: String
-
-  @JsonField
-  keyshare: String
-
-  @JsonField
-  profile: String
-}

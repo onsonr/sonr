@@ -3,11 +3,17 @@ version: 2
 project_name: sonr
 
 builds:
+  - id: motr
+    main: ./cmd/motr
+    binary: app
+    goos:
+      - js
+    goarch:
+      - wasm
+    
   - id: sonr
     main: ./cmd/sonrd
     binary: sonrd
-    builder: go
-    gobinary: go
     mod_timestamp: "{{ .CommitTimestamp }}"
     goos:
       - linux
@@ -33,8 +39,6 @@ builds:
   - id: hway
     main: ./cmd/hway
     binary: hway
-    builder: go
-    gobinary: go
     goos:
       - linux
       - darwin
