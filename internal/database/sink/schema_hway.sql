@@ -1,3 +1,4 @@
+-- AI! Update this schema file to be compatible with postgresql syntax in order to be generated with sqlc
 -- Profiles represent user identities
 CREATE TABLE profiles (
     id TEXT PRIMARY KEY,
