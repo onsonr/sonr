@@ -1,0 +1,16 @@
+version: '3'
+
+vars:
+  VERSION:
+    sh: git describe --tags --abbrev=0
+  COMMIT:
+    sh: git rev-parse --short HEAD
+  ROOT_DIR:
+    sh: git rev-parse --show-toplevel
+tasks:
+  default:
+    cmds:
+      - echo "{{.VERSION}}"
+      - echo "{{.COMMIT}}"
+      - echo "{{.ROOT_DIR}}"
+    silent: true
