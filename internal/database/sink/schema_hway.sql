@@ -79,6 +79,25 @@ CREATE TABLE sessions (
     is_human_last BOOLEAN NOT NULL DEFAULT FALSE,
     profile_id BIGINT NOT NULL REFERENCES profiles(id)
 );
+
+-- AI! Update the vault table to function with the queries specified in query_hway.sql and to follow the sqlc postgresql syntax
+-- Vaults store encrypted data
+CREATE TABLE vaults (
+    id TEXT PRIMARY KEY,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP,
+    handle TEXT NOT NULL,
+    origin TEXT NOT NULL,
+    address TEXT NOT NULL,
+    cid TEXT NOT NULL UNIQUE,
+    config TEXT NOT NULL CHECK(json_valid(config)),
+    session_id TEXT NOT NULL,
+    redirect_uri TEXT NOT NULL
+);
+
+
+
 -- Indexes for common queries
 CREATE INDEX idx_profiles_handle ON profiles(handle);
 CREATE INDEX idx_profiles_address ON profiles(address);
