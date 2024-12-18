@@ -38,6 +38,14 @@ if [ ! -f "$GOPATH/bin/pkl-gen-go" ]; then
   go install github.com/apple/pkl-go/cmd/pkl-gen-go@latest
 fi
 
+# Check if sqlc is installed to $GOPATH/bin
+if [ ! -f "$GOPATH/bin/sqlc" ]; then
+  echo "sqlc not found. Installing..."
+  go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+fi
+
+
+
 # Check if templ is installed to $GOPATH/bin
 if [ ! -f "$GOPATH/bin/templ" ]; then
   echo "templ not found. Installing..."

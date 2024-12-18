@@ -1,9 +1,19 @@
 version: "2"
 sql:
   - engine: "sqlite"
-    queries: "./sink/query.sql"
-    schema: "./sink/schema.sql"
+    queries: "./sink/query_motr.sql"
+    schema: "./sink/schema_motr.sql"
     gen:
       go:
-        package: "repository"
-        out: "repository"
+        package: "sqlite"
+        out: "drivers/sqlite"
+
+  - engine: "postgresql"
+    queries: "./sink/query_hway.sql"
+    schema: "./sink/schema_hway.sql"
+    gen:
+      go:
+        package: "postgresql"
+        out: "drivers/postgresql"
+        sql_package: "pgx/v5" 
+
