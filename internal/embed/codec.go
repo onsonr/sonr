@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/ipfs/boxo/files"
-	config "github.com/onsonr/sonr/internal/config/motr"
+	"github.com/onsonr/sonr/internal/config/motr"
 )
 
 const SchemaVersion = 1
@@ -17,7 +17,7 @@ const (
 )
 
 // spawnVaultDirectory creates a new directory with the default files
-func NewVaultFS(cfg *config.Config) (files.Directory, error) {
+func NewVaultFS(cfg *motr.Config) (files.Directory, error) {
 	manifestBz, err := NewWebManifest()
 	if err != nil {
 		return nil, err
@@ -36,8 +36,8 @@ func NewVaultFS(cfg *config.Config) (files.Directory, error) {
 }
 
 // NewVaultConfig returns the default vault config
-func NewVaultConfig(addr string, ucanCID string) *config.Config {
-	return &config.Config{
+func NewVaultConfig(addr string, ucanCID string) *motr.Config {
+	return &motr.Config{
 		MotrToken:      ucanCID,
 		MotrAddress:    addr,
 		IpfsGatewayUrl: "http://localhost:80",

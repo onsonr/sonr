@@ -6,11 +6,10 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/internal/context"
-	"github.com/onsonr/sonr/pkg/gateway/types"
 	"lukechampine.com/blake3"
 )
 
-func Spawn(c echo.Context) (types.CreatePasskeyParams, error) {
+func Spawn(c echo.Context) (CreatePasskeyParams, error) {
 	cc := c.(*GatewayContext)
 	block := fmt.Sprintf("%d", CurrentBlock(c))
 	handle := GetHandle(c)
@@ -19,15 +18,15 @@ func Spawn(c echo.Context) (types.CreatePasskeyParams, error) {
 	sid := GetSessionID(c)
 	nonce, err := calcNonce(sid)
 	if err != nil {
-		return types.DefaultCreatePasskeyParams(), err
+		return defaultCreatePasskeyParams(), err
 	}
 	encl, err := mpc.GenEnclave(nonce)
 	if err != nil {
-		return types.DefaultCreatePasskeyParams(), err
+		return defaultCreatePasskeyParams(), err
 	}
 	cc.stagedEnclaves[sid] = encl
 	context.WriteCookie(c, context.SonrAddress, encl.Address())
-	return types.CreatePasskeyParams{
+	return CreatePasskeyParams{
 		Address:       encl.Address(),
 		Handle:        handle,
 		Name:          origin,
@@ -36,8 +35,8 @@ func Spawn(c echo.Context) (types.CreatePasskeyParams, error) {
 	}, nil
 }
 
-func Claim() (types.CreatePasskeyParams, error) {
-	return types.CreatePasskeyParams{}, nil
+func Claim() (CreatePasskeyParams, error) {
+	return CreatePasskeyParams{}, nil
 }
 
 // Uses blake3 to hash the sessionID to generate a nonce of length 12 bytes
@@ -54,4 +53,28 @@ func calcNonce(sessionID string) ([]byte, error) {
 		return nil, err
 	}
 	return nonce, nil
+}
+
+// ╭───────────────────────────────────────────────────────────╮
+// │            Create Passkey (/register/passkey)             │
+// ╰───────────────────────────────────────────────────────────╯
+
+// defaultCreatePasskeyParams returns a default CreatePasskeyParams
+func defaultCreatePasskeyParams() CreatePasskeyParams {
+	return CreatePasskeyParams{
+		Address:       "",
+		Handle:        "",
+		Name:          "",
+		Challenge:     "",
+		CreationBlock: "",
+	}
+}
+
+// CreatePasskeyParams represents the parameters for creating a passkey
+type CreatePasskeyParams struct {
+	Address       string
+	Handle        string
+	Name          string
+	Challenge     string
+	CreationBlock string
 }

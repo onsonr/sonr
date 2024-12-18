@@ -4,7 +4,6 @@ set -e
 
 ROOT_DIR=$(git rev-parse --show-toplevel)
 export TURNSTILE_SITE_KEY=$(skate get TURNSTILE_SITE_KEY)
-#
 # export KEY="user1"
 # export KEY2="user2"
 #
@@ -44,7 +43,11 @@ if [ ! -f "$GOPATH/bin/sqlc" ]; then
   go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 fi
 
-
+# Check if goreleaser is installed to $GOPATH/bin
+if [ ! -f "$GOPATH/bin/goreleaser" ]; then
+  echo "goreleaser not found. Installing..."
+  go install github.com/goreleaser/goreleaser/v2@latest
+fi
 
 # Check if templ is installed to $GOPATH/bin
 if [ ! -f "$GOPATH/bin/templ" ]; then

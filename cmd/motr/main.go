@@ -59,7 +59,7 @@ func main() {
 }
 
 // NewDB initializes and returns a configured database connection
-func NewDB(env motr.Schema) (*sql.DB, error) {
+func NewDB() (*sql.DB, error) {
 	db, err := sql.Open("sqlite3", ":memory:")
 	if err != nil {
 		return nil, err
