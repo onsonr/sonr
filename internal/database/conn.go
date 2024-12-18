@@ -18,7 +18,7 @@ func NewDB(env config.Hway) (*sql.DB, error) {
 	}
 
 	// create tables
-	if _, err := db.ExecContext(context.Background(), sink.SchemaSQL); err != nil {
+	if _, err := db.ExecContext(context.Background(), sink.SchemaHwaySQL); err != nil {
 		return nil, err
 	}
 	return db, nil

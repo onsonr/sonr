@@ -4,5 +4,9 @@ import (
 	_ "embed"
 )
 
-//go:embed schema.sql
-var SchemaSQL string
+//go:embed schema_hway.sql
+var SchemaHwaySQL string
+
+//go:embed schema_motr.sql
+var SchemaMotrSQL string
+
