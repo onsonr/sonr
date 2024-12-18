@@ -77,23 +77,24 @@ CREATE TABLE sessions (
     challenge TEXT NOT NULL,
     is_human_first BOOLEAN NOT NULL DEFAULT FALSE,
     is_human_last BOOLEAN NOT NULL DEFAULT FALSE,
-    profile_id BIGINT NOT NULL REFERENCES profiles(id)
+    profile_id BIGINT NOT NULL REFERENCES profiles(id),
+    FOREIGN KEY (profile_id) REFERENCES profiles(id)
 );
 
--- AI! Update the vault table to function with the queries specified in query_hway.sql and to follow the sqlc postgresql syntax
 -- Vaults store encrypted data
 CREATE TABLE vaults (
-    id TEXT PRIMARY KEY,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP,
+    id BIGSERIAL PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMPTZ,
     handle TEXT NOT NULL,
     origin TEXT NOT NULL,
     address TEXT NOT NULL,
     cid TEXT NOT NULL UNIQUE,
-    config TEXT NOT NULL CHECK(json_valid(config)),
-    session_id TEXT NOT NULL,
-    redirect_uri TEXT NOT NULL
+    config JSONB NOT NULL,
+    session_id BIGINT NOT NULL,
+    redirect_uri TEXT NOT NULL,
+    FOREIGN KEY (session_id) REFERENCES sessions(id)
 );
 
 
