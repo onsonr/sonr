@@ -1,10 +1,9 @@
--- AI! Update this schema file to be compatible with postgresql syntax in order to be generated with sqlc
 -- Profiles represent user identities
 CREATE TABLE profiles (
     id TEXT PRIMARY KEY,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMPTZ,
     address TEXT NOT NULL,
     handle TEXT NOT NULL UNIQUE,
     origin TEXT NOT NULL,
@@ -15,30 +14,30 @@ CREATE TABLE profiles (
 -- Accounts represent blockchain accounts
 CREATE TABLE accounts (
     id TEXT PRIMARY KEY,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP,
-    number INTEGER NOT NULL,
-    sequence INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMPTZ,
+    number BIGINT NOT NULL,
+    sequence INT NOT NULL DEFAULT 0,
     address TEXT NOT NULL UNIQUE,
-    public_key TEXT NOT NULL CHECK(json_valid(public_key)),
+    public_key TEXT NOT NULL,
     chain_id TEXT NOT NULL,
     controller TEXT NOT NULL,
-    is_subsidiary BOOLEAN NOT NULL DEFAULT FALSE CHECK(is_subsidiary IN (0,1)),
-    is_validator BOOLEAN NOT NULL DEFAULT FALSE CHECK(is_validator IN (0,1)),
-    is_delegator BOOLEAN NOT NULL DEFAULT FALSE CHECK(is_delegator IN (0,1)),
-    is_accountable BOOLEAN NOT NULL DEFAULT TRUE CHECK(is_accountable IN (0,1))
+    is_subsidiary BOOLEAN NOT NULL DEFAULT FALSE,
+    is_validator BOOLEAN NOT NULL DEFAULT FALSE,
+    is_delegator BOOLEAN NOT NULL DEFAULT FALSE,
+    is_accountable BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 -- Assets represent tokens and coins
 CREATE TABLE assets (
     id TEXT PRIMARY KEY,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMPTZ,
     name TEXT NOT NULL,
     symbol TEXT NOT NULL,
-    decimals INTEGER NOT NULL CHECK(decimals >= 0),
+    decimals INT NOT NULL CHECK(decimals >= 0),
     chain_id TEXT NOT NULL,
     channel TEXT NOT NULL,
     asset_type TEXT NOT NULL,
@@ -49,9 +48,9 @@ CREATE TABLE assets (
 -- Credentials store WebAuthn credentials
 CREATE TABLE credentials (
     id TEXT PRIMARY KEY,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMPTZ,
     handle TEXT NOT NULL,
     credential_id TEXT NOT NULL UNIQUE,
     authenticator_attachment TEXT NOT NULL,
@@ -63,22 +62,22 @@ CREATE TABLE credentials (
 -- Sessions track user authentication state
 CREATE TABLE sessions (
     id TEXT PRIMARY KEY,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMPTZ,
     browser_name TEXT NOT NULL,
     browser_version TEXT NOT NULL,
     client_ipaddr TEXT NOT NULL,
     platform TEXT NOT NULL,
-    is_desktop BOOLEAN NOT NULL DEFAULT FALSE CHECK(is_desktop IN (0,1)),
-    is_mobile BOOLEAN NOT NULL DEFAULT FALSE CHECK(is_mobile IN (0,1)), 
-    is_tablet BOOLEAN NOT NULL DEFAULT FALSE CHECK(is_tablet IN (0,1)),
-    is_tv BOOLEAN NOT NULL DEFAULT FALSE CHECK(is_tv IN (0,1)),
-    is_bot BOOLEAN NOT NULL DEFAULT FALSE CHECK(is_bot IN (0,1)),
+    is_desktop BOOLEAN NOT NULL DEFAULT FALSE,
+    is_mobile BOOLEAN NOT NULL DEFAULT FALSE,
+    is_tablet BOOLEAN NOT NULL DEFAULT FALSE,
+    is_tv BOOLEAN NOT NULL DEFAULT FALSE,
+    is_bot BOOLEAN NOT NULL DEFAULT FALSE,
     challenge TEXT NOT NULL,
-    is_human_first BOOLEAN NOT NULL DEFAULT FALSE CHECK(is_human_first IN (0,1)),
-    is_human_last BOOLEAN NOT NULL DEFAULT FALSE CHECK(is_human_last IN (0,1)),
-    profile_id INTEGER NOT NULL
+    is_human_first BOOLEAN NOT NULL DEFAULT FALSE,
+    is_human_last BOOLEAN NOT NULL DEFAULT FALSE,
+    profile_id BIGINT NOT NULL REFERENCES profiles(id)
 );
 -- Indexes for common queries
 CREATE INDEX idx_profiles_handle ON profiles(handle);
