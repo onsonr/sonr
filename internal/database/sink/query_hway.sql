@@ -1,3 +1,4 @@
+-- AI! Update the following file to function with postgresql and to follow the sqlc syntax
 -- name: InsertCredential :one
 INSERT INTO credentials (
     handle,
