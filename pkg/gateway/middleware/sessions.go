@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/medama-io/go-useragent"
 	ctx "github.com/onsonr/sonr/internal/context"
-	"github.com/onsonr/sonr/internal/models/drivers/hwayorm"
+	hwayorm "github.com/onsonr/sonr/pkg/gateway/orm"
 	"github.com/segmentio/ksuid"
 )
 

@@ -301,7 +301,10 @@ testnet-basic: setup-testnet
 sh-testnet: mod-tidy
 	CHAIN_ID="sonr-testnet-1" BLOCK_TIME="1000ms" CLEAN=true sh scripts/test_node.sh
 
-.PHONY: setup-testnet set-testnet-configs testnet testnet-basic sh-testnet
+dop-testnet: mod-tidy 
+	sh scripts/test_dop_node.sh
+
+.PHONY: setup-testnet set-testnet-configs testnet testnet-basic sh-testnet dop-testnet
 
 ###############################################################################
 ###                                generation                               ###
@@ -318,7 +321,6 @@ gen-sqlc: init-env
 
 gen-templ: init-env
 	@templ generate
-
 
 ###############################################################################
 ###                             custom builds                               ###

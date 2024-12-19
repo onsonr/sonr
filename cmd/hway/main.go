@@ -8,7 +8,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	config "github.com/onsonr/sonr/internal/config/hway"
-	"github.com/onsonr/sonr/internal/models/drivers/hwayorm"
+	hwayorm "github.com/onsonr/sonr/pkg/gateway/orm"
 )
 
 // main is the entry point for the application

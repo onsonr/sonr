@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 	echomiddleware "github.com/labstack/echo/v4/middleware"
 	config "github.com/onsonr/sonr/internal/config/hway"
-	"github.com/onsonr/sonr/internal/models/drivers/hwayorm"
+	hwayorm "github.com/onsonr/sonr/pkg/gateway/orm"
 	"github.com/onsonr/sonr/pkg/common"
 	"github.com/onsonr/sonr/pkg/gateway/middleware"
 	"github.com/onsonr/sonr/pkg/gateway/routes"

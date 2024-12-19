@@ -5,9 +5,13 @@
 # CHAIN_ID="local-1" HOME_DIR="~/.core" BLOCK_TIME="1000ms" CLEAN=true sh scripts/test_node.sh
 # CHAIN_ID="local-2" HOME_DIR="~/.core" CLEAN=true RPC=36657 REST=2317 PROFF=6061 P2P=36656 GRPC=8090 GRPC_WEB=8091 ROSETTA=8081 BLOCK_TIME="500ms" sh scripts/test_node.sh
 
-export KEY="user1"
-export KEY2="user2"
+export KEY0_NAME=${KEY0_NAME:-"user0"}
+export KEY0_MNEMONIC=${KEY0_MNEMONIC:-"decorate bright ozone fork gallery riot bus exhaust worth way bone indoor calm squirrel merry zero scheme cotton until shop any excess stage laundry"}
+export KEY1_NAME="user2"
+export KEY1_MNEMONIC=${KEY1_MNEMONIC:-"wealth flavor believe regret funny network recall kiss grape useless pepper cram hint member few certain unveil rather brick bargain curious require crowd raise"}
 
+export TX_INDEX_INDEXER=${TX_INDEX_INDEXER:-"kv"}
+export TX_INDEX_PSQL_CONN=${TX_INDEX_PSQL_CONN:-""}
 export CHAIN_ID=${CHAIN_ID:-"sonr-testnet-1"}
 export MONIKER="florence"
 export KEYALGO="secp256k1"
@@ -26,6 +30,8 @@ export GRPC_WEB=${GRPC_WEB:-"9091"}
 export ROSETTA=${ROSETTA:-"8080"}
 export BLOCK_TIME=${BLOCK_TIME:-"5s"}
 
+ROOT_DIR=$(git rev-parse --show-toplevel)
+
 # if which binary does not exist, exit
 if [ -z `which $BINARY` ]; then
   echo "Ensure $BINARY is installed and in your PATH"
@@ -43,7 +49,6 @@ set_config() {
 }
 set_config
 
-
 from_scratch () {
   # Fresh install on current branch
   make install
@@ -59,15 +64,14 @@ from_scratch () {
   set_config
 
   add_key() {
+    echo "Adding key: $1"
     key=$1
     mnemonic=$2
-    echo $mnemonic | BINARY keys add $key --keyring-backend $KEYRING --algo $KEYALGO --recover
   }
 
   # idx1efd63aw40lxf3n4mhf7dzhjkr453axur9vjt6y
-  add_key $KEY "decorate bright ozone fork gallery riot bus exhaust worth way bone indoor calm squirrel merry zero scheme cotton until shop any excess stage laundry"
-  # idx1hj5fveer5cjtn4wd6wstzugjfdxzl0xpecp0nd
-  add_key $KEY2 "wealth flavor believe regret funny network recall kiss grape useless pepper cram hint member few certain unveil rather brick bargain curious require crowd raise"
+  echo "$KEY0_MNEMONIC" | BINARY keys add $KEY0_NAME --keyring-backend $KEYRING --algo $KEYALGO --recover
+  echo "$KEY1_MNEMONIC" | BINARY keys add $KEY1_NAME --keyring-backend $KEYRING --algo $KEYALGO --recover
 
   # chain initial setup
   BINARY init $MONIKER --chain-id $CHAIN_ID --default-denom $DENOM
@@ -106,11 +110,11 @@ from_scratch () {
   update_test_genesis '.app_state["poa"]["params"]["admins"]=["idx10d07y265gmmuvt4z0w9aw880jnsr700j9kqcfa"]'
 
   # Allocate genesis accounts
-  BINARY genesis add-genesis-account $KEY 10000000$DENOM,900snr --keyring-backend $KEYRING
-  BINARY genesis add-genesis-account $KEY2 10000000$DENOM,800snr --keyring-backend $KEYRING
+  BINARY genesis add-genesis-account $KEY0_NAME 10000000$DENOM,900snr --keyring-backend $KEYRING
+  BINARY genesis add-genesis-account $KEY1_NAME 10000000$DENOM,800snr --keyring-backend $KEYRING
 
   # Sign genesis transaction
-  BINARY genesis gentx $KEY 1000000$DENOM --keyring-backend $KEYRING --chain-id $CHAIN_ID
+  BINARY genesis gentx $KEY0_NAME 1000000$DENOM --keyring-backend $KEYRING --chain-id $CHAIN_ID
 
   BINARY genesis collect-gentxs
 
@@ -124,12 +128,17 @@ from_scratch () {
 
 # check if CLEAN is not set to false
 if [ "$CLEAN" != "false" ]; then
-  
   echo "Starting from a clean state"
   from_scratch
 fi
 
 echo "Starting node..."
+
+# Tx Index
+if [ "$TX_INDEX_PSQL_CONN" != "" ]; then
+  awk -v conn="$TX_INDEX_PSQL_CONN" '/^psql-conn = / {$0 = "psql-conn = \"" conn "\""} 1' $HOME_DIR/config/config.toml > temp && mv temp $HOME_DIR/config/config.toml
+fi
+
 
 # Opens the RPC endpoint to outside connections
 sed -i 's/laddr = "tcp:\/\/127.0.0.1:26657"/c\laddr = "tcp:\/\/0.0.0.0:'$RPC'"/g' $HOME_DIR/config/config.toml
@@ -149,6 +158,7 @@ sed -i 's/address = "localhost:9091"/address = "0.0.0.0:'$GRPC_WEB'"/g' $HOME_DI
 
 # Rosetta Api
 sed -i 's/address = ":8080"/address = "0.0.0.0:'$ROSETTA'"/g' $HOME_DIR/config/app.toml
+sed -i 's/indexer = "kv"/indexer = "'$TX_INDEX_INDEXER'"/g' $HOME_DIR/config/config.toml
 
 # Faster blocks
 sed -i 's/timeout_commit = "5s"/timeout_commit = "'$BLOCK_TIME'"/g' $HOME_DIR/config/config.toml

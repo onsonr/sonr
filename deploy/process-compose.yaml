@@ -2,11 +2,11 @@ version: "0.6"
 
 processes:
   sonr:
-    namespace: devnet
-    command: "make sh-testnet"
+    namespace: testnet
+    command: "make dop-testnet"
 
   hway:
-    namespace: devnet
+    namespace: testnet
     command: "./build/hway"
     depends:
       - sonr
