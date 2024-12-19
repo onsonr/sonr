@@ -5,8 +5,8 @@ import (
 	"github.com/medama-io/go-useragent"
 	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/internal/config/hway"
-	"github.com/onsonr/sonr/internal/models/drivers/hwayorm"
 	"github.com/onsonr/sonr/pkg/common"
+	hwayorm "github.com/onsonr/sonr/pkg/gateway/orm"
 )
 
 type GatewayContext struct {
