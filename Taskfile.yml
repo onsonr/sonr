@@ -102,7 +102,9 @@ tasks:
     silent: true
     platforms:
       - linux
-    cmd: make stop-uds
+    cmds:
+      - make stop-uds
+      - task: reset:chainindex
 
   clean:
     internal: true
@@ -112,3 +114,9 @@ tasks:
       - rm -rf ./dist
       - rm -rf ./static
     silent: true
+
+  reset:chainindex:
+    internal: true
+    platforms:
+      - linux
+    cmd: sudo -u postgres psql -f ./deploy/sink/reset_chainindex.sql

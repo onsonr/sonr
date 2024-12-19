@@ -30,6 +30,8 @@ export GRPC_WEB=${GRPC_WEB:-"9091"}
 export ROSETTA=${ROSETTA:-"8080"}
 export BLOCK_TIME=${BLOCK_TIME:-"5s"}
 
+ROOT_DIR=$(git rev-parse --show-toplevel)
+
 # if which binary does not exist, exit
 if [ -z `which $BINARY` ]; then
   echo "Ensure $BINARY is installed and in your PATH"
@@ -46,7 +48,6 @@ set_config() {
   $BINARY config set client keyring-backend $KEYRING
 }
 set_config
-
 
 from_scratch () {
   # Fresh install on current branch
@@ -127,12 +128,17 @@ from_scratch () {
 
 # check if CLEAN is not set to false
 if [ "$CLEAN" != "false" ]; then
-  
   echo "Starting from a clean state"
   from_scratch
 fi
 
 echo "Starting node..."
+
+# Tx Index
+if [ "$TX_INDEX_PSQL_CONN" != "" ]; then
+  awk -v conn="$TX_INDEX_PSQL_CONN" '/^psql-conn = / {$0 = "psql-conn = \"" conn "\""} 1' $HOME_DIR/config/config.toml > temp && mv temp $HOME_DIR/config/config.toml
+fi
+
 
 # Opens the RPC endpoint to outside connections
 sed -i 's/laddr = "tcp:\/\/127.0.0.1:26657"/c\laddr = "tcp:\/\/0.0.0.0:'$RPC'"/g' $HOME_DIR/config/config.toml
@@ -152,17 +158,10 @@ sed -i 's/address = "localhost:9091"/address = "0.0.0.0:'$GRPC_WEB'"/g' $HOME_DI
 
 # Rosetta Api
 sed -i 's/address = ":8080"/address = "0.0.0.0:'$ROSETTA'"/g' $HOME_DIR/config/app.toml
+sed -i 's/indexer = "kv"/indexer = "'$TX_INDEX_INDEXER'"/g' $HOME_DIR/config/config.toml
 
 # Faster blocks
 sed -i 's/timeout_commit = "5s"/timeout_commit = "'$BLOCK_TIME'"/g' $HOME_DIR/config/config.toml
-
-# Tx Index
-if [ "$TX_INDEX_INDEXER" != "kv" ]; then
-  sed -i 's/indexer = "kv"/indexer = "'$TX_INDEX_INDEXER'"/g' $HOME_DIR/config/config.toml
-fi
-if [ "$TX_INDEX_PSQL_CONN" != "" ]; then
-  awk -v conn="$TX_INDEX_PSQL_CONN" '/^psql-conn = / {$0 = "psql-conn = \"" conn "\""} 1' $HOME_DIR/config/config.toml > temp && mv temp $HOME_DIR/config/config.toml
-fi
 
 # Start the node with 0 gas fees
 BINARY start --pruning=nothing  --minimum-gas-prices=0$DENOM --rpc.laddr="tcp://0.0.0.0:$RPC" --grpc.address="0.0.0.0:$GRPC" --grpc-web.enable=true 
