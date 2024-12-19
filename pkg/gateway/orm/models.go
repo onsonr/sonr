@@ -2,20 +2,19 @@
 // versions:
 //   sqlc v1.27.0
 
-package motrorm
+package orm
 
 import (
-	"database/sql"
-	"time"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Account struct {
 	ID            string
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
-	DeletedAt     sql.NullTime
+	CreatedAt     pgtype.Timestamptz
+	UpdatedAt     pgtype.Timestamptz
+	DeletedAt     pgtype.Timestamptz
 	Number        int64
-	Sequence      int64
+	Sequence      int32
 	Address       string
 	PublicKey     string
 	ChainID       string
@@ -28,23 +27,23 @@ type Account struct {
 
 type Asset struct {
 	ID          string
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	DeletedAt   sql.NullTime
+	CreatedAt   pgtype.Timestamptz
+	UpdatedAt   pgtype.Timestamptz
+	DeletedAt   pgtype.Timestamptz
 	Name        string
 	Symbol      string
-	Decimals    int64
+	Decimals    int32
 	ChainID     string
 	Channel     string
 	AssetType   string
-	CoingeckoID sql.NullString
+	CoingeckoID pgtype.Text
 }
 
 type Credential struct {
 	ID                      string
-	CreatedAt               time.Time
-	UpdatedAt               time.Time
-	DeletedAt               sql.NullTime
+	CreatedAt               pgtype.Timestamptz
+	UpdatedAt               pgtype.Timestamptz
+	DeletedAt               pgtype.Timestamptz
 	Handle                  string
 	CredentialID            string
 	AuthenticatorAttachment string
@@ -55,9 +54,9 @@ type Credential struct {
 
 type Profile struct {
 	ID        string
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt sql.NullTime
+	CreatedAt pgtype.Timestamptz
+	UpdatedAt pgtype.Timestamptz
+	DeletedAt pgtype.Timestamptz
 	Address   string
 	Handle    string
 	Origin    string
@@ -66,9 +65,9 @@ type Profile struct {
 
 type Session struct {
 	ID             string
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
-	DeletedAt      sql.NullTime
+	CreatedAt      pgtype.Timestamptz
+	UpdatedAt      pgtype.Timestamptz
+	DeletedAt      pgtype.Timestamptz
 	BrowserName    string
 	BrowserVersion string
 	ClientIpaddr   string
@@ -81,19 +80,19 @@ type Session struct {
 	Challenge      string
 	IsHumanFirst   bool
 	IsHumanLast    bool
-	ProfileID      int64
+	ProfileID      string
 }
 
 type Vault struct {
-	ID          string
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	DeletedAt   sql.NullTime
+	ID          int64
+	CreatedAt   pgtype.Timestamptz
+	UpdatedAt   pgtype.Timestamptz
+	DeletedAt   pgtype.Timestamptz
 	Handle      string
 	Origin      string
 	Address     string
 	Cid         string
-	Config      string
-	SessionID   string
+	Config      []byte
+	SessionID   int64
 	RedirectUri string
 }

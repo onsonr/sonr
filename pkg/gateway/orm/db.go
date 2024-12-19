@@ -2,7 +2,7 @@
 // versions:
 //   sqlc v1.27.0
 
-package hwayorm
+package orm
 
 import (
 	"context"

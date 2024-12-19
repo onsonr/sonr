@@ -13,8 +13,8 @@ import (
 	_ "github.com/ncruces/go-sqlite3/driver"
 	_ "github.com/ncruces/go-sqlite3/embed"
 	"github.com/onsonr/sonr/cmd/motr/wasm"
+	sink "github.com/onsonr/sonr/deploy/sink"
 	"github.com/onsonr/sonr/internal/config/motr"
-	sink "github.com/onsonr/sonr/internal/models/sink/sqlite"
 	vault "github.com/onsonr/sonr/pkg/vault/routes"
 )
 
@@ -58,15 +58,15 @@ func main() {
 	wasm.ServeFetch(e)
 }
 
-// NewDB initializes and returns a configured database connection
-func NewDB() (*sql.DB, error) {
+// createDB initializes and returns a configured database connection
+func createDB() (*sql.DB, error) {
 	db, err := sql.Open("sqlite3", ":memory:")
 	if err != nil {
 		return nil, err
 	}
 
 	// create tables
-	if _, err := db.ExecContext(context.Background(), sink.SchemaMotrSQL); err != nil {
+	if _, err := db.ExecContext(context.Background(), sink.SchemaVaultSQL); err != nil {
 		return nil, err
 	}
 	return db, nil

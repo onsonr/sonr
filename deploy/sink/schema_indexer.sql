@@ -4,6 +4,9 @@
   this schema before using the database to index events.
  */
 
+-- First, ensure we're connected to the chainindex database
+\c chainindex;
+
 -- The blocks table records metadata about each block.
 -- The block record does not include its events or transactions (see tx_results).
 CREATE TABLE blocks (
@@ -83,3 +86,9 @@ CREATE VIEW tx_events AS
   FROM blocks JOIN tx_results ON (blocks.rowid = tx_results.block_id)
   JOIN event_attributes ON (tx_results.rowid = event_attributes.tx_id)
   WHERE event_attributes.tx_id IS NOT NULL;
+
+-- Grant privileges for each database to their respective users
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO chainindex_user;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO chainindex_user;
+GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO chainindex_user;
+
