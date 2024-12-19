@@ -319,6 +319,16 @@ gen-sqlc: init-env
 gen-templ: init-env
 	@templ generate
 
+###############################################################################
+###                             config init                                 ###
+###############################################################################
+.PHONY: build-motr build-hway logs-hway logs-sonr
+
+pkl-eval-app:
+  pkl eval deploy/config/sonr.app.pkl -f toml -o $HOME/.sonr/config/app.toml
+  
+
+
 
 ###############################################################################
 ###                             custom builds                               ###

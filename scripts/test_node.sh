@@ -5,8 +5,10 @@
 # CHAIN_ID="local-1" HOME_DIR="~/.core" BLOCK_TIME="1000ms" CLEAN=true sh scripts/test_node.sh
 # CHAIN_ID="local-2" HOME_DIR="~/.core" CLEAN=true RPC=36657 REST=2317 PROFF=6061 P2P=36656 GRPC=8090 GRPC_WEB=8091 ROSETTA=8081 BLOCK_TIME="500ms" sh scripts/test_node.sh
 
-export KEY="user1"
-export KEY2="user2"
+export KEY0_NAME=${KEY0_NAME:-"user0"}
+export KEY0_MNEMONIC=${KEY0_MNEMONIC:-"decorate bright ozone fork gallery riot bus exhaust worth way bone indoor calm squirrel merry zero scheme cotton until shop any excess stage laundry"}
+export KEY1_NAME="user2"
+export KEY1_MNEMONIC=${KEY1_MNEMONIC:-"wealth flavor believe regret funny network recall kiss grape useless pepper cram hint member few certain unveil rather brick bargain curious require crowd raise"}
 
 export CHAIN_ID=${CHAIN_ID:-"sonr-testnet-1"}
 export MONIKER="florence"
@@ -59,15 +61,16 @@ from_scratch () {
   set_config
 
   add_key() {
+    echo "Adding key: $1"
     key=$1
     mnemonic=$2
     echo $mnemonic | BINARY keys add $key --keyring-backend $KEYRING --algo $KEYALGO --recover
   }
 
   # idx1efd63aw40lxf3n4mhf7dzhjkr453axur9vjt6y
-  add_key $KEY "decorate bright ozone fork gallery riot bus exhaust worth way bone indoor calm squirrel merry zero scheme cotton until shop any excess stage laundry"
+  add_key $KEY0_NAME $KEY0_MNEMONIC
   # idx1hj5fveer5cjtn4wd6wstzugjfdxzl0xpecp0nd
-  add_key $KEY2 "wealth flavor believe regret funny network recall kiss grape useless pepper cram hint member few certain unveil rather brick bargain curious require crowd raise"
+  add_key $KEY1_NAME $KEY1_MNEMONIC
 
   # chain initial setup
   BINARY init $MONIKER --chain-id $CHAIN_ID --default-denom $DENOM

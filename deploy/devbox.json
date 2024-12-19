@@ -1,0 +1,20 @@
+{
+    "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.13.7/.schema/devbox.schema.json",
+    "packages": [
+    "doppler@latest",
+  ],
+  "env": {
+    "DOPPLER_TOKEN": "$(skate get DOPPLER_NETWORK)"
+  },
+    "shell": {
+      "init_hook": [
+        "echo 'Welcome to devbox!' > /dev/null"
+      ],
+      "scripts": {
+        "start:hway": [
+          "echo \"Error: no test specified\" && exit 1"
+        ]
+      }
+    }
+  }
+  

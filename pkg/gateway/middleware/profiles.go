@@ -5,7 +5,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/internal/context"
-	repository "github.com/onsonr/sonr/internal/models/drivers/hwayorm"
+	hwayorm "github.com/onsonr/sonr/pkg/gateway/orm"
 )
 
 func CheckHandleUnique(c echo.Context, handle string) bool {
@@ -24,7 +24,7 @@ func CheckHandleUnique(c echo.Context, handle string) bool {
 	return true
 }
 
-func CreateProfile(c echo.Context) (*repository.Profile, error) {
+func CreateProfile(c echo.Context) (*hwayorm.Profile, error) {
 	ctx, ok := c.(*GatewayContext)
 	if !ok {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Profile Context not found")
@@ -33,7 +33,7 @@ func CreateProfile(c echo.Context) (*repository.Profile, error) {
 	handle := c.FormValue("handle")
 	origin := c.FormValue("origin")
 	name := c.FormValue("name")
-	profile, err := ctx.dbq.InsertProfile(bgCtx(), repository.InsertProfileParams{
+	profile, err := ctx.dbq.InsertProfile(bgCtx(), hwayorm.InsertProfileParams{
 		Address: address,
 		Handle:  handle,
 		Origin:  origin,
@@ -44,7 +44,7 @@ func CreateProfile(c echo.Context) (*repository.Profile, error) {
 	}
 	// Update session with profile id
 	sid := GetSessionID(c)
-	_, err = ctx.dbq.UpdateSessionWithProfileID(bgCtx(), repository.UpdateSessionWithProfileIDParams{
+	_, err = ctx.dbq.UpdateSessionWithProfileID(bgCtx(), hwayorm.UpdateSessionWithProfileIDParams{
 		ProfileID: profile.ID,
 		ID:        sid,
 	})
@@ -54,7 +54,7 @@ func CreateProfile(c echo.Context) (*repository.Profile, error) {
 	return &profile, nil
 }
 
-func UpdateProfile(c echo.Context) (*repository.Profile, error) {
+func UpdateProfile(c echo.Context) (*hwayorm.Profile, error) {
 	ctx, ok := c.(*GatewayContext)
 	if !ok {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Profile Context not found")
@@ -62,7 +62,7 @@ func UpdateProfile(c echo.Context) (*repository.Profile, error) {
 	address := c.FormValue("address")
 	handle := c.FormValue("handle")
 	name := c.FormValue("name")
-	profile, err := ctx.dbq.UpdateProfile(bgCtx(), repository.UpdateProfileParams{
+	profile, err := ctx.dbq.UpdateProfile(bgCtx(), hwayorm.UpdateProfileParams{
 		Address: address,
 		Handle:  handle,
 		Name:    name,
@@ -73,7 +73,7 @@ func UpdateProfile(c echo.Context) (*repository.Profile, error) {
 	return &profile, nil
 }
 
-func ReadProfile(c echo.Context) (*repository.Profile, error) {
+func ReadProfile(c echo.Context) (*hwayorm.Profile, error) {
 	ctx, ok := c.(*GatewayContext)
 	if !ok {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Profile Context not found")

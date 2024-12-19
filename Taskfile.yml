@@ -11,6 +11,8 @@ vars:
     sh: uname -s
   TASKS:
     sh: task -l
+  DOPPLER_TOKEN:
+    sh: skate get DOPPLER_NETWORK
 tasks:
   default:
     cmds:
@@ -18,14 +20,6 @@ tasks:
       - gum format -- "# Sonr ({{.OS}}-{{.VERSION}})" "({{.COMMIT}}) {{.ROOT_DIR}}" "### {{ .TASKS }}" 
     silent: true
 
-  clean:
-    desc: Clean build artifacts
-    cmds:
-      - sh ./scripts/init_env.sh
-      - rm -rf ./build
-      - rm -rf ./dist
-      - rm -rf ./static
-    silent: true
 
   build:
     desc: Build all binaries
@@ -62,15 +56,25 @@ tasks:
       - sudo -u postgres psql -f ./deploy/sink/db_seed.sql
       - sudo -u postgres psql -d chainindex -f ./deploy/sink/schema_indexer.sql
 
-  reset:db:
-    desc: Reset the database
-    silent: true
-    platforms:
-      - linux
-    cmd: gum confirm "Reset chainindex, highway, and matrixhs?" --default=false --affirmative "Yes" && sudo -u postgres psql -f ./deploy/sink/db_reset.sql|| echo "No selected"
-
   init:ipfs:
     desc: Initialize the ipfs node
     silent: true
     cmds:
       - sh ./scripts/ipfs_config.sh
+
+  init:sonr:
+    desc: Initialize the sonr node
+    silent: true
+    cmd: doppler run -- sh ./scripts/init_env.sh
+    env:
+      DOPPLER_TOKEN: "{{.DOPPLER_TOKEN}}"
+
+  clean:
+    internal: true
+    cmds:
+      - sh ./scripts/init_env.sh
+      - rm -rf ./build
+      - rm -rf ./dist
+      - rm -rf ./static
+    silent: true
+
