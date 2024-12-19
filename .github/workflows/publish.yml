@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - develop
+      - main
     paths:
       - "docs/**"
       - "proto/**"
@@ -12,12 +13,12 @@ permissions:
   issues: write
 
 jobs:
-  buf_push_core:
+  buf_push:
     name: Publish to buf.build/onsonr/sonr
     runs-on: ubuntu-latest
     steps:
       # Run `git checkout`
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       # Install the `buf` CLI
       - uses: bufbuild/buf-setup-action@v1
       # Push only the Input in `proto` to the BSR
@@ -29,6 +30,7 @@ jobs:
 
   publish-docs:
     runs-on: ubuntu-latest
+    name: Publish Docs
     steps:
       - uses: actions/checkout@v4
       - name: Configure Git Credentials
