@@ -10,6 +10,8 @@ export KEY0_MNEMONIC=${KEY0_MNEMONIC:-"decorate bright ozone fork gallery riot b
 export KEY1_NAME="user2"
 export KEY1_MNEMONIC=${KEY1_MNEMONIC:-"wealth flavor believe regret funny network recall kiss grape useless pepper cram hint member few certain unveil rather brick bargain curious require crowd raise"}
 
+export TX_INDEX_INDEXER=${TX_INDEX_INDEXER:-"kv"}
+export TX_INDEX_PSQL_CONN=${TX_INDEX_PSQL_CONN:-""}
 export CHAIN_ID=${CHAIN_ID:-"sonr-testnet-1"}
 export MONIKER="florence"
 export KEYALGO="secp256k1"
@@ -153,6 +155,14 @@ sed -i 's/address = ":8080"/address = "0.0.0.0:'$ROSETTA'"/g' $HOME_DIR/config/a
 
 # Faster blocks
 sed -i 's/timeout_commit = "5s"/timeout_commit = "'$BLOCK_TIME'"/g' $HOME_DIR/config/config.toml
+
+# Tx Index
+if [ "$TX_INDEX_INDEXER" != "kv" ]; then
+  sed -i 's/indexer = "kv"/indexer = "'$TX_INDEX_INDEXER'"/g' $HOME_DIR/config/config.toml
+fi
+if [ "$TX_INDEX_PSQL_CONN" != "" ]; then
+  awk -v conn="$TX_INDEX_PSQL_CONN" '/^psql-conn = / {$0 = "psql-conn = \"" conn "\""} 1' $HOME_DIR/config/config.toml > temp && mv temp $HOME_DIR/config/config.toml
+fi
 
 # Start the node with 0 gas fees
 BINARY start --pruning=nothing  --minimum-gas-prices=0$DENOM --rpc.laddr="tcp://0.0.0.0:$RPC" --grpc.address="0.0.0.0:$GRPC" --grpc-web.enable=true 

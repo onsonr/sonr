@@ -1,6 +1,6 @@
 import "package://pkg.pkl-lang.org/pkl-pantry/pkl.toml@1.0.0#/toml.pkl"
 
-`minimum-gas-prices` = "0stake"
+`minimum-gas-prices` = "0usnr"
 `query-gas-limit` = "0"
 pruning = "default"
 `pruning-keep-recent` = "0"

@@ -95,7 +95,6 @@ tasks:
     silent: true
     platforms:
       - darwin
-      - linux
     cmd: make stop
 
   stop:linux:

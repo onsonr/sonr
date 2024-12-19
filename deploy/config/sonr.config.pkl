@@ -47,7 +47,7 @@ max_body_bytes = 1000000
 max_header_bytes = 1048576
 tls_cert_file = ""
 tls_key_file = ""
-pprof_laddr = "localhost:"
+pprof_laddr = "localhost:6060"
 }
 
 p2p = new {
@@ -113,7 +113,7 @@ timeout_prevote = "1s"
 timeout_prevote_delta = "500ms"
 timeout_precommit = "1s"
 timeout_precommit_delta = "500ms"
-timeout_commit = "1000ms"
+timeout_commit = "5000ms"
 double_sign_check_height = 0
 skip_timeout_commit = false
 create_empty_blocks = true
