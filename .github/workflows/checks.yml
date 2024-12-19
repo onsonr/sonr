@@ -2,9 +2,23 @@ name: Run All Checks
 
 on:
   pull_request:
+     types: [opened, edited, closed]
   merge_group:
 
 jobs:
+  tidy-pr:
+    name: Tidy PR
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read # for TimonVS/pr-labeler-action to read config file
+      pull-requests: write # for TimonVS/pr-labeler-action to add labels in PR
+    runs-on: ubuntu-latest
+    steps:
+      - uses: TimonVS/pr-labeler-action@v5
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          configuration-path: .github/pr-labeler.yml # optional, .github/pr-labeler.yml is the default value
+
   test-builds:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
@@ -83,10 +97,10 @@ jobs:
           check-latest: true
       - run: make test-cover
 
-  goreleaser-check:
+  validate-release:
     if: github.event_name == 'merge_group'
     runs-on: ubuntu-latest
-    name: Check GoReleaser Config
+    name: Verify Release Config
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -103,19 +117,36 @@ jobs:
       - name: Check GoReleaser Config
         uses: goreleaser/goreleaser-action@v6
         with:
-          distribution: goreleaser-pro
+          distribution: goreleaser
           version: latest
           args: check
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
 
       - name: GoReleaser Dry Run
         uses: goreleaser/goreleaser-action@v6
         with:
-          distribution: goreleaser-pro
+          distribution: goreleaser
           version: latest
           args: release --snapshot --clean --skip=publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+
+  bump-version:
+    if: github.event_name == 'merge_group'
+    runs-on: ubuntu-latest
+    name: Bump Current Version
+    needs: [validate-release, test-cover, test-race]
+    outputs:
+      new_tag: ${{ steps.bump.outputs.new_tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+      - name: Create bump and changelog
+        id: bump
+        uses: commitizen-tools/commitizen-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          increment: "PATCH"
