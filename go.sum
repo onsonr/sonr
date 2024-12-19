@@ -911,8 +911,8 @@ github.com/apache/arrow/go/v10 v10.0.1/go.mod h1:YvhnlEePVnBS4+0z3fhPfUy7W1Ikj0I
 github.com/apache/arrow/go/v11 v11.0.0/go.mod h1:Eg5OsL5H+e299f7u5ssuXsuHQVEGC4xei5aX110hRiI=
 github.com/apache/arrow/go/v12 v12.0.0/go.mod h1:d+tV/eHZZ7Dz7RPrFKtPK02tpr+c9/PEd/zm8mDS9Vg=
 github.com/apache/thrift v0.16.0/go.mod h1:PHK3hniurgQaNMZYaCLEqXKsYK8upmhPbmdP2FXSqgU=
-github.com/apple/pkl-go v0.8.0 h1:GRcBvFWeXjT9rc7A5gHK89qrel2wGZ3/a7ge4rPlT5M=
-github.com/apple/pkl-go v0.8.0/go.mod h1:5Hwil5tyZGrOekh7JXLZJvIAcGHb4gT19lnv4WEiKeI=
+github.com/apple/pkl-go v0.9.0 h1:aA4Bh+WQ797p8nEnQhHzCahVuQP2HJ40ffSQWlAR5es=
+github.com/apple/pkl-go v0.9.0/go.mod h1:5Hwil5tyZGrOekh7JXLZJvIAcGHb4gT19lnv4WEiKeI=
 github.com/armon/circbuf v0.0.0-20150827004946-bbbad097214e/go.mod h1:3U/XgcO3hCbHZ8TKRvWD2dDTCfh9M9ya+I9JpbB7O8o=
 github.com/armon/go-metrics v0.0.0-20180917152333-f0300d1749da/go.mod h1:Q73ZrmVTwzkszR9V5SSuryQ31EELlFMUz1kKyl939pY=
 github.com/armon/go-metrics v0.4.1/go.mod h1:E6amYzXo6aW1tqzoZGT755KkbgrJsSdpwZ+3JqfkOG4=

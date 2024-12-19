@@ -48,7 +48,7 @@ require (
 	filippo.io/edwards25519 v1.1.0
 	git.sr.ht/~sircmpwn/go-bare v0.0.0-20210406120253-ab86bc2846d9
 	github.com/a-h/templ v0.2.793
-	github.com/apple/pkl-go v0.8.0
+	github.com/apple/pkl-go v0.9.0
 	github.com/btcsuite/btcd/btcec/v2 v2.3.4
 	github.com/bwesterb/go-ristretto v1.2.3
 	github.com/cometbft/cometbft v0.38.12
