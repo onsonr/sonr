@@ -2,7 +2,7 @@ name: Run All Checks
 
 on:
   pull_request:
-     types: [opened, edited, closed]
+     types: [opened, edited]
   merge_group:
 
 jobs:
