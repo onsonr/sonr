@@ -160,8 +160,6 @@ sed -i 's/address = "localhost:9091"/address = "0.0.0.0:'$GRPC_WEB'"/g' $HOME_DI
 sed -i 's/address = ":8080"/address = "0.0.0.0:'$ROSETTA'"/g' $HOME_DIR/config/app.toml
 sed -i 's/indexer = "kv"/indexer = "'$TX_INDEX_INDEXER'"/g' $HOME_DIR/config/config.toml
 
-# Faster blocks
-sed -i 's/timeout_commit = "5s"/timeout_commit = "'$BLOCK_TIME'"/g' $HOME_DIR/config/config.toml
 
 # Start the node with 0 gas fees
 BINARY start --pruning=nothing  --minimum-gas-prices=0$DENOM --rpc.laddr="tcp://0.0.0.0:$RPC" --grpc.address="0.0.0.0:$GRPC" --grpc-web.enable=true 
