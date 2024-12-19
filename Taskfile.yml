@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 vars:
   VERSION:
@@ -17,9 +17,8 @@ tasks:
   default:
     cmds:
       - gh run ls -L 3
-      - gum format -- "# Sonr ({{.OS}}-{{.VERSION}})" "({{.COMMIT}}) {{.ROOT_DIR}}" "### {{ .TASKS }}" 
+      - gum format -- "# Sonr ({{.OS}}-{{.VERSION}})" "({{.COMMIT}}) {{.ROOT_DIR}}" "### {{ .TASKS }}"
     silent: true
-
 
   build:
     desc: Build all binaries
@@ -31,6 +30,21 @@ tasks:
       - task: build:motr
       - task: build:sonr
       - task: build:hway
+
+  start:
+    desc: Start the node
+    silent: true
+    cmds:
+      - task: build:hway
+      - task: start:darwin
+      - task: start:linux
+
+  stop:
+    desc: Stop the node
+    silent: true
+    cmds:
+      - task: stop:darwin
+      - task: stop:linux
 
   build:motr:
     internal: true
@@ -62,12 +76,34 @@ tasks:
     cmds:
       - sh ./scripts/ipfs_config.sh
 
-  init:sonr:
-    desc: Initialize the sonr node
+  start:darwin:
+    internal: true
     silent: true
-    cmd: doppler run -- sh ./scripts/init_env.sh
-    env:
-      DOPPLER_TOKEN: "{{.DOPPLER_TOKEN}}"
+    platforms:
+      - darwin
+    cmd: make start
+
+  start:linux:
+    internal: true
+    silent: true
+    platforms:
+      - linux
+    cmd: make start-uds
+
+  stop:darwin:
+    internal: true
+    silent: true
+    platforms:
+      - darwin
+      - linux
+    cmd: make stop
+
+  stop:linux:
+    internal: true
+    silent: true
+    platforms:
+      - linux
+    cmd: make stop-uds
 
   clean:
     internal: true
@@ -77,4 +113,3 @@ tasks:
       - rm -rf ./dist
       - rm -rf ./static
     silent: true
-

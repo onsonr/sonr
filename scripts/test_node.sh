@@ -64,13 +64,11 @@ from_scratch () {
     echo "Adding key: $1"
     key=$1
     mnemonic=$2
-    echo $mnemonic | BINARY keys add $key --keyring-backend $KEYRING --algo $KEYALGO --recover
   }
 
   # idx1efd63aw40lxf3n4mhf7dzhjkr453axur9vjt6y
-  add_key $KEY0_NAME $KEY0_MNEMONIC
-  # idx1hj5fveer5cjtn4wd6wstzugjfdxzl0xpecp0nd
-  add_key $KEY1_NAME $KEY1_MNEMONIC
+  echo "$KEY0_MNEMONIC" | BINARY keys add $KEY0_NAME --keyring-backend $KEYRING --algo $KEYALGO --recover
+  echo "$KEY1_MNEMONIC" | BINARY keys add $KEY1_NAME --keyring-backend $KEYRING --algo $KEYALGO --recover
 
   # chain initial setup
   BINARY init $MONIKER --chain-id $CHAIN_ID --default-denom $DENOM
@@ -109,11 +107,11 @@ from_scratch () {
   update_test_genesis '.app_state["poa"]["params"]["admins"]=["idx10d07y265gmmuvt4z0w9aw880jnsr700j9kqcfa"]'
 
   # Allocate genesis accounts
-  BINARY genesis add-genesis-account $KEY 10000000$DENOM,900snr --keyring-backend $KEYRING
-  BINARY genesis add-genesis-account $KEY2 10000000$DENOM,800snr --keyring-backend $KEYRING
+  BINARY genesis add-genesis-account $KEY0_NAME 10000000$DENOM,900snr --keyring-backend $KEYRING
+  BINARY genesis add-genesis-account $KEY1_NAME 10000000$DENOM,800snr --keyring-backend $KEYRING
 
   # Sign genesis transaction
-  BINARY genesis gentx $KEY 1000000$DENOM --keyring-backend $KEYRING --chain-id $CHAIN_ID
+  BINARY genesis gentx $KEY0_NAME 1000000$DENOM --keyring-backend $KEYRING --chain-id $CHAIN_ID
 
   BINARY genesis collect-gentxs
 

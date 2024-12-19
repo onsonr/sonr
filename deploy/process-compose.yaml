@@ -3,7 +3,7 @@ version: "0.6"
 processes:
   sonr:
     namespace: testnet
-    command: "make sh-testnet"
+    command: "make dop-testnet"
 
   hway:
     namespace: testnet
