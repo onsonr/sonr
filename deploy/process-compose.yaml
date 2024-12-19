@@ -8,5 +8,3 @@ processes:
   hway:
     namespace: testnet
     command: "./build/hway"
-    depends:
-      - sonr
