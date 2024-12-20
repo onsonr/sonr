@@ -7,7 +7,7 @@
             "binary": "sonrd",
             "bech32_prefix": "idx",
             "docker_image": {
-                "repository": "core",
+                "repository": "ghcr.io/onsonr/sonr",
                 "version": "local"
             },
             "gas_prices": "0usnr",
@@ -24,13 +24,18 @@
                 "1317": "1317",
                 "9090": "9090"
             },
-            "encoding-options": ["wasm", "tokenfactory"],
+            "encoding-options": [
+                "wasm",
+                "tokenfactory"
+            ],
             "config_file_overrides": [
                 {
                     "file": "config/config.toml",
                     "paths": {
-                        "moniker": "localvalmoniker",
-                        "rpc.cors_allowed_origins": ["*"]
+                        "moniker": "florence",
+                        "rpc.cors_allowed_origins": [
+                            "*"
+                        ]
                     }
                 }
             ],
