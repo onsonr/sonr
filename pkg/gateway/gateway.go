@@ -6,9 +6,9 @@ import (
 	"github.com/labstack/echo/v4"
 	echomiddleware "github.com/labstack/echo/v4/middleware"
 	config "github.com/onsonr/sonr/internal/config/hway"
-	hwayorm "github.com/onsonr/sonr/pkg/gateway/orm"
 	"github.com/onsonr/sonr/pkg/common"
 	"github.com/onsonr/sonr/pkg/gateway/middleware"
+	hwayorm "github.com/onsonr/sonr/pkg/gateway/orm"
 	"github.com/onsonr/sonr/pkg/gateway/routes"
 )
 
@@ -16,11 +16,10 @@ type Gateway = *echo.Echo
 
 // New returns a new Gateway instance
 func New(env config.Hway, ipc common.IPFS, dbq *hwayorm.Queries) (Gateway, error) {
-	
 	e := echo.New()
 	// Override default behaviors
 	e.IPExtractor = echo.ExtractIPDirect()
-	e.HTTPErrorHandler = redirectOnError("http://localhost:3000")
+	e.HTTPErrorHandler = handleError()
 
 	// Built-in middleware
 	e.Use(echoprometheus.NewMiddleware("hway"))
@@ -31,7 +30,7 @@ func New(env config.Hway, ipc common.IPFS, dbq *hwayorm.Queries) (Gateway, error
 	return e, nil
 }
 
-func redirectOnError(target string) echo.HTTPErrorHandler {
+func handleError() echo.HTTPErrorHandler {
 	return func(err error, c echo.Context) {
 		if he, ok := err.(*echo.HTTPError); ok {
 			// Log the error if needed
