@@ -8,7 +8,7 @@ import (
 	config "github.com/onsonr/sonr/internal/config/hway"
 	hwayorm "github.com/onsonr/sonr/internal/database/hwayorm"
 	"github.com/onsonr/sonr/pkg/common"
-	"github.com/onsonr/sonr/pkg/gateway/middleware"
+	"github.com/onsonr/sonr/pkg/gateway/context"
 	"github.com/onsonr/sonr/pkg/gateway/routes"
 )
 
@@ -25,7 +25,7 @@ func New(env config.Hway, ipc common.IPFS, dbq *hwayorm.Queries) (Gateway, error
 	e.Use(echoprometheus.NewMiddleware("hway"))
 	e.Use(echomiddleware.Logger())
 	e.Use(echomiddleware.Recover())
-	e.Use(middleware.UseGateway(env, ipc, dbq))
+	e.Use(context.UseGateway(env, ipc, dbq))
 	routes.Register(e)
 	return e, nil
 }
@@ -35,7 +35,7 @@ func handleError() echo.HTTPErrorHandler {
 		if he, ok := err.(*echo.HTTPError); ok {
 			// Log the error if needed
 			c.Logger().Errorf("Error: %v", he.Message)
-			middleware.RenderError(c, he)
+			context.RenderError(c, he)
 		}
 	}
 }

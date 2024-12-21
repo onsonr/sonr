@@ -2,13 +2,13 @@ package handlers
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/pkg/gateway/middleware"
+	"github.com/onsonr/sonr/pkg/gateway/context"
 )
 
 func HandleIndex(c echo.Context) error {
-	id := middleware.GetSessionID(c)
+	id := context.GetSessionID(c)
 	if id == "" {
-		middleware.NewSession(c)
+		context.NewSession(c)
 	}
-	return middleware.RenderInitial(c)
+	return context.RenderInitial(c)
 }

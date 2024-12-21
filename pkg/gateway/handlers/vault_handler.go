@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/pkg/gateway/middleware"
+	"github.com/onsonr/sonr/pkg/gateway/context"
 )
 
 // SubmitProfileHandle submits a profile handle
@@ -15,14 +15,14 @@ func SubmitProfileHandle(c echo.Context) error {
 // SubmitPublicKeyCredential submits a public key credential
 func SubmitPublicKeyCredential(c echo.Context) error {
 	credentialJSON := c.FormValue("credential")
-	cred := &middleware.CredentialDescriptor{}
+	cred := &context.CredentialDescriptor{}
 	// Unmarshal the credential JSON
 	if err := json.Unmarshal([]byte(credentialJSON), cred); err != nil {
-		return middleware.RenderError(c, err)
+		return context.RenderError(c, err)
 	}
-	err := middleware.SubmitCredential(c, cred)
+	err := context.SubmitCredential(c, cred)
 	if err != nil {
-		return middleware.RenderError(c, err)
+		return context.RenderError(c, err)
 	}
 	return nil
 }
