@@ -12,7 +12,7 @@ func ListCredentials(c echo.Context, handle string) ([]*CredentialDescriptor, er
 	if !ok {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Credentials Context not found")
 	}
-	creds, err := cc.dbq.GetCredentialsByHandle(bgCtx(), handle)
+	creds, err := cc.GetCredentialsByHandle(bgCtx(), handle)
 	if err != nil {
 		return nil, err
 	}
@@ -23,13 +23,12 @@ func SubmitCredential(c echo.Context, cred *CredentialDescriptor) error {
 	origin := GetOrigin(c)
 	handle := GetHandle(c)
 	md := cred.ToModel(handle, origin)
-
 	cc, ok := c.(*GatewayContext)
 	if !ok {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Credentials Context not found")
 	}
 
-	_, err := cc.dbq.InsertCredential(bgCtx(), hwayorm.InsertCredentialParams{
+	_, err := cc.InsertCredential(bgCtx(), hwayorm.InsertCredentialParams{
 		Handle:       handle,
 		CredentialID: md.CredentialID,
 		Origin:       origin,

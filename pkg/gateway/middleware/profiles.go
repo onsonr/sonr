@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/context"
 	hwayorm "github.com/onsonr/sonr/internal/database/hwayorm"
+	"github.com/onsonr/sonr/pkg/common"
 )
 
 func CheckHandleUnique(c echo.Context, handle string) bool {
@@ -13,14 +13,14 @@ func CheckHandleUnique(c echo.Context, handle string) bool {
 	if !ok {
 		return false
 	}
-	ok, err := ctx.dbq.CheckHandleExists(bgCtx(), handle)
+	ok, err := ctx.CheckHandleExists(bgCtx(), handle)
 	if err != nil {
 		return false
 	}
 	if ok {
 		return false
 	}
-	context.WriteCookie(c, context.UserHandle, handle)
+	common.WriteCookie(c, common.UserHandle, handle)
 	return true
 }
 
@@ -33,7 +33,7 @@ func InsertProfile(c echo.Context) (*hwayorm.Profile, error) {
 	handle := c.FormValue("handle")
 	origin := c.FormValue("origin")
 	name := c.FormValue("name")
-	profile, err := ctx.dbq.InsertProfile(bgCtx(), hwayorm.InsertProfileParams{
+	profile, err := ctx.InsertProfile(bgCtx(), hwayorm.InsertProfileParams{
 		Address: address,
 		Handle:  handle,
 		Origin:  origin,
@@ -44,7 +44,7 @@ func InsertProfile(c echo.Context) (*hwayorm.Profile, error) {
 	}
 	// Update session with profile id
 	sid := GetSessionID(c)
-	_, err = ctx.dbq.UpdateSessionWithProfileID(bgCtx(), hwayorm.UpdateSessionWithProfileIDParams{
+	_, err = ctx.UpdateSessionWithProfileID(bgCtx(), hwayorm.UpdateSessionWithProfileIDParams{
 		ProfileID: profile.ID,
 		ID:        sid,
 	})
@@ -62,7 +62,7 @@ func UpdateProfile(c echo.Context) (*hwayorm.Profile, error) {
 	address := c.FormValue("address")
 	handle := c.FormValue("handle")
 	name := c.FormValue("name")
-	profile, err := ctx.dbq.UpdateProfile(bgCtx(), hwayorm.UpdateProfileParams{
+	profile, err := ctx.UpdateProfile(bgCtx(), hwayorm.UpdateProfileParams{
 		Address: address,
 		Handle:  handle,
 		Name:    name,
@@ -79,7 +79,7 @@ func ReadProfile(c echo.Context) (*hwayorm.Profile, error) {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Profile Context not found")
 	}
 	handle := c.Param("handle")
-	profile, err := ctx.dbq.GetProfileByHandle(bgCtx(), handle)
+	profile, err := ctx.GetProfileByHandle(bgCtx(), handle)
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +92,7 @@ func DeleteProfile(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Profile Context not found")
 	}
 	address := c.Param("address")
-	err := ctx.dbq.SoftDeleteProfile(bgCtx(), address)
+	err := ctx.SoftDeleteProfile(bgCtx(), address)
 	if err != nil {
 		return err
 	}

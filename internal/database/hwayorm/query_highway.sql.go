@@ -193,7 +193,7 @@ func (q *Queries) GetHumanVerificationNumbers(ctx context.Context, id string) (G
 }
 
 const getProfileByAddress = `-- name: GetProfileByAddress :one
-SELECT id, created_at, updated_at, deleted_at, address, handle, origin, name FROM profiles
+SELECT id, created_at, updated_at, deleted_at, address, handle, origin, name, status FROM profiles
 WHERE address = $1 AND deleted_at IS NULL
 LIMIT 1
 `
@@ -210,12 +210,13 @@ func (q *Queries) GetProfileByAddress(ctx context.Context, address string) (Prof
 		&i.Handle,
 		&i.Origin,
 		&i.Name,
+		&i.Status,
 	)
 	return i, err
 }
 
 const getProfileByHandle = `-- name: GetProfileByHandle :one
-SELECT id, created_at, updated_at, deleted_at, address, handle, origin, name FROM profiles
+SELECT id, created_at, updated_at, deleted_at, address, handle, origin, name, status FROM profiles
 WHERE handle = $1 
 AND deleted_at IS NULL
 LIMIT 1
@@ -233,12 +234,13 @@ func (q *Queries) GetProfileByHandle(ctx context.Context, handle string) (Profil
 		&i.Handle,
 		&i.Origin,
 		&i.Name,
+		&i.Status,
 	)
 	return i, err
 }
 
 const getProfileByID = `-- name: GetProfileByID :one
-SELECT id, created_at, updated_at, deleted_at, address, handle, origin, name FROM profiles
+SELECT id, created_at, updated_at, deleted_at, address, handle, origin, name, status FROM profiles
 WHERE id = $1 AND deleted_at IS NULL
 LIMIT 1
 `
@@ -255,6 +257,7 @@ func (q *Queries) GetProfileByID(ctx context.Context, id string) (Profile, error
 		&i.Handle,
 		&i.Origin,
 		&i.Name,
+		&i.Status,
 	)
 	return i, err
 }
@@ -411,7 +414,7 @@ INSERT INTO profiles (
     origin,
     name
 ) VALUES ($1, $2, $3, $4)
-RETURNING id, created_at, updated_at, deleted_at, address, handle, origin, name
+RETURNING id, created_at, updated_at, deleted_at, address, handle, origin, name, status
 `
 
 type InsertProfileParams struct {
@@ -438,6 +441,7 @@ func (q *Queries) InsertProfile(ctx context.Context, arg InsertProfileParams) (P
 		&i.Handle,
 		&i.Origin,
 		&i.Name,
+		&i.Status,
 	)
 	return i, err
 }
@@ -472,7 +476,7 @@ SET
     updated_at = CURRENT_TIMESTAMP
 WHERE address = $3 
 AND deleted_at IS NULL
-RETURNING id, created_at, updated_at, deleted_at, address, handle, origin, name
+RETURNING id, created_at, updated_at, deleted_at, address, handle, origin, name, status
 `
 
 type UpdateProfileParams struct {
@@ -493,6 +497,7 @@ func (q *Queries) UpdateProfile(ctx context.Context, arg UpdateProfileParams) (P
 		&i.Handle,
 		&i.Origin,
 		&i.Name,
+		&i.Status,
 	)
 	return i, err
 }

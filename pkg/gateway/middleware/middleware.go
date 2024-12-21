@@ -11,9 +11,9 @@ import (
 
 type GatewayContext struct {
 	echo.Context
+	*hwayorm.Queries
 	agent            useragent.UserAgent
 	id               string
-	dbq              *hwayorm.Queries
 	ipfsClient       common.IPFS
 	tokenStore       common.IPFSTokenStore
 	stagedEnclaves   map[string]mpc.Enclave
@@ -29,7 +29,7 @@ func UseGateway(env hway.Hway, ipc common.IPFS, db *hwayorm.Queries) echo.Middle
 				turnstileSiteKey: env.GetTurnstileSiteKey(),
 				agent:            ua.Parse(c.Request().UserAgent()),
 				Context:          c,
-				dbq:              db,
+				Queries:          db,
 				ipfsClient:       ipc,
 				grpcAddr:         env.GetSonrGrpcUrl(),
 				tokenStore:       common.NewUCANStore(ipc),

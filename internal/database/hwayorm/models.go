@@ -61,6 +61,7 @@ type Profile struct {
 	Handle    string
 	Origin    string
 	Name      string
+	Status    string
 }
 
 type Session struct {

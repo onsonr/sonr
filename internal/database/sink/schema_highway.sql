@@ -8,6 +8,7 @@ CREATE TABLE profiles (
     handle TEXT NOT NULL UNIQUE,
     origin TEXT NOT NULL,
     name TEXT NOT NULL,
+    status TEXT NOT NULL,
     UNIQUE(address, origin)
 );
 
@@ -102,6 +103,8 @@ CREATE TABLE vaults (
 -- Indexes for common queries
 CREATE INDEX idx_profiles_handle ON profiles(handle);
 CREATE INDEX idx_profiles_address ON profiles(address);
+CREATE INDEX idx_profiles_origin ON profiles(origin);
+CREATE INDEX idx_profiles_status ON profiles(status);
 CREATE INDEX idx_profiles_deleted_at ON profiles(deleted_at);
 
 CREATE INDEX idx_accounts_address ON accounts(address);

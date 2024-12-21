@@ -6,8 +6,8 @@ import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
 	"github.com/medama-io/go-useragent"
-	ctx "github.com/onsonr/sonr/internal/context"
 	hwayorm "github.com/onsonr/sonr/internal/database/hwayorm"
+	"github.com/onsonr/sonr/pkg/common"
 	"github.com/segmentio/ksuid"
 )
 
@@ -18,11 +18,11 @@ func NewSession(c echo.Context) error {
 	}
 	baseSessionCreateParams := BaseSessionCreateParams(cc)
 	cc.id = baseSessionCreateParams.ID
-	if _, err := cc.dbq.CreateSession(bgCtx(), baseSessionCreateParams); err != nil {
+	if _, err := cc.CreateSession(bgCtx(), baseSessionCreateParams); err != nil {
 		return err
 	}
 	// Set Cookie
-	if err := ctx.WriteCookie(c, ctx.SessionID, cc.id); err != nil {
+	if err := common.WriteCookie(c, common.SessionID, cc.id); err != nil {
 		return err
 	}
 	return nil
@@ -49,10 +49,10 @@ func GetSessionID(c echo.Context) string {
 	}
 	// check from cookie
 	if cc.id == "" {
-		if ok := ctx.CookieExists(c, ctx.SessionID); !ok {
+		if ok := common.CookieExists(c, common.SessionID); !ok {
 			return ""
 		}
-		cc.id = ctx.ReadCookieUnsafe(c, ctx.SessionID)
+		cc.id = common.ReadCookieUnsafe(c, common.SessionID)
 	}
 	return cc.id
 }
@@ -62,7 +62,7 @@ func GetSessionChallenge(c echo.Context) string {
 	if !ok {
 		return ""
 	}
-	s, err := cc.dbq.GetChallengeBySessionID(bgCtx(), cc.id)
+	s, err := cc.GetChallengeBySessionID(bgCtx(), cc.id)
 	if err != nil {
 		return ""
 	}
@@ -71,7 +71,7 @@ func GetSessionChallenge(c echo.Context) string {
 
 func GetHandle(c echo.Context) string {
 	// First check for the cookie
-	handle := ctx.ReadCookieUnsafe(c, ctx.UserHandle)
+	handle := common.ReadCookieUnsafe(c, common.UserHandle)
 	if handle != "" {
 		return handle
 	}
@@ -81,11 +81,11 @@ func GetHandle(c echo.Context) string {
 	if !ok {
 		return ""
 	}
-	s, err := cc.dbq.GetSessionByID(bgCtx(), cc.id)
+	s, err := cc.GetSessionByID(bgCtx(), cc.id)
 	if err != nil {
 		return ""
 	}
-	profile, err := cc.dbq.GetProfileByID(bgCtx(), s.ProfileID)
+	profile, err := cc.GetProfileByID(bgCtx(), s.ProfileID)
 	if err != nil {
 		return ""
 	}
@@ -137,16 +137,16 @@ func BaseSessionCreateParams(e echo.Context) hwayorm.CreateSessionParams {
 }
 
 func getOrCreateSessionID(c echo.Context) string {
-	if ok := ctx.CookieExists(c, ctx.SessionID); !ok {
+	if ok := common.CookieExists(c, common.SessionID); !ok {
 		sessionID := ksuid.New().String()
-		ctx.WriteCookie(c, ctx.SessionID, sessionID)
+		common.WriteCookie(c, common.SessionID, sessionID)
 		return sessionID
 	}
 
-	sessionID, err := ctx.ReadCookie(c, ctx.SessionID)
+	sessionID, err := common.ReadCookie(c, common.SessionID)
 	if err != nil {
 		sessionID = ksuid.New().String()
-		ctx.WriteCookie(c, ctx.SessionID, sessionID)
+		common.WriteCookie(c, common.SessionID, sessionID)
 	}
 	return sessionID
 }
