@@ -10,7 +10,7 @@ import (
 func ListCredentials(c echo.Context, handle string) ([]*CredentialDescriptor, error) {
 	cc, ok := c.(*GatewayContext)
 	if !ok {
-		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Credentials Context not found")
+		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Gateway Context not found")
 	}
 	creds, err := cc.GetCredentialsByHandle(bgCtx(), handle)
 	if err != nil {
