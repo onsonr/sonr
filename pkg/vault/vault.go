@@ -8,7 +8,6 @@ import (
 	"github.com/onsonr/sonr/internal/config/motr"
 	"github.com/onsonr/sonr/internal/database/motrorm"
 	"github.com/onsonr/sonr/pkg/vault/context"
-	"github.com/onsonr/sonr/pkg/vault/routes"
 )
 
 type Vault = *echo.Echo
@@ -24,7 +23,7 @@ func New(config *motr.Config, dbq *motrorm.Queries) (Vault, error) {
 	e.Use(echomiddleware.Logger())
 	e.Use(echomiddleware.Recover())
 	e.Use(context.WASMMiddleware)
-	routes.Register(e)
+	registerRoutes(e)
 	return e, nil
 }
 
@@ -35,4 +34,8 @@ func handleError() echo.HTTPErrorHandler {
 			c.Logger().Errorf("Error: %v", he.Message)
 		}
 	}
+}
+
+// RegisterRoutes registers the Decentralized Web Node API routes.
+func registerRoutes(e *echo.Echo) {
 }
