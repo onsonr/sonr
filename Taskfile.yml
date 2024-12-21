@@ -36,7 +36,6 @@ includes:
 
 tasks:
   default:
-    internal: true
     cmds:
       - gh run ls -L 3
       - gum format -- "# Sonr ({{.OS}}-{{.VERSION}})" " - ({{.COMMIT}}) {{.ROOT}}"
