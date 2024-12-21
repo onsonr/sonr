@@ -315,7 +315,7 @@ dop-testnet: mod-tidy
 .PHONY: gen-pkl gen-templ gen-sqlc
 
 gen-pkl: init-env
-	pkl-gen-go pkl/sonr.orm/UCAN.pkl
+	pkl-gen-go pkl/sonr.net/UCAN.pkl
 	pkl-gen-go pkl/sonr.net/Hway.pkl
 	pkl-gen-go pkl/sonr.net/Motr.pkl
 

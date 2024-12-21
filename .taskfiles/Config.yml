@@ -1,0 +1,9 @@
+version: "3"
+
+tasks:
+  import-secrets:
+    silent: true
+    cmds: 
+      - echo "Importing config"
+    vars:
+      

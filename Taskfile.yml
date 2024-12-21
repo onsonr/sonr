@@ -15,20 +15,19 @@ vars:
     sh: skate get DOPPLER_NETWORK
 
 includes:
-  pkl:
-    taskfile: taskfiles/pkl.yml
+  config:
+    taskfile: .taskfiles/Config.yml
     flatten: true
-  psql:
-    taskfile: taskfiles/psql.yml
-    flatten: true
-  ipfs:
-    taskfile: taskfiles/ipfs.yml
-    flatten: true
-  sonr:
-    taskfile: taskfiles/sonr.yml
-    flatten: true
-  svcs:
-    taskfile: taskfiles/svcs.yml
+  generate:
+    taskfile: .taskfiles/Generate.yml
+    aliases: [gen]
+  initialize:
+    taskfile: .taskfiles/Initialize.yml
+    aliases: [init]
+  install:
+    taskfile: .taskfiles/Install.yml
+  serve:
+    taskfile: .taskfiles/Serve.yml
     flatten: true
 
 tasks:
@@ -38,13 +37,3 @@ tasks:
       - gum format -- "# Sonr ({{.OS}}-{{.VERSION}})" " - ({{.COMMIT}}) {{.ROOT}}"
       - task -l -j | jq -r '.tasks[].name' | fzf --height=20 --reverse --header="Execute task:" --header-lines=1 | xargs task
     silent: true
-
-  clean:
-    internal: true
-    cmds:
-      - sh ./scripts/init_env.sh
-      - rm -rf ./build
-      - rm -rf ./dist
-      - rm -rf ./static
-    silent: true
-

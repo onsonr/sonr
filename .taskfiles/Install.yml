@@ -1,0 +1,26 @@
+version: "3"
+
+vars:
+  ROOT:
+    sh: git rev-parse --show-toplevel
+tasks:
+  deps:
+    desc: Install go dependencies
+    silent: true
+    vars:
+      DEPS: ["github.com/apple/pkl-go/cmd/pkl-gen-go@latest", "github.com/sqlc-dev/sqlc/cmd/sqlc@latest", "github.com/goreleaser/goreleaser/v2@latest","github.com/a-h/templ/cmd/templ@latest"]
+    cmds:
+      - for: { var: DEPS }
+        cmd: gum spin --spinner dot --title "Installing go dependencies..." -- go install {{.ITEM}}
+
+  sonrd:
+    desc: Install sonrd
+    silent: true
+    cmds:
+      - gum spin --spinner dot --title "Installing sonr daemon..." -- make install
+
+  hway:
+    desc: Install hway
+    silent: true
+    cmds:
+      - gum spin --spinner dot --title "Installing sonr hway..." -- make install-hway

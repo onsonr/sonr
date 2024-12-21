@@ -1,0 +1,42 @@
+version: "3"
+
+vars:
+  ROOT:
+    sh: git rev-parse --show-toplevel
+tasks:
+  start:
+    desc: Start the services
+    silent: true
+    dir: "{{.ROOT}}"
+    cmds: 
+      - task: print
+      - cmd: devbox services start postgresql
+        platforms:
+          - darwin
+      - cmd: devbox services up
+        platforms:
+          - darwin
+      - cmd: devbox services up -b
+        platforms:
+          - linux
+
+  stop:
+    desc: Stop the services
+    silent: true
+    dir: "{{.ROOT}}"
+    platforms:
+      - darwin
+    cmds: 
+      - cmd: devbox services stop postgresql
+        platforms:
+          - darwin
+      - cmd: devbox services down
+        platforms:
+          - darwin
+          - linux
+
+  print:
+    internal: true
+    silent: true
+    cmds:
+      - gum format -- "# Sonr ({{.OS}}-{{.VERSION}})" "- ({{.COMMIT}})" "- {{.NOW}}" 

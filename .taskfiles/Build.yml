@@ -1,0 +1,17 @@
+version: "3"
+
+tasks:
+  hway:
+    silent: true
+    cmds: 
+      - echo "Importing config"
+
+  clean:
+    internal: true
+    cmds:
+      - sh ./scripts/init_env.sh
+      - rm -rf ./build
+      - rm -rf ./dist
+      - rm -rf ./static
+    silent: true
+
