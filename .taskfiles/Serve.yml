@@ -7,27 +7,22 @@ tasks:
   start:
     desc: Start the services
     silent: true
-    dir: "deploy"
     cmds: 
       - task: print
-      - cmd: devbox services up
+      - cmd: process-compose up 
         platforms:
           - darwin
-      - cmd: devbox services up -b
+      - cmd: process-compose up -d
         platforms:
           - linux
 
   stop:
     desc: Stop the services
     silent: true
-    dir: "deploy"
     platforms:
       - darwin
     cmds: 
-      - cmd: devbox services stop postgresql
-        platforms:
-          - darwin
-      - cmd: devbox services down
+      - cmd: process-compose down
         platforms:
           - darwin
           - linux

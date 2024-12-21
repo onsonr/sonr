@@ -15,21 +15,28 @@ vars:
     sh: skate get DOPPLER_NETWORK
 
 includes:
+  build:
+    taskfile: .taskfiles/Build.yml
+    flatten: true
   config:
     taskfile: .taskfiles/Config.yml
     flatten: true
   gen:
     taskfile: .taskfiles/Generate.yml
+    flatten: true
   init:
     taskfile: .taskfiles/Initialize.yml
+    flatten: true
   install:
     taskfile: .taskfiles/Install.yml
+    flatten: true
   serve:
     taskfile: .taskfiles/Serve.yml
     flatten: true
 
 tasks:
   default:
+    internal: true
     cmds:
       - gh run ls -L 3
       - gum format -- "# Sonr ({{.OS}}-{{.VERSION}})" " - ({{.COMMIT}}) {{.ROOT}}"

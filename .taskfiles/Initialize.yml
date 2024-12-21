@@ -4,7 +4,7 @@ vars:
   ROOT:
     sh: git rev-parse --show-toplevel
 tasks:
-  ipfs:
+  ipfs:init:
     desc: Initialize ipfs with Cloudflare
     silent: true
     vars:
@@ -29,7 +29,7 @@ tasks:
       - ipfs config --json Peering.Peers {{.PEERS}}
       - ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["*"]'
  
-  psql:
+  psql:init:
     desc: Initialize postgresql
     silent: true
     cmds:

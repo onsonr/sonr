@@ -7,8 +7,4 @@ processes:
 
   hway:
     namespace: testnet
-    command: "./build/hway"
-
-  ipfs:
-    namespace: testnet
-    command: "ipfs daemon"
+    command: "hway"

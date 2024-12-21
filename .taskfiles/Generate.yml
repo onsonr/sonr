@@ -1,7 +1,7 @@
 version: "3"
 
 tasks:
-  pkl:
+  pkl:gen:
     desc: Generate PKL files
     silent: true
     dir: "pkl/sonr.net"
@@ -11,18 +11,18 @@ tasks:
       - for: { var: FILES }
         cmd: gum spin --spinner dot --title "Generating PKL in Go..." -- pkl-gen-go {{.ITEM}}
   
-  proto:
+  proto:gen:
     desc: Generate proto files
     silent: true
     cmd: gum spin --spinner dot --title "Generating Protobufs..." -- make proto-gen
 
-  sqlc:
+  sqlc:gen:
     desc: Generate SQLC files
     silent: true
     cmds:
       - gum spin --spinner dot --title "Generating SQLC..." -- sqlc generate -f internal/database/sqlc.yaml
 
-  templ:
+  templ:gen:
     desc: Generate templ files
     silent: true
     cmd: gum spin --spinner dot --title "Generating Templ..." -- templ generate

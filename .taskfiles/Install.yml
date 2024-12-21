@@ -4,7 +4,7 @@ vars:
   ROOT:
     sh: git rev-parse --show-toplevel
 tasks:
-  deps:
+  deps:install:
     desc: Install go dependencies
     silent: true
     vars:
@@ -13,13 +13,13 @@ tasks:
       - for: { var: DEPS }
         cmd: gum spin --spinner dot --title "Installing go dependencies..." -- go install {{.ITEM}}
 
-  sonrd:
+  sonrd:install:
     desc: Install sonrd
     silent: true
     cmds:
       - gum spin --spinner dot --title "Installing sonr daemon..." -- make install
 
-  hway:
+  hway:install:
     desc: Install hway
     silent: true
     cmds:

@@ -100,7 +100,7 @@ mprocs.yaml
 mprocs.log
 tools-stamp
 sonr.log
-deploy
+deploy/conf
 
 interchaintest-downloader
 .haptic
