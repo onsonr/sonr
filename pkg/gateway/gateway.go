@@ -9,7 +9,7 @@ import (
 	hwayorm "github.com/onsonr/sonr/internal/database/hwayorm"
 	"github.com/onsonr/sonr/pkg/common"
 	"github.com/onsonr/sonr/pkg/gateway/context"
-	"github.com/onsonr/sonr/pkg/gateway/routes"
+	"github.com/onsonr/sonr/pkg/gateway/handlers"
 )
 
 type Gateway = *echo.Echo
@@ -26,7 +26,7 @@ func New(env config.Hway, ipc common.IPFS, dbq *hwayorm.Queries) (Gateway, error
 	e.Use(echomiddleware.Logger())
 	e.Use(echomiddleware.Recover())
 	e.Use(context.UseGateway(env, ipc, dbq))
-	routes.Register(e)
+	registerRoutes(e)
 	return e, nil
 }
 
@@ -38,4 +38,11 @@ func handleError() echo.HTTPErrorHandler {
 			context.RenderError(c, he)
 		}
 	}
+}
+
+func registerRoutes(e *echo.Echo) error {
+	// Register View Handlers
+	e.GET("/", handlers.HandleIndex)
+	handlers.HandleRegistration(e.Group("/register"))
+	return nil
 }

@@ -60,10 +60,13 @@ func validatePasskeyForm(c echo.Context) error {
 	origin := c.Request().Host
 	credentialJSON := c.FormValue("credential")
 	cred := &context.CredentialDescriptor{}
+
 	// Unmarshal the credential JSON
-	if err := json.Unmarshal([]byte(credentialJSON), cred); err != nil {
+	err = json.Unmarshal([]byte(credentialJSON), cred)
+	if err != nil {
 		return context.RenderError(c, err)
 	}
+
 	md := cred.ToModel(handle, origin)
 	_, err = cc.InsertCredential(context.BG(), hwayorm.InsertCredentialParams{
 		Handle:       md.Handle,
