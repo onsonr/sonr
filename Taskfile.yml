@@ -18,12 +18,10 @@ includes:
   config:
     taskfile: .taskfiles/Config.yml
     flatten: true
-  generate:
+  gen:
     taskfile: .taskfiles/Generate.yml
-    aliases: [gen]
-  initialize:
+  init:
     taskfile: .taskfiles/Initialize.yml
-    aliases: [init]
   install:
     taskfile: .taskfiles/Install.yml
   serve:
@@ -35,5 +33,5 @@ tasks:
     cmds:
       - gh run ls -L 3
       - gum format -- "# Sonr ({{.OS}}-{{.VERSION}})" " - ({{.COMMIT}}) {{.ROOT}}"
-      - task -l -j | jq -r '.tasks[].name' | fzf --height=20 --reverse --header="Execute task:" --header-lines=1 | xargs task
+      - task -l -j | jq -r '.tasks[].name' | fzf --height=16 | xargs task
     silent: true

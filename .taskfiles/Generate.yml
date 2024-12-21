@@ -1,35 +1,28 @@
 version: "3"
 
-vars:
-  ROOT:
-    sh: git rev-parse --show-toplevel
-
 tasks:
   pkl:
     desc: Generate PKL files
     silent: true
-    dir: "{{.ROOT}}/pkl/sonr.net"
+    dir: "pkl/sonr.net"
     vars:
       FILES: ["Hway.pkl", "Motr.pkl", "UCAN.pkl"]
     cmds:
       - for: { var: FILES }
-        cmd: pkl-gen-go {{.ITEM}}
+        cmd: gum spin --spinner dot --title "Generating PKL in Go..." -- pkl-gen-go {{.ITEM}}
   
   proto:
     desc: Generate proto files
     silent: true
-    dir: "{{.ROOT}}"
-    cmd: make proto-gen
+    cmd: gum spin --spinner dot --title "Generating Protobufs..." -- make proto-gen
 
   sqlc:
     desc: Generate SQLC files
     silent: true
-    dir: "{{.ROOT}}"
     cmds:
-      - sqlc generate -f internal/database/sqlc.yaml
+      - gum spin --spinner dot --title "Generating SQLC..." -- sqlc generate -f internal/database/sqlc.yaml
 
   templ:
     desc: Generate templ files
     silent: true
-    dir: "{{.ROOT}}"
-    cmd: templ generate
+    cmd: gum spin --spinner dot --title "Generating Templ..." -- templ generate

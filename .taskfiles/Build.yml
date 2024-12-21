@@ -4,7 +4,7 @@ tasks:
   hway:
     silent: true
     cmds: 
-      - echo "Importing config"
+      - make build-hway
 
   clean:
     internal: true

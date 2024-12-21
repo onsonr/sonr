@@ -7,12 +7,9 @@ tasks:
   start:
     desc: Start the services
     silent: true
-    dir: "{{.ROOT}}"
+    dir: "deploy"
     cmds: 
       - task: print
-      - cmd: devbox services start postgresql
-        platforms:
-          - darwin
       - cmd: devbox services up
         platforms:
           - darwin
@@ -23,7 +20,7 @@ tasks:
   stop:
     desc: Stop the services
     silent: true
-    dir: "{{.ROOT}}"
+    dir: "deploy"
     platforms:
       - darwin
     cmds: 
