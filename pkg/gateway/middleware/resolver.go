@@ -7,25 +7,8 @@ import (
 	"github.com/onsonr/sonr/pkg/common"
 )
 
-// CurrentBlock returns the current block
-func CurrentBlock(c echo.Context) uint64 {
-	cc, ok := c.(*GatewayContext)
-	if !ok {
-		return 0
-	}
-	qc, err := common.NewNodeClient(cc.grpcAddr)
-	if err != nil {
-		return 0
-	}
-	resp, err := qc.Status(bgCtx(), &common.StatusRequest{})
-	if err != nil {
-		return 0
-	}
-	return resp.GetHeight()
-}
-
-// GetBankParams returns the bank params
-func GetBankParams(c echo.Context) (*common.BankParamsResponse, error) {
+// ParamsBank returns the bank params
+func ParamsBank(c echo.Context) (*common.BankParamsResponse, error) {
 	cc, ok := c.(*GatewayContext)
 	if !ok {
 		return nil, errors.New("gateway context not found")
@@ -41,8 +24,8 @@ func GetBankParams(c echo.Context) (*common.BankParamsResponse, error) {
 	return resp, nil
 }
 
-// GetDIDParams returns the DID params
-func GetDIDParams(c echo.Context) (*common.DIDParamsResponse, error) {
+// ParamsDID returns the DID params
+func ParamsDID(c echo.Context) (*common.DIDParamsResponse, error) {
 	cc, ok := c.(*GatewayContext)
 	if !ok {
 		return nil, errors.New("gateway context not found")
@@ -58,8 +41,8 @@ func GetDIDParams(c echo.Context) (*common.DIDParamsResponse, error) {
 	return resp, nil
 }
 
-// GetDWNParams returns the DWN params
-func GetDWNParams(c echo.Context) (*common.DWNParamsResponse, error) {
+// ParamsDWN returns the DWN params
+func ParamsDWN(c echo.Context) (*common.DWNParamsResponse, error) {
 	cc, ok := c.(*GatewayContext)
 	if !ok {
 		return nil, errors.New("gateway context not found")
@@ -76,8 +59,43 @@ func GetDWNParams(c echo.Context) (*common.DWNParamsResponse, error) {
 	return resp, nil
 }
 
-// GetNodeStatus returns the node status
-func GetNodeStatus(c echo.Context) (*common.StatusResponse, error) {
+// ParamsSVC returns the SVC params
+func ParamsSVC(c echo.Context) (*common.SVCParamsResponse, error) {
+	cc, ok := c.(*GatewayContext)
+	if !ok {
+		return nil, errors.New("gateway context not found")
+	}
+
+	cl, err := common.NewSVCClient(cc.grpcAddr)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := cl.Params(bgCtx(), &common.SVCParamsRequest{})
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// StatusBlock returns the current block
+func StatusBlock(c echo.Context) uint64 {
+	cc, ok := c.(*GatewayContext)
+	if !ok {
+		return 0
+	}
+	qc, err := common.NewNodeClient(cc.grpcAddr)
+	if err != nil {
+		return 0
+	}
+	resp, err := qc.Status(bgCtx(), &common.StatusRequest{})
+	if err != nil {
+		return 0
+	}
+	return resp.GetHeight()
+}
+
+// StatusNode returns the node status
+func StatusNode(c echo.Context) (*common.StatusResponse, error) {
 	cc, ok := c.(*GatewayContext)
 	if !ok {
 		return nil, errors.New("gateway context not found")
@@ -94,20 +112,22 @@ func GetNodeStatus(c echo.Context) (*common.StatusResponse, error) {
 	return resp, nil
 }
 
-// GetSVCParams returns the SVC params
-func GetSVCParams(c echo.Context) (*common.SVCParamsResponse, error) {
-	cc, ok := c.(*GatewayContext)
-	if !ok {
-		return nil, errors.New("gateway context not found")
-	}
+// TxBroadcast broadcasts a transaction to the network
+func TxBroadcast(c echo.Context) error {
+	return nil
+}
 
-	cl, err := common.NewSVCClient(cc.grpcAddr)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := cl.Params(bgCtx(), &common.SVCParamsRequest{})
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
+// TxEncode encodes a transaction
+func TxEncode(c echo.Context) error {
+	return nil
+}
+
+// TxDecode decodes a transaction
+func TxDecode(c echo.Context) error {
+	return nil
+}
+
+// TxSimulate simulates a transaction on the network
+func TxSimulate(c echo.Context) error {
+	return nil
 }

@@ -5,15 +5,15 @@ sql:
     schema: "./sink/schema_vault.sql"
     gen:
       go:
-        package: "orm"
-        out: "../pkg/vault/orm"
+        package: "motrorm"
+        out: "motrorm"
 
   - engine: "postgresql"
     queries: "./sink/query_highway.sql"
     schema: "./sink/schema_highway.sql"
     gen:
       go:
-        package: "orm"
-        out: "../pkg/gateway/orm"
+        package: "hwayorm"
+        out: "hwayorm"
         sql_package: "pgx/v5" 
 

@@ -1,3 +1,5 @@
+module sonr.net.App
+
 import "package://pkg.pkl-lang.org/pkl-pantry/pkl.toml@1.0.0#/toml.pkl"
 
 `minimum-gas-prices` = "0usnr"

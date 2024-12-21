@@ -1,0 +1,67 @@
+version: "3"
+
+vars:
+  VERSION:
+    sh: git describe --tags --abbrev=0
+  COMMIT:
+    sh: git rev-parse --short HEAD
+  ROOT:
+    sh: git rev-parse --show-toplevel
+  OS:
+    sh: uname -s
+  TASKS:
+    sh: task -l
+tasks:
+  psql:init:
+    desc: Initialize the general-purpose database
+    silent: true
+    cmds:
+      - task: init:darwin
+      - task: init:linux
+
+  reset:chainindex:
+    desc: Reset the ChainIndex database
+    silent: true
+    cmds:
+      - task: reset:chainindex:darwin
+      - task: reset:chainindex:linux
+
+  sqlc:gen:
+    desc: Generate SQLC files
+    silent: true
+    cmds:
+      - sqlc generate -f internal/database/sqlc.yaml
+
+# ------------------------------------------------------------------------------
+# Internal Commands
+# ------------------------------------------------------------------------------
+  
+  init:darwin:
+    platforms:
+      - darwin
+    internal: true
+    cmds:
+      - psql -f {{.ROOT}}/deploy/sink/db_seed.sql
+      - psql -d chainindex -f ./deploy/sink/schema_indexer.sql
+
+  init:linux:
+    internal: true
+    silent: true
+    platforms:
+      - linux
+    cmds:
+      - sudo -u postgres psql -f {{.ROOT}}/deploy/sink/db_seed.sql
+      - sudo -u postgres psql -d chainindex -f ./deploy/sink/schema_indexer.sql
+
+
+
+
+
+
+
+  reset:chainindex:darwin:
+    internal: true
+    platforms:
+      - darwin
+    cmd: psql -f ./deploy/sink/reset_chainindex.sql
+

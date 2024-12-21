@@ -3,7 +3,7 @@ open module matrix.net.Homeserver
 version = 2
 
 global = new {
-server_name = read("env:MATRIX_SERVER_NAME") ?? ""
+server_name = read("env:MATRIX_SERVER_NAME") ?? "mx.sonr.id"
 private_key = "matrix_key.pem"
 old_private_keys = new Listing {}
 key_validity_period = "168h0m0s"
@@ -21,10 +21,9 @@ max_size_estimated = "1gb"
 max_age = "1h"
 }
 
-well_known_server_name = ""
-well_known_client_name = read("env:MATRIX_CLIENT_NAME") ?? ""
-well_known_sliding_sync_proxy = ""
-
+well_known_server_name = "sonr.id"
+well_known_client_name = read("env:MATRIX_CLIENT_NAME") ?? "sonr.id"
+well_known_sliding_sync_proxy = read("env:MATRIX_SLIDING_SYNC_PROXY") ?? ""
 trusted_third_party_id_servers = new Listing {
 "matrix.org"
 "vector.im"
@@ -54,7 +53,7 @@ jetstream = new {
 addresses = new Listing {}
 disable_tls_validation = false
 storage_path = "./"
-topic_prefix = "Dendrite"
+topic_prefix = "_matrix"
 }
 
 metrics = new {

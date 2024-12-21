@@ -100,6 +100,9 @@ endif
 install: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/sonrd
 
+install-hway: go.sum
+	go install -mod=readonly ./cmd/hway
+
 ########################################
 ### Tools & dependencies
 
@@ -317,7 +320,7 @@ gen-pkl: init-env
 	pkl-gen-go pkl/sonr.net/Motr.pkl
 
 gen-sqlc: init-env
-	@sqlc generate -f deploy/sqlc.yaml
+	@sqlc generate -f internal/database/sqlc.yaml
 
 gen-templ: init-env
 	@templ generate
@@ -348,20 +351,10 @@ logs-sonr: init-env
 start: build-hway init-env
 	bin/process-compose up --port $(PC_PORT_NUM) --log-file $(PC_LOG_FILE) -f deploy/process-compose.yaml
 
-start-uds: build-hway init-env
-	bin/process-compose up --use-uds --unix-socket $(PC_SOCKET_PATH) --log-file $(PC_LOG_FILE) --detached -f deploy/process-compose.yaml
-
 stop: init-env
 	bin/process-compose down --port $(PC_PORT_NUM)
 
-stop-uds: init-env
-	bin/process-compose down --use-uds --unix-socket $(PC_SOCKET_PATH)
 
-status: init-env
-	bin/process-compose project state --port $(PC_PORT_NUM)
-
-status-uds: init-env
-	bin/process-compose project state --use-uds --unix-socket $(PC_SOCKET_PATH)
 ###############################################################################
 ###                                     help                                ###
 ###############################################################################

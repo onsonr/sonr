@@ -1,4 +1,4 @@
-version: "0.6"
+version: "0.5"
 
 processes:
   sonr:
@@ -8,3 +8,7 @@ processes:
   hway:
     namespace: testnet
     command: "./build/hway"
+
+  ipfs:
+    namespace: testnet
+    command: "ipfs daemon"

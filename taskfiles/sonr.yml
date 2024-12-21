@@ -1,0 +1,22 @@
+version: "3"
+
+vars:
+  VERSION:
+    sh: git describe --tags --abbrev=0
+  COMMIT:
+    sh: git rev-parse --short HEAD
+  ROOT:
+    sh: git rev-parse --show-toplevel
+  OS:
+    sh: uname -s
+  TASKS:
+    sh: task -l
+  DOPPLER_TOKEN:
+    sh: skate get DOPPLER_NETWORK
+tasks:
+  init:local:
+    desc: Initialize the local sonr node
+    silent: true
+    cmds:
+      - sonrd status
+

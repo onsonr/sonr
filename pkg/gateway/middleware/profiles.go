@@ -5,7 +5,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/internal/context"
-	hwayorm "github.com/onsonr/sonr/pkg/gateway/orm"
+	hwayorm "github.com/onsonr/sonr/internal/database/hwayorm"
 )
 
 func CheckHandleUnique(c echo.Context, handle string) bool {
@@ -24,7 +24,7 @@ func CheckHandleUnique(c echo.Context, handle string) bool {
 	return true
 }
 
-func CreateProfile(c echo.Context) (*hwayorm.Profile, error) {
+func InsertProfile(c echo.Context) (*hwayorm.Profile, error) {
 	ctx, ok := c.(*GatewayContext)
 	if !ok {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Profile Context not found")

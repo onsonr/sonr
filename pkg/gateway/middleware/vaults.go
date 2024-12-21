@@ -11,7 +11,7 @@ import (
 
 func Spawn(c echo.Context) (CreatePasskeyParams, error) {
 	cc := c.(*GatewayContext)
-	block := fmt.Sprintf("%d", CurrentBlock(c))
+	block := fmt.Sprintf("%d", StatusBlock(c))
 	handle := GetHandle(c)
 	origin := GetOrigin(c)
 	challenge := GetSessionChallenge(c)

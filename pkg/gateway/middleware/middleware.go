@@ -5,19 +5,20 @@ import (
 	"github.com/medama-io/go-useragent"
 	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/internal/config/hway"
+	hwayorm "github.com/onsonr/sonr/internal/database/hwayorm"
 	"github.com/onsonr/sonr/pkg/common"
-	hwayorm "github.com/onsonr/sonr/pkg/gateway/orm"
 )
 
 type GatewayContext struct {
 	echo.Context
-	agent          useragent.UserAgent
-	id             string
-	dbq            *hwayorm.Queries
-	ipfsClient     common.IPFS
-	tokenStore     common.IPFSTokenStore
-	stagedEnclaves map[string]mpc.Enclave
-	grpcAddr       string
+	agent            useragent.UserAgent
+	id               string
+	dbq              *hwayorm.Queries
+	ipfsClient       common.IPFS
+	tokenStore       common.IPFSTokenStore
+	stagedEnclaves   map[string]mpc.Enclave
+	grpcAddr         string
+	turnstileSiteKey string
 }
 
 func UseGateway(env hway.Hway, ipc common.IPFS, db *hwayorm.Queries) echo.MiddlewareFunc {
@@ -25,12 +26,13 @@ func UseGateway(env hway.Hway, ipc common.IPFS, db *hwayorm.Queries) echo.Middle
 		return func(c echo.Context) error {
 			ua := useragent.NewParser()
 			ctx := &GatewayContext{
-				agent:      ua.Parse(c.Request().UserAgent()),
-				Context:    c,
-				dbq:        db,
-				ipfsClient: ipc,
-				grpcAddr:   env.GetSonrGrpcUrl(),
-				tokenStore: common.NewUCANStore(ipc),
+				turnstileSiteKey: env.GetTurnstileSiteKey(),
+				agent:            ua.Parse(c.Request().UserAgent()),
+				Context:          c,
+				dbq:              db,
+				ipfsClient:       ipc,
+				grpcAddr:         env.GetSonrGrpcUrl(),
+				tokenStore:       common.NewUCANStore(ipc),
 			}
 			return next(ctx)
 		}

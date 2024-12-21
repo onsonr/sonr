@@ -1,3 +1,5 @@
+module sonr.net.Config
+
 import "package://pkg.pkl-lang.org/pkl-pantry/pkl.toml@1.0.0#/toml.pkl"
 
 version = "0.38.12"

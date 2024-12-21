@@ -9,8 +9,8 @@ import (
 func RenderProfileCreate(c echo.Context) error {
 	// numF, numL := middleware.GetHumanVerificationNumbers(c)
 	params := middleware.CreateProfileParams{
-		FirstNumber: int(middleware.CurrentBlock(c)),
-		LastNumber:  int(middleware.CurrentBlock(c)),
+		FirstNumber: int(middleware.StatusBlock(c)),
+		LastNumber:  int(middleware.StatusBlock(c)),
 	}
 	return middleware.Render(c, views.RegisterProfileView(params.FirstNumber, params.LastNumber))
 }

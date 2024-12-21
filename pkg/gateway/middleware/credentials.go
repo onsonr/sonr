@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	hwayorm "github.com/onsonr/sonr/pkg/gateway/orm"
+	hwayorm "github.com/onsonr/sonr/internal/database/hwayorm"
 )
 
 func ListCredentials(c echo.Context, handle string) ([]*CredentialDescriptor, error) {

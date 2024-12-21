@@ -13,8 +13,8 @@ import (
 	_ "github.com/ncruces/go-sqlite3/driver"
 	_ "github.com/ncruces/go-sqlite3/embed"
 	"github.com/onsonr/sonr/cmd/motr/wasm"
-	sink "github.com/onsonr/sonr/deploy/sink"
 	"github.com/onsonr/sonr/internal/config/motr"
+	sink "github.com/onsonr/sonr/internal/database/sink"
 	vault "github.com/onsonr/sonr/pkg/vault/routes"
 )
 

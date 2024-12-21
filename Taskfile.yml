@@ -5,7 +5,7 @@ vars:
     sh: git describe --tags --abbrev=0
   COMMIT:
     sh: git rev-parse --short HEAD
-  ROOT_DIR:
+  ROOT:
     sh: git rev-parse --show-toplevel
   OS:
     sh: uname -s
@@ -13,98 +13,31 @@ vars:
     sh: task -l
   DOPPLER_TOKEN:
     sh: skate get DOPPLER_NETWORK
+
+includes:
+  pkl:
+    taskfile: taskfiles/pkl.yml
+    flatten: true
+  psql:
+    taskfile: taskfiles/psql.yml
+    flatten: true
+  ipfs:
+    taskfile: taskfiles/ipfs.yml
+    flatten: true
+  sonr:
+    taskfile: taskfiles/sonr.yml
+    flatten: true
+  svcs:
+    taskfile: taskfiles/svcs.yml
+    flatten: true
+
 tasks:
   default:
     cmds:
       - gh run ls -L 3
-      - gum format -- "# Sonr ({{.OS}}-{{.VERSION}})" "({{.COMMIT}}) {{.ROOT_DIR}}" "### {{ .TASKS }}"
+      - gum format -- "# Sonr ({{.OS}}-{{.VERSION}})" " - ({{.COMMIT}}) {{.ROOT}}"
+      - task -l -j | jq -r '.tasks[].name' | fzf --height=20 --reverse --header="Execute task:" --header-lines=1 | xargs task
     silent: true
-
-  build:
-    desc: Build all binaries
-    silent: true
-    cmds:
-      - task: clean
-      - mkdir -p ./build
-      - mkdir -p ./static/wasm
-      - task: build:motr
-      - task: build:sonr
-      - task: build:hway
-
-  start:
-    desc: Start the node
-    silent: true
-    cmds:
-      - task: build:hway
-      - task: start:darwin
-      - task: start:linux
-
-  stop:
-    desc: Stop the node
-    silent: true
-    cmds:
-      - task: stop:darwin
-      - task: stop:linux
-
-  build:motr:
-    internal: true
-    silent: true
-    cmd: goreleaser build --snapshot --id motr --clean -o ./static/wasm/app.wasm
-
-  build:sonr:
-    internal: true
-    silent: true
-    cmd: goreleaser build --snapshot --id sonr --single-target --clean -o ./build/sonrd
-
-  build:hway:
-    internal: true
-    silent: true
-    cmd: goreleaser build --snapshot --id hway --single-target --clean -o ./build/hway
-
-  init:db:
-    desc: Initialize the database
-    silent: true
-    platforms:
-      - linux
-    cmds:
-      - sudo -u postgres psql -f ./deploy/sink/db_seed.sql
-      - sudo -u postgres psql -d chainindex -f ./deploy/sink/schema_indexer.sql
-
-  init:ipfs:
-    desc: Initialize the ipfs node
-    silent: true
-    cmds:
-      - sh ./scripts/ipfs_config.sh
-
-  start:darwin:
-    internal: true
-    silent: true
-    platforms:
-      - darwin
-    cmd: make start
-
-  start:linux:
-    internal: true
-    silent: true
-    platforms:
-      - linux
-    cmd: make start-uds
-
-  stop:darwin:
-    internal: true
-    silent: true
-    platforms:
-      - darwin
-    cmd: make stop
-
-  stop:linux:
-    internal: true
-    silent: true
-    platforms:
-      - linux
-    cmds:
-      - make stop-uds
-      - task: reset:chainindex
 
   clean:
     internal: true
@@ -115,8 +48,3 @@ tasks:
       - rm -rf ./static
     silent: true
 
-  reset:chainindex:
-    internal: true
-    platforms:
-      - linux
-    cmd: sudo -u postgres psql -f ./deploy/sink/reset_chainindex.sql
