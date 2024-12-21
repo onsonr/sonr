@@ -26,9 +26,6 @@ import (
 )
 
 var (
-	env    *motr.Environment
-	config *motr.Config
-	err    error
 	// Global buffer pool to reduce allocations
 	bufferPool = sync.Pool{
 		New: func() interface{} {
@@ -44,28 +41,9 @@ var (
 	jsWasmHTTP   = jsGlobal.Get("wasmhttp")
 )
 
-func broadcastTx(this js.Value, args []js.Value) interface{} {
-	return nil
-}
-
-func simulateTx(this js.Value, args []js.Value) interface{} {
-	return nil
-}
-
-func syncData(this js.Value, args []js.Value) interface{} {
-	if len(args) < 1 {
-		return nil
-	}
-
-	configString := args[0].String()
-	if err := json.Unmarshal([]byte(configString), &config); err != nil {
-		println("Error parsing config:", err.Error())
-		return nil
-	}
-	return nil
-}
-
 func main() {
+	configString := "TODO"
+	config, _ := loadConfig(configString)
 	dbq, err := createDB()
 	if err != nil {
 		log.Fatal(err)
@@ -77,6 +55,13 @@ func main() {
 		return
 	}
 	serveFetch(e)
+}
+
+// loadConfig loads the config from the given JSON string
+func loadConfig(configString string) (*motr.Config, error) {
+	var config motr.Config
+	err := json.Unmarshal([]byte(configString), &config)
+	return &config, err
 }
 
 // createDB initializes and returns a configured database connection
@@ -93,7 +78,7 @@ func createDB() (*motrorm.Queries, error) {
 	return motrorm.New(db), nil
 }
 
-// ServeFetch serves HTTP requests with optimized handler management
+// serveFetch serves HTTP requests with optimized handler management
 func serveFetch(handler http.Handler) func() {
 	h := handler
 	if h == nil {

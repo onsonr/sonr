@@ -23,7 +23,7 @@ func New(config *motr.Config, dbq *motrorm.Queries) (Vault, error) {
 	// Built-in middleware
 	e.Use(echomiddleware.Logger())
 	e.Use(echomiddleware.Recover())
-	e.Use(context.ContextMiddleware)
+	e.Use(context.WASMMiddleware)
 	routes.Register(e)
 	return e, nil
 }
