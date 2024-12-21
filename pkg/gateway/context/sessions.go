@@ -3,12 +3,10 @@ package context
 import (
 	gocontext "context"
 
-	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
-	"github.com/medama-io/go-useragent"
-	hwayorm "github.com/onsonr/sonr/internal/database/hwayorm"
 	"github.com/onsonr/sonr/pkg/common"
 	"github.com/segmentio/ksuid"
+	"lukechampine.com/blake3"
 )
 
 func NewSession(c echo.Context) error {
@@ -26,6 +24,22 @@ func NewSession(c echo.Context) error {
 		return err
 	}
 	return nil
+}
+
+// Uses blake3 to hash the sessionID to generate a nonce of length 12 bytes
+func GetNonce(sessionID string) ([]byte, error) {
+	hash := blake3.New(32, nil)
+	_, err := hash.Write([]byte(sessionID))
+	if err != nil {
+		return nil, err
+	}
+	// Read the hash into a byte slice
+	nonce := make([]byte, 12)
+	_, err = hash.Write(nonce)
+	if err != nil {
+		return nil, err
+	}
+	return nonce, nil
 }
 
 // ForbiddenDevice returns true if the device is unavailable
@@ -57,7 +71,7 @@ func GetSessionID(c echo.Context) string {
 	return cc.id
 }
 
-func GetSessionChallenge(c echo.Context) string {
+func GetAuthChallenge(c echo.Context) string {
 	cc, ok := c.(*GatewayContext)
 	if !ok {
 		return ""
@@ -69,7 +83,7 @@ func GetSessionChallenge(c echo.Context) string {
 	return s
 }
 
-func GetHandle(c echo.Context) string {
+func GetProfileHandle(c echo.Context) string {
 	// First check for the cookie
 	handle := common.ReadCookieUnsafe(c, common.UserHandle)
 	if handle != "" {
@@ -109,31 +123,6 @@ func GetHandle(c echo.Context) string {
 func bgCtx() gocontext.Context {
 	ctx := gocontext.Background()
 	return ctx
-}
-
-func BaseSessionCreateParams(e echo.Context) hwayorm.CreateSessionParams {
-	// f := rand.Intn(5) + 1
-	// l := rand.Intn(4) + 1
-	challenge, _ := protocol.CreateChallenge()
-	id := getOrCreateSessionID(e)
-	ua := useragent.NewParser()
-	s := ua.Parse(e.Request().UserAgent())
-
-	return hwayorm.CreateSessionParams{
-		ID:             id,
-		BrowserName:    s.GetBrowser(),
-		BrowserVersion: s.GetMajorVersion(),
-		ClientIpaddr:   e.RealIP(),
-		Platform:       s.GetOS(),
-		IsMobile:       s.IsMobile(),
-		IsTablet:       s.IsTablet(),
-		IsDesktop:      s.IsDesktop(),
-		IsBot:          s.IsBot(),
-		IsTv:           s.IsTV(),
-		// IsHumanFirst:   int64(f),
-		// IsHumanLast:    int64(l),
-		Challenge: challenge.String(),
-	}
 }
 
 func getOrCreateSessionID(c echo.Context) string {

@@ -19,9 +19,9 @@ func ListCredentials(c echo.Context, handle string) ([]*CredentialDescriptor, er
 	return CredentialArrayToDescriptors(creds), nil
 }
 
-func SubmitCredential(c echo.Context, cred *CredentialDescriptor) error {
+func InsertCredential(c echo.Context, cred *CredentialDescriptor) error {
 	origin := GetOrigin(c)
-	handle := GetHandle(c)
+	handle := GetProfileHandle(c)
 	md := cred.ToModel(handle, origin)
 	cc, ok := c.(*GatewayContext)
 	if !ok {
@@ -41,42 +41,3 @@ func SubmitCredential(c echo.Context, cred *CredentialDescriptor) error {
 	return nil
 }
 
-// Define the credential structure matching our frontend data
-type CredentialDescriptor struct {
-	ID                      string            `json:"id"`
-	RawID                   string            `json:"rawId"`
-	Type                    string            `json:"type"`
-	AuthenticatorAttachment string            `json:"authenticatorAttachment"`
-	Transports              string            `json:"transports"`
-	ClientExtensionResults  map[string]string `json:"clientExtensionResults"`
-	Response                struct {
-		AttestationObject string `json:"attestationObject"`
-		ClientDataJSON    string `json:"clientDataJSON"`
-	} `json:"response"`
-}
-
-func (c *CredentialDescriptor) ToModel(handle, origin string) *hwayorm.Credential {
-	return &hwayorm.Credential{
-		Handle:                  handle,
-		Origin:                  origin,
-		CredentialID:            c.ID,
-		Type:                    c.Type,
-		Transports:              c.Transports,
-		AuthenticatorAttachment: c.AuthenticatorAttachment,
-	}
-}
-
-func CredentialArrayToDescriptors(credentials []hwayorm.Credential) []*CredentialDescriptor {
-	var descriptors []*CredentialDescriptor
-	for _, cred := range credentials {
-		cd := &CredentialDescriptor{
-			ID:                      cred.CredentialID,
-			RawID:                   cred.CredentialID,
-			Type:                    cred.Type,
-			AuthenticatorAttachment: cred.AuthenticatorAttachment,
-			Transports:              cred.Transports,
-		}
-		descriptors = append(descriptors, cd)
-	}
-	return descriptors
-}

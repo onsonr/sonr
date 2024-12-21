@@ -3,40 +3,34 @@ package context
 import (
 	"fmt"
 
-	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/pkg/common"
 	"lukechampine.com/blake3"
 )
 
-func Spawn(c echo.Context) (CreatePasskeyParams, error) {
-	cc := c.(*GatewayContext)
-	block := fmt.Sprintf("%d", StatusBlock(c))
-	handle := GetHandle(c)
-	origin := GetOrigin(c)
-	challenge := GetSessionChallenge(c)
-	sid := GetSessionID(c)
+func (cc *GatewayContext) Spawn() (*CreatePasskeyParams, error) {
+	block := fmt.Sprintf("%d", cc.StatusBlock())
+	handle := GetProfileHandle(cc)
+	origin := GetOrigin(cc)
+	challenge := GetAuthChallenge(cc)
+	sid := GetSessionID(cc)
 	nonce, err := calcNonce(sid)
 	if err != nil {
-		return defaultCreatePasskeyParams(), err
+		return nil, err
 	}
 	encl, err := mpc.GenEnclave(nonce)
 	if err != nil {
-		return defaultCreatePasskeyParams(), err
+		return nil, err
 	}
 	cc.stagedEnclaves[sid] = encl
-	common.WriteCookie(c, common.SonrAddress, encl.Address())
-	return CreatePasskeyParams{
+	common.WriteCookie(cc, common.SonrAddress, encl.Address())
+	return &CreatePasskeyParams{
 		Address:       encl.Address(),
 		Handle:        handle,
 		Name:          origin,
 		Challenge:     challenge,
 		CreationBlock: block,
 	}, nil
-}
-
-func Claim() (CreatePasskeyParams, error) {
-	return CreatePasskeyParams{}, nil
 }
 
 // Uses blake3 to hash the sessionID to generate a nonce of length 12 bytes
@@ -53,28 +47,4 @@ func calcNonce(sessionID string) ([]byte, error) {
 		return nil, err
 	}
 	return nonce, nil
-}
-
-// ╭───────────────────────────────────────────────────────────╮
-// │            Create Passkey (/register/passkey)             │
-// ╰───────────────────────────────────────────────────────────╯
-
-// defaultCreatePasskeyParams returns a default CreatePasskeyParams
-func defaultCreatePasskeyParams() CreatePasskeyParams {
-	return CreatePasskeyParams{
-		Address:       "",
-		Handle:        "",
-		Name:          "",
-		Challenge:     "",
-		CreationBlock: "",
-	}
-}
-
-// CreatePasskeyParams represents the parameters for creating a passkey
-type CreatePasskeyParams struct {
-	Address       string
-	Handle        string
-	Name          string
-	Challenge     string
-	CreationBlock string
 }
