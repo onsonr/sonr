@@ -1,5 +1,5 @@
 {
-  description = "Description for the project";
+  description = "Sonr Network Development Environment";
 
   inputs = {
     flake-parts.url = "github:hercules-ci/flake-parts";
@@ -8,30 +8,47 @@
     process-compose-flake.url = "github:Platonic-Systems/process-compose-flake";
   };
 
-  outputs = inputs@{ flake-parts, ... }:
+  outputs = inputs@{ flake-parts, nixpkgs, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
         inputs.process-compose-flake.flakeModule
-        # To import a flake module
-        # 1. Add foo to inputs
-        # 2. Add foo as a parameter to the outputs function
-        # 3. Add here: foo.flakeModule
-
       ];
       systems = import inputs.systems;
       perSystem = { config, self', inputs', pkgs, system, ... }: {
-        # Per-system attributes can be defined here. The self' and inputs'
-        # module parameters provide easy access to attributes of the same
-        # system.
+        devShells.default = pkgs.mkShell {
+          buildInputs = with pkgs; [
+            # Go and related tools
+            go
+            goreleaser
+            sqlc
+            templ
+            
+            # Database
+            postgresql
+            
+            # IPFS
+            ipfs
+            
+            # CLI tools
+            gum
+            fzf
+            gh
+            jq
+            
+            # Task runner
+            go-task
 
-        # Equivalent to  inputs'.nixpkgs.legacyPackages.hello;
+            # Development tools
+            git
+          ];
+
+          shellHook = ''
+            echo "Welcome to Sonr Network Development Environment"
+          '';
+        };
+
+        # Default package remains as a placeholder
         packages.default = pkgs.hello;
-      };
-      flake = {
-        # The usual flake attributes can be defined here, including system-
-        # agnostic ones like nixosModule and system-enumerating ones, although
-        # those are more easily expressed in perSystem.
-
       };
     };
 }
