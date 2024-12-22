@@ -61,7 +61,7 @@ override.tf.json
 
 .terraformrc
 terraform.rc
-
+flake.lock
 
 # Misc
 .DS_Store
