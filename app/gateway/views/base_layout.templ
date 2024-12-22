@@ -1,0 +1,59 @@
+package views
+
+templ LayoutContainer() {
+	<div id="container" class="flex fixed inset-0 z-[99] w-screen min-h-screen">
+		<div class="relative flex flex-wrap items-center w-full min-h-full px-4 py-6 sm:px-6 md:px-8">
+			<div class="relative w-full max-w-screen-lg mx-auto">
+				<div class="flex flex-col items-center justify-center min-h-full gap-4">
+					{ children... }
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+// Columns is a component that renders a responsive flex container that stacks on mobile
+templ LayoutColumns() {
+	<div class="flex flex-col h-full w-full gap-4 md:gap-6 md:flex-row md:flex-wrap">
+		{ children... }
+	</div>
+}
+
+// Rows is a component that renders a responsive flex container that wraps on mobile
+templ LayoutRows() {
+	<div class="flex flex-col w-full gap-3 sm:flex-row sm:flex-wrap sm:gap-4">
+		{ children... }
+	</div>
+}
+
+templ LayoutSeparator(text string) {
+	<div class="relative py-6">
+		<div class="absolute inset-0 flex items-center"><span class="w-full border-t"></span></div>
+		<div class="relative flex justify-center text-xs uppercase">
+			<span class="px-2 text-neutral-500">{ text }</span>
+		</div>
+	</div>
+}
+
+// Layout is a component that renders the general layout of the application
+templ LayoutView(title string) {
+	<!DOCTYPE html>
+	<html lang="en">
+		@Head(title, "0.0.11")
+		<body class="flex items-center justify-center h-full lg:p-24 md:16 p-4 no-scrollbar">
+			<main class="flex-row items-center justify-center mx-auto w-fit max-w-screen-lg gap-y-3">
+				{ children... }
+			</main>
+		</body>
+	</html>
+}
+
+func Clsx(attrs ...templ.Attributes) templ.Attributes {
+	merged := templ.Attributes{}
+	for _, attr := range attrs {
+		for k, v := range attr {
+			merged[k] = v
+		}
+	}
+	return merged
+}

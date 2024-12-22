@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/onsonr/sonr/pkg/common"
-	"github.com/onsonr/sonr/pkg/gateway"
+	"github.com/onsonr/sonr/app/gateway"
 	"github.com/spf13/cobra"
 )
 

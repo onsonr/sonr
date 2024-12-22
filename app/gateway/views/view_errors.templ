@@ -1,0 +1,14 @@
+package views
+
+templ ErrorView(err string) {
+	@LayoutView("Error | Sonr.ID") {
+		@LayoutContainer() {
+			@HeroTitle("Uh oh!", "Something went wrong.")
+			<div class="pt-3 flex flex-col items-center justify-center h-full">
+				<p class="text-red-500">
+					{ err }
+				</p>
+			</div>
+		}
+	}
+}
