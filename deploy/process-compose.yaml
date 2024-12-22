@@ -1,30 +1,23 @@
 version: "0.5"
 
-environment:
-  - "PC_DISABLE_TUI=true"
-log_location: "./tmp/logs"
-log_level: "debug"
-
 processes:
   IPFS:
     namespace: testnet
-    command: "task ipfs:start"
-    availability:
-      restart: "always"
+    command: "ipfs daemon --mount"
+    ready_log_line: "Daemon is ready"
 
   Sonr:
     namespace: testnet
     command: "task sonrd:start"
     depends_on:
-      ipfs:
-        condition: process_completed
-    environment:
-      - "SONR_NETWORK=testnet"
+      IPFS:
+        condition: process_log_ready
 
   Hway:
     namespace: testnet
     command: "hway"
     depends_on:
-      sonr:
-        condition: process_completed_successfully
-
+      IPFS:
+        condition: process_log_ready
+      Sonr:
+        condition: process_started

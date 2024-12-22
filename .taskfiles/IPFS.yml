@@ -29,9 +29,22 @@ tasks:
       - ipfs config --json Peering.Peers {{.PEERS}}
       - ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["*"]'
 
-start:
-  desc: Start the ipfs daemon
-  silent: true
-  deps: [init]
-  cmds:
-    - ipfs daemon
+  mount:
+    desc: Mount the ipfs,ipns directories
+    silent: true
+    platforms:
+      - linux
+    cmds:
+      - ipfs config --json Mounts.FuseAllowOther true
+
+  start:
+    desc: Start the ipfs daemon
+    silent: true
+    cmds:
+      - cmd: ipfs daemon --migrate
+        platforms:
+          - darwin
+      - task: mount
+      - cmd: ipfs daemon --mount
+        platforms:
+          - linux

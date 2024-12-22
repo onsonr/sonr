@@ -40,7 +40,13 @@ tasks:
     desc: Install go dependencies
     silent: true
     vars:
-      DEPS: ["github.com/apple/pkl-go/cmd/pkl-gen-go@latest", "github.com/sqlc-dev/sqlc/cmd/sqlc@latest", "github.com/goreleaser/goreleaser/v2@latest","github.com/a-h/templ/cmd/templ@latest"]
+      DEPS:
+        [
+          "github.com/apple/pkl-go/cmd/pkl-gen-go@latest",
+          "github.com/sqlc-dev/sqlc/cmd/sqlc@latest",
+          "github.com/goreleaser/goreleaser/v2@latest",
+          "github.com/a-h/templ/cmd/templ@latest",
+        ]
     cmds:
       - for: { var: DEPS }
         cmd: gum spin --spinner dot --title "Installing go dependencies..." -- go install {{.ITEM}}
@@ -54,7 +60,7 @@ tasks:
     cmds:
       - for: { var: FILES }
         cmd: gum spin --spinner dot --title "Generating PKL in Go..." -- pkl-gen-go {{.ITEM}}
-  
+
   proto-gen:
     desc: Generate proto files
     silent: true
@@ -70,3 +76,62 @@ tasks:
     desc: Generate templ files
     silent: true
     cmd: gum spin --spinner dot --title "Generating Templ..." -- templ generate
+
+  start:
+    desc: Start the Network
+    silent: true
+    cmds:
+      - task: postgres:reset
+      - task: ipfs:init
+      - task: ipfs:mount
+      - task: sonrd:install
+      - task: hway:build
+      - task: procs-up
+
+  status:
+    desc: Check the status of the Network
+    silent: true
+    cmds:
+      - task: procs-attach
+
+  stop:
+    desc: Stop the Network
+    silent: true
+    cmds:
+      - task: procs-down
+
+  procs-up:
+    internal: true
+    dir: "deploy"
+    cmds:
+      - cmd: process-compose up
+        platforms:
+          - darwin
+
+      - cmd: process-compose up --use-uds --unix-socket /tmp/sonr-network.sock -D
+        platforms:
+          - linux
+
+  procs-down:
+    internal: true
+    dir: "deploy"
+    cmds:
+      - cmd: process-compose down
+        platforms:
+          - darwin
+
+      - cmd: process-compose down --use-uds --unix-socket /tmp/sonr-network.sock
+        platforms:
+          - linux
+
+  procs-attach:
+    internal: true
+    dir: "deploy"
+    cmds:
+      - cmd: process-compose attach --use-uds --unix-socket /tmp/sonr-network.sock
+        platforms:
+          - linux
+
+      - cmd: process-compose attach
+        platforms:
+          - darwin
