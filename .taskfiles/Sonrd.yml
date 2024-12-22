@@ -4,13 +4,10 @@ vars:
   BINARY: sonrd
   BUILD_FLAGS: -mod=readonly -trimpath
   BUILD_TAGS: netgo,ledger
-  COMMIT: 
+  COMMIT:
     sh: git rev-parse HEAD
   VERSION:
     sh: git describe --tags --always
-  DOPPLER_TOKEN:
-    sh: skate get DOPPLER_NETWORK
-
 tasks:
   build:
     desc: Build the sonrd binary
@@ -30,11 +27,11 @@ tasks:
         ./cmd/sonrd
     env:
       CGO_ENABLED: 1
-      GOARCH: 
+      GOARCH:
         sh: go env GOARCH
       GOOS:
         sh: go env GOOS
- 
+
   install:
     desc: Install sonrd
     silent: true
@@ -45,4 +42,3 @@ tasks:
     desc: Start the sonr node
     cmds:
       - sh scripts/test_dop_node.sh
-
