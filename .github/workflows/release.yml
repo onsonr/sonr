@@ -15,7 +15,6 @@ jobs:
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop'
     runs-on: ubuntu-latest
     name: Bump Current Version
-    needs: [validate-release, test-cover, test-race]
     outputs:
       new_tag: ${{ steps.bump.outputs.new_tag }}
     steps:

@@ -13,11 +13,20 @@ tasks:
   init:
     desc: Initialize postgresql
     silent: true
-    dir: deploy
+    dir: deploy/apps/chainindex
     cmds:
-      - cmd: sudo -u postgres psql -f deploy/apps/chainindex/seed.sql
+      - cmd: sudo -u postgres psql -f seed.sql
         platforms:
           - linux
-      - cmd: sudo -u postgres psql -d chainindex -f deploy/apps/chainindex/schema.sql
+      - cmd: sudo -u postgres psql -d chainindex -f schema.sql
+        platforms:
+          - linux
+
+  reset:
+    desc: Reset postgresql
+    silent: true
+    dir: deploy/apps/chainindex
+    cmds:
+      - cmd: sudo -u postgres psql -d chainindex -f reset.sql
         platforms:
           - linux
