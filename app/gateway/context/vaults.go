@@ -1,15 +1,12 @@
 package context
 
 import (
-	"fmt"
-
 	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/pkg/common"
 	"lukechampine.com/blake3"
 )
 
 func (cc *GatewayContext) Spawn(handle, origin string) (*CreatePasskeyParams, error) {
-	block := fmt.Sprintf("%d", cc.StatusBlock())
 	challenge := GetAuthChallenge(cc)
 	sid := GetSessionID(cc)
 	nonce, err := calcNonce(sid)
@@ -27,7 +24,7 @@ func (cc *GatewayContext) Spawn(handle, origin string) (*CreatePasskeyParams, er
 		Handle:        handle,
 		Name:          origin,
 		Challenge:     challenge,
-		CreationBlock: block,
+		CreationBlock: cc.StatusBlock(),
 	}, nil
 }
 
