@@ -5,7 +5,7 @@ import (
 	"github.com/onsonr/sonr/app/gateway/context"
 )
 
-func HandleIndex(c echo.Context) error {
+func IndexHandler(c echo.Context) error {
 	id := context.GetSessionID(c)
 	if id == "" {
 		context.NewSession(c)

@@ -37,9 +37,9 @@ func UseGateway(env hway.Hway, ipc common.IPFS, db *hwayorm.Queries) echo.Middle
 		return func(c echo.Context) error {
 			ua := useragent.NewParser()
 			ctx := &GatewayContext{
+				Context:          c,
 				turnstileSiteKey: env.GetTurnstileSiteKey(),
 				agent:            ua.Parse(c.Request().UserAgent()),
-				Context:          c,
 				Queries:          db,
 				ipfsClient:       ipc,
 				grpcAddr:         env.GetSonrGrpcUrl(),
@@ -53,4 +53,12 @@ func UseGateway(env hway.Hway, ipc common.IPFS, db *hwayorm.Queries) echo.Middle
 func BG() gocontext.Context {
 	ctx := gocontext.Background()
 	return ctx
+}
+
+func (cc *GatewayContext) ReadCookie(k common.CookieKey) string {
+	return common.ReadCookieUnsafe(cc.Context, k)
+}
+
+func (cc *GatewayContext) WriteCookie(k common.CookieKey, v string) {
+	common.WriteCookie(cc.Context, k, v)
 }

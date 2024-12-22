@@ -8,9 +8,10 @@ import (
 	"github.com/onsonr/sonr/app/gateway/islands"
 	"github.com/onsonr/sonr/app/gateway/views"
 	hwayorm "github.com/onsonr/sonr/internal/database/hwayorm"
+	"github.com/onsonr/sonr/pkg/common"
 )
 
-func HandleRegistration(g *echo.Group) {
+func RegisterHandler(g *echo.Group) {
 	g.GET("/", renderProfileForm)
 	g.POST("/profile", validateProfileForm)
 	g.GET("/passkey", renderPasskeyForm)
@@ -43,18 +44,29 @@ func renderVaultStatus(c echo.Context) error {
 // ╰─────────────────────────────────────────────────────────╯
 
 func validateProfileForm(c echo.Context) error {
-	// value := c.FormValue("is_human")
+	cc, err := context.GetGateway(c)
+	if err != nil {
+		return context.RenderError(c, err)
+	}
 	handle := c.FormValue("handle")
 	if handle == "" {
-		return context.Render(c, islands.InputHandleError(handle, "Please enter a valid handle"))
+		return context.Render(c, islands.InputHandleError(handle, "Please enter a 4-16 character handle"))
 	}
+	notok, err := cc.CheckHandleExists(context.BG(), handle)
+	if err != nil {
+		return err
+	}
+	if notok {
+		return context.Render(c, islands.InputHandleError(handle, "Handle is already taken"))
+	}
+	cc.WriteCookie(common.UserHandle, handle)
 	return context.Render(c, islands.InputHandleSuccess(handle))
 }
 
 func validatePasskeyForm(c echo.Context) error {
 	cc, err := context.GetGateway(c)
 	if err != nil {
-		return err
+		return context.RenderError(c, err)
 	}
 	handle := context.GetProfileHandle(c)
 	origin := c.Request().Host
@@ -78,5 +90,5 @@ func validatePasskeyForm(c echo.Context) error {
 	if err != nil {
 		return context.RenderError(c, err)
 	}
-	return nil
+	return context.Render(c, views.LoadingView())
 }
