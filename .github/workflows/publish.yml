@@ -1,11 +1,7 @@
 name: Publish Versioned Assets
 on:
-  push:
-    tags:
-      - v*
-    paths:
-      - "docs/**"
-      - "proto/**"
+  release:
+    types: [published]
 
 permissions:
   contents: write
