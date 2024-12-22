@@ -1,6 +1,8 @@
 name: Versioned Release
 
 on:
+  pull_request:
+    types: [closed]
   push:
     tags:
       - v*
@@ -9,6 +11,25 @@ permissions:
   contents: write
 
 jobs:
+  bump-version:
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop'
+    runs-on: ubuntu-latest
+    name: Bump Current Version
+    needs: [validate-release, test-cover, test-race]
+    outputs:
+      new_tag: ${{ steps.bump.outputs.new_tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+      - name: Create bump and changelog
+        id: bump
+        uses: commitizen-tools/commitizen-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          increment: "PATCH"
+
   new-release:
     name: Run GoReleaser on New Tag
     if: startsWith(github.ref, 'refs/tags/')

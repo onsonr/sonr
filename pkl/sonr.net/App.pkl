@@ -1,0 +1,78 @@
+module sonr.net.App
+
+import "package://pkg.pkl-lang.org/pkl-pantry/pkl.toml@1.0.0#/toml.pkl"
+
+`minimum-gas-prices` = "0usnr"
+`query-gas-limit` = "0"
+pruning = "default"
+`pruning-keep-recent` = "0"
+`pruning-interval` = "0"
+`halt-height` = 0
+`halt-time` = 0
+`min-retain-blocks` = 0
+`inter-block-cache` = true
+`index-events` = new Listing {}
+`iavl-cache-size` = 781250
+`iavl-disable-fastnode` = false
+`app-db-backend` = ""
+
+telemetry = new {
+`service-name` = ""
+enabled = true
+`enable-hostname` = true
+`enable-hostname-label` = false
+`enable-service-label` = false
+`prometheus-retention-time` = 60
+`global-labels` = new Listing {
+    new Listing {
+        "chain_id"
+        "sonr-testnet-1"
+        }
+}
+`metrics-sink` = ""
+`statsd-addr` = ""
+`datadog-hostname` = ""
+}
+
+api = new {
+enable = true
+swagger = false
+address = "tcp://0.0.0.0:1317"
+`max-open-connections` = 1000
+`rpc-read-timeout` = 10
+`rpc-write-timeout` = 0
+`rpc-max-body-bytes` = 1000000
+`enabled-unsafe-cors` = false
+}
+
+grpc = new {
+enable = true
+address = "0.0.0.0:9090"
+`max-recv-msg-size` = "10485760"
+`max-send-msg-size` = "2147483647"
+}
+
+`grpc-web` = new {
+enable = true
+}
+
+`state-sync` = new {
+`snapshot-interval` = 0
+`snapshot-keep-recent` = 2
+}
+
+streaming = new {
+abci = new {
+    keys = new Listing {}
+    plugin = ""
+    `stop-node-on-err` = true
+}
+}
+
+mempool = new {
+`max-txs` = 5000
+}
+
+output {
+  renderer = new toml.Renderer {}
+}

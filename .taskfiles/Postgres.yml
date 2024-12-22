@@ -1,0 +1,23 @@
+version: "3"
+
+vars:
+  GOPATH:
+    sh: go env GOPATH
+  BIN_DIR: "{{.GOPATH}}/bin"
+  OS:
+    sh: uname -s
+  ARCH:
+    sh: uname -m
+
+tasks:
+  init:
+    desc: Initialize postgresql
+    silent: true
+    dir: deploy
+    cmds:
+      - cmd: sudo -u postgres psql -f deploy/apps/chainindex/seed.sql
+        platforms:
+          - linux
+      - cmd: sudo -u postgres psql -d chainindex -f deploy/apps/chainindex/schema.sql
+        platforms:
+          - linux

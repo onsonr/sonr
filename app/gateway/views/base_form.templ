@@ -1,0 +1,58 @@
+package views
+
+templ Form(action, id string) {
+	<form method="GET" action={ templ.SafeURL(action) } id={ id } hx-post={ action } hx-target="#{ id }" hx-swap="outerHTML">
+		{ children... }
+	</form>
+}
+
+templ FormHeader() {
+	<div slot="header">
+		<div class="w-full py-2">
+			{ children... }
+		</div>
+	</div>
+}
+
+templ FormBody() {
+	<sl-card class="card-form max-w-lg mx-auto">
+		{ children... }
+		<style>
+		.card-form {
+				space-y: 1rem;
+		}
+
+  	.card-form [slot='header'] {
+    	display: flex;
+    	align-items: center;
+  	  justify-content: space-between;
+	  }
+
+	  .card-form [slot='footer'] {
+   	 	display: flex;
+    	justify-content: space-between;
+    	align-items: center;
+  	}
+		</style>
+	</sl-card>
+}
+
+templ FormFooter() {
+	<div slot="footer">
+		{ children... }
+	</div>
+}
+
+templ FormCancel() {
+	<sl-button href="/" outline>
+		<sl-icon slot="prefix" name="x-lg"></sl-icon>
+		Cancel
+	</sl-button>
+}
+
+templ FormSubmit(text string) {
+	<sl-button type="submit">
+		{ text }
+		<sl-icon slot="suffix" name="arrow-right" library="sonr"></sl-icon>
+	</sl-button>
+}

@@ -23,6 +23,8 @@ type Hway interface {
 	GetSonrRpcUrl() string
 
 	GetPsqlDSN() string
+
+	GetTurnstileSiteKey() string
 }
 
 var _ Hway = (*HwayImpl)(nil)
@@ -43,6 +45,8 @@ type HwayImpl struct {
 	SonrRpcUrl string `pkl:"sonrRpcUrl"`
 
 	PsqlDSN string `pkl:"psqlDSN"`
+
+	TurnstileSiteKey string `pkl:"turnstileSiteKey"`
 }
 
 func (rcv *HwayImpl) GetServePort() int {
@@ -75,6 +79,10 @@ func (rcv *HwayImpl) GetSonrRpcUrl() string {
 
 func (rcv *HwayImpl) GetPsqlDSN() string {
 	return rcv.PsqlDSN
+}
+
+func (rcv *HwayImpl) GetTurnstileSiteKey() string {
+	return rcv.TurnstileSiteKey
 }
 
 // LoadFromPath loads the pkl module at the given path and evaluates it into a Hway

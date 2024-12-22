@@ -2,7 +2,6 @@ name: Run All Checks
 
 on:
   pull_request:
-     types: [opened, edited]
   merge_group:
 
 jobs:
@@ -132,21 +131,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  bump-version:
-    if: github.event_name == 'merge_group'
-    runs-on: ubuntu-latest
-    name: Bump Current Version
-    needs: [validate-release, test-cover, test-race]
-    outputs:
-      new_tag: ${{ steps.bump.outputs.new_tag }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
-      - name: Create bump and changelog
-        id: bump
-        uses: commitizen-tools/commitizen-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          increment: "PATCH"

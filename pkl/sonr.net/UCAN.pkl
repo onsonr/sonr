@@ -1,0 +1,46 @@
+@go.Package { name = "github.com/onsonr/sonr/crypto/ucan/attns" }
+
+module sonr.net.UCAN
+
+import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
+
+// Capability hierarchy for smart account operations
+// ----------------------------------------------
+// VAULT
+//   └─ CRUD/ASSET
+//   └─ CRUD/AUTHZGRANT
+//   └─ CRUD/PROFILE
+//   └─ CRUD/RECORD
+//   └─ USE/RECOVERY
+//   └─ USE/SYNC
+//   └─ USE/SIGNER
+// ACCOUNT
+//   └─ EXEC/BROADCAST
+//   └─ EXEC/QUERY
+//   └─ EXEC/SIMULATE
+//   └─ EXEC/VOTE
+//   └─ EXEC/DELEGATE
+//   └─ EXEC/INVOKE
+//   └─ EXEC/SEND
+// INTERCHAIN
+//   └─ TRANSFER/SWAP
+//   └─ TRANSFER/SEND
+//   └─ TRANSFER/ATOMIC
+//   └─ TRANSFER/BATCH
+//   └─ TRANSFER/P2P
+//   └─ TRANSFER/SEND
+
+
+// TODO: Move to x/dwn
+typealias CapVault = "crud/asset" | "crud/authzgrant" | "crud/profile" | "crud/record" | "use/recovery" | "use/sync" | "use/signer"
+// TODO: Move to x/did
+typealias CapAccount = "exec/broadcast" | "exec/query" | "exec/simulate" | "exec/vote" | "exec/delegate" | "exec/invoke" | "exec/send"
+// TODO: Move to x/svc
+typealias CapInterchain = "transfer/swap" | "transfer/send" | "transfer/atomic" | "transfer/batch" | "transfer/p2p" | "transfer/send"
+
+// TODO: Move to x/dwn
+typealias ResVault =  "ks/enclave" | "loc/cid" | "loc/entity" | "loc/ipns" | "addr/sonr" | "chain/code" 
+// TODO: Move to x/did
+typealias ResAccount = "acc/sequence" | "acc/number" | "chain/id" | "asset/code" | "authz/grant"
+// TODO: Move to x/svc
+typealias ResInterchain = "channnel/port" | "chain/id" | "chain/name" | "acc/host" | "acc/controller"

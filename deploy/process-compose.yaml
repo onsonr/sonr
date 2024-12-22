@@ -1,10 +1,30 @@
-version: "0.6"
+version: "0.5"
+
+environment:
+  - "PC_DISABLE_TUI=true"
+log_location: "./tmp/logs"
+log_level: "debug"
 
 processes:
-  sonr:
+  IPFS:
     namespace: testnet
-    command: "make dop-testnet"
+    command: "task ipfs:start"
+    availability:
+      restart: "always"
 
-  hway:
+  Sonr:
     namespace: testnet
-    command: "./build/hway"
+    command: "task sonrd:start"
+    depends_on:
+      ipfs:
+        condition: process_completed
+    environment:
+      - "SONR_NETWORK=testnet"
+
+  Hway:
+    namespace: testnet
+    command: "hway"
+    depends_on:
+      sonr:
+        condition: process_completed_successfully
+

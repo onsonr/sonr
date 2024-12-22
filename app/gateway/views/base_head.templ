@@ -1,0 +1,135 @@
+package views
+
+import "fmt"
+
+var (
+	nebulaHandle    = templ.NewOnceHandle()
+	tailwindHandle  = templ.NewOnceHandle()
+	alpineHandle    = templ.NewOnceHandle()
+	dexieHandle     = templ.NewOnceHandle()
+	htmxHandle      = templ.NewOnceHandle()
+	turnstileHandle = templ.NewOnceHandle()
+)
+
+templ Head(title string, nebulaVersion string) {
+	<head>
+		@Turnstile()
+		@Tailwind()
+		@Alpine()
+		@Htmx()
+		@Dexie()
+		@Nebula(nebulaVersion)
+		<meta charset="UTF-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<title>{ title }</title>
+		<!-- Sets the status bar style to transparent -->
+		<meta name="apple-mobile-web-app-capable" content="yes"/>
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+		<link rel="icon" type="image/png" href="https://cdn.sonr.id/favicon.png"/>
+		<style>
+   		@keyframes fade-in {
+     		from { opacity: 0; }
+   		}
+
+   		@keyframes fade-out {
+     		to { opacity: 0; }
+   		}
+
+   		@keyframes slide-from-right {
+     		from { transform: translateX(90px); }
+   		}
+
+   		@keyframes slide-to-left {
+     		to { transform: translateX(-90px); }
+   		}
+
+   		.slide-it {
+     		view-transition-name: slide-it;
+   		}
+
+   		::view-transition-old(slide-it) {
+     		animation: 180ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
+     		600ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
+   		}
+   		::view-transition-new(slide-it) {
+     		animation: 420ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in,
+     		600ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
+   		}
+		</style>
+		{ children... }
+	</head>
+}
+
+// ╭──────────────────────────────────────────────────────────╮
+// │                   3rd Party Libraries                    │
+// ╰──────────────────────────────────────────────────────────╯
+
+// Tailwind css dependencies
+templ Tailwind() {
+	@tailwindHandle.Once() {
+		<script src="https://cdn.tailwindcss.com?plugins=typography,aspect-ratio,container-queries"></script>
+		<script src="https://kit.fontawesome.com/9909219bb5.js" crossorigin="anonymous"></script>
+	}
+}
+
+// Turnstile is used for cloudflare challenges
+templ Turnstile() {
+	@turnstileHandle.Once() {
+		<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+	}
+}
+
+// Alpine is a component that renders the Alpine.js library
+templ Alpine() {
+	@alpineHandle.Once() {
+		<script src={ jsDelivrURL("alpinejs", "3.14.6", "dist/cdn.min.js") }></script>
+		<script src={ jsDelivrURL("@alpinejs/focus", "3.14.6", "dist/cdn.min.js") }></script>
+	}
+}
+
+// Dexie is a component that renders the Dexie.js library
+templ Dexie() {
+	@dexieHandle.Once() {
+		<script src={ jsDelivrURL("dexie", "4.0.10", "dist/dexie.min.js") }></script>
+		<script src={ jsDelivrURL("dexie-export-import", "4.1.4", "dist/dexie-export-import.min.js") }></script>
+	}
+}
+
+// Htmx is a component that renders the Htmx.js library
+templ Htmx() {
+	@htmxHandle.Once() {
+		<script src={ jsDelivrURL("htmx.org", "1.9.12", "dist/htmx.min.js") }></script>
+		<script src={ jsDelivrURL("htmx-ext-include-vals", "2.0.0", "include-vals.min.js") }></script>
+		<script src={ jsDelivrURL("htmx-ext-path-params", "2.0.0", "path-params.min.js") }></script>
+		<script src={ jsDelivrURL("htmx-ext-alpine-morph", "2.0.0", "alpine-morph.min.js") }></script>
+		<script src={ jsDelivrURL("htmx-ext-sse", "2.2.2", "sse.min.js") }></script>
+		<script src={ jsDelivrURL("htmx-ext-ws", "2.0.2", "ws.min.js") }></script>
+	}
+}
+
+// Nebula is a component that renders the Nebula.js library
+templ Nebula(version string) {
+	<link
+		rel="stylesheet"
+		media="(prefers-color-scheme:light)"
+		href={ jsDelivrURL("@onsonr/nebula", version, "cdn/themes/light.css") }
+	/>
+	<link
+		rel="stylesheet"
+		media="(prefers-color-scheme:dark)"
+		href={ jsDelivrURL("@onsonr/nebula", version, "cdn/themes/dark.css") }
+		onload="document.documentElement.classList.add('sl-theme-dark');"
+	/>
+	@nebulaHandle.Once() {
+		<script type="module" src={ jsDelivrURL("@onsonr/nebula", version, "cdn/shoelace-autoloader.js") }></script>
+	}
+}
+
+// ╭───────────────────────────────────────────────────────────╮
+// │                      Helper Functions                     │
+// ╰───────────────────────────────────────────────────────────╯
+
+func jsDelivrURL(pkg string, version string, path string) string {
+	return fmt.Sprintf("https://cdn.jsdelivr.net/npm/%s@%s/%s", pkg, version, path)
+}

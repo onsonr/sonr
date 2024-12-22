@@ -32,20 +32,3 @@ class Config {
   sonrChainId: String
 }
 
-class Environment {
-  @JsonField
-  isDevelopment: Boolean
-
-  @JsonField
-  cacheVersion: String
-
-  @JsonField
-  httpserverPath: String
-
-  @JsonField
-  wasmExecPath: String
-
-  @JsonField
-  wasmPath: String
-}
-

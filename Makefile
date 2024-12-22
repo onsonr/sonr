@@ -87,6 +87,12 @@ else
 	go build -mod=readonly $(BUILD_FLAGS) -o build/sonrd ./cmd/sonrd
 endif
 
+build-motr: go.sum
+	GOOS=js GOARCH=wasm go build -o static/wasm/app.wasm ./cmd/motr/main.go
+
+build-hway: go.sum
+	go build -o build/hway ./cmd/hway
+
 build-windows-client: go.sum
 	GOOS=windows GOARCH=amd64 go build -mod=readonly $(BUILD_FLAGS) -o build/sonrd.exe ./cmd/sonrd
 
@@ -99,6 +105,9 @@ endif
 
 install: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/sonrd
+
+install-hway: go.sum
+	go install -mod=readonly ./cmd/hway
 
 ########################################
 ### Tools & dependencies
@@ -301,74 +310,11 @@ testnet-basic: setup-testnet
 sh-testnet: mod-tidy
 	CHAIN_ID="sonr-testnet-1" BLOCK_TIME="1000ms" CLEAN=true sh scripts/test_node.sh
 
-dop-testnet: mod-tidy 
-	sh scripts/test_dop_node.sh
-
 .PHONY: setup-testnet set-testnet-configs testnet testnet-basic sh-testnet dop-testnet
 
 ###############################################################################
-###                                generation                               ###
-###############################################################################
-.PHONY: gen-pkl gen-templ gen-sqlc
-
-gen-pkl: init-env
-	pkl-gen-go pkl/sonr.orm/UCAN.pkl
-	pkl-gen-go pkl/sonr.net/Hway.pkl
-	pkl-gen-go pkl/sonr.net/Motr.pkl
-
-gen-sqlc: init-env
-	@sqlc generate -f deploy/sqlc.yaml
-
-gen-templ: init-env
-	@templ generate
-
-###############################################################################
-###                             custom builds                               ###
-###############################################################################
-.PHONY: build-motr build-hway logs-hway logs-sonr
-
-build-motr:
-	GOOS=js GOARCH=wasm go build -o static/wasm/app.wasm ./cmd/motr/main.go
-
-build-hway: gen-templ
-	go build -o build/hway ./cmd/hway
-
-logs-hway: init-env
-	bin/process-compose process logs hway --port $(PC_PORT_NUM) --follow
-
-logs-sonr: init-env
-	bin/process-compose process logs sonr --port $(PC_PORT_NUM) --follow
-
-###############################################################################
-###                           Network Start/Stop                            ###
-###############################################################################
-
-.PHONY: deploy start start-tui start-uds stop stop-uds restart status
-
-start: build-hway init-env
-	bin/process-compose up --port $(PC_PORT_NUM) --log-file $(PC_LOG_FILE) -f deploy/process-compose.yaml
-
-start-uds: build-hway init-env
-	bin/process-compose up --use-uds --unix-socket $(PC_SOCKET_PATH) --log-file $(PC_LOG_FILE) --detached -f deploy/process-compose.yaml
-
-stop: init-env
-	bin/process-compose down --port $(PC_PORT_NUM)
-
-stop-uds: init-env
-	bin/process-compose down --use-uds --unix-socket $(PC_SOCKET_PATH)
-
-status: init-env
-	bin/process-compose project state --port $(PC_PORT_NUM)
-
-status-uds: init-env
-	bin/process-compose project state --use-uds --unix-socket $(PC_SOCKET_PATH)
-###############################################################################
 ###                                     help                                ###
 ###############################################################################
-
-deploy: 
-	cd ./proto && bunx buf dep update && bunx buf build && bunx buf push
-	sh ./.github/scripts/upload_cdn.sh
 
 help:
 	@echo "Usage: make <target>"
@@ -381,7 +327,5 @@ help:
 	@echo "  sh-testnet          : Shell local devnet"
 	@echo "  ictest-basic        : Basic end-to-end test"
 	@echo "  ictest-ibc          : IBC end-to-end test"
-	@echo "  templ               : Generate templ files"
-	@echo "  vault               : Build vault.wasm"
 
 .PHONY: help

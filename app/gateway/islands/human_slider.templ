@@ -1,0 +1,25 @@
+package islands
+
+import "fmt"
+
+templ HumanSlider(firstNumber int, lastNumber int) {
+	<div hx-target="this" hx-swap="outerHTML">
+		<sl-range name="is_human" label={ humanLabel(firstNumber, lastNumber) } help-text="Prove you are a human." min="0" max="9" step="1" hx-post="/register/profile/is_human"></sl-range>
+	</div>
+}
+
+templ HumanSliderError(firstNumber int, lastNumber int) {
+	<sl-range name="is_human" label={ humanLabel(firstNumber, lastNumber) } help-text="Prove you are a human." min="0" max="9" step="1"></sl-range>
+	<div slot="help-text">
+		<sl-icon name="x-lg" library="sonr"></sl-icon>
+		Invalid Human Sum
+	</div>
+}
+
+templ HumanSliderSuccess() {
+	<sl-range name="is_human" label="Success! Welcome Human." help-text="Prove you are a human." min="0" max="9" step="1" value="9" disabled></sl-range>
+}
+
+func humanLabel(firstNumber int, lastNumber int) string {
+	return fmt.Sprintf("What is %d + %d?", firstNumber, lastNumber)
+}

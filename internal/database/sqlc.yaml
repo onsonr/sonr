@@ -1,0 +1,19 @@
+version: "2"
+sql:
+  - engine: "sqlite"
+    queries: "./sink/query_vault.sql"
+    schema: "./sink/schema_vault.sql"
+    gen:
+      go:
+        package: "motrorm"
+        out: "motrorm"
+
+  - engine: "postgresql"
+    queries: "./sink/query_highway.sql"
+    schema: "./sink/schema_highway.sql"
+    gen:
+      go:
+        package: "hwayorm"
+        out: "hwayorm"
+        sql_package: "pgx/v5" 
+

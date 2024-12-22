@@ -37,4 +37,3 @@ Sonr would not have been possible without the direct and indirect support of the
 - [Forum](https://github.com/onsonr/sonr/discussions)
 - [Issues](https://github.com/onsonr/sonr/issues)
 - [Twitter](https://sonr.io/twitter)
-- [Dev Chat](https://sonr.io/discord)

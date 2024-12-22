@@ -5,7 +5,7 @@ vars:
     sh: git describe --tags --abbrev=0
   COMMIT:
     sh: git rev-parse --short HEAD
-  ROOT_DIR:
+  ROOT:
     sh: git rev-parse --show-toplevel
   OS:
     sh: uname -s
@@ -13,110 +13,60 @@ vars:
     sh: task -l
   DOPPLER_TOKEN:
     sh: skate get DOPPLER_NETWORK
+
+includes:
+  hway:
+    taskfile: .taskfiles/Hway.yml
+  ipfs:
+    taskfile: .taskfiles/IPFS.yml
+  postgres:
+    taskfile: .taskfiles/Postgres.yml
+  sonrd:
+    taskfile: .taskfiles/Sonrd.yml
+  synapse:
+    taskfile: .taskfiles/Synapse.yml
+  tigerbeetle:
+    taskfile: .taskfiles/TigerBeetle.yml
+
 tasks:
   default:
     cmds:
       - gh run ls -L 3
-      - gum format -- "# Sonr ({{.OS}}-{{.VERSION}})" "({{.COMMIT}}) {{.ROOT_DIR}}" "### {{ .TASKS }}"
+      - gum format -- "# Sonr ({{.OS}}-{{.VERSION}})" " - ({{.COMMIT}}) {{.ROOT}}"
+      - task -l -j | jq -r '.tasks[].name' | fzf --height=16 | xargs task
     silent: true
 
-  build:
-    desc: Build all binaries
+  deps:
+    desc: Install go dependencies
+    silent: true
+    vars:
+      DEPS: ["github.com/apple/pkl-go/cmd/pkl-gen-go@latest", "github.com/sqlc-dev/sqlc/cmd/sqlc@latest", "github.com/goreleaser/goreleaser/v2@latest","github.com/a-h/templ/cmd/templ@latest"]
+    cmds:
+      - for: { var: DEPS }
+        cmd: gum spin --spinner dot --title "Installing go dependencies..." -- go install {{.ITEM}}
+
+  pkl-gen:
+    desc: Generate PKL files
+    silent: true
+    dir: "pkl/sonr.net"
+    vars:
+      FILES: ["Hway.pkl", "Motr.pkl", "UCAN.pkl"]
+    cmds:
+      - for: { var: FILES }
+        cmd: gum spin --spinner dot --title "Generating PKL in Go..." -- pkl-gen-go {{.ITEM}}
+  
+  proto-gen:
+    desc: Generate proto files
+    silent: true
+    cmd: gum spin --spinner dot --title "Generating Protobufs..." -- make proto-gen
+
+  sqlc-gen:
+    desc: Generate SQLC files
     silent: true
     cmds:
-      - task: clean
-      - mkdir -p ./build
-      - mkdir -p ./static/wasm
-      - task: build:motr
-      - task: build:sonr
-      - task: build:hway
+      - gum spin --spinner dot --title "Generating SQLC..." -- sqlc generate -f internal/database/sqlc.yaml
 
-  start:
-    desc: Start the node
+  templ-gen:
+    desc: Generate templ files
     silent: true
-    cmds:
-      - task: build:hway
-      - task: start:darwin
-      - task: start:linux
-
-  stop:
-    desc: Stop the node
-    silent: true
-    cmds:
-      - task: stop:darwin
-      - task: stop:linux
-
-  build:motr:
-    internal: true
-    silent: true
-    cmd: goreleaser build --snapshot --id motr --clean -o ./static/wasm/app.wasm
-
-  build:sonr:
-    internal: true
-    silent: true
-    cmd: goreleaser build --snapshot --id sonr --single-target --clean -o ./build/sonrd
-
-  build:hway:
-    internal: true
-    silent: true
-    cmd: goreleaser build --snapshot --id hway --single-target --clean -o ./build/hway
-
-  init:db:
-    desc: Initialize the database
-    silent: true
-    platforms:
-      - linux
-    cmds:
-      - sudo -u postgres psql -f ./deploy/sink/db_seed.sql
-      - sudo -u postgres psql -d chainindex -f ./deploy/sink/schema_indexer.sql
-
-  init:ipfs:
-    desc: Initialize the ipfs node
-    silent: true
-    cmds:
-      - sh ./scripts/ipfs_config.sh
-
-  start:darwin:
-    internal: true
-    silent: true
-    platforms:
-      - darwin
-    cmd: make start
-
-  start:linux:
-    internal: true
-    silent: true
-    platforms:
-      - linux
-    cmd: make start-uds
-
-  stop:darwin:
-    internal: true
-    silent: true
-    platforms:
-      - darwin
-    cmd: make stop
-
-  stop:linux:
-    internal: true
-    silent: true
-    platforms:
-      - linux
-    cmds:
-      - make stop-uds
-      - task: reset:chainindex
-
-  clean:
-    internal: true
-    cmds:
-      - sh ./scripts/init_env.sh
-      - rm -rf ./build
-      - rm -rf ./dist
-      - rm -rf ./static
-    silent: true
-
-  reset:chainindex:
-    internal: true
-    platforms:
-      - linux
-    cmd: sudo -u postgres psql -f ./deploy/sink/reset_chainindex.sql
+    cmd: gum spin --spinner dot --title "Generating Templ..." -- templ generate

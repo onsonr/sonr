@@ -1,0 +1,47 @@
+package views
+
+import "github.com/onsonr/sonr/app/gateway/islands"
+
+templ RegisterProfileView(firstNumber int, lastNumber int) {
+	@LayoutView("New Profile | Sonr.ID") {
+		@LayoutContainer() {
+			@HeroTitle("Basic Info", "Tell us a little about yourself.")
+			@Form("/register/passkey", "create-profile") {
+				@FormBody() {
+					@FormHeader() {
+						<div class="w-full py-2">
+							<sl-avatar shape="circle" size="large" src="https://avatars.githubusercontent.com/u/101929?v=4"></sl-avatar>
+						</div>
+					}
+					@islands.InputHandle()
+					@islands.HumanSlider(firstNumber, lastNumber)
+					@FormFooter() {
+						@FormCancel()
+						@FormSubmit("Next")
+					}
+				}
+			}
+		}
+	}
+}
+
+templ RegisterPasskeyView(address string, handle string, name string, challenge string, creationBlock string) {
+	@LayoutView("Register | Sonr.ID") {
+		@LayoutContainer() {
+			@HeroTitle("Link a PassKey", "This will be used to login to your vault.")
+			@Form("/register/finish", "passkey-form") {
+				<input type="hidden" name="credential" id="credential-data" required/>
+				@FormBody() {
+					@FormHeader() {
+						@islands.CardAccount(address, name, handle, creationBlock)
+					}
+					@islands.CoinSelect()
+					@FormFooter() {
+						@islands.InputPasskey(address, handle, challenge)
+						@FormCancel()
+					}
+				}
+			}
+		}
+	}
+}
