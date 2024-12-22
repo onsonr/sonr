@@ -1,7 +1,7 @@
 package views
 
 templ Form(action, id string) {
-	<form action={ templ.SafeURL(action) } id={ id } hx-post={ action } hx-target="#{ id }" hx-swap="outerHTML">
+	<form method="GET" action={ templ.SafeURL(action) } id={ id } hx-post={ action } hx-target="#{ id }" hx-swap="outerHTML">
 		{ children... }
 	</form>
 }

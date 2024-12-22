@@ -8,10 +8,8 @@ import (
 	"lukechampine.com/blake3"
 )
 
-func (cc *GatewayContext) Spawn() (*CreatePasskeyParams, error) {
+func (cc *GatewayContext) Spawn(handle, origin string) (*CreatePasskeyParams, error) {
 	block := fmt.Sprintf("%d", cc.StatusBlock())
-	handle := GetProfileHandle(cc)
-	origin := GetOrigin(cc)
 	challenge := GetAuthChallenge(cc)
 	sid := GetSessionID(cc)
 	nonce, err := calcNonce(sid)

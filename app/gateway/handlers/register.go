@@ -32,7 +32,24 @@ func renderProfileForm(c echo.Context) error {
 }
 
 func renderPasskeyForm(c echo.Context) error {
-	return context.Render(c, views.RegisterPasskeyView("", "", "", "", ""))
+	cc, err := context.GetGateway(c)
+	if err != nil {
+		return err
+	}
+	handle := c.FormValue("handle")
+	origin := c.FormValue("origin")
+	name := c.FormValue("name")
+	cc.InsertProfile(context.BG(), hwayorm.InsertProfileParams{
+		Handle: handle,
+		Origin: origin,
+		Name:   name,
+	})
+
+	params, err := cc.Spawn(handle, origin)
+	if err != nil {
+		return context.RenderError(c, err)
+	}
+	return context.Render(c, views.RegisterPasskeyView(params.Address, params.Handle, params.Name, params.Challenge, params.CreationBlock))
 }
 
 func renderVaultStatus(c echo.Context) error {
