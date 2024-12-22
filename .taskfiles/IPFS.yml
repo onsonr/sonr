@@ -4,8 +4,8 @@ vars:
   ROOT:
     sh: git rev-parse --show-toplevel
 tasks:
-  ipfs:init:
-    desc: Initialize ipfs with Cloudflare
+  init:
+    desc: Setup ipfs with Cloudflare
     silent: true
     vars:
       PEERS: |
@@ -28,20 +28,10 @@ tasks:
       - ipfs init
       - ipfs config --json Peering.Peers {{.PEERS}}
       - ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["*"]'
- 
-  psql:init:
-    desc: Initialize postgresql
-    silent: true
-    cmds:
-      - cmd: psql -f deploy/apps/chainindex/seed.sql
-        platforms:
-          - darwin
-      - cmd: psql -d chainindex -f deploy/apps/chainindex/schema.sql
-        platforms:
-          - darwin
-      - cmd: sudo -u postgres psql -f deploy/apps/chainindex/seed.sql
-        platforms:
-          - linux
-      - cmd: sudo -u postgres psql -d chainindex -f deploy/apps/chainindex/schema.sql
-        platforms:
-          - linux
+
+start:
+  desc: Start the ipfs daemon
+  silent: true
+  deps: [init]
+  cmds:
+    - ipfs daemon

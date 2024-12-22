@@ -1,12 +1,11 @@
 version: "3"
 
-tasks:
-  import-secrets:
-    silent: true
-    cmds: 
-      - echo "Importing config"
+vars:
+  ROOT:
+    sh: git rev-parse --show-toplevel
 
-  synapse:eval:
+tasks:
+  init:
     desc: Configure synapse homeserver with PKL
     silent: true
     cmds: 

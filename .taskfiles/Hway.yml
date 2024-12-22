@@ -4,21 +4,22 @@ vars:
   GOPATH:
     sh: go env GOPATH
   BIN_DIR: "{{.GOPATH}}/bin"
+  BINARY: "{{.BIN_DIR}}/hway"
   OS:
     sh: uname -s
   ARCH:
     sh: uname -m
 
 tasks:
-  hway:build:
+  build:
+    desc: Build the hway binary
     silent: true
     cmds: 
       - gum spin --spinner dot --title "Build Hway Single Target ({{.OS}}/{{.ARCH}})..." -- goreleaser build --snapshot --clean --single-target --id hway -o {{.BIN_DIR}}/hway
 
-  sonrd:build:
+  start:
+    desc: Start the hway daemon
     silent: true
-    cmds: 
-      - gum spin --spinner dot --title "Build Sonrd Single Target ({{.OS}}/{{.ARCH}})..." -- make build
-      - gum spin --spinner dot --title "Moving Binary to $GOBIN..." -- mv build/sonrd {{.BIN_DIR}}/sonrd
-      - rm -rf build
-
+    deps: [build]
+    cmds:
+      - "{{.BINARY}}"

@@ -15,24 +15,18 @@ vars:
     sh: skate get DOPPLER_NETWORK
 
 includes:
-  build:
-    taskfile: .taskfiles/Build.yml
-    flatten: true
-  config:
-    taskfile: .taskfiles/Config.yml
-    flatten: true
-  gen:
-    taskfile: .taskfiles/Generate.yml
-    flatten: true
-  init:
-    taskfile: .taskfiles/Initialize.yml
-    flatten: true
-  install:
-    taskfile: .taskfiles/Install.yml
-    flatten: true
-  serve:
-    taskfile: .taskfiles/Serve.yml
-    flatten: true
+  hway:
+    taskfile: .taskfiles/Hway.yml
+  ipfs:
+    taskfile: .taskfiles/IPFS.yml
+  postgres:
+    taskfile: .taskfiles/Postgres.yml
+  sonrd:
+    taskfile: .taskfiles/Sonrd.yml
+  synapse:
+    taskfile: .taskfiles/Synapse.yml
+  tigerbeetle:
+    taskfile: .taskfiles/TigerBeetle.yml
 
 tasks:
   default:
@@ -41,3 +35,38 @@ tasks:
       - gum format -- "# Sonr ({{.OS}}-{{.VERSION}})" " - ({{.COMMIT}}) {{.ROOT}}"
       - task -l -j | jq -r '.tasks[].name' | fzf --height=16 | xargs task
     silent: true
+
+  deps:
+    desc: Install go dependencies
+    silent: true
+    vars:
+      DEPS: ["github.com/apple/pkl-go/cmd/pkl-gen-go@latest", "github.com/sqlc-dev/sqlc/cmd/sqlc@latest", "github.com/goreleaser/goreleaser/v2@latest","github.com/a-h/templ/cmd/templ@latest"]
+    cmds:
+      - for: { var: DEPS }
+        cmd: gum spin --spinner dot --title "Installing go dependencies..." -- go install {{.ITEM}}
+
+  pkl-gen:
+    desc: Generate PKL files
+    silent: true
+    dir: "pkl/sonr.net"
+    vars:
+      FILES: ["Hway.pkl", "Motr.pkl", "UCAN.pkl"]
+    cmds:
+      - for: { var: FILES }
+        cmd: gum spin --spinner dot --title "Generating PKL in Go..." -- pkl-gen-go {{.ITEM}}
+  
+  proto-gen:
+    desc: Generate proto files
+    silent: true
+    cmd: gum spin --spinner dot --title "Generating Protobufs..." -- make proto-gen
+
+  sqlc-gen:
+    desc: Generate SQLC files
+    silent: true
+    cmds:
+      - gum spin --spinner dot --title "Generating SQLC..." -- sqlc generate -f internal/database/sqlc.yaml
+
+  templ-gen:
+    desc: Generate templ files
+    silent: true
+    cmd: gum spin --spinner dot --title "Generating Templ..." -- templ generate

@@ -1,0 +1,48 @@
+version: "3"
+
+vars:
+  BINARY: sonrd
+  BUILD_FLAGS: -mod=readonly -trimpath
+  BUILD_TAGS: netgo,ledger
+  COMMIT: 
+    sh: git rev-parse HEAD
+  VERSION:
+    sh: git describe --tags --always
+  DOPPLER_TOKEN:
+    sh: skate get DOPPLER_NETWORK
+
+tasks:
+  build:
+    desc: Build the sonrd binary
+    cmds:
+      - >
+        go build 
+        {{.BUILD_FLAGS}}
+        -tags "{{.BUILD_TAGS}}"
+        -ldflags "
+        -X github.com/cosmos/cosmos-sdk/version.Name=sonr
+        -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
+        -X github.com/cosmos/cosmos-sdk/version.Version={{.VERSION}}
+        -X github.com/cosmos/cosmos-sdk/version.Commit={{.COMMIT}}
+        -X github.com/cosmos/cosmos-sdk/version.BuildTags={{.BUILD_TAGS}}
+        "
+        -o ./build/{{.BINARY}}
+        ./cmd/sonrd
+    env:
+      CGO_ENABLED: 1
+      GOARCH: 
+        sh: go env GOARCH
+      GOOS:
+        sh: go env GOOS
+ 
+  install:
+    desc: Install sonrd
+    silent: true
+    cmds:
+      - gum spin --spinner dot --title "Installing sonr daemon..." -- make install
+
+  start:
+    desc: Start the sonr node
+    cmds:
+      - sh scripts/test_dop_node.sh
+

@@ -1,0 +1,12 @@
+version: "3"
+
+vars:
+  ROOT:
+    sh: git rev-parse --show-toplevel
+
+tasks:
+  init:
+    desc: Configure tigerbeetle database
+    silent: true
+    cmds: 
+      - pkl eval pkl/matrix.net/Homeserver.pkl -f yaml -o deploy/conf/synapse/homeserver.yaml
