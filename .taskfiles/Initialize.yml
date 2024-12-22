@@ -33,15 +33,15 @@ tasks:
     desc: Initialize postgresql
     silent: true
     cmds:
-      - cmd: psql -f internal/database/sink/db_seed.sql
+      - cmd: psql -f deploy/apps/chainindex/seed.sql
         platforms:
           - darwin
-      - cmd: psql -d chainindex -f internal/database/sink/schema_indexer.sql
+      - cmd: psql -d chainindex -f deploy/apps/chainindex/schema.sql
         platforms:
           - darwin
-      - cmd: sudo -u postgres psql -f internal/database/sink/db_seed.sql
+      - cmd: sudo -u postgres psql -f deploy/apps/chainindex/seed.sql
         platforms:
           - linux
-      - cmd: sudo -u postgres psql -d chainindex -f internal/database/sink/schema_indexer.sql
+      - cmd: sudo -u postgres psql -d chainindex -f deploy/apps/chainindex/schema.sql
         platforms:
           - linux
