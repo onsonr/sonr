@@ -12,7 +12,7 @@ import (
 )
 
 func RegisterHandler(g *echo.Group) {
-	g.GET("/", renderProfileForm)
+	g.GET("/start", renderProfileForm)
 	g.POST("/profile", validateProfileForm)
 	g.GET("/passkey", renderPasskeyForm)
 	g.POST("/passkey", validatePasskeyForm)
