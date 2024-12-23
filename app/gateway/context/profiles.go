@@ -23,7 +23,7 @@ func UpdateProfile(c echo.Context) (*hwayorm.Profile, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &profile, nil
+	return profile, nil
 }
 
 func ReadProfile(c echo.Context) (*hwayorm.Profile, error) {
@@ -36,7 +36,7 @@ func ReadProfile(c echo.Context) (*hwayorm.Profile, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &profile, nil
+	return profile, nil
 }
 
 func DeleteProfile(c echo.Context) error {
