@@ -1,6 +1,6 @@
 # `x/did`
 
-The Decentralized Identity module is responsible for managing native Sonr Accounts, their derived wallets, and associated user identification information.
+The Decentralized Identity module is responsible for managing native Sonr Accounts, their derived wallets, and associated user identification information. This module now incorporates UCAN (User Controlled Authorization Networks) for enhanced authorization and access control.
 
 ## State
 
@@ -75,13 +75,13 @@ The DID module defines the following messages:
 5. MsgUnlinkAuthentication
 6. MsgUpdateParams
 
-Each message triggers specific state machine behaviors related to managing DIDs, authentications, assertions, and module parameters.
+Each message triggers specific state machine behaviors related to managing DIDs, authentications, assertions, and module parameters. These messages now also involve UCAN authorization checks where applicable.
 
 ## Query
 
 The DID module provides the following query endpoints:
 
-1. Params: Query all parameters of the module
+1. Params: Query all parameters of the module, including UCAN-related parameters.
 2. Resolve: Query the DID document by its ID
 3. Sign: Sign a message with the DID document
 4. Verify: Verify a message with the DID document
@@ -92,18 +92,41 @@ The module parameters include:
 - Allowed public keys (map of KeyInfo)
 - Conveyance preference
 - Attestation formats
+- UCAN Authorization Parameters:
+  - `UcanPermissions`: Specifies the required UCAN permissions for various actions within the module.
 
 ## Client
 
 The module provides gRPC and REST endpoints for all defined messages and queries.
 
+## UCAN Authorization
+
+This module utilizes UCAN (User Controlled Authorization Networks) to provide a decentralized and user-centric authorization mechanism. UCANs are self-contained authorization tokens that allow users to delegate specific capabilities to other entities without relying on a central authority.
+
+### UCAN Integration
+
+- The module parameters include a `UcanPermissions` field that defines the default UCAN permissions required for actions within the module.
+- Message handlers in the `MsgServer` perform UCAN authorization checks by:
+  - Retrieving the UCAN permissions from the context (injected by a middleware).
+  - Retrieving the required UCAN permissions from the module parameters.
+  - Verifying that the provided UCAN permissions satisfy the required permissions.
+- A dedicated middleware is responsible for:
+  - Parsing incoming requests for UCAN tokens.
+  - Verifying UCAN token signatures and validity.
+  - Extracting UCAN permissions.
+  - Injecting UCAN permissions into the context.
+- UCAN verification logic involves:
+  - Checking UCAN token signatures against the issuer's public key (resolved via the `x/did` module).
+  - Validating token expiration and other constraints.
+  - Parsing token capabilities and extracting relevant permissions.
+
 ## Future Improvements
 
 Potential future improvements could include:
-1. Enhanced privacy features for DID operations
+1. Enhanced privacy features for DID operations, potentially leveraging UCAN capabilities for privacy-preserving authorization.
 2. Integration with more blockchain networks
 3. Support for additional key types and cryptographic algorithms
-4. Improved revocation mechanisms for credentials and assertions
+4. Improved revocation mechanisms for credentials, assertions, and UCAN tokens.
 
 ## Tests
 
