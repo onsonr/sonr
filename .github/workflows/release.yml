@@ -6,13 +6,15 @@ on:
   push:
     tags:
       - v*
+    branches:
+      - main
 
 permissions:
   contents: write
 
 jobs:
   bump-version:
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop'
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
     runs-on: ubuntu-latest
     name: Bump Current Version
     outputs:
