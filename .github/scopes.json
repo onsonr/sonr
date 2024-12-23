@@ -148,7 +148,7 @@
     ]
   },
   {
-    "name": "gateway/database",
+    "name": "oracle/database",
     "path": "pkg/gateway/internal/database",
     "docs": [
       {
