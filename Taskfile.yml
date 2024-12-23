@@ -51,6 +51,12 @@ tasks:
       - for: { var: DEPS }
         cmd: gum spin --spinner dot --title "Installing go dependencies..." -- go install {{.ITEM}}
 
+  new-issue:
+    desc: Create a new issue
+    silent: true
+    dir: .github/scripts
+    cmds:
+      - sh new_issue.sh
   pkl-gen:
     desc: Generate PKL files
     silent: true
