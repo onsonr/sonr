@@ -87,6 +87,7 @@ buildenv*
 node_modules
 cmd/gateway/node_modules
 pkg/nebula/node_modules
+configs/logs.json
 
 mprocs.yaml
 build
