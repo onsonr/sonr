@@ -1,4 +1,4 @@
-name: Publish Versioned Assets
+name: Publish Assets on Release
 on:
   release:
     types: [published]
@@ -23,9 +23,9 @@ jobs:
           input: proto
           buf_token: ${{ secrets.BUF_TOKEN }}
 
-  publish-docs:
+  docs-push:
     runs-on: ubuntu-latest
-    name: Publish Docs
+    name: Publish Docs to onsonr.dev
     steps:
       - uses: actions/checkout@v4
       - name: Configure Git Credentials

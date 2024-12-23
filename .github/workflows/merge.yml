@@ -1,0 +1,29 @@
+name: Bump Version on Merge
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  bump-version:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ssh-key: "${{ secrets.COMMIT_KEY }}"
+
+      - name: Create bump and changelog
+        uses: commitizen-tools/commitizen-action@master
+        with:
+          push: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+      - name: Push using ssh
+        run: |
+          git push origin main --tags
