@@ -4,5 +4,5 @@ import (
 	_ "embed"
 )
 
-//go:embed schema_vault.sql
+//go:embed vault/schema.sql
 var SchemaVaultSQL string
