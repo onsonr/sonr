@@ -146,8 +146,9 @@
         "keywords": [
           "mpc",
           "wallet",
-          "security",
-          "advanced cryptography"
+          "cryptography",
+          "capability",
+          "invokation"
         ],
         "url": "https://csrc.nist.gov/CSRC/media/Events/NTCW19/papers/paper-DKLS.pdf"
       }
@@ -160,7 +161,8 @@
         "keywords": [
           "ucan",
           "spec",
-          "references"
+          "cryptography",
+          "authorization"
         ],
         "url": "https://raw.githubusercontent.com/ucan-wg/spec/refs/heads/main/README.md"
       }
@@ -170,7 +172,12 @@
     "name": "crypto-zkp",
     "docs": [
       {
-        "keywords": [],
+        "keywords": [
+          "zero-knowledge",
+          "proofs",
+          "cryptography",
+          "privacy"
+        ],
         "url": "https://eprint.iacr.org/2021/1672.pdf"
       }
     ]
