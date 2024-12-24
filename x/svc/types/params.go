@@ -25,3 +25,5 @@ func (p Params) Validate() error {
 	// TODO:
 	return nil
 }
+
+// DefaultAttenuations returns the default Attenuation
