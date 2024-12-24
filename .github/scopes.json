@@ -543,7 +543,14 @@
           "api"
         ],
         "url": "https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API"
-      }
+      },
+      {
+        "keywords": [
+          "web-authentication",
+          "web",
+          "api"
+        ],
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API"
     ]
   }
 ]
