@@ -19,14 +19,8 @@ includes:
     taskfile: .taskfiles/Hway.yml
   ipfs:
     taskfile: .taskfiles/IPFS.yml
-  postgres:
-    taskfile: .taskfiles/Postgres.yml
   sonrd:
     taskfile: .taskfiles/Sonrd.yml
-  synapse:
-    taskfile: .taskfiles/Synapse.yml
-  tigerbeetle:
-    taskfile: .taskfiles/TigerBeetle.yml
 
 tasks:
   default:
