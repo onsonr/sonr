@@ -45,10 +45,10 @@ message Resource {
 message Service {
   string id = 1;
   string authority = 2;
-  string origin = 3;
+  repeated string origins = 3;
   string name = 4;
   string description = 5;
-  string category = 6;
+  repeated Attenuation attenuations = 6;
   repeated string tags = 7;
   int64 expiry_height = 8;
 }

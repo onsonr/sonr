@@ -2672,6 +2672,103 @@ func (x *fastReflection_Resource) ProtoMethods() *protoiface.Methods {
 	}
 }
 
+var _ protoreflect.List = (*_Service_3_list)(nil)
+
+type _Service_3_list struct {
+	list *[]string
+}
+
+func (x *_Service_3_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_Service_3_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfString((*x.list)[i])
+}
+
+func (x *_Service_3_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_Service_3_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_Service_3_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message Service at list field Origins as it is not of Message kind"))
+}
+
+func (x *_Service_3_list) Truncate(n int) {
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_Service_3_list) NewElement() protoreflect.Value {
+	v := ""
+	return protoreflect.ValueOfString(v)
+}
+
+func (x *_Service_3_list) IsValid() bool {
+	return x.list != nil
+}
+
+var _ protoreflect.List = (*_Service_6_list)(nil)
+
+type _Service_6_list struct {
+	list *[]*Attenuation
+}
+
+func (x *_Service_6_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_Service_6_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_Service_6_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*Attenuation)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_Service_6_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*Attenuation)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_Service_6_list) AppendMutable() protoreflect.Value {
+	v := new(Attenuation)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_Service_6_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_Service_6_list) NewElement() protoreflect.Value {
+	v := new(Attenuation)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_Service_6_list) IsValid() bool {
+	return x.list != nil
+}
+
 var _ protoreflect.List = (*_Service_7_list)(nil)
 
 type _Service_7_list struct {
@@ -2722,10 +2819,10 @@ var (
 	md_Service               protoreflect.MessageDescriptor
 	fd_Service_id            protoreflect.FieldDescriptor
 	fd_Service_authority     protoreflect.FieldDescriptor
-	fd_Service_origin        protoreflect.FieldDescriptor
+	fd_Service_origins       protoreflect.FieldDescriptor
 	fd_Service_name          protoreflect.FieldDescriptor
 	fd_Service_description   protoreflect.FieldDescriptor
-	fd_Service_category      protoreflect.FieldDescriptor
+	fd_Service_attenuations  protoreflect.FieldDescriptor
 	fd_Service_tags          protoreflect.FieldDescriptor
 	fd_Service_expiry_height protoreflect.FieldDescriptor
 )
@@ -2735,10 +2832,10 @@ func init() {
 	md_Service = File_svc_v1_genesis_proto.Messages().ByName("Service")
 	fd_Service_id = md_Service.Fields().ByName("id")
 	fd_Service_authority = md_Service.Fields().ByName("authority")
-	fd_Service_origin = md_Service.Fields().ByName("origin")
+	fd_Service_origins = md_Service.Fields().ByName("origins")
 	fd_Service_name = md_Service.Fields().ByName("name")
 	fd_Service_description = md_Service.Fields().ByName("description")
-	fd_Service_category = md_Service.Fields().ByName("category")
+	fd_Service_attenuations = md_Service.Fields().ByName("attenuations")
 	fd_Service_tags = md_Service.Fields().ByName("tags")
 	fd_Service_expiry_height = md_Service.Fields().ByName("expiry_height")
 }
@@ -2820,9 +2917,9 @@ func (x *fastReflection_Service) Range(f func(protoreflect.FieldDescriptor, prot
 			return
 		}
 	}
-	if x.Origin != "" {
-		value := protoreflect.ValueOfString(x.Origin)
-		if !f(fd_Service_origin, value) {
+	if len(x.Origins) != 0 {
+		value := protoreflect.ValueOfList(&_Service_3_list{list: &x.Origins})
+		if !f(fd_Service_origins, value) {
 			return
 		}
 	}
@@ -2838,9 +2935,9 @@ func (x *fastReflection_Service) Range(f func(protoreflect.FieldDescriptor, prot
 			return
 		}
 	}
-	if x.Category != "" {
-		value := protoreflect.ValueOfString(x.Category)
-		if !f(fd_Service_category, value) {
+	if len(x.Attenuations) != 0 {
+		value := protoreflect.ValueOfList(&_Service_6_list{list: &x.Attenuations})
+		if !f(fd_Service_attenuations, value) {
 			return
 		}
 	}
@@ -2875,14 +2972,14 @@ func (x *fastReflection_Service) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.Id != ""
 	case "svc.v1.Service.authority":
 		return x.Authority != ""
-	case "svc.v1.Service.origin":
-		return x.Origin != ""
+	case "svc.v1.Service.origins":
+		return len(x.Origins) != 0
 	case "svc.v1.Service.name":
 		return x.Name != ""
 	case "svc.v1.Service.description":
 		return x.Description != ""
-	case "svc.v1.Service.category":
-		return x.Category != ""
+	case "svc.v1.Service.attenuations":
+		return len(x.Attenuations) != 0
 	case "svc.v1.Service.tags":
 		return len(x.Tags) != 0
 	case "svc.v1.Service.expiry_height":
@@ -2907,14 +3004,14 @@ func (x *fastReflection_Service) Clear(fd protoreflect.FieldDescriptor) {
 		x.Id = ""
 	case "svc.v1.Service.authority":
 		x.Authority = ""
-	case "svc.v1.Service.origin":
-		x.Origin = ""
+	case "svc.v1.Service.origins":
+		x.Origins = nil
 	case "svc.v1.Service.name":
 		x.Name = ""
 	case "svc.v1.Service.description":
 		x.Description = ""
-	case "svc.v1.Service.category":
-		x.Category = ""
+	case "svc.v1.Service.attenuations":
+		x.Attenuations = nil
 	case "svc.v1.Service.tags":
 		x.Tags = nil
 	case "svc.v1.Service.expiry_height":
@@ -2941,18 +3038,24 @@ func (x *fastReflection_Service) Get(descriptor protoreflect.FieldDescriptor) pr
 	case "svc.v1.Service.authority":
 		value := x.Authority
 		return protoreflect.ValueOfString(value)
-	case "svc.v1.Service.origin":
-		value := x.Origin
-		return protoreflect.ValueOfString(value)
+	case "svc.v1.Service.origins":
+		if len(x.Origins) == 0 {
+			return protoreflect.ValueOfList(&_Service_3_list{})
+		}
+		listValue := &_Service_3_list{list: &x.Origins}
+		return protoreflect.ValueOfList(listValue)
 	case "svc.v1.Service.name":
 		value := x.Name
 		return protoreflect.ValueOfString(value)
 	case "svc.v1.Service.description":
 		value := x.Description
 		return protoreflect.ValueOfString(value)
-	case "svc.v1.Service.category":
-		value := x.Category
-		return protoreflect.ValueOfString(value)
+	case "svc.v1.Service.attenuations":
+		if len(x.Attenuations) == 0 {
+			return protoreflect.ValueOfList(&_Service_6_list{})
+		}
+		listValue := &_Service_6_list{list: &x.Attenuations}
+		return protoreflect.ValueOfList(listValue)
 	case "svc.v1.Service.tags":
 		if len(x.Tags) == 0 {
 			return protoreflect.ValueOfList(&_Service_7_list{})
@@ -2986,14 +3089,18 @@ func (x *fastReflection_Service) Set(fd protoreflect.FieldDescriptor, value prot
 		x.Id = value.Interface().(string)
 	case "svc.v1.Service.authority":
 		x.Authority = value.Interface().(string)
-	case "svc.v1.Service.origin":
-		x.Origin = value.Interface().(string)
+	case "svc.v1.Service.origins":
+		lv := value.List()
+		clv := lv.(*_Service_3_list)
+		x.Origins = *clv.list
 	case "svc.v1.Service.name":
 		x.Name = value.Interface().(string)
 	case "svc.v1.Service.description":
 		x.Description = value.Interface().(string)
-	case "svc.v1.Service.category":
-		x.Category = value.Interface().(string)
+	case "svc.v1.Service.attenuations":
+		lv := value.List()
+		clv := lv.(*_Service_6_list)
+		x.Attenuations = *clv.list
 	case "svc.v1.Service.tags":
 		lv := value.List()
 		clv := lv.(*_Service_7_list)
@@ -3020,6 +3127,18 @@ func (x *fastReflection_Service) Set(fd protoreflect.FieldDescriptor, value prot
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Service) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
+	case "svc.v1.Service.origins":
+		if x.Origins == nil {
+			x.Origins = []string{}
+		}
+		value := &_Service_3_list{list: &x.Origins}
+		return protoreflect.ValueOfList(value)
+	case "svc.v1.Service.attenuations":
+		if x.Attenuations == nil {
+			x.Attenuations = []*Attenuation{}
+		}
+		value := &_Service_6_list{list: &x.Attenuations}
+		return protoreflect.ValueOfList(value)
 	case "svc.v1.Service.tags":
 		if x.Tags == nil {
 			x.Tags = []string{}
@@ -3030,14 +3149,10 @@ func (x *fastReflection_Service) Mutable(fd protoreflect.FieldDescriptor) protor
 		panic(fmt.Errorf("field id of message svc.v1.Service is not mutable"))
 	case "svc.v1.Service.authority":
 		panic(fmt.Errorf("field authority of message svc.v1.Service is not mutable"))
-	case "svc.v1.Service.origin":
-		panic(fmt.Errorf("field origin of message svc.v1.Service is not mutable"))
 	case "svc.v1.Service.name":
 		panic(fmt.Errorf("field name of message svc.v1.Service is not mutable"))
 	case "svc.v1.Service.description":
 		panic(fmt.Errorf("field description of message svc.v1.Service is not mutable"))
-	case "svc.v1.Service.category":
-		panic(fmt.Errorf("field category of message svc.v1.Service is not mutable"))
 	case "svc.v1.Service.expiry_height":
 		panic(fmt.Errorf("field expiry_height of message svc.v1.Service is not mutable"))
 	default:
@@ -3057,14 +3172,16 @@ func (x *fastReflection_Service) NewField(fd protoreflect.FieldDescriptor) proto
 		return protoreflect.ValueOfString("")
 	case "svc.v1.Service.authority":
 		return protoreflect.ValueOfString("")
-	case "svc.v1.Service.origin":
-		return protoreflect.ValueOfString("")
+	case "svc.v1.Service.origins":
+		list := []string{}
+		return protoreflect.ValueOfList(&_Service_3_list{list: &list})
 	case "svc.v1.Service.name":
 		return protoreflect.ValueOfString("")
 	case "svc.v1.Service.description":
 		return protoreflect.ValueOfString("")
-	case "svc.v1.Service.category":
-		return protoreflect.ValueOfString("")
+	case "svc.v1.Service.attenuations":
+		list := []*Attenuation{}
+		return protoreflect.ValueOfList(&_Service_6_list{list: &list})
 	case "svc.v1.Service.tags":
 		list := []string{}
 		return protoreflect.ValueOfList(&_Service_7_list{list: &list})
@@ -3147,9 +3264,11 @@ func (x *fastReflection_Service) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.Origin)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
+		if len(x.Origins) > 0 {
+			for _, s := range x.Origins {
+				l = len(s)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
 		}
 		l = len(x.Name)
 		if l > 0 {
@@ -3159,9 +3278,11 @@ func (x *fastReflection_Service) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.Category)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
+		if len(x.Attenuations) > 0 {
+			for _, e := range x.Attenuations {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
 		}
 		if len(x.Tags) > 0 {
 			for _, s := range x.Tags {
@@ -3215,12 +3336,21 @@ func (x *fastReflection_Service) ProtoMethods() *protoiface.Methods {
 				dAtA[i] = 0x3a
 			}
 		}
-		if len(x.Category) > 0 {
-			i -= len(x.Category)
-			copy(dAtA[i:], x.Category)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Category)))
-			i--
-			dAtA[i] = 0x32
+		if len(x.Attenuations) > 0 {
+			for iNdEx := len(x.Attenuations) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.Attenuations[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x32
+			}
 		}
 		if len(x.Description) > 0 {
 			i -= len(x.Description)
@@ -3236,12 +3366,14 @@ func (x *fastReflection_Service) ProtoMethods() *protoiface.Methods {
 			i--
 			dAtA[i] = 0x22
 		}
-		if len(x.Origin) > 0 {
-			i -= len(x.Origin)
-			copy(dAtA[i:], x.Origin)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Origin)))
-			i--
-			dAtA[i] = 0x1a
+		if len(x.Origins) > 0 {
+			for iNdEx := len(x.Origins) - 1; iNdEx >= 0; iNdEx-- {
+				i -= len(x.Origins[iNdEx])
+				copy(dAtA[i:], x.Origins[iNdEx])
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Origins[iNdEx])))
+				i--
+				dAtA[i] = 0x1a
+			}
 		}
 		if len(x.Authority) > 0 {
 			i -= len(x.Authority)
@@ -3372,7 +3504,7 @@ func (x *fastReflection_Service) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 3:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Origins", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -3400,7 +3532,7 @@ func (x *fastReflection_Service) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Origin = string(dAtA[iNdEx:postIndex])
+				x.Origins = append(x.Origins, string(dAtA[iNdEx:postIndex]))
 				iNdEx = postIndex
 			case 4:
 				if wireType != 2 {
@@ -3468,9 +3600,9 @@ func (x *fastReflection_Service) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 6:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Category", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Attenuations", wireType)
 				}
-				var stringLen uint64
+				var msglen int
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -3480,23 +3612,25 @@ func (x *fastReflection_Service) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
+					msglen |= int(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
+				if msglen < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
-				postIndex := iNdEx + intStringLen
+				postIndex := iNdEx + msglen
 				if postIndex < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Category = string(dAtA[iNdEx:postIndex])
+				x.Attenuations = append(x.Attenuations, &Attenuation{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Attenuations[len(x.Attenuations)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
 				iNdEx = postIndex
 			case 7:
 				if wireType != 2 {
@@ -3824,14 +3958,14 @@ type Service struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id           string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Authority    string   `protobuf:"bytes,2,opt,name=authority,proto3" json:"authority,omitempty"`
-	Origin       string   `protobuf:"bytes,3,opt,name=origin,proto3" json:"origin,omitempty"`
-	Name         string   `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
-	Description  string   `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
-	Category     string   `protobuf:"bytes,6,opt,name=category,proto3" json:"category,omitempty"`
-	Tags         []string `protobuf:"bytes,7,rep,name=tags,proto3" json:"tags,omitempty"`
-	ExpiryHeight int64    `protobuf:"varint,8,opt,name=expiry_height,json=expiryHeight,proto3" json:"expiry_height,omitempty"`
+	Id           string         `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Authority    string         `protobuf:"bytes,2,opt,name=authority,proto3" json:"authority,omitempty"`
+	Origins      []string       `protobuf:"bytes,3,rep,name=origins,proto3" json:"origins,omitempty"`
+	Name         string         `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
+	Description  string         `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
+	Attenuations []*Attenuation `protobuf:"bytes,6,rep,name=attenuations,proto3" json:"attenuations,omitempty"`
+	Tags         []string       `protobuf:"bytes,7,rep,name=tags,proto3" json:"tags,omitempty"`
+	ExpiryHeight int64          `protobuf:"varint,8,opt,name=expiry_height,json=expiryHeight,proto3" json:"expiry_height,omitempty"`
 }
 
 func (x *Service) Reset() {
@@ -3868,11 +4002,11 @@ func (x *Service) GetAuthority() string {
 	return ""
 }
 
-func (x *Service) GetOrigin() string {
+func (x *Service) GetOrigins() []string {
 	if x != nil {
-		return x.Origin
+		return x.Origins
 	}
-	return ""
+	return nil
 }
 
 func (x *Service) GetName() string {
@@ -3889,11 +4023,11 @@ func (x *Service) GetDescription() string {
 	return ""
 }
 
-func (x *Service) GetCategory() string {
+func (x *Service) GetAttenuations() []*Attenuation {
 	if x != nil {
-		return x.Category
+		return x.Attenuations
 	}
-	return ""
+	return nil
 }
 
 func (x *Service) GetTags() []string {
@@ -3946,29 +4080,31 @@ var file_svc_v1_genesis_proto_rawDesc = []byte{
 	0x12, 0x12, 0x0a, 0x04, 0x6b, 0x69, 0x6e, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
 	0x6b, 0x69, 0x6e, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x74, 0x65, 0x6d, 0x70, 0x6c, 0x61, 0x74, 0x65,
 	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x74, 0x65, 0x6d, 0x70, 0x6c, 0x61, 0x74, 0x65,
-	0x22, 0xda, 0x01, 0x0a, 0x07, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x0e, 0x0a, 0x02,
+	0x22, 0xf9, 0x01, 0x0a, 0x07, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x0e, 0x0a, 0x02,
 	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1c, 0x0a, 0x09,
 	0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x12, 0x16, 0x0a, 0x06, 0x6f, 0x72,
-	0x69, 0x67, 0x69, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6f, 0x72, 0x69, 0x67,
-	0x69, 0x6e, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69,
-	0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73,
-	0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1a, 0x0a, 0x08, 0x63, 0x61, 0x74, 0x65,
-	0x67, 0x6f, 0x72, 0x79, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x63, 0x61, 0x74, 0x65,
-	0x67, 0x6f, 0x72, 0x79, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x61, 0x67, 0x73, 0x18, 0x07, 0x20, 0x03,
-	0x28, 0x09, 0x52, 0x04, 0x74, 0x61, 0x67, 0x73, 0x12, 0x23, 0x0a, 0x0d, 0x65, 0x78, 0x70, 0x69,
-	0x72, 0x79, 0x5f, 0x68, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x08, 0x20, 0x01, 0x28, 0x03, 0x52,
-	0x0c, 0x65, 0x78, 0x70, 0x69, 0x72, 0x79, 0x48, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x7c, 0x0a,
-	0x0a, 0x63, 0x6f, 0x6d, 0x2e, 0x73, 0x76, 0x63, 0x2e, 0x76, 0x31, 0x42, 0x0c, 0x47, 0x65, 0x6e,
-	0x65, 0x73, 0x69, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x27, 0x67, 0x69, 0x74,
-	0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x6e, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x73,
-	0x6f, 0x6e, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x73, 0x76, 0x63, 0x2f, 0x76, 0x31, 0x3b, 0x73,
-	0x76, 0x63, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x53, 0x58, 0x58, 0xaa, 0x02, 0x06, 0x53, 0x76, 0x63,
-	0x2e, 0x56, 0x31, 0xca, 0x02, 0x06, 0x53, 0x76, 0x63, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x12, 0x53,
-	0x76, 0x63, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74,
-	0x61, 0xea, 0x02, 0x07, 0x53, 0x76, 0x63, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x33,
+	0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x12, 0x18, 0x0a, 0x07, 0x6f, 0x72,
+	0x69, 0x67, 0x69, 0x6e, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x09, 0x52, 0x07, 0x6f, 0x72, 0x69,
+	0x67, 0x69, 0x6e, 0x73, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x04, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63,
+	0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64,
+	0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x37, 0x0a, 0x0c, 0x61, 0x74,
+	0x74, 0x65, 0x6e, 0x75, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x06, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x13, 0x2e, 0x73, 0x76, 0x63, 0x2e, 0x76, 0x31, 0x2e, 0x41, 0x74, 0x74, 0x65, 0x6e, 0x75,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x0c, 0x61, 0x74, 0x74, 0x65, 0x6e, 0x75, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x73, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x61, 0x67, 0x73, 0x18, 0x07, 0x20, 0x03, 0x28,
+	0x09, 0x52, 0x04, 0x74, 0x61, 0x67, 0x73, 0x12, 0x23, 0x0a, 0x0d, 0x65, 0x78, 0x70, 0x69, 0x72,
+	0x79, 0x5f, 0x68, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x08, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0c,
+	0x65, 0x78, 0x70, 0x69, 0x72, 0x79, 0x48, 0x65, 0x69, 0x67, 0x68, 0x74, 0x42, 0x7c, 0x0a, 0x0a,
+	0x63, 0x6f, 0x6d, 0x2e, 0x73, 0x76, 0x63, 0x2e, 0x76, 0x31, 0x42, 0x0c, 0x47, 0x65, 0x6e, 0x65,
+	0x73, 0x69, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68,
+	0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x6e, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x73, 0x6f,
+	0x6e, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x73, 0x76, 0x63, 0x2f, 0x76, 0x31, 0x3b, 0x73, 0x76,
+	0x63, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x53, 0x58, 0x58, 0xaa, 0x02, 0x06, 0x53, 0x76, 0x63, 0x2e,
+	0x56, 0x31, 0xca, 0x02, 0x06, 0x53, 0x76, 0x63, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x12, 0x53, 0x76,
+	0x63, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61,
+	0xea, 0x02, 0x07, 0x53, 0x76, 0x63, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x33,
 }
 
 var (
@@ -3997,11 +4133,12 @@ var file_svc_v1_genesis_proto_depIdxs = []int32{
 	2, // 1: svc.v1.Params.attenuations:type_name -> svc.v1.Attenuation
 	4, // 2: svc.v1.Attenuation.resource:type_name -> svc.v1.Resource
 	3, // 3: svc.v1.Attenuation.capabilities:type_name -> svc.v1.Capability
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	2, // 4: svc.v1.Service.attenuations:type_name -> svc.v1.Attenuation
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_svc_v1_genesis_proto_init() }
