@@ -17,8 +17,8 @@ service Msg {
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 
 
-// Initialize spawns a new Vault
-  rpc Initialize(MsgInitialize) returns (MsgInitializeResponse);
+// Spawn spawns a new Vault
+  rpc Spawn(MsgSpawn) returns (MsgSpawnResponse);
 }
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
@@ -42,11 +42,11 @@ message MsgUpdateParams {
 // Since: cosmos-sdk 0.47
 message MsgUpdateParamsResponse {}
 
-// MsgInitialize spawns a New Vault with Unclaimed State. This is a one-time
+// MsgSpawn spawns a New Vault with Unclaimed State. This is a one-time
 // operation that must be performed interacting with the Vault.
 //
 // Since: cosmos-sdk 0.47
-message MsgInitialize {
+message MsgSpawn {
   option (cosmos.msg.v1.signer) = "authority";
 
   // authority is the address of the governance account.
@@ -58,8 +58,8 @@ message MsgInitialize {
   Params params = 2 [(gogoproto.nullable) = false];
 }
 
-// MsgInitializeResponse defines the response structure for executing a
-// MsgInitialize message.
+// MsgSpawnResponse defines the response structure for executing a
+// MsgSpawn message.
 //
 // Since: cosmos-sdk 0.47
-message MsgInitializeResponse {}
+message MsgSpawnResponse {}
