@@ -6,7 +6,7 @@ import (
 
 	"google.golang.org/protobuf/proto"
 
-	"github.com/onsonr/sonr/pkg/chain/transaction"
+	"github.com/onsonr/sonr/internal/chain/transaction"
 )
 
 // RegisterInitHandler registers an initialisation handler for a smart account that uses protobuf.

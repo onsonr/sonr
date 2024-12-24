@@ -15,12 +15,16 @@ tasks:
     desc: Build the hway binary
     silent: true
     cmds:
+      - templ generate
+      - sqlc generate -f internal/database/sqlc.yaml
       - gum spin --spinner dot --title "Build Hway Single Target ({{.OS}}/{{.ARCH}})..." -- goreleaser build --snapshot --clean --single-target --id hway -o {{.BIN_DIR}}/hway
 
   install:
     desc: Install the hway binary
     silent: true
     cmds:
+      - templ generate
+      - sqlc generate -f internal/database/sqlc.yaml
       - gum spin --spinner dot --title "Install Hway Single Target ({{.OS}}/{{.ARCH}})..." -- make install-hway
 
   start:
