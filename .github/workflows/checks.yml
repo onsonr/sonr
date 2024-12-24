@@ -113,6 +113,14 @@ jobs:
           go-version: "1.23"
           check-latest: true
 
+      - name: Commitizen Dry Run
+        uses: commitizen-tools/commitizen-action@master
+        with:
+          push: false
+          dry_run: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+
       - name: Check GoReleaser Config
         uses: goreleaser/goreleaser-action@v6
         with:
