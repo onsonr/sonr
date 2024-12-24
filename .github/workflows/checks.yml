@@ -22,10 +22,6 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           configuration-path: .github/pr-labeler.yml # optional, .github/pr-labeler.yml is the default value
 
-      - name: AI PR Body Generator
-        uses: jbrocher/auto-pr-body-generator@v0.2.2
-        with:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
   test-builds:
     if: github.event_name == 'pull_request'
