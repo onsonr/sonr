@@ -19,8 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Query_Params_FullMethodName   = "/dwn.v1.Query/Params"
-	Query_Allocate_FullMethodName = "/dwn.v1.Query/Allocate"
+	Query_Params_FullMethodName = "/dwn.v1.Query/Params"
 )
 
 // QueryClient is the client API for Query service.
@@ -31,9 +30,6 @@ const (
 type QueryClient interface {
 	// Params queries all parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	// Allocate initializes a Target Vault available for claims with a compatible
-	// Authentication mechanism. The default authentication mechanism is WebAuthn.
-	Allocate(ctx context.Context, in *QueryAllocateRequest, opts ...grpc.CallOption) (*QueryAllocateResponse, error)
 }
 
 type queryClient struct {
@@ -54,16 +50,6 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) Allocate(ctx context.Context, in *QueryAllocateRequest, opts ...grpc.CallOption) (*QueryAllocateResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(QueryAllocateResponse)
-	err := c.cc.Invoke(ctx, Query_Allocate_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility.
@@ -72,9 +58,6 @@ func (c *queryClient) Allocate(ctx context.Context, in *QueryAllocateRequest, op
 type QueryServer interface {
 	// Params queries all parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	// Allocate initializes a Target Vault available for claims with a compatible
-	// Authentication mechanism. The default authentication mechanism is WebAuthn.
-	Allocate(context.Context, *QueryAllocateRequest) (*QueryAllocateResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -87,9 +70,6 @@ type UnimplementedQueryServer struct{}
 
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
-}
-func (UnimplementedQueryServer) Allocate(context.Context, *QueryAllocateRequest) (*QueryAllocateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Allocate not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 func (UnimplementedQueryServer) testEmbeddedByValue()               {}
@@ -130,24 +110,6 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Allocate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryAllocateRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).Allocate(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_Allocate_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Allocate(ctx, req.(*QueryAllocateRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -158,10 +120,6 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Params",
 			Handler:    _Query_Params_Handler,
-		},
-		{
-			MethodName: "Allocate",
-			Handler:    _Query_Allocate_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

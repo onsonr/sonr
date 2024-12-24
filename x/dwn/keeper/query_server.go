@@ -28,10 +28,3 @@ func (k Querier) Params(c context.Context, req *types.QueryParamsRequest) (*type
 
 	return &types.QueryParamsResponse{Params: &p}, nil
 }
-
-// Allocate implements types.QueryServer.
-func (k Querier) Allocate(goCtx context.Context, req *types.QueryAllocateRequest) (*types.QueryAllocateResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("Allocate is unimplemented")
-	return &types.QueryAllocateResponse{}, nil
-}

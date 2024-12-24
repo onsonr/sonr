@@ -16,13 +16,6 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/vault/v1/params";
   }
-
-
-  // Allocate initializes a Target Vault available for claims with a compatible
-  // Authentication mechanism. The default authentication mechanism is WebAuthn.
-  rpc Allocate(QueryAllocateRequest) returns (QueryAllocateResponse) {
-    option (google.api.http).get = "/vault/v1/allocate";
-  }
 }
 
 // ╭──────────────────────────────────────────────────────────╮
@@ -36,17 +29,5 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
   // params defines the parameters of the module.
   Params params = 1;
-}
-
-// QueryAllocateRequest is the request type for the Allocate RPC method.
-message QueryAllocateRequest {}
-
-// AllocateResponse is the response type for the Allocate RPC method.
-message QueryAllocateResponse {
-  bool success = 1;
-  string cid = 2;
-  string macaroon = 3;
-  string public_uri = 4;
-  int64 expiry_block = 5;
 }
 
