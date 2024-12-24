@@ -7,8 +7,8 @@ import (
 	"github.com/onsonr/sonr/app/gateway/context"
 	"github.com/onsonr/sonr/app/gateway/islands"
 	"github.com/onsonr/sonr/app/gateway/views"
+	"github.com/onsonr/sonr/internal/common"
 	hwayorm "github.com/onsonr/sonr/internal/database/hwayorm"
-	"github.com/onsonr/sonr/pkg/common"
 )
 
 func RegisterHandler(g *echo.Group) {

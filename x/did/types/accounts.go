@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 
-	"github.com/onsonr/sonr/pkg/chain/transaction"
+	"github.com/onsonr/sonr/internal/chain/transaction"
 	"github.com/onsonr/sonr/x/did/types/internal/accounts"
 )
 
