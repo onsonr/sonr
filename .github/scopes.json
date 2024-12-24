@@ -1,7 +1,6 @@
 [
   {
-    "name": "app-chain",
-    "path": "app",
+    "name": "core-chain",
     "docs": [
       {
         "keywords": [
@@ -46,8 +45,7 @@
     ]
   },
   {
-    "name": "ibc-protocol",
-    "path": "app",
+    "name": "core-ibc",
     "docs": [
       {
         "keywords": [
@@ -96,7 +94,6 @@
   },
   {
     "name": "crypto-mpc",
-    "path": "crypto/mpc",
     "docs": [
       {
         "keywords": [
@@ -111,7 +108,6 @@
   },
   {
     "name": "crypto-ucan",
-    "path": "crypto/ucan",
     "docs": [
       {
         "keywords": [],
@@ -121,7 +117,6 @@
   },
   {
     "name": "crypto-zkp",
-    "path": "crypto/accumulator",
     "docs": [
       {
         "keywords": [],
@@ -131,7 +126,6 @@
   },
   {
     "name": "sonr-hway",
-    "path": "pkg/gateway/handlers",
     "docs": [
       {
         "keywords": [],
@@ -148,8 +142,7 @@
     ]
   },
   {
-    "name": "database-orm",
-    "path": "pkg/gateway/internal/database",
+    "name": "sonr-orm",
     "docs": [
       {
         "keywords": [],
@@ -198,8 +191,7 @@
     ]
   },
   {
-    "name": "sonr-vault",
-    "path": "pkg/vault/handlers",
+    "name": "sonr-motr",
     "docs": [
       {
         "keywords": [],
@@ -216,31 +208,7 @@
     ]
   },
   {
-    "name": "motr-worker",
-    "path": "pkg/vault/internal/database",
-    "docs": [
-      "https://dexie.org/docs/ExportImport/dexie-export-import",
-      "https://dexie.org/docs/API-Reference#quick-reference",
-      "https://templ.guide/syntax-and-usage/script-templates"
-    ]
-  },
-  {
-    "name": "ipfs-service",
-    "path": "pkl/ipfs.net",
-    "docs": [
-      {
-        "keywords": [],
-        "url": "https://github.com/ipfs/kubo/blob/master/docs/config.md"
-      },
-      {
-        "keywords": [],
-        "url": "https://pkl-lang.org/main/current/language-reference/index.html"
-      }
-    ]
-  },
-  {
-    "name": "matrix-service",
-    "path": "pkl/matrix.net",
+    "name": "sonr-chat",
     "docs": [
       {
         "keywords": [],
@@ -253,46 +221,7 @@
     ]
   },
   {
-    "name": "chain-config",
-    "path": "pkl/sonr.chain",
-    "docs": [
-      "https://tutorials.cosmos.network/tutorials/9-path-to-prod/5-network.html",
-      "https://tutorials.cosmos.network/tutorials/9-path-to-prod/4-genesis.html",
-      "https://pkl-lang.org/main/current/language-reference/index.html",
-      "https://docs.cosmos.network/v0.50/user/run-node/run-testnet"
-    ]
-  },
-  {
-    "name": "gateway-config",
-    "path": "pkl/sonr.hway",
-    "docs": [
-      {
-        "keywords": [],
-        "url": "https://pkl-lang.org/main/current/language-reference/index.html"
-      }
-    ]
-  },
-  {
-    "name": "client-config",
-    "path": "pkl/sonr.motr",
-    "docs": [
-      {
-        "keywords": [],
-        "url": "https://pkl-lang.org/main/current/language-reference/index.html"
-      },
-      {
-        "keywords": [],
-        "url": "https://web.dev/learn/pwa/service-workers/"
-      },
-      {
-        "keywords": [],
-        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API"
-      }
-    ]
-  },
-  {
-    "name": "core-dids",
-    "path": "proto/did",
+    "name": "x-did",
     "docs": [
       {
         "keywords": [],
@@ -317,8 +246,7 @@
     ]
   },
   {
-    "name": "core-dwns",
-    "path": "proto/dwn",
+    "name": "x-dwn",
     "docs": [
       {
         "keywords": [],
@@ -347,8 +275,7 @@
     ]
   },
   {
-    "name": "core-svcs",
-    "path": "proto/svc",
+    "name": "x-svc",
     "docs": [
       {
         "keywords": [],
@@ -374,7 +301,6 @@
   },
   {
     "name": "ci-cd",
-    "path": "deploy",
     "docs": [
       {
         "keywords": [],
@@ -394,10 +320,6 @@
       },
       {
         "keywords": [],
-        "url": "https://www.jetify.com/docs/devbox"
-      },
-      {
-        "keywords": [],
         "url": "https://taskfile.dev/reference/cli"
       },
       {
@@ -411,8 +333,7 @@
     ]
   },
   {
-    "name": "write-docs",
-    "path": "docs",
+    "name": "dev-ops",
     "docs": [
       {
         "keywords": [],
@@ -421,6 +342,23 @@
       {
         "keywords": [],
         "url": "https://github.com/mkdocs/catalog/blob/main/README.md"
+      },
+      {
+        "keywords": [],
+        "url": "https://pkl-lang.org/main/current/language-reference/index.html"
+      }
+    ]
+  },
+  {
+    "name": "wasm-worker",
+    "docs": [
+      {
+        "keywords": [],
+        "url": "https://web.dev/learn/pwa/service-workers/"
+      },
+      {
+        "keywords": [],
+        "url": "https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API"
       }
     ]
   }
