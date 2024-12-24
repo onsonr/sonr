@@ -9,7 +9,7 @@ jobs:
     name: Tidy PR
     if: github.event_name == 'pull_request'
     permissions:
-      contents: write # for TimonVS/pr-labeler-action to read config file
+      contents: read # for TimonVS/pr-labeler-action to read config file
       pull-requests: write # for TimonVS/pr-labeler-action to add labels in PR
     runs-on: ubuntu-latest
     steps:
@@ -17,14 +17,6 @@ jobs:
         with:
           fetch-depth: 0 # Required to fetch all history for merging
           
-      - name: Update PR with master
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git fetch origin master
-          git merge origin/master --no-edit
-          git push
-
       - uses: TimonVS/pr-labeler-action@v5
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
