@@ -18,7 +18,7 @@ service Msg {
 
 
 // Spawn spawns a new Vault
-  rpc Spawn(MsgSpawn) returns (MsgSpawnResponse);
+  rpc Initialize(MsgInitialize) returns (MsgInitializeResponse);
 }
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
@@ -46,7 +46,7 @@ message MsgUpdateParamsResponse {}
 // operation that must be performed interacting with the Vault.
 //
 // Since: cosmos-sdk 0.47
-message MsgSpawn {
+message MsgInitialize {
   option (cosmos.msg.v1.signer) = "authority";
 
   // authority is the address of the governance account.
@@ -62,4 +62,4 @@ message MsgSpawn {
 // MsgSpawn message.
 //
 // Since: cosmos-sdk 0.47
-message MsgSpawnResponse {}
+message MsgInitializeResponse {}

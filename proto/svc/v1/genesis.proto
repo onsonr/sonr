@@ -18,32 +18,37 @@ message Params {
   option (gogoproto.equal) = true;
   option (gogoproto.goproto_stringer) = false;
 
-  ServiceCategories categories = 1;
-  ServiceTypes types = 2;
+  repeated Attenuation attenuations = 1;
 }
 
-message ServiceCategories {
-  option (amino.name) = "service/categories";
-  option (gogoproto.equal) = true;
-
-  repeated string categories = 1;
+// Attenuation defines the attenuation of a resource
+message Attenuation {
+  Resource resource = 1;
+  repeated Capability capabilities = 2;
 }
 
-message ServiceTypes {
-  option (amino.name) = "service/types";
-  option (gogoproto.equal) = true;
+// Capability reprensents the available capabilities of a decentralized web node
+message Capability {
+  string name = 1;
+  string parent = 2;
+  string description = 3;
+  repeated string resources = 4;
+}
 
-  repeated string types = 1;
+// Resource reprensents the available resources of a decentralized web node
+message Resource {
+  string kind = 1;
+  string template = 2;
 }
 
 // Service defines a Decentralized Service on the Sonr Blockchain
 message Service {
   string id = 1;
   string authority = 2;
-  string origin = 3;
+  repeated string origins = 3;
   string name = 4;
   string description = 5;
-  string category = 6;
+  repeated Attenuation attenuations = 6;
   repeated string tags = 7;
   int64 expiry_height = 8;
 }

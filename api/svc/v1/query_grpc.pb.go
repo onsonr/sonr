@@ -19,7 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Query_Params_FullMethodName = "/svc.v1.Query/Params"
+	Query_Params_FullMethodName        = "/svc.v1.Query/Params"
+	Query_OriginExists_FullMethodName  = "/svc.v1.Query/OriginExists"
+	Query_ResolveOrigin_FullMethodName = "/svc.v1.Query/ResolveOrigin"
 )
 
 // QueryClient is the client API for Query service.
@@ -30,6 +32,10 @@ const (
 type QueryClient interface {
 	// Params queries all parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	// OriginExists queries if a given origin exists.
+	OriginExists(ctx context.Context, in *QueryOriginExistsRequest, opts ...grpc.CallOption) (*QueryOriginExistsResponse, error)
+	// ResolveOrigin queries the domain of a given service and returns its record with capabilities.
+	ResolveOrigin(ctx context.Context, in *QueryResolveOriginRequest, opts ...grpc.CallOption) (*QueryResolveOriginResponse, error)
 }
 
 type queryClient struct {
@@ -50,6 +56,26 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
+func (c *queryClient) OriginExists(ctx context.Context, in *QueryOriginExistsRequest, opts ...grpc.CallOption) (*QueryOriginExistsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(QueryOriginExistsResponse)
+	err := c.cc.Invoke(ctx, Query_OriginExists_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) ResolveOrigin(ctx context.Context, in *QueryResolveOriginRequest, opts ...grpc.CallOption) (*QueryResolveOriginResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(QueryResolveOriginResponse)
+	err := c.cc.Invoke(ctx, Query_ResolveOrigin_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility.
@@ -58,6 +84,10 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 type QueryServer interface {
 	// Params queries all parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	// OriginExists queries if a given origin exists.
+	OriginExists(context.Context, *QueryOriginExistsRequest) (*QueryOriginExistsResponse, error)
+	// ResolveOrigin queries the domain of a given service and returns its record with capabilities.
+	ResolveOrigin(context.Context, *QueryResolveOriginRequest) (*QueryResolveOriginResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -70,6 +100,12 @@ type UnimplementedQueryServer struct{}
 
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
+}
+func (UnimplementedQueryServer) OriginExists(context.Context, *QueryOriginExistsRequest) (*QueryOriginExistsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OriginExists not implemented")
+}
+func (UnimplementedQueryServer) ResolveOrigin(context.Context, *QueryResolveOriginRequest) (*QueryResolveOriginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ResolveOrigin not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 func (UnimplementedQueryServer) testEmbeddedByValue()               {}
@@ -110,6 +146,42 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_OriginExists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryOriginExistsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).OriginExists(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_OriginExists_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).OriginExists(ctx, req.(*QueryOriginExistsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_ResolveOrigin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryResolveOriginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ResolveOrigin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_ResolveOrigin_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ResolveOrigin(ctx, req.(*QueryResolveOriginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -120,6 +192,14 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Params",
 			Handler:    _Query_Params_Handler,
+		},
+		{
+			MethodName: "OriginExists",
+			Handler:    _Query_OriginExists_Handler,
+		},
+		{
+			MethodName: "ResolveOrigin",
+			Handler:    _Query_ResolveOrigin_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

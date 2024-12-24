@@ -98,8 +98,6 @@ CREATE TABLE vaults (
     FOREIGN KEY (session_id) REFERENCES sessions(id)
 );
 
-
-
 -- Indexes for common queries
 CREATE INDEX idx_profiles_handle ON profiles(handle);
 CREATE INDEX idx_profiles_address ON profiles(address);

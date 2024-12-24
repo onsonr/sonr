@@ -28,9 +28,9 @@ func (ms msgServer) UpdateParams(ctx context.Context, msg *types.MsgUpdateParams
 	return nil, ms.k.Params.Set(ctx, msg.Params)
 }
 
-// Spawn implements types.MsgServer.
-func (ms msgServer) Spawn(ctx context.Context, msg *types.MsgSpawn) (*types.MsgSpawnResponse, error) {
+// Initialize implements types.MsgServer.
+func (ms msgServer) Initialize(ctx context.Context, msg *types.MsgInitialize) (*types.MsgInitializeResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("Spawn is unimplemented")
-	return &types.MsgSpawnResponse{}, nil
+	panic("Initialize is unimplemented")
+	return &types.MsgInitializeResponse{}, nil
 }

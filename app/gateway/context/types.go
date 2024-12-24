@@ -32,7 +32,7 @@ func (c *CredentialDescriptor) ToModel(handle, origin string) *hwayorm.Credentia
 	}
 }
 
-func CredentialArrayToDescriptors(credentials []hwayorm.Credential) []*CredentialDescriptor {
+func CredentialArrayToDescriptors(credentials []*hwayorm.Credential) []*CredentialDescriptor {
 	var descriptors []*CredentialDescriptor
 	for _, cred := range credentials {
 		cd := &CredentialDescriptor{

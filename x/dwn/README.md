@@ -1,6 +1,6 @@
 # `x/dwn`
 
-The DWN module is responsible for the management of IPFS deployed Decentralized Web Nodes (DWNs) and their associated data.
+The DWN module is responsible for the management of IPFS deployed Decentralized Web Nodes (DWNs) and their associated data. This module now incorporates UCAN (User Controlled Authorization Networks) for enhanced authorization and access control.
 
 ## Concepts
 
@@ -9,6 +9,7 @@ The DWN module introduces several key concepts:
 1. Decentralized Web Node (DWN): A distributed network for storing and sharing data.
 2. Schema: A structure defining the format of various data types in the dwn.
 3. IPFS Integration: The module can interact with IPFS for decentralized data storage.
+4. UCAN Authorization: The module utilizes UCANs for a decentralized and user-centric authorization mechanism.
 
 ## State
 
@@ -38,6 +39,7 @@ message Params {
   bool ipfs_active = 1;
   bool local_registration_enabled = 2;
   Schema schema = 4;
+  repeated string allowed_operators = 5;
 }
 ```
 
@@ -64,15 +66,15 @@ message Schema {
 
 State transitions in the DWN module are primarily triggered by:
 
-1. Updating module parameters
-2. Allocating new dwns
-3. Syncing DID documents
+1. Updating module parameters (including UCAN-related parameters)
+2. Allocating new dwns (with UCAN authorization checks)
+3. Syncing DID documents (with UCAN authorization checks)
 
 ## Messages
 
 The DWN module defines the following message:
 
-1. `MsgUpdateParams`: Used to update the module parameters.
+1. `MsgUpdateParams`: Used to update the module parameters, including UCAN permissions.
 
 ```protobuf
 message MsgUpdateParams {
@@ -89,22 +91,43 @@ No specific begin-block operations are defined for this module.
 
 No specific end-block operations are defined for this module.
 
+## UCAN Authorization
+
+This module utilizes UCAN (User Controlled Authorization Networks) to provide a decentralized and user-centric authorization mechanism. UCANs are self-contained authorization tokens that allow users to delegate specific capabilities to other entities without relying on a central authority.
+
+### UCAN Integration
+
+- The module parameters include a `UcanPermissions` field that defines the default UCAN permissions required for actions within the module, such as allocating new DWNs or syncing DID documents.
+- Message handlers in the `MsgServer` perform UCAN authorization checks by:
+  - Retrieving the UCAN permissions from the context (injected by a middleware).
+  - Retrieving the required UCAN permissions from the module parameters.
+  - Verifying that the provided UCAN permissions satisfy the required permissions.
+- A dedicated middleware is responsible for:
+  - Parsing incoming requests for UCAN tokens.
+  - Verifying UCAN token signatures and validity.
+  - Extracting UCAN permissions.
+  - Injecting UCAN permissions into the context.
+- UCAN verification logic involves:
+  - Checking UCAN token signatures against the issuer's public key (resolved via the `x/did` module).
+  - Validating token expiration and other constraints.
+  - Parsing token capabilities and extracting relevant permissions.
+
 ## Hooks
 
 The DWN module does not define any hooks.
 
 ## Events
 
-The DWN module does not explicitly define any events. However, standard Cosmos SDK events may be emitted during state transitions.
+The DWN module does not explicitly define any events. However, standard Cosmos SDK events may be emitted during state transitions, including those related to UCAN authorization.
 
 ## Client
 
 The DWN module provides the following gRPC query endpoints:
 
-1. `Params`: Queries all parameters of the module.
+1. `Params`: Queries all parameters of the module, including UCAN-related parameters.
 2. `Schema`: Queries the DID document schema.
-3. `Allocate`: Initializes a Target DWN available for claims.
-4. `Sync`: Queries the DID document by its ID and returns required information.
+3. `Allocate`: Initializes a Target DWN available for claims (subject to UCAN authorization).
+4. `Sync`: Queries the DID document by its ID and returns required information (subject to UCAN authorization).
 
 ## Params
 
@@ -113,6 +136,7 @@ The module parameters include:
 - `ipfs_active` (bool): Indicates if IPFS integration is active.
 - `local_registration_enabled` (bool): Indicates if local registration is enabled.
 - `schema` (Schema): Defines the structure for various data types in the dwn.
+- `UcanPermissions`: Specifies the required UCAN permissions for various actions within the module.
 
 ## Future Improvements
 
