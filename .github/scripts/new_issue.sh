@@ -56,8 +56,15 @@ preview_output | gum format
 
 # Confirm to create a GitHub issue
 if gum confirm "Do you want to create a new GitHub issue with this information?"; then
-    # Create a new GitHub issue using the gh CLI
-    gh issue create --repo onsonr/sonr --title "($SCOPE) $TITLE" --body "$ISSUE_BODY"
+    # Ask if this should be a draft issue
+    if gum confirm "Create as draft issue?"; then
+        # Create a draft GitHub issue
+        gh issue create --repo onsonr/sonr --title "($SCOPE) $TITLE" --body "$ISSUE_BODY"
+    else
+        # Create a regular GitHub issue
+        gh issue create --repo onsonr/sonr --title "($SCOPE) $TITLE" --body "$ISSUE_BODY" -a @me
+    fi
 else
-  exit 1
+    exit 1
 fi
+

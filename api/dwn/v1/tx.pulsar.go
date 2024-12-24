@@ -1818,7 +1818,7 @@ func (*MsgUpdateParamsResponse) Descriptor() ([]byte, []int) {
 	return file_dwn_v1_tx_proto_rawDescGZIP(), []int{1}
 }
 
-// MsgInitialize spawns a New Vault with Unclaimed State. This is a one-time
+// MsgSpawn spawns a New Vault with Unclaimed State. This is a one-time
 // operation that must be performed interacting with the Vault.
 //
 // Since: cosmos-sdk 0.47
@@ -1869,8 +1869,8 @@ func (x *MsgInitialize) GetParams() *Params {
 	return nil
 }
 
-// MsgInitializeResponse defines the response structure for executing a
-// MsgInitialize message.
+// MsgSpawnResponse defines the response structure for executing a
+// MsgSpawn message.
 //
 // Since: cosmos-sdk 0.47
 type MsgInitializeResponse struct {

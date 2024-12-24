@@ -4,7 +4,7 @@ import (
 	gocontext "context"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/pkg/common"
+	"github.com/onsonr/sonr/internal/common"
 	"github.com/segmentio/ksuid"
 	"lukechampine.com/blake3"
 )
