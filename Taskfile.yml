@@ -57,6 +57,7 @@ tasks:
     dir: .github/scripts
     cmds:
       - sh new_issue.sh
+
   pkl-gen:
     desc: Generate PKL files
     silent: true

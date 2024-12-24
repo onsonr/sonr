@@ -7,9 +7,9 @@ import (
 	echomiddleware "github.com/labstack/echo/v4/middleware"
 	"github.com/onsonr/sonr/app/gateway/context"
 	"github.com/onsonr/sonr/app/gateway/handlers"
+	"github.com/onsonr/sonr/internal/common"
 	config "github.com/onsonr/sonr/internal/config/hway"
 	hwayorm "github.com/onsonr/sonr/internal/database/hwayorm"
-	"github.com/onsonr/sonr/pkg/common"
 )
 
 type Gateway = *echo.Echo
