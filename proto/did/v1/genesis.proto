@@ -12,6 +12,36 @@ message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
 }
 
+// Params defines the set of module parameters.
+message Params {
+  option (amino.name) = "did/params";
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_stringer) = false;
+
+  repeated Attenuation attenuations = 1;
+}
+
+// Attenuation defines the attenuation of a resource
+message Attenuation {
+  Resource resource = 1;
+  repeated Capability capabilities = 2;
+}
+
+// Capability reprensents the available capabilities of a decentralized web node
+message Capability {
+  string name = 1;
+  string parent = 2;
+  string description = 3;
+  repeated string resources = 4;
+}
+
+// Resource reprensents the available resources of a decentralized web node
+message Resource {
+  string kind = 1;
+  string template = 2;
+}
+
+
 // Document defines a DID document
 message Document {
   string id = 1;
@@ -23,14 +53,4 @@ message Document {
   repeated string service = 7;
 }
 
-
-// Params defines the set of module parameters.
-message Params {
-  option (amino.name) = "did/params";
-  option (gogoproto.equal) = true;
-  option (gogoproto.goproto_stringer) = false;
-
-  // Whitelisted Assets
-
-}
 

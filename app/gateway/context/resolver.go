@@ -3,7 +3,7 @@ package context
 import (
 	"fmt"
 
-	"github.com/onsonr/sonr/pkg/common"
+	"github.com/onsonr/sonr/internal/common"
 )
 
 // ParamsBank returns the bank params
