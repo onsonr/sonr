@@ -1,6 +1,6 @@
 [
   {
-    "name": "app/cosmos-sdk",
+    "name": "app-chain",
     "path": "app",
     "docs": [
       {
@@ -46,7 +46,7 @@
     ]
   },
   {
-    "name": "app/ibc",
+    "name": "ibc-protocol",
     "path": "app",
     "docs": [
       {
@@ -95,7 +95,7 @@
     ]
   },
   {
-    "name": "crypto/mpc",
+    "name": "crypto-mpc",
     "path": "crypto/mpc",
     "docs": [
       {
@@ -110,7 +110,7 @@
     ]
   },
   {
-    "name": "crypto/ucan",
+    "name": "crypto-ucan",
     "path": "crypto/ucan",
     "docs": [
       {
@@ -120,7 +120,7 @@
     ]
   },
   {
-    "name": "crypto/zkp",
+    "name": "crypto-zkp",
     "path": "crypto/accumulator",
     "docs": [
       {
@@ -130,7 +130,7 @@
     ]
   },
   {
-    "name": "gateway/handlers",
+    "name": "sonr-hway",
     "path": "pkg/gateway/handlers",
     "docs": [
       {
@@ -148,7 +148,7 @@
     ]
   },
   {
-    "name": "gateway/database",
+    "name": "database-orm",
     "path": "pkg/gateway/internal/database",
     "docs": [
       {
@@ -198,7 +198,7 @@
     ]
   },
   {
-    "name": "vault/handlers",
+    "name": "sonr-vault",
     "path": "pkg/vault/handlers",
     "docs": [
       {
@@ -216,7 +216,7 @@
     ]
   },
   {
-    "name": "vault/database",
+    "name": "motr-worker",
     "path": "pkg/vault/internal/database",
     "docs": [
       "https://dexie.org/docs/ExportImport/dexie-export-import",
@@ -225,7 +225,7 @@
     ]
   },
   {
-    "name": "pkl/ipfs",
+    "name": "ipfs-service",
     "path": "pkl/ipfs.net",
     "docs": [
       {
@@ -239,7 +239,7 @@
     ]
   },
   {
-    "name": "pkl/matrix",
+    "name": "matrix-service",
     "path": "pkl/matrix.net",
     "docs": [
       {
@@ -253,7 +253,7 @@
     ]
   },
   {
-    "name": "pkl/chain",
+    "name": "chain-config",
     "path": "pkl/sonr.chain",
     "docs": [
       "https://tutorials.cosmos.network/tutorials/9-path-to-prod/5-network.html",
@@ -263,7 +263,7 @@
     ]
   },
   {
-    "name": "pkl/hway",
+    "name": "gateway-config",
     "path": "pkl/sonr.hway",
     "docs": [
       {
@@ -273,7 +273,7 @@
     ]
   },
   {
-    "name": "pkl/motr",
+    "name": "client-config",
     "path": "pkl/sonr.motr",
     "docs": [
       {
@@ -291,7 +291,7 @@
     ]
   },
   {
-    "name": "x/did",
+    "name": "dids",
     "path": "proto/did",
     "docs": [
       {
@@ -317,7 +317,7 @@
     ]
   },
   {
-    "name": "x/dwn",
+    "name": "dwns",
     "path": "proto/dwn",
     "docs": [
       {
@@ -347,7 +347,7 @@
     ]
   },
   {
-    "name": "x/svc",
+    "name": "svcs",
     "path": "proto/svc",
     "docs": [
       {
@@ -373,7 +373,7 @@
     ]
   },
   {
-    "name": "repo/ci-cd",
+    "name": "ci-cd",
     "path": "deploy",
     "docs": [
       {
@@ -411,7 +411,7 @@
     ]
   },
   {
-    "name": "repo/docs",
+    "name": "docs",
     "path": "docs",
     "docs": [
       {
