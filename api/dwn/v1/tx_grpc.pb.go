@@ -20,7 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	Msg_UpdateParams_FullMethodName = "/dwn.v1.Msg/UpdateParams"
-	Msg_Spawn_FullMethodName        = "/dwn.v1.Msg/Spawn"
+	Msg_Initialize_FullMethodName   = "/dwn.v1.Msg/Initialize"
 )
 
 // MsgClient is the client API for Msg service.
@@ -34,7 +34,7 @@ type MsgClient interface {
 	// Since: cosmos-sdk 0.47
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	// Spawn spawns a new Vault
-	Spawn(ctx context.Context, in *MsgSpawn, opts ...grpc.CallOption) (*MsgSpawnResponse, error)
+	Initialize(ctx context.Context, in *MsgInitialize, opts ...grpc.CallOption) (*MsgInitializeResponse, error)
 }
 
 type msgClient struct {
@@ -55,10 +55,10 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 	return out, nil
 }
 
-func (c *msgClient) Spawn(ctx context.Context, in *MsgSpawn, opts ...grpc.CallOption) (*MsgSpawnResponse, error) {
+func (c *msgClient) Initialize(ctx context.Context, in *MsgInitialize, opts ...grpc.CallOption) (*MsgInitializeResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(MsgSpawnResponse)
-	err := c.cc.Invoke(ctx, Msg_Spawn_FullMethodName, in, out, cOpts...)
+	out := new(MsgInitializeResponse)
+	err := c.cc.Invoke(ctx, Msg_Initialize_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ type MsgServer interface {
 	// Since: cosmos-sdk 0.47
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	// Spawn spawns a new Vault
-	Spawn(context.Context, *MsgSpawn) (*MsgSpawnResponse, error)
+	Initialize(context.Context, *MsgInitialize) (*MsgInitializeResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -90,8 +90,8 @@ type UnimplementedMsgServer struct{}
 func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
 }
-func (UnimplementedMsgServer) Spawn(context.Context, *MsgSpawn) (*MsgSpawnResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Spawn not implemented")
+func (UnimplementedMsgServer) Initialize(context.Context, *MsgInitialize) (*MsgInitializeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Initialize not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 func (UnimplementedMsgServer) testEmbeddedByValue()             {}
@@ -132,20 +132,20 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_Spawn_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgSpawn)
+func _Msg_Initialize_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgInitialize)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).Spawn(ctx, in)
+		return srv.(MsgServer).Initialize(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_Spawn_FullMethodName,
+		FullMethod: Msg_Initialize_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).Spawn(ctx, req.(*MsgSpawn))
+		return srv.(MsgServer).Initialize(ctx, req.(*MsgInitialize))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -162,8 +162,8 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_UpdateParams_Handler,
 		},
 		{
-			MethodName: "Spawn",
-			Handler:    _Msg_Spawn_Handler,
+			MethodName: "Initialize",
+			Handler:    _Msg_Initialize_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

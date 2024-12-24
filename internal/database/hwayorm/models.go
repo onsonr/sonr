@@ -8,92 +8,61 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-type Account struct {
-	ID            string
-	CreatedAt     pgtype.Timestamptz
-	UpdatedAt     pgtype.Timestamptz
-	DeletedAt     pgtype.Timestamptz
-	Number        int64
-	Sequence      int32
-	Address       string
-	PublicKey     string
-	ChainID       string
-	Controller    string
-	IsSubsidiary  bool
-	IsValidator   bool
-	IsDelegator   bool
-	IsAccountable bool
-}
-
-type Asset struct {
-	ID          string
-	CreatedAt   pgtype.Timestamptz
-	UpdatedAt   pgtype.Timestamptz
-	DeletedAt   pgtype.Timestamptz
-	Name        string
-	Symbol      string
-	Decimals    int32
-	ChainID     string
-	Channel     string
-	AssetType   string
-	CoingeckoID pgtype.Text
-}
-
 type Credential struct {
-	ID                      string
-	CreatedAt               pgtype.Timestamptz
-	UpdatedAt               pgtype.Timestamptz
-	DeletedAt               pgtype.Timestamptz
-	Handle                  string
-	CredentialID            string
-	AuthenticatorAttachment string
-	Origin                  string
-	Type                    string
-	Transports              string
+	ID                      string             `json:"id"`
+	CreatedAt               pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt               pgtype.Timestamptz `json:"updated_at"`
+	DeletedAt               pgtype.Timestamptz `json:"deleted_at"`
+	Handle                  string             `json:"handle"`
+	CredentialID            string             `json:"credential_id"`
+	AuthenticatorAttachment string             `json:"authenticator_attachment"`
+	Origin                  string             `json:"origin"`
+	Type                    string             `json:"type"`
+	Transports              string             `json:"transports"`
 }
 
 type Profile struct {
-	ID        string
-	CreatedAt pgtype.Timestamptz
-	UpdatedAt pgtype.Timestamptz
-	DeletedAt pgtype.Timestamptz
-	Address   string
-	Handle    string
-	Origin    string
-	Name      string
-	Status    string
+	ID        string             `json:"id"`
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt pgtype.Timestamptz `json:"updated_at"`
+	DeletedAt pgtype.Timestamptz `json:"deleted_at"`
+	Address   string             `json:"address"`
+	Handle    string             `json:"handle"`
+	Origin    string             `json:"origin"`
+	Name      string             `json:"name"`
+	Status    string             `json:"status"`
 }
 
 type Session struct {
-	ID             string
-	CreatedAt      pgtype.Timestamptz
-	UpdatedAt      pgtype.Timestamptz
-	DeletedAt      pgtype.Timestamptz
-	BrowserName    string
-	BrowserVersion string
-	ClientIpaddr   string
-	Platform       string
-	IsDesktop      bool
-	IsMobile       bool
-	IsTablet       bool
-	IsTv           bool
-	IsBot          bool
-	Challenge      string
-	IsHumanFirst   bool
-	IsHumanLast    bool
-	ProfileID      string
+	ID             string             `json:"id"`
+	CreatedAt      pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt      pgtype.Timestamptz `json:"updated_at"`
+	DeletedAt      pgtype.Timestamptz `json:"deleted_at"`
+	BrowserName    string             `json:"browser_name"`
+	BrowserVersion string             `json:"browser_version"`
+	ClientIpaddr   string             `json:"client_ipaddr"`
+	Platform       string             `json:"platform"`
+	IsDesktop      bool               `json:"is_desktop"`
+	IsMobile       bool               `json:"is_mobile"`
+	IsTablet       bool               `json:"is_tablet"`
+	IsTv           bool               `json:"is_tv"`
+	IsBot          bool               `json:"is_bot"`
+	Challenge      string             `json:"challenge"`
+	IsHumanFirst   bool               `json:"is_human_first"`
+	IsHumanLast    bool               `json:"is_human_last"`
+	ProfileID      string             `json:"profile_id"`
 }
 
 type Vault struct {
-	ID          int64
-	CreatedAt   pgtype.Timestamptz
-	UpdatedAt   pgtype.Timestamptz
-	DeletedAt   pgtype.Timestamptz
-	Handle      string
-	Origin      string
-	Address     string
-	Cid         string
-	Config      []byte
-	SessionID   int64
-	RedirectUri string
+	ID          int64              `json:"id"`
+	CreatedAt   pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt   pgtype.Timestamptz `json:"updated_at"`
+	DeletedAt   pgtype.Timestamptz `json:"deleted_at"`
+	Handle      string             `json:"handle"`
+	Origin      string             `json:"origin"`
+	Address     string             `json:"address"`
+	Cid         string             `json:"cid"`
+	Config      []byte             `json:"config"`
+	SessionID   int64              `json:"session_id"`
+	RedirectUri string             `json:"redirect_uri"`
 }

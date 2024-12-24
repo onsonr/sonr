@@ -34,10 +34,3 @@ func (ms msgServer) Initialize(ctx context.Context, msg *types.MsgInitialize) (*
 	panic("Initialize is unimplemented")
 	return &types.MsgInitializeResponse{}, nil
 }
-
-// Spawn implements types.MsgServer.
-func (ms msgServer) Spawn(ctx context.Context, msg *types.MsgSpawn) (*types.MsgSpawnResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("Spawn is unimplemented")
-	return &types.MsgSpawnResponse{}, nil
-}
