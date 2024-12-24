@@ -291,7 +291,7 @@
     ]
   },
   {
-    "name": "dids",
+    "name": "core-dids",
     "path": "proto/did",
     "docs": [
       {
@@ -317,7 +317,7 @@
     ]
   },
   {
-    "name": "dwns",
+    "name": "core-dwns",
     "path": "proto/dwn",
     "docs": [
       {
@@ -347,7 +347,7 @@
     ]
   },
   {
-    "name": "svcs",
+    "name": "core-svcs",
     "path": "proto/svc",
     "docs": [
       {
@@ -411,7 +411,7 @@
     ]
   },
   {
-    "name": "docs",
+    "name": "write-docs",
     "path": "docs",
     "docs": [
       {
