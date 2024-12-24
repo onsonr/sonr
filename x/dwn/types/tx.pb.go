@@ -129,7 +129,7 @@ func (m *MsgUpdateParamsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdateParamsResponse proto.InternalMessageInfo
 
-// MsgInitialize spawns a New Vault with Unclaimed State. This is a one-time
+// MsgSpawn spawns a New Vault with Unclaimed State. This is a one-time
 // operation that must be performed interacting with the Vault.
 //
 // Since: cosmos-sdk 0.47
@@ -189,8 +189,8 @@ func (m *MsgInitialize) GetParams() Params {
 	return Params{}
 }
 
-// MsgInitializeResponse defines the response structure for executing a
-// MsgInitialize message.
+// MsgSpawnResponse defines the response structure for executing a
+// MsgSpawn message.
 //
 // Since: cosmos-sdk 0.47
 type MsgInitializeResponse struct {
@@ -281,7 +281,7 @@ type MsgClient interface {
 	//
 	// Since: cosmos-sdk 0.47
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	// Initialize spawns a new Vault
+	// Spawn spawns a new Vault
 	Initialize(ctx context.Context, in *MsgInitialize, opts ...grpc.CallOption) (*MsgInitializeResponse, error)
 }
 
@@ -317,7 +317,7 @@ type MsgServer interface {
 	//
 	// Since: cosmos-sdk 0.47
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
-	// Initialize spawns a new Vault
+	// Spawn spawns a new Vault
 	Initialize(context.Context, *MsgInitialize) (*MsgInitializeResponse, error)
 }
 

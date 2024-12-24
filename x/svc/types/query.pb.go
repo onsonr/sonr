@@ -111,31 +111,228 @@ func (m *QueryParamsResponse) GetParams() *Params {
 	return nil
 }
 
+// QueryOriginExistsRequest is the request type for the Query/OriginExists RPC method.
+type QueryOriginExistsRequest struct {
+	// origin is the origin to query.
+	Origin string `protobuf:"bytes,1,opt,name=origin,proto3" json:"origin,omitempty"`
+}
+
+func (m *QueryOriginExistsRequest) Reset()         { *m = QueryOriginExistsRequest{} }
+func (m *QueryOriginExistsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryOriginExistsRequest) ProtoMessage()    {}
+func (*QueryOriginExistsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_81a1010cdbf4bc9c, []int{2}
+}
+func (m *QueryOriginExistsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryOriginExistsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryOriginExistsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryOriginExistsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryOriginExistsRequest.Merge(m, src)
+}
+func (m *QueryOriginExistsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryOriginExistsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryOriginExistsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryOriginExistsRequest proto.InternalMessageInfo
+
+func (m *QueryOriginExistsRequest) GetOrigin() string {
+	if m != nil {
+		return m.Origin
+	}
+	return ""
+}
+
+// QueryOriginExistsResponse is the response type for the Query/OriginExists RPC method.
+type QueryOriginExistsResponse struct {
+	// exists is the boolean value representing whether the origin exists.
+	Exists bool `protobuf:"varint,1,opt,name=exists,proto3" json:"exists,omitempty"`
+}
+
+func (m *QueryOriginExistsResponse) Reset()         { *m = QueryOriginExistsResponse{} }
+func (m *QueryOriginExistsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryOriginExistsResponse) ProtoMessage()    {}
+func (*QueryOriginExistsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_81a1010cdbf4bc9c, []int{3}
+}
+func (m *QueryOriginExistsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryOriginExistsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryOriginExistsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryOriginExistsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryOriginExistsResponse.Merge(m, src)
+}
+func (m *QueryOriginExistsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryOriginExistsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryOriginExistsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryOriginExistsResponse proto.InternalMessageInfo
+
+func (m *QueryOriginExistsResponse) GetExists() bool {
+	if m != nil {
+		return m.Exists
+	}
+	return false
+}
+
+// QueryResolveOriginRequest is the request type for the Query/ResolveOrigin RPC method.
+type QueryResolveOriginRequest struct {
+	// origin is the origin to query.
+	Origin string `protobuf:"bytes,1,opt,name=origin,proto3" json:"origin,omitempty"`
+}
+
+func (m *QueryResolveOriginRequest) Reset()         { *m = QueryResolveOriginRequest{} }
+func (m *QueryResolveOriginRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryResolveOriginRequest) ProtoMessage()    {}
+func (*QueryResolveOriginRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_81a1010cdbf4bc9c, []int{4}
+}
+func (m *QueryResolveOriginRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryResolveOriginRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryResolveOriginRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryResolveOriginRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryResolveOriginRequest.Merge(m, src)
+}
+func (m *QueryResolveOriginRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryResolveOriginRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryResolveOriginRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryResolveOriginRequest proto.InternalMessageInfo
+
+func (m *QueryResolveOriginRequest) GetOrigin() string {
+	if m != nil {
+		return m.Origin
+	}
+	return ""
+}
+
+// QueryResolveOriginResponse is the response type for the Query/ResolveOrigin RPC method.
+type QueryResolveOriginResponse struct {
+	// record is the record of the origin.
+	Record *Service `protobuf:"bytes,1,opt,name=record,proto3" json:"record,omitempty"`
+}
+
+func (m *QueryResolveOriginResponse) Reset()         { *m = QueryResolveOriginResponse{} }
+func (m *QueryResolveOriginResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryResolveOriginResponse) ProtoMessage()    {}
+func (*QueryResolveOriginResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_81a1010cdbf4bc9c, []int{5}
+}
+func (m *QueryResolveOriginResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryResolveOriginResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryResolveOriginResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryResolveOriginResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryResolveOriginResponse.Merge(m, src)
+}
+func (m *QueryResolveOriginResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryResolveOriginResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryResolveOriginResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryResolveOriginResponse proto.InternalMessageInfo
+
+func (m *QueryResolveOriginResponse) GetRecord() *Service {
+	if m != nil {
+		return m.Record
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "svc.v1.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "svc.v1.QueryParamsResponse")
+	proto.RegisterType((*QueryOriginExistsRequest)(nil), "svc.v1.QueryOriginExistsRequest")
+	proto.RegisterType((*QueryOriginExistsResponse)(nil), "svc.v1.QueryOriginExistsResponse")
+	proto.RegisterType((*QueryResolveOriginRequest)(nil), "svc.v1.QueryResolveOriginRequest")
+	proto.RegisterType((*QueryResolveOriginResponse)(nil), "svc.v1.QueryResolveOriginResponse")
 }
 
 func init() { proto.RegisterFile("svc/v1/query.proto", fileDescriptor_81a1010cdbf4bc9c) }
 
 var fileDescriptor_81a1010cdbf4bc9c = []byte{
-	// 248 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x2a, 0x2e, 0x4b, 0xd6,
-	0x2f, 0x33, 0xd4, 0x2f, 0x2c, 0x4d, 0x2d, 0xaa, 0xd4, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62,
-	0x2b, 0x2e, 0x4b, 0xd6, 0x2b, 0x33, 0x94, 0x92, 0x49, 0xcf, 0xcf, 0x4f, 0xcf, 0x49, 0xd5, 0x4f,
-	0x2c, 0xc8, 0xd4, 0x4f, 0xcc, 0xcb, 0xcb, 0x2f, 0x49, 0x2c, 0xc9, 0xcc, 0xcf, 0x2b, 0x86, 0xa8,
-	0x92, 0x12, 0x81, 0xea, 0x4c, 0x4f, 0xcd, 0x4b, 0x2d, 0xce, 0x84, 0x8a, 0x2a, 0x89, 0x70, 0x09,
-	0x05, 0x82, 0x8c, 0x0a, 0x48, 0x2c, 0x4a, 0xcc, 0x2d, 0x0e, 0x4a, 0x2d, 0x2c, 0x4d, 0x2d, 0x2e,
-	0x51, 0xb2, 0xe5, 0x12, 0x46, 0x11, 0x2d, 0x2e, 0xc8, 0xcf, 0x2b, 0x4e, 0x15, 0x52, 0xe3, 0x62,
-	0x2b, 0x00, 0x8b, 0x48, 0x30, 0x2a, 0x30, 0x6a, 0x70, 0x1b, 0xf1, 0xe9, 0x41, 0x6c, 0xd6, 0x83,
-	0xaa, 0x83, 0xca, 0x1a, 0x25, 0x71, 0xb1, 0x82, 0xb5, 0x0b, 0x45, 0x72, 0xb1, 0x41, 0xa4, 0x84,
-	0xa4, 0x60, 0x4a, 0x31, 0x6d, 0x93, 0x92, 0xc6, 0x2a, 0x07, 0xb1, 0x53, 0x49, 0xac, 0xe9, 0xf2,
-	0x93, 0xc9, 0x4c, 0x02, 0x42, 0x7c, 0xfa, 0x50, 0xf7, 0x43, 0xec, 0x70, 0xb2, 0x39, 0xf1, 0x48,
-	0x8e, 0xf1, 0xc2, 0x23, 0x39, 0xc6, 0x07, 0x8f, 0xe4, 0x18, 0x27, 0x3c, 0x96, 0x63, 0xb8, 0xf0,
-	0x58, 0x8e, 0xe1, 0xc6, 0x63, 0x39, 0x86, 0x28, 0xa5, 0xf4, 0xcc, 0x92, 0x8c, 0xd2, 0x24, 0xbd,
-	0xe4, 0xfc, 0x5c, 0xfd, 0xfc, 0xbc, 0xe2, 0xfc, 0xbc, 0x22, 0x7d, 0x30, 0x51, 0x01, 0x36, 0xa1,
-	0xa4, 0xb2, 0x20, 0xb5, 0x38, 0x89, 0x0d, 0xec, 0x7b, 0x63, 0x40, 0x00, 0x00, 0x00, 0xff, 0xff,
-	0x32, 0x0f, 0x6c, 0xb9, 0x4f, 0x01, 0x00, 0x00,
+	// 398 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0x41, 0x4b, 0xe3, 0x40,
+	0x1c, 0xc5, 0x9b, 0xc2, 0x86, 0xdd, 0xd9, 0xdd, 0x2a, 0x63, 0x29, 0x75, 0x94, 0xd8, 0xe6, 0x60,
+	0x3d, 0x65, 0x68, 0x7b, 0xd5, 0x8b, 0xd0, 0xb3, 0x1a, 0x4f, 0x7a, 0x4b, 0xe3, 0x10, 0x07, 0xda,
+	0x99, 0x74, 0x26, 0x09, 0x2d, 0x22, 0x82, 0x9f, 0x40, 0xf0, 0x4b, 0x79, 0x2c, 0x78, 0x11, 0x4f,
+	0xd2, 0xfa, 0x41, 0xc4, 0x99, 0x89, 0x18, 0x8c, 0xf5, 0x12, 0x32, 0xff, 0xff, 0x7b, 0xef, 0xc7,
+	0xbc, 0x04, 0x40, 0x99, 0x85, 0x38, 0xeb, 0xe2, 0x49, 0x4a, 0xc4, 0xcc, 0x8b, 0x05, 0x4f, 0x38,
+	0xb4, 0x65, 0x16, 0x7a, 0x59, 0x17, 0x6d, 0x47, 0x9c, 0x47, 0x23, 0x82, 0x83, 0x98, 0xe2, 0x80,
+	0x31, 0x9e, 0x04, 0x09, 0xe5, 0x4c, 0x6a, 0x15, 0xaa, 0x1b, 0x67, 0x44, 0x18, 0x91, 0xd4, 0x4c,
+	0xdd, 0x3a, 0x80, 0x27, 0xef, 0x51, 0xc7, 0x81, 0x08, 0xc6, 0xd2, 0x27, 0x93, 0x94, 0xc8, 0xc4,
+	0x3d, 0x00, 0x1b, 0x85, 0xa9, 0x8c, 0x39, 0x93, 0x04, 0xee, 0x02, 0x3b, 0x56, 0x93, 0xa6, 0xd5,
+	0xb2, 0xf6, 0xfe, 0xf6, 0x6a, 0x9e, 0x26, 0x7b, 0x46, 0x67, 0xb6, 0x6e, 0x0f, 0x34, 0x95, 0xfd,
+	0x48, 0xd0, 0x88, 0xb2, 0xc1, 0x94, 0xca, 0x24, 0x8f, 0x86, 0x0d, 0x60, 0x73, 0x35, 0x56, 0x19,
+	0x7f, 0x7c, 0x73, 0x72, 0xfb, 0x60, 0xb3, 0xc4, 0x63, 0xc0, 0x0d, 0x60, 0x13, 0x35, 0x51, 0xa6,
+	0xdf, 0xbe, 0x39, 0x7d, 0x98, 0x7c, 0x22, 0xf9, 0x28, 0x23, 0xda, 0xfb, 0x13, 0x69, 0x00, 0x50,
+	0x99, 0xc9, 0xa0, 0x3a, 0xc0, 0x16, 0x24, 0xe4, 0xe2, 0xc2, 0xdc, 0x71, 0x2d, 0xbf, 0xe3, 0x29,
+	0x11, 0x19, 0x0d, 0x89, 0x6f, 0xd6, 0xbd, 0xe7, 0x2a, 0xf8, 0xa5, 0x72, 0xe0, 0x19, 0xb0, 0x75,
+	0x01, 0x10, 0xe5, 0xe2, 0xaf, 0x9d, 0xa2, 0xad, 0xd2, 0x9d, 0xa6, 0xba, 0x8d, 0xdb, 0xc7, 0xd7,
+	0xfb, 0xea, 0x3a, 0xac, 0x61, 0xf3, 0x95, 0x74, 0x93, 0x30, 0x05, 0xff, 0x3e, 0x17, 0x02, 0x5b,
+	0x85, 0x90, 0x92, 0x7e, 0x51, 0x7b, 0x85, 0xc2, 0xc0, 0x5a, 0x0a, 0x86, 0x60, 0x33, 0x87, 0xe9,
+	0x62, 0x24, 0xbe, 0xd2, 0x2f, 0xd7, 0xf0, 0x06, 0xfc, 0x2f, 0xb4, 0x03, 0x8b, 0xa9, 0x65, 0x75,
+	0x23, 0x77, 0x95, 0xc4, 0x90, 0x3b, 0x8a, 0xdc, 0x86, 0x3b, 0xdf, 0x91, 0xb1, 0x2e, 0xf7, 0x70,
+	0xff, 0x61, 0xe1, 0x58, 0xf3, 0x85, 0x63, 0xbd, 0x2c, 0x1c, 0xeb, 0x6e, 0xe9, 0x54, 0xe6, 0x4b,
+	0xa7, 0xf2, 0xb4, 0x74, 0x2a, 0xe7, 0x6e, 0x44, 0x93, 0xcb, 0x74, 0xe8, 0x85, 0x7c, 0x8c, 0x39,
+	0x93, 0x9c, 0x09, 0xac, 0x1e, 0x53, 0x15, 0x99, 0xcc, 0x62, 0x22, 0x87, 0xb6, 0xfa, 0xb7, 0xfb,
+	0x6f, 0x01, 0x00, 0x00, 0xff, 0xff, 0x0e, 0x55, 0xd8, 0x48, 0x2d, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -152,6 +349,10 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	// Params queries all parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	// OriginExists queries if a given origin exists.
+	OriginExists(ctx context.Context, in *QueryOriginExistsRequest, opts ...grpc.CallOption) (*QueryOriginExistsResponse, error)
+	// ResolveOrigin queries the domain of a given service and returns its record with capabilities.
+	ResolveOrigin(ctx context.Context, in *QueryResolveOriginRequest, opts ...grpc.CallOption) (*QueryResolveOriginResponse, error)
 }
 
 type queryClient struct {
@@ -171,10 +372,32 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
+func (c *queryClient) OriginExists(ctx context.Context, in *QueryOriginExistsRequest, opts ...grpc.CallOption) (*QueryOriginExistsResponse, error) {
+	out := new(QueryOriginExistsResponse)
+	err := c.cc.Invoke(ctx, "/svc.v1.Query/OriginExists", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) ResolveOrigin(ctx context.Context, in *QueryResolveOriginRequest, opts ...grpc.CallOption) (*QueryResolveOriginResponse, error) {
+	out := new(QueryResolveOriginResponse)
+	err := c.cc.Invoke(ctx, "/svc.v1.Query/ResolveOrigin", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Params queries all parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	// OriginExists queries if a given origin exists.
+	OriginExists(context.Context, *QueryOriginExistsRequest) (*QueryOriginExistsResponse, error)
+	// ResolveOrigin queries the domain of a given service and returns its record with capabilities.
+	ResolveOrigin(context.Context, *QueryResolveOriginRequest) (*QueryResolveOriginResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -183,6 +406,12 @@ type UnimplementedQueryServer struct {
 
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
+}
+func (*UnimplementedQueryServer) OriginExists(ctx context.Context, req *QueryOriginExistsRequest) (*QueryOriginExistsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OriginExists not implemented")
+}
+func (*UnimplementedQueryServer) ResolveOrigin(ctx context.Context, req *QueryResolveOriginRequest) (*QueryResolveOriginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ResolveOrigin not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -207,6 +436,42 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_OriginExists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryOriginExistsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).OriginExists(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/svc.v1.Query/OriginExists",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).OriginExists(ctx, req.(*QueryOriginExistsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_ResolveOrigin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryResolveOriginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ResolveOrigin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/svc.v1.Query/ResolveOrigin",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ResolveOrigin(ctx, req.(*QueryResolveOriginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var Query_serviceDesc = _Query_serviceDesc
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "svc.v1.Query",
@@ -215,6 +480,14 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Params",
 			Handler:    _Query_Params_Handler,
+		},
+		{
+			MethodName: "OriginExists",
+			Handler:    _Query_OriginExists_Handler,
+		},
+		{
+			MethodName: "ResolveOrigin",
+			Handler:    _Query_ResolveOrigin_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -279,6 +552,134 @@ func (m *QueryParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryOriginExistsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryOriginExistsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryOriginExistsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Origin) > 0 {
+		i -= len(m.Origin)
+		copy(dAtA[i:], m.Origin)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Origin)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryOriginExistsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryOriginExistsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryOriginExistsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Exists {
+		i--
+		if m.Exists {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryResolveOriginRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryResolveOriginRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryResolveOriginRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Origin) > 0 {
+		i -= len(m.Origin)
+		copy(dAtA[i:], m.Origin)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Origin)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryResolveOriginResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryResolveOriginResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryResolveOriginResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Record != nil {
+		{
+			size, err := m.Record.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -307,6 +708,57 @@ func (m *QueryParamsResponse) Size() (n int) {
 	_ = l
 	if m.Params != nil {
 		l = m.Params.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryOriginExistsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Origin)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryOriginExistsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Exists {
+		n += 2
+	}
+	return n
+}
+
+func (m *QueryResolveOriginRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Origin)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryResolveOriginResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Record != nil {
+		l = m.Record.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
@@ -430,6 +882,326 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 				m.Params = &Params{}
 			}
 			if err := m.Params.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryOriginExistsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryOriginExistsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryOriginExistsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Origin = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryOriginExistsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryOriginExistsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryOriginExistsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Exists", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Exists = bool(v != 0)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryResolveOriginRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryResolveOriginRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryResolveOriginRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Origin = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryResolveOriginResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryResolveOriginResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryResolveOriginResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Record", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Record == nil {
+				m.Record = &Service{}
+			}
+			if err := m.Record.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

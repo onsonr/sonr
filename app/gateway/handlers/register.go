@@ -7,12 +7,12 @@ import (
 	"github.com/onsonr/sonr/app/gateway/context"
 	"github.com/onsonr/sonr/app/gateway/islands"
 	"github.com/onsonr/sonr/app/gateway/views"
+	"github.com/onsonr/sonr/internal/common"
 	hwayorm "github.com/onsonr/sonr/internal/database/hwayorm"
-	"github.com/onsonr/sonr/pkg/common"
 )
 
 func RegisterHandler(g *echo.Group) {
-	g.GET("/", renderProfileForm)
+	g.GET("/start", renderProfileForm)
 	g.POST("/profile", validateProfileForm)
 	g.GET("/passkey", renderPasskeyForm)
 	g.POST("/passkey", validatePasskeyForm)

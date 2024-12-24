@@ -33,7 +33,7 @@ type MsgClient interface {
 	//
 	// Since: cosmos-sdk 0.47
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	// Initialize spawns a new Vault
+	// Spawn spawns a new Vault
 	Initialize(ctx context.Context, in *MsgInitialize, opts ...grpc.CallOption) (*MsgInitializeResponse, error)
 }
 
@@ -75,7 +75,7 @@ type MsgServer interface {
 	//
 	// Since: cosmos-sdk 0.47
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
-	// Initialize spawns a new Vault
+	// Spawn spawns a new Vault
 	Initialize(context.Context, *MsgInitialize) (*MsgInitializeResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
