@@ -9,14 +9,31 @@ jobs:
     name: Tidy PR
     if: github.event_name == 'pull_request'
     permissions:
-      contents: read # for TimonVS/pr-labeler-action to read config file
+      contents: write # for TimonVS/pr-labeler-action to read config file
       pull-requests: write # for TimonVS/pr-labeler-action to add labels in PR
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required to fetch all history for merging
+          
+      - name: Update PR with master
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git fetch origin master
+          git merge origin/master --no-edit
+          git push
+
       - uses: TimonVS/pr-labeler-action@v5
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           configuration-path: .github/pr-labeler.yml # optional, .github/pr-labeler.yml is the default value
+
+      - name: AI PR Body Generator
+        uses: jbrocher/auto-pr-body-generator@v0.2.2
+        with:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
   test-builds:
     if: github.event_name == 'pull_request'
