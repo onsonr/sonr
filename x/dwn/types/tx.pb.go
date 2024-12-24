@@ -129,11 +129,11 @@ func (m *MsgUpdateParamsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdateParamsResponse proto.InternalMessageInfo
 
-// MsgInitialize spawns a New Vault with Unclaimed State. This is a one-time
+// MsgSpawn spawns a New Vault with Unclaimed State. This is a one-time
 // operation that must be performed interacting with the Vault.
 //
 // Since: cosmos-sdk 0.47
-type MsgInitialize struct {
+type MsgSpawn struct {
 	// authority is the address of the governance account.
 	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	// params defines the parameters to update.
@@ -142,18 +142,18 @@ type MsgInitialize struct {
 	Params Params `protobuf:"bytes,2,opt,name=params,proto3" json:"params"`
 }
 
-func (m *MsgInitialize) Reset()         { *m = MsgInitialize{} }
-func (m *MsgInitialize) String() string { return proto.CompactTextString(m) }
-func (*MsgInitialize) ProtoMessage()    {}
-func (*MsgInitialize) Descriptor() ([]byte, []int) {
+func (m *MsgSpawn) Reset()         { *m = MsgSpawn{} }
+func (m *MsgSpawn) String() string { return proto.CompactTextString(m) }
+func (*MsgSpawn) ProtoMessage()    {}
+func (*MsgSpawn) Descriptor() ([]byte, []int) {
 	return fileDescriptor_32d2464465560de7, []int{2}
 }
-func (m *MsgInitialize) XXX_Unmarshal(b []byte) error {
+func (m *MsgSpawn) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgInitialize) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgSpawn) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgInitialize.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgSpawn.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -163,51 +163,51 @@ func (m *MsgInitialize) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return b[:n], nil
 	}
 }
-func (m *MsgInitialize) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgInitialize.Merge(m, src)
+func (m *MsgSpawn) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSpawn.Merge(m, src)
 }
-func (m *MsgInitialize) XXX_Size() int {
+func (m *MsgSpawn) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgInitialize) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgInitialize.DiscardUnknown(m)
+func (m *MsgSpawn) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSpawn.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgInitialize proto.InternalMessageInfo
+var xxx_messageInfo_MsgSpawn proto.InternalMessageInfo
 
-func (m *MsgInitialize) GetAuthority() string {
+func (m *MsgSpawn) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgInitialize) GetParams() Params {
+func (m *MsgSpawn) GetParams() Params {
 	if m != nil {
 		return m.Params
 	}
 	return Params{}
 }
 
-// MsgInitializeResponse defines the response structure for executing a
-// MsgInitialize message.
+// MsgSpawnResponse defines the response structure for executing a
+// MsgSpawn message.
 //
 // Since: cosmos-sdk 0.47
-type MsgInitializeResponse struct {
+type MsgSpawnResponse struct {
 }
 
-func (m *MsgInitializeResponse) Reset()         { *m = MsgInitializeResponse{} }
-func (m *MsgInitializeResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgInitializeResponse) ProtoMessage()    {}
-func (*MsgInitializeResponse) Descriptor() ([]byte, []int) {
+func (m *MsgSpawnResponse) Reset()         { *m = MsgSpawnResponse{} }
+func (m *MsgSpawnResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgSpawnResponse) ProtoMessage()    {}
+func (*MsgSpawnResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_32d2464465560de7, []int{3}
 }
-func (m *MsgInitializeResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgSpawnResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgInitializeResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgSpawnResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgInitializeResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgSpawnResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -217,29 +217,29 @@ func (m *MsgInitializeResponse) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-func (m *MsgInitializeResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgInitializeResponse.Merge(m, src)
+func (m *MsgSpawnResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSpawnResponse.Merge(m, src)
 }
-func (m *MsgInitializeResponse) XXX_Size() int {
+func (m *MsgSpawnResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgInitializeResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgInitializeResponse.DiscardUnknown(m)
+func (m *MsgSpawnResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSpawnResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgInitializeResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgSpawnResponse proto.InternalMessageInfo
 
 func init() {
 	proto.RegisterType((*MsgUpdateParams)(nil), "dwn.v1.MsgUpdateParams")
 	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "dwn.v1.MsgUpdateParamsResponse")
-	proto.RegisterType((*MsgInitialize)(nil), "dwn.v1.MsgInitialize")
-	proto.RegisterType((*MsgInitializeResponse)(nil), "dwn.v1.MsgInitializeResponse")
+	proto.RegisterType((*MsgSpawn)(nil), "dwn.v1.MsgSpawn")
+	proto.RegisterType((*MsgSpawnResponse)(nil), "dwn.v1.MsgSpawnResponse")
 }
 
 func init() { proto.RegisterFile("dwn/v1/tx.proto", fileDescriptor_32d2464465560de7) }
 
 var fileDescriptor_32d2464465560de7 = []byte{
-	// 361 bytes of a gzipped FileDescriptorProto
+	// 356 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x4f, 0x29, 0xcf, 0xd3,
 	0x2f, 0x33, 0xd4, 0x2f, 0xa9, 0xd0, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x4b, 0x29, 0xcf,
 	0xd3, 0x2b, 0x33, 0x94, 0x12, 0x4f, 0xce, 0x2f, 0xce, 0xcd, 0x2f, 0xd6, 0xcf, 0x2d, 0x4e, 0x07,
@@ -252,17 +252,17 @@ var fileDescriptor_32d2464465560de7 = []byte{
 	0xca, 0xcc, 0x4b, 0x0f, 0x42, 0x28, 0x15, 0xd2, 0xe1, 0x62, 0x2b, 0x00, 0x9b, 0x20, 0xc1, 0xa4,
 	0xc0, 0xa8, 0xc1, 0x6d, 0xc4, 0xa7, 0x07, 0xf1, 0x84, 0x1e, 0xc4, 0x5c, 0x27, 0x96, 0x13, 0xf7,
 	0xe4, 0x19, 0x82, 0xa0, 0x6a, 0xac, 0xf8, 0x9a, 0x9e, 0x6f, 0xd0, 0x42, 0xe8, 0x56, 0x92, 0xe4,
-	0x12, 0x47, 0x73, 0x48, 0x50, 0x6a, 0x71, 0x41, 0x7e, 0x5e, 0x71, 0xaa, 0x52, 0x2b, 0x23, 0x17,
-	0xaf, 0x6f, 0x71, 0xba, 0x67, 0x5e, 0x66, 0x49, 0x66, 0x62, 0x4e, 0x66, 0x55, 0xea, 0x00, 0x39,
-	0x51, 0x9c, 0x4b, 0x14, 0xc5, 0x19, 0x30, 0x07, 0x1a, 0xcd, 0x62, 0xe4, 0x62, 0xf6, 0x2d, 0x4e,
-	0x17, 0xf2, 0xe0, 0xe2, 0x41, 0x09, 0x49, 0x71, 0x98, 0xf1, 0x68, 0x3e, 0x93, 0x92, 0xc7, 0x21,
-	0x01, 0x33, 0x51, 0xc8, 0x89, 0x8b, 0x0b, 0xc9, 0xbb, 0xa2, 0x48, 0xca, 0x11, 0xc2, 0x52, 0xb2,
-	0x58, 0x85, 0x61, 0x66, 0x48, 0xb1, 0x36, 0x3c, 0xdf, 0xa0, 0xc5, 0xe8, 0x64, 0x73, 0xe2, 0x91,
-	0x1c, 0xe3, 0x85, 0x47, 0x72, 0x8c, 0x0f, 0x1e, 0xc9, 0x31, 0x4e, 0x78, 0x2c, 0xc7, 0x70, 0xe1,
-	0xb1, 0x1c, 0xc3, 0x8d, 0xc7, 0x72, 0x0c, 0x51, 0x4a, 0xe9, 0x99, 0x25, 0x19, 0xa5, 0x49, 0x7a,
-	0xc9, 0xf9, 0xb9, 0xfa, 0xf9, 0x79, 0xc5, 0xf9, 0x79, 0x45, 0xfa, 0x60, 0xa2, 0x42, 0x1f, 0x94,
-	0xb8, 0x4a, 0x2a, 0x0b, 0x52, 0x8b, 0x93, 0xd8, 0xc0, 0xe9, 0xc4, 0x18, 0x10, 0x00, 0x00, 0xff,
-	0xff, 0xbb, 0x62, 0x4e, 0x8b, 0xa2, 0x02, 0x00, 0x00,
+	0x12, 0x47, 0x73, 0x48, 0x50, 0x6a, 0x71, 0x41, 0x7e, 0x5e, 0x71, 0xaa, 0x52, 0x03, 0x23, 0x17,
+	0x87, 0x6f, 0x71, 0x7a, 0x70, 0x41, 0x62, 0x79, 0xde, 0x00, 0xb9, 0x4e, 0x88, 0x4b, 0x00, 0xe6,
+	0x02, 0x98, 0xb3, 0x8c, 0xba, 0x19, 0xb9, 0x98, 0x7d, 0x8b, 0xd3, 0x85, 0x3c, 0xb8, 0x78, 0x50,
+	0xc2, 0x4f, 0x1c, 0x66, 0x32, 0x9a, 0x7f, 0xa4, 0xe4, 0x71, 0x48, 0xc0, 0x4c, 0x14, 0x32, 0xe6,
+	0x62, 0x85, 0x78, 0x52, 0x00, 0x49, 0x25, 0x58, 0x44, 0x4a, 0x02, 0x5d, 0x04, 0xa6, 0x49, 0x8a,
+	0xb5, 0xe1, 0xf9, 0x06, 0x2d, 0x46, 0x27, 0x9b, 0x13, 0x8f, 0xe4, 0x18, 0x2f, 0x3c, 0x92, 0x63,
+	0x7c, 0xf0, 0x48, 0x8e, 0x71, 0xc2, 0x63, 0x39, 0x86, 0x0b, 0x8f, 0xe5, 0x18, 0x6e, 0x3c, 0x96,
+	0x63, 0x88, 0x52, 0x4a, 0xcf, 0x2c, 0xc9, 0x28, 0x4d, 0xd2, 0x4b, 0xce, 0xcf, 0xd5, 0xcf, 0xcf,
+	0x2b, 0xce, 0xcf, 0x2b, 0xd2, 0x07, 0x13, 0x15, 0xfa, 0xa0, 0x34, 0x54, 0x52, 0x59, 0x90, 0x5a,
+	0x9c, 0xc4, 0x06, 0x4e, 0x0e, 0xc6, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0x38, 0x9d, 0x99, 0x0f,
+	0x89, 0x02, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -281,8 +281,8 @@ type MsgClient interface {
 	//
 	// Since: cosmos-sdk 0.47
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	// Initialize spawns a new Vault
-	Initialize(ctx context.Context, in *MsgInitialize, opts ...grpc.CallOption) (*MsgInitializeResponse, error)
+	// Spawn spawns a new Vault
+	Spawn(ctx context.Context, in *MsgSpawn, opts ...grpc.CallOption) (*MsgSpawnResponse, error)
 }
 
 type msgClient struct {
@@ -302,9 +302,9 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 	return out, nil
 }
 
-func (c *msgClient) Initialize(ctx context.Context, in *MsgInitialize, opts ...grpc.CallOption) (*MsgInitializeResponse, error) {
-	out := new(MsgInitializeResponse)
-	err := c.cc.Invoke(ctx, "/dwn.v1.Msg/Initialize", in, out, opts...)
+func (c *msgClient) Spawn(ctx context.Context, in *MsgSpawn, opts ...grpc.CallOption) (*MsgSpawnResponse, error) {
+	out := new(MsgSpawnResponse)
+	err := c.cc.Invoke(ctx, "/dwn.v1.Msg/Spawn", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -317,8 +317,8 @@ type MsgServer interface {
 	//
 	// Since: cosmos-sdk 0.47
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
-	// Initialize spawns a new Vault
-	Initialize(context.Context, *MsgInitialize) (*MsgInitializeResponse, error)
+	// Spawn spawns a new Vault
+	Spawn(context.Context, *MsgSpawn) (*MsgSpawnResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -328,8 +328,8 @@ type UnimplementedMsgServer struct {
 func (*UnimplementedMsgServer) UpdateParams(ctx context.Context, req *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
 }
-func (*UnimplementedMsgServer) Initialize(ctx context.Context, req *MsgInitialize) (*MsgInitializeResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Initialize not implemented")
+func (*UnimplementedMsgServer) Spawn(ctx context.Context, req *MsgSpawn) (*MsgSpawnResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Spawn not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -354,20 +354,20 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_Initialize_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgInitialize)
+func _Msg_Spawn_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSpawn)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).Initialize(ctx, in)
+		return srv.(MsgServer).Spawn(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dwn.v1.Msg/Initialize",
+		FullMethod: "/dwn.v1.Msg/Spawn",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).Initialize(ctx, req.(*MsgInitialize))
+		return srv.(MsgServer).Spawn(ctx, req.(*MsgSpawn))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -382,8 +382,8 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_UpdateParams_Handler,
 		},
 		{
-			MethodName: "Initialize",
-			Handler:    _Msg_Initialize_Handler,
+			MethodName: "Spawn",
+			Handler:    _Msg_Spawn_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -453,7 +453,7 @@ func (m *MsgUpdateParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgInitialize) Marshal() (dAtA []byte, err error) {
+func (m *MsgSpawn) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -463,12 +463,12 @@ func (m *MsgInitialize) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgInitialize) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgSpawn) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgInitialize) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgSpawn) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -493,7 +493,7 @@ func (m *MsgInitialize) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgInitializeResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgSpawnResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -503,12 +503,12 @@ func (m *MsgInitializeResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgInitializeResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgSpawnResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgInitializeResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgSpawnResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -551,7 +551,7 @@ func (m *MsgUpdateParamsResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgInitialize) Size() (n int) {
+func (m *MsgSpawn) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -566,7 +566,7 @@ func (m *MsgInitialize) Size() (n int) {
 	return n
 }
 
-func (m *MsgInitializeResponse) Size() (n int) {
+func (m *MsgSpawnResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -746,7 +746,7 @@ func (m *MsgUpdateParamsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgInitialize) Unmarshal(dAtA []byte) error {
+func (m *MsgSpawn) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -769,10 +769,10 @@ func (m *MsgInitialize) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgInitialize: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgSpawn: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgInitialize: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgSpawn: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -861,7 +861,7 @@ func (m *MsgInitialize) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgInitializeResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgSpawnResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -884,10 +884,10 @@ func (m *MsgInitializeResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgInitializeResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgSpawnResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgInitializeResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgSpawnResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
