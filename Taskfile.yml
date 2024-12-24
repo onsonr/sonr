@@ -51,35 +51,31 @@ tasks:
       - for: { var: DEPS }
         cmd: gum spin --spinner dot --title "Installing go dependencies..." -- go install {{.ITEM}}
 
-  new-issue:
+  issue:list:
+    desc: List all issues
+    silent: true
+    cmds:
+      - gh ils
+
+  issue:new:
     desc: Create a new issue
     silent: true
     dir: .github/scripts
     cmds:
       - sh new_issue.sh
 
-  pkl-gen:
-    desc: Generate PKL files
-    silent: true
-    dir: "pkl/sonr.net"
-    vars:
-      FILES: ["Hway.pkl", "Motr.pkl", "UCAN.pkl"]
-    cmds:
-      - for: { var: FILES }
-        cmd: gum spin --spinner dot --title "Generating PKL in Go..." -- pkl-gen-go {{.ITEM}}
-
-  proto-gen:
+  gen:proto:
     desc: Generate proto files
     silent: true
     cmd: gum spin --spinner dot --title "Generating Protobufs..." -- make proto-gen
 
-  sqlc-gen:
+  gen:sqlc:
     desc: Generate SQLC files
     silent: true
     cmds:
       - gum spin --spinner dot --title "Generating SQLC..." -- sqlc generate -f internal/database/sqlc.yaml
 
-  templ-gen:
+  gen:templ:
     desc: Generate templ files
     silent: true
     cmd: gum spin --spinner dot --title "Generating Templ..." -- templ generate
