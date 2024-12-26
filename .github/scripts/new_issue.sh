@@ -1,70 +1,109 @@
-#!/bin/bash
-
-set -e
+#!/bin/sh
 
 ROOT_DIR=$(git rev-parse --show-toplevel)
 
-# Extract scope name and path using jq, and pass it to fzf for selection
-SCOPE=$(cat "$ROOT_DIR/.github/scopes.json" | jq -r '.[] | "\(.name)"' | fzf --prompt "Select scope:")
-DOCS=$(cat "$ROOT_DIR/.github/scopes.json" | jq -r ".[] | select(.name == \"$SCOPE\") | .docs[].url")
-
-# Write Title
-TITLE=$(gum input --placeholder "Issue Title...")
-
-# Write Goal
-GOAL=$(mods --role "determine-issue-goal" "$SCOPE $TITLE")
-
-# Input Requirements
-REQUIREMENTS=()
-while true; do
-    if [ ${#REQUIREMENTS[@]} -ge 2 ]; then
-        if ! gum confirm "Do you want to add another requirement?"; then
-            break
-        fi
-    fi
-    REQUIREMENT=$(gum input --placeholder "Add a requirement...")
-    if [ -n "$REQUIREMENT" ]; then
-        REQUIREMENTS+=("$REQUIREMENT")
-    else
-        echo "Requirement cannot be empty. Please enter a valid requirement."
-    fi
-done
-
-create_body() {
-    echo "### Goal(s):"
-    echo "$GOAL"
-    echo "### Requirements:"
-    for i in "${!REQUIREMENTS[@]}"; do
-        echo "$(($i + 1)). ${REQUIREMENTS[$i]}"
-    done
-    echo "### Resources:"
-    while IFS= read -r doc; do
-        echo "- $doc"
-    done <<< "$DOCS"
+select_scope() {
+    cat "$ROOT_DIR/.github/scopes.json" | jq -r '.scopes[]' | fzf --prompt "Select scope:"
 }
 
-ISSUE_BODY=$(create_body)
+get_title() {
+    gum input --placeholder "Issue Title..."
+}
 
-# Function to collect output
-preview_output() {
+add_requirement() {
+    requirement=$(gum input --placeholder "Add a requirement...")
+    if [ -n "$requirement" ]; then
+        REQUIREMENTS="$REQUIREMENTS
+$requirement"
+        return 0
+    fi
+    return 1
+}
+
+collect_requirements() {
+    REQUIREMENTS=""
+    req_count=0
+    while true; do
+        if add_requirement; then
+            req_count=$((req_count + 1))
+            if [ $req_count -ge 2 ] && ! gum confirm "Do you want to add another requirement?"; then
+                break
+            fi
+        else
+            if [ $req_count -ge 2 ]; then
+                break
+            else
+                echo "Requirement cannot be empty. Please enter a valid requirement."
+            fi
+        fi
+    done
+}
+
+get_docs() {
+    docs=$(cat "$ROOT_DIR/.github/scopes.json" | jq -c '.docs')
+     mods --role "determine-issue-docs" "$SCOPE" "$TITLE" "$docs"
+}
+
+get_goal() {
+    mods --role "determine-issue-goal" "$SCOPE $TITLE"
+}
+
+format_requirements() {
+    i=1
+    echo "$REQUIREMENTS" | while IFS= read -r req; do
+        if [ -n "$req" ]; then
+            echo "$i. $req"
+            i=$((i + 1))
+        fi
+    done
+}
+
+create_body() {
+    goal=$(get_goal)
+    docs=$(get_docs)
+    
+    echo "### Goal(s):"
+    echo "$goal"
+    echo
+    echo "### Requirements:"
+    format_requirements
+    echo
+    echo "### Resources:"
+    echo "$docs"
+}
+
+preview_issue() {
     echo "# ($SCOPE) $TITLE"
     echo "$ISSUE_BODY"
 }
 
-# Display the formatted output
-preview_output | gum format
-
-# Confirm to create a GitHub issue
-if gum confirm "Do you want to create a new GitHub issue with this information?"; then
-    # Ask if this should be a draft issue
-    if gum confirm "Create as draft issue?"; then
-        # Create a draft GitHub issue
-        gh issue create --repo onsonr/sonr --title "($SCOPE) $TITLE" --body "$ISSUE_BODY"
-    else
-        # Create a regular GitHub issue
-        gh issue create --repo onsonr/sonr --title "($SCOPE) $TITLE" --body "$ISSUE_BODY" -a @me
+create_github_issue() {
+    draft_flag=""
+    if gum confirm "Assign this issue to yourself?"; then
+        draft_flag="-a @me"
     fi
-else
-    exit 1
-fi
+    
+    gh issue create \
+        --repo onsonr/sonr \
+        --title "[$SCOPE] $TITLE" \
+        --body "$ISSUE_BODY" \
+        $draft_flag
+}
+
+main() {
+    SCOPE=$(select_scope)
+    TITLE=$(get_title)
+    collect_requirements
+    ISSUE_BODY=$(create_body)
+    
+    preview_issue | gum format
+    
+    if gum confirm "Do you want to create a new GitHub issue with this information?"; then
+        create_github_issue
+    else
+        exit 1
+    fi
+}
+
+main
 
