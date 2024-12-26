@@ -26,7 +26,7 @@ collect_requirements() {
     while true; do
         if add_requirement; then
             req_count=$((req_count + 1))
-            if [ $req_count -ge 2 ] && ! gum confirm "Do you want to add another requirement?"; then
+            if [ $req_count -ge 2 ] && ! gum confirm --default=false "Do you want to add another requirement?"; then
                 break
             fi
         else
