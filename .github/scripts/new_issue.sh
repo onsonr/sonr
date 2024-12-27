@@ -73,7 +73,7 @@ create_body() {
 }
 
 preview_issue() {
-    echo "# ($SCOPE) $TITLE"
+    echo "# [$SCOPE] $TITLE"
     echo "$ISSUE_BODY"
 }
 
