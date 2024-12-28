@@ -36,7 +36,7 @@ func HeroTitle(title string, subtitle string) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/vault/views/base_hero.templ`, Line: 6, Col: 10}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `gateway/views/base_hero.templ`, Line: 6, Col: 10}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -49,7 +49,7 @@ func HeroTitle(title string, subtitle string) templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(subtitle)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/vault/views/base_hero.templ`, Line: 9, Col: 13}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `gateway/views/base_hero.templ`, Line: 9, Col: 13}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -84,7 +84,7 @@ func HeroStart() templ.Component {
 			templ_7745c5c3_Var4 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"pt-1.5 mb-3 flex flex-col items-center justify-center h-full\"><sl-button size=\"large\" hx-target=\"#container\" hx-get=\"/register\" hx-push-url=\"/register\" type=\"button\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"sonr\"></sl-icon> Create Vault <sl-icon slot=\"suffix\" library=\"sonr\" name=\"arrow-right\"></sl-icon></sl-button></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"pt-1.5 mb-3 flex flex-col items-center justify-center h-full\"><sl-button size=\"large\" hx-target=\"#container\" hx-get=\"/register\" hx-push-url=\"/register/start\" type=\"button\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"sonr\"></sl-icon> Create Vault <sl-icon slot=\"suffix\" library=\"sonr\" name=\"arrow-right\"></sl-icon></sl-button></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
