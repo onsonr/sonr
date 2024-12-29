@@ -1,3 +1,4 @@
+-- AI! Convert this all to SQLite
 -- Profiles represent user identities
 CREATE TABLE profiles (
     id TEXT PRIMARY KEY,
