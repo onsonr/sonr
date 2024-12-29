@@ -1,3 +1,4 @@
+-- AI! Update the sqlc queries to match the schema and follow sqlite conventions
 -- name: InsertCredential :one
 INSERT INTO credentials (
     handle,
