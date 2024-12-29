@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/app/gateway/context"
-	"github.com/onsonr/sonr/app/gateway/islands"
-	"github.com/onsonr/sonr/app/gateway/views"
+	"github.com/onsonr/sonr/gateway/islands"
+	"github.com/onsonr/sonr/gateway/views"
+	"github.com/onsonr/sonr/gateway/context"
 	"github.com/onsonr/sonr/internal/common"
 	hwayorm "github.com/onsonr/sonr/internal/database/hwayorm"
 )

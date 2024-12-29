@@ -19,10 +19,10 @@ import (
 
 	_ "github.com/ncruces/go-sqlite3/driver"
 	_ "github.com/ncruces/go-sqlite3/embed"
-	vault "github.com/onsonr/sonr/app/vault"
 	"github.com/onsonr/sonr/internal/config/motr"
 	"github.com/onsonr/sonr/internal/database/motrorm"
 	sink "github.com/onsonr/sonr/internal/database/sink"
+	vault "github.com/onsonr/sonr/vault"
 )
 
 var (
