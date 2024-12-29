@@ -1,10 +1,9 @@
--- AI! Convert this all to SQLite
 -- Profiles represent user identities
 CREATE TABLE profiles (
     id TEXT PRIMARY KEY,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMPTZ,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at DATETIME,
     address TEXT NOT NULL,
     handle TEXT NOT NULL UNIQUE,
     origin TEXT NOT NULL,
@@ -16,30 +15,30 @@ CREATE TABLE profiles (
 -- Accounts represent blockchain accounts
 CREATE TABLE accounts (
     id TEXT PRIMARY KEY,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMPTZ,
-    number BIGINT NOT NULL,
-    sequence INT NOT NULL DEFAULT 0,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at DATETIME,
+    number INTEGER NOT NULL,
+    sequence INTEGER NOT NULL DEFAULT 0,
     address TEXT NOT NULL UNIQUE,
     public_key TEXT NOT NULL,
     chain_id TEXT NOT NULL,
     controller TEXT NOT NULL,
-    is_subsidiary BOOLEAN NOT NULL DEFAULT FALSE,
-    is_validator BOOLEAN NOT NULL DEFAULT FALSE,
-    is_delegator BOOLEAN NOT NULL DEFAULT FALSE,
-    is_accountable BOOLEAN NOT NULL DEFAULT TRUE
+    is_subsidiary INTEGER NOT NULL DEFAULT 0,
+    is_validator INTEGER NOT NULL DEFAULT 0,
+    is_delegator INTEGER NOT NULL DEFAULT 0,
+    is_accountable INTEGER NOT NULL DEFAULT 1
 );
 
 -- Assets represent tokens and coins
 CREATE TABLE assets (
     id TEXT PRIMARY KEY,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMPTZ,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at DATETIME,
     name TEXT NOT NULL,
     symbol TEXT NOT NULL,
-    decimals INT NOT NULL CHECK(decimals >= 0),
+    decimals INTEGER NOT NULL CHECK(decimals >= 0),
     chain_id TEXT NOT NULL,
     channel TEXT NOT NULL,
     asset_type TEXT NOT NULL,
@@ -50,9 +49,9 @@ CREATE TABLE assets (
 -- Credentials store WebAuthn credentials
 CREATE TABLE credentials (
     id TEXT PRIMARY KEY,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMPTZ,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at DATETIME,
     handle TEXT NOT NULL,
     credential_id TEXT NOT NULL UNIQUE,
     authenticator_attachment TEXT NOT NULL,
@@ -64,37 +63,37 @@ CREATE TABLE credentials (
 -- Sessions track user authentication state
 CREATE TABLE sessions (
     id TEXT PRIMARY KEY,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMPTZ,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at DATETIME,
     browser_name TEXT NOT NULL,
     browser_version TEXT NOT NULL,
     client_ipaddr TEXT NOT NULL,
     platform TEXT NOT NULL,
-    is_desktop BOOLEAN NOT NULL DEFAULT FALSE,
-    is_mobile BOOLEAN NOT NULL DEFAULT FALSE,
-    is_tablet BOOLEAN NOT NULL DEFAULT FALSE,
-    is_tv BOOLEAN NOT NULL DEFAULT FALSE,
-    is_bot BOOLEAN NOT NULL DEFAULT FALSE,
+    is_desktop INTEGER NOT NULL DEFAULT 0,
+    is_mobile INTEGER NOT NULL DEFAULT 0,
+    is_tablet INTEGER NOT NULL DEFAULT 0,
+    is_tv INTEGER NOT NULL DEFAULT 0,
+    is_bot INTEGER NOT NULL DEFAULT 0,
     challenge TEXT NOT NULL,
-    is_human_first BOOLEAN NOT NULL DEFAULT FALSE,
-    is_human_last BOOLEAN NOT NULL DEFAULT FALSE,
-    profile_id TEXT NOT NULL REFERENCES profiles(id),
+    is_human_first INTEGER NOT NULL DEFAULT 0,
+    is_human_last INTEGER NOT NULL DEFAULT 0,
+    profile_id TEXT NOT NULL,
     FOREIGN KEY (profile_id) REFERENCES profiles(id)
 );
 
 -- Vaults store encrypted data
 CREATE TABLE vaults (
-    id BIGSERIAL PRIMARY KEY,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMPTZ,
+    id TEXT PRIMARY KEY,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at DATETIME,
     handle TEXT NOT NULL,
     origin TEXT NOT NULL,
     address TEXT NOT NULL,
     cid TEXT NOT NULL UNIQUE,
-    config JSONB NOT NULL,
-    session_id BIGINT NOT NULL,
+    config TEXT NOT NULL,
+    session_id TEXT NOT NULL,
     redirect_uri TEXT NOT NULL,
     FOREIGN KEY (session_id) REFERENCES sessions(id)
 );
