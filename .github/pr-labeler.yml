@@ -1,5 +1,3 @@
-"@pr/feature": ["feature/*", "feat/*"]
-"@pr/fix": fix/*
-"@pr/chore": chore/*
-"@pr/docs": docs/*
-"@pr/refactor": refactor/*
+"feature": ["feature/*", "feat/*"]
+"bugfix": fix/*
+"enhancement": enhancement/*

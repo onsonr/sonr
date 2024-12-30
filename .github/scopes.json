@@ -2,19 +2,17 @@
   "scopes": [
     "core-chain",
     "core-ibc",
-    "crypto-mpc",
-    "crypto-ucan",
-    "crypto-zkp",
     "sonr-hway",
-    "sonr-orm",
+    "sonr-matrix",
     "sonr-motr",
-    "sonr-chat",
     "x-did",
     "x-dwn",
     "x-svc",
+    "security-mpc",
+    "security-ucan",
+    "security-zkp",
     "ci-cd",
-    "dev-ops",
-    "wasm-worker"
+    "dev-ops"
   ],
   "docs": [
     {
