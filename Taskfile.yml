@@ -54,23 +54,3 @@ tasks:
     silent: true
     cmds:
       - task: procs:down
-
-  date:
-    desc: Returns date in YEAR.WEEK.DAY format
-    cmds:
-      - |
-        YEAR=$(date +%Y)
-        WEEK=$(date +%V)
-        DAY=$(date +%u)
-        echo "${YEAR}.${WEEK}.${DAY}"
-    vars:
-      DATE: '{{default "" .CLI_ARGS}}'
-    silent: true
- 
-  release:
-    desc: Create a new release with formatted date
-    cmds:
-      - curl -sfL https://goreleaser.com/static/run | DISTRIBUTION=pro VERSION=v{{.VERSION}} bash -s -- check
-      - RELEASE_DATE=$(task date) goreleaser release --clean
-    silent: true
-

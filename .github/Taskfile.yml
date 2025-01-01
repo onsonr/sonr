@@ -9,8 +9,6 @@ vars:
     sh: git rev-parse --show-toplevel
   OS:
     sh: uname -s
-  TASKS:
-    sh: task -l
 
 tasks:
   date:
@@ -29,6 +27,6 @@ tasks:
     desc: Create a new release with formatted date
     cmds:
       - go install github.com/goreleaser/goreleaser/v2@latest
-      - RELEASE_DATE=$(task date) goreleaser release --clean
+      - RELEASE_DATE=$(task date) goreleaser release --clean -f {{.ROOT}}/.goreleaser.yaml
     silent: true
 
