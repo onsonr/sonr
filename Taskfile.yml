@@ -15,12 +15,14 @@ vars:
     sh: skate get DOPPLER_NETWORK
 
 includes:
-  hway:
-    taskfile: https://tasks.sonr.dev/Hway.yml
-  ipfs:
-    taskfile: https://tasks.sonr.dev/IPFS.yml
-  sonrd:
-    taskfile: https://tasks.sonr.dev/Sonrd.yml
+  deps: https://raw.githubusercontent.com/onsonr/taskfiles/main/taskfiles/deps.yml
+  gen: https://raw.githubusercontent.com/onsonr/taskfiles/main/taskfiles/gen.yml
+  hway: https://raw.githubusercontent.com/onsonr/taskfiles/main/taskfiles/hway.yml
+  ipfs: https://raw.githubusercontent.com/onsonr/taskfiles/main/taskfiles/ipfs.yml
+  issue: https://raw.githubusercontent.com/onsonr/taskfiles/main/taskfiles/ghpm.yml
+  procs: https://raw.githubusercontent.com/onsonr/taskfiles/main/taskfiles/procs.yml
+  postgres: https://raw.githubusercontent.com/onsonr/taskfiles/main/taskfiles/postgres.yml
+  sonrd: https://raw.githubusercontent.com/onsonr/taskfiles/main/taskfiles/sonrd.yml
 
 tasks:
   default:
@@ -29,50 +31,6 @@ tasks:
       - gum format -- "# Sonr ({{.OS}}-{{.VERSION}})" " - ({{.COMMIT}}) {{.ROOT}}"
       - task -l -j | jq -r '.tasks[].name' | fzf --height=16 | xargs task
     silent: true
-
-  deps:
-    desc: Install go dependencies
-    silent: true
-    vars:
-      DEPS:
-        [
-          "github.com/apple/pkl-go/cmd/pkl-gen-go@latest",
-          "github.com/sqlc-dev/sqlc/cmd/sqlc@latest",
-          "github.com/goreleaser/goreleaser/v2@latest",
-          "github.com/a-h/templ/cmd/templ@latest",
-        ]
-    cmds:
-      - for: { var: DEPS }
-        cmd: gum spin --spinner dot --title "Installing go dependencies..." -- go install {{.ITEM}}
-
-  issue:list:
-    desc: List all issues
-    silent: true
-    cmds:
-      - gh ils
-
-  issue:new:
-    desc: Create a new issue
-    silent: true
-    dir: .github/scripts
-    cmds:
-      - sh new_issue.sh
-
-  gen:proto:
-    desc: Generate proto files
-    silent: true
-    cmd: gum spin --spinner dot --title "Generating Protobufs..." -- make proto-gen
-
-  gen:sqlc:
-    desc: Generate SQLC files
-    silent: true
-    cmds:
-      - gum spin --spinner dot --title "Generating SQLC..." -- sqlc generate -f internal/database/sqlc.yaml
-
-  gen:templ:
-    desc: Generate templ files
-    silent: true
-    cmd: gum spin --spinner dot --title "Generating Templ..." -- templ generate
 
   start:
     desc: Start the Network
@@ -83,52 +41,17 @@ tasks:
       - task: ipfs:mount
       - task: sonrd:install
       - task: hway:build
-      - task: procs-up
+      - task: procs:up
 
   status:
     desc: Check the status of the Network
     silent: true
     cmds:
-      - task: procs-attach
+      - task: procs:attach
 
   stop:
     desc: Stop the Network
     silent: true
     cmds:
-      - task: procs-down
+      - task: procs:down
 
-  procs-up:
-    internal: true
-    dir: "deploy"
-    cmds:
-      - cmd: process-compose up
-        platforms:
-          - darwin
-
-      - cmd: process-compose up --use-uds --unix-socket /tmp/sonr-network.sock -D
-        platforms:
-          - linux
-
-  procs-down:
-    internal: true
-    dir: "deploy"
-    cmds:
-      - cmd: process-compose down
-        platforms:
-          - darwin
-
-      - cmd: process-compose down --use-uds --unix-socket /tmp/sonr-network.sock
-        platforms:
-          - linux
-
-  procs-attach:
-    internal: true
-    dir: "deploy"
-    cmds:
-      - cmd: process-compose attach --use-uds --unix-socket /tmp/sonr-network.sock
-        platforms:
-          - linux
-
-      - cmd: process-compose attach
-        platforms:
-          - darwin
