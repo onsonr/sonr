@@ -166,7 +166,7 @@ release:
   github:
     owner: onsonr
     name: sonr
-  name_template: "Release {{.Version}}"
+  name_template: "Release {{ time '2006' }}.{{ time '02' | int }}.{{ time 'Monday' | int }}"
   draft: false
   replace_existing_draft: true
   replace_existing_artifacts: true
@@ -183,7 +183,7 @@ announce:
 
   reddit:
     enabled: true
-    application_id: {{ .Env.REDDIT_APP_ID }}
-    username: {{ .Env.REDDIT_USERNAME }}
+    application_id: "{{ .Env.REDDIT_APP_ID }}"
+    username: "{{ .Env.REDDIT_USERNAME }}"
     title_template: 'Sonr {{ .Tag }} was just released!'
 
