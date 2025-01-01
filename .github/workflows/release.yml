@@ -46,6 +46,7 @@ jobs:
       - name: Run GoReleaser
         run: task release
         env:
+          TASK_X_REMOTE_TASKFILES: 1
           GITHUB_TOKEN: ${{ secrets.GH_RELEASER_TOKEN }}
           GITHUB_PERSONAL_AUTH_TOKEN: ${{ secrets.GH_RELEASER_TOKEN }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
