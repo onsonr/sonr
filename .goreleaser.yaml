@@ -180,10 +180,3 @@ announce:
   telegram:
     enabled: true
     chat_id: -1002222617755
-
-  reddit:
-    enabled: true
-    application_id: "{{ .Env.REDDIT_APP_ID }}"
-    username: "{{ .Env.REDDIT_USERNAME }}"
-    title_template: 'Sonr {{ .Tag }} was just released!'
-
