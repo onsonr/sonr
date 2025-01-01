@@ -61,7 +61,7 @@ archives:
   - id: sonr
     builds: [sonr]
     name_template: >-
-      sonr_{{- title .Os }}_{{- if eq .Arch "amd64" }}x86_64
+      sonr_{{ .Os }}_{{- if eq .Arch "amd64" }}x86_64
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
     format: tar.gz
@@ -72,7 +72,7 @@ archives:
   - id: hway
     builds: [hway]
     name_template: >-
-      hway_{{- title .Os }}_{{- if eq .Arch "amd64" }}x86_64
+      hway_{{ .Os }}_{{- if eq .Arch "amd64" }}x86_64
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
     format: tar.gz
@@ -83,7 +83,7 @@ archives:
 nfpms:
   - id: hway
     package_name: hway
-    file_name_template: "hway_{{ .Os }}_{{ .Arch }}.{{ .ConventionalExtension }}"
+    file_name_template: "hway_{{ .Os }}_{{ .Arch }}{{ .ConventionalExtension }}"
     builds: [hway]
     vendor: Sonr
     homepage: "https://onsonr.dev"
@@ -106,7 +106,7 @@ nfpms:
 
   - id: sonr
     package_name: sonrd
-    file_name_template: "sonrd_{{ .Os }}_{{ .Arch }}.{{ .ConventionalExtension }}"
+    file_name_template: "sonrd_{{ .Os }}_{{ .Arch }}{{ .ConventionalExtension }}"
     builds: [sonr]
     vendor: Sonr
     homepage: "https://onsonr.dev"
@@ -180,3 +180,10 @@ announce:
   telegram:
     enabled: true
     chat_id: -1002222617755
+
+  reddit:
+    enabled: true
+    application_id: {{ .Env.REDDIT_APP_ID }}
+    username: {{ .Env.REDDIT_USERNAME }}
+    title_template: 'Sonr {{ .Tag }} was just released!'
+

@@ -49,3 +49,7 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          REDDIT_APP_ID: ${{ secrets.REDDIT_APP_ID }}
+          REDDIT_SECRET: ${{ secrets.REDDIT_SECRET }}
+          REDDIT_USERNAME: ${{ secrets.REDDIT_USERNAME }}
+          REDDIT_PASSWORD: ${{ secrets.REDDIT_PASSWORD }}
