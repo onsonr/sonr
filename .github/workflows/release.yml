@@ -43,15 +43,8 @@ jobs:
           version: 3.x
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install GoReleaser
-        run: curl -sfL https://goreleaser.com/static/run | DISTRIBUTION=pro VERSION=v2.5.0 bash -s -- check 
-
-      - name: Release
-        uses: goreleaser/goreleaser-action@v6
-        with:
-          distribution: goreleaser
-          version: latest
-          args: release --clean
+      - name: Run GoReleaser
+        run: task release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_RELEASER_TOKEN }}
           GITHUB_PERSONAL_AUTH_TOKEN: ${{ secrets.GH_RELEASER_TOKEN }}
@@ -62,3 +55,4 @@ jobs:
           REDDIT_SECRET: ${{ secrets.REDDIT_SECRET }}
           REDDIT_USERNAME: ${{ secrets.REDDIT_USERNAME }}
           REDDIT_PASSWORD: ${{ secrets.REDDIT_PASSWORD }}
+
