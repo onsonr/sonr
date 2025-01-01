@@ -1,0 +1,34 @@
+version: "3"
+
+vars:
+  VERSION:
+    sh: git describe --tags --abbrev=0
+  COMMIT:
+    sh: git rev-parse --short HEAD
+  ROOT:
+    sh: git rev-parse --show-toplevel
+  OS:
+    sh: uname -s
+  TASKS:
+    sh: task -l
+
+tasks:
+  date:
+    desc: Returns date in YEAR.WEEK.DAY format
+    cmds:
+      - |
+        YEAR=$(date +%Y)
+        WEEK=$(date +%V)
+        DAY=$(date +%u)
+        echo "${YEAR}.${WEEK}.${DAY}"
+    vars:
+      DATE: '{{default "" .CLI_ARGS}}'
+    silent: true
+ 
+  release:
+    desc: Create a new release with formatted date
+    cmds:
+      - go install github.com/goreleaser/goreleaser/v2@latest
+      - RELEASE_DATE=$(task date) goreleaser release --clean
+    silent: true
+
