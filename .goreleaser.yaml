@@ -166,7 +166,7 @@ release:
   github:
     owner: onsonr
     name: sonr
-  name_template: 'Release {{ time "2006" }}.{{ time "02" | int }}.{{ time "Monday" | int }}' 
+  name_template: 'Release {{ .Env.RELEASE_DATE }}'
   draft: false
   replace_existing_draft: true
   replace_existing_artifacts: true
