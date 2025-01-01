@@ -16,11 +16,11 @@ vars:
 
 includes:
   hway:
-    taskfile: taskfiles/Hway.yml
+    taskfile: https://tasks.sonr.dev/Hway.yml
   ipfs:
-    taskfile: taskfiles/IPFS.yml
+    taskfile: https://tasks.sonr.dev/IPFS.yml
   sonrd:
-    taskfile: taskfiles/Sonrd.yml
+    taskfile: https://tasks.sonr.dev/Sonrd.yml
 
 tasks:
   default:

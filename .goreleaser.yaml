@@ -61,8 +61,7 @@ archives:
   - id: sonr
     builds: [sonr]
     name_template: >-
-      sonr_{{ .Version }}_
-      {{- title .Os }}_{{- if eq .Arch "amd64" }}x86_64
+      sonr_{{- title .Os }}_{{- if eq .Arch "amd64" }}x86_64
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
     format: tar.gz
@@ -73,8 +72,7 @@ archives:
   - id: hway
     builds: [hway]
     name_template: >-
-      hway_{{ .Version }}_
-      {{- title .Os }}_{{- if eq .Arch "amd64" }}x86_64
+      hway_{{- title .Os }}_{{- if eq .Arch "amd64" }}x86_64
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
     format: tar.gz
@@ -85,7 +83,7 @@ archives:
 nfpms:
   - id: hway
     package_name: hway
-    file_name_template: "{{ .ConventionalFileName }}"
+    file_name_template: "hway_{{ .Os }}_{{ .Arch }}.{{ .ConventionalExtension }}"
     builds: [hway]
     vendor: Sonr
     homepage: "https://onsonr.dev"
@@ -108,7 +106,7 @@ nfpms:
 
   - id: sonr
     package_name: sonrd
-    file_name_template: "{{ .ConventionalFileName }}"
+    file_name_template: "sonrd_{{ .Os }}_{{ .Arch }}.{{ .ConventionalExtension }}"
     builds: [sonr]
     vendor: Sonr
     homepage: "https://onsonr.dev"
