@@ -44,7 +44,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run GoReleaser
-        run: task -t .github/Taskfile.yml release
+        run: task release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_RELEASER_TOKEN }}
           GITHUB_PERSONAL_AUTH_TOKEN: ${{ secrets.GH_RELEASER_TOKEN }}

@@ -9,21 +9,19 @@ vars:
     sh: git rev-parse --show-toplevel
   OS:
     sh: uname -s
-  TASKS:
-    sh: task -l
-  DOPPLER_TOKEN:
-    sh: skate get DOPPLER_NETWORK
+  # DOPPLER_TOKEN:
+    # sh: skate get DOPPLER_NETWORK
 
-includes:
-  deps: https://raw.githubusercontent.com/onsonr/taskfiles/main/taskfiles/deps.yml
-  gen: https://raw.githubusercontent.com/onsonr/taskfiles/main/taskfiles/gen.yml
-  hway: https://raw.githubusercontent.com/onsonr/taskfiles/main/taskfiles/hway.yml
-  ipfs: https://raw.githubusercontent.com/onsonr/taskfiles/main/taskfiles/ipfs.yml
-  issue: https://raw.githubusercontent.com/onsonr/taskfiles/main/taskfiles/ghpm.yml
-  procs: https://raw.githubusercontent.com/onsonr/taskfiles/main/taskfiles/procs.yml
-  postgres: https://raw.githubusercontent.com/onsonr/taskfiles/main/taskfiles/postgres.yml
-  sonrd: https://raw.githubusercontent.com/onsonr/taskfiles/main/taskfiles/sonrd.yml
-
+# includes:
+#   deps: https://raw.githubusercontent.com/onsonr/taskfiles/main/taskfiles/deps.yml
+#   gen: https://raw.githubusercontent.com/onsonr/taskfiles/main/taskfiles/gen.yml
+#   hway: https://raw.githubusercontent.com/onsonr/taskfiles/main/taskfiles/hway.yml
+#   ipfs: https://raw.githubusercontent.com/onsonr/taskfiles/main/taskfiles/ipfs.yml
+#   issue: https://raw.githubusercontent.com/onsonr/taskfiles/main/taskfiles/ghpm.yml
+#   procs: https://raw.githubusercontent.com/onsonr/taskfiles/main/taskfiles/procs.yml
+#   postgres: https://raw.githubusercontent.com/onsonr/taskfiles/main/taskfiles/postgres.yml
+#   sonrd: https://raw.githubusercontent.com/onsonr/taskfiles/main/taskfiles/sonrd.yml
+#
 tasks:
   default:
     cmds:
@@ -32,25 +30,44 @@ tasks:
       - task -l -j | jq -r '.tasks[].name' | fzf --height=16 | xargs task
     silent: true
 
-  start:
-    desc: Start the Network
-    silent: true
+  # start:
+  #   desc: Start the Network
+  #   silent: true
+  #   cmds:
+  #     - task: postgres:reset
+  #     - task: ipfs:init
+  #     - task: ipfs:mount
+  #     - task: sonrd:install
+  #     - task: hway:build
+  #     - task: procs:up
+  #
+  # status:
+  #   desc: Check the status of the Network
+  #   silent: true
+  #   cmds:
+  #     - task: procs:attach
+  #
+  # stop:
+  #   desc: Stop the Network
+  #   silent: true
+  #   cmds:
+  #     - task: procs:down
+  date:
+    desc: Returns date in YEAR.WEEK.DAY format
     cmds:
-      - task: postgres:reset
-      - task: ipfs:init
-      - task: ipfs:mount
-      - task: sonrd:install
-      - task: hway:build
-      - task: procs:up
+      - |
+        YEAR=$(date +%Y)
+        WEEK=$(date +%V)
+        DAY=$(date +%u)
+        echo "${YEAR}.${WEEK}.${DAY}"
+    vars:
+      DATE: '{{default "" .CLI_ARGS}}'
+    silent: true
+ 
+  release:
+    desc: Create a new release with formatted date
+    cmds:
+      - go install github.com/goreleaser/goreleaser/v2@latest
+      - RELEASE_DATE=$(task date) goreleaser release --clean
+    silent: true
 
-  status:
-    desc: Check the status of the Network
-    silent: true
-    cmds:
-      - task: procs:attach
-
-  stop:
-    desc: Stop the Network
-    silent: true
-    cmds:
-      - task: procs:down
