@@ -63,7 +63,7 @@ require (
 	github.com/cosmos/ibc-go/v8 v8.2.0
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.3.0
 	github.com/dustinxie/ecc v0.0.0-20210511000915-959544187564
-	github.com/ecies/go/v2 v2.0.9
+	github.com/ecies/go/v2 v2.0.10
 	github.com/go-webauthn/webauthn v0.11.2
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang/protobuf v1.5.4
