@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/onsonr/sonr/x/did/types/crypto"
+	"github.com/onsonr/sonr/internal/didcrypto"
 )
 
 const (
