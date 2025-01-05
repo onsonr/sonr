@@ -8,15 +8,11 @@ SDK_PACK := $(shell go list -m github.com/cosmos/cosmos-sdk | sed  's/ /\@/g')
 BINDIR ?= $(GOPATH)/bin
 SIMAPP = ./app
 
-PC_PORT_NUM=42069
-PC_LOG_FILE=./sonr.log
-PC_SOCKET_PATH=/tmp/sonr-net.sock
-
 # for dockerized protobuf tools
 DOCKER := $(shell which docker)
 HTTPS_GIT := github.com/onsonr/sonr.git
-PROCESS_COMPOSE := $(shell which process-compose)
 
+export RELEASE_DATE="$(date +%Y).$(date +%V).$(date +%u)"
 export GO111MODULE = on
 
 # process build tags
@@ -106,6 +102,11 @@ install: go.sum
 
 install-hway: go.sum
 	go install -mod=readonly ./cmd/hway
+
+release: fmt-date
+	@go install github.com/goreleaser/goreleaser/v2@latest
+	RELEASE_DATE=$(RELEASE_DATE) goreleaser release --clean
+
 
 ########################################
 ### Tools & dependencies
