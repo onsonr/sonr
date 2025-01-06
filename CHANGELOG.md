@@ -1,3 +1,10 @@
+## v0.6.2 (2025-01-06)
+
+### Refactor
+
+- simplify release process and remove unnecessary tasks
+- remove devcontainer configuration
+
 ## v0.6.1 (2024-12-30)
 
 ### Feat
