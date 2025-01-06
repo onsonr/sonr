@@ -38,7 +38,11 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Run GoReleaser
-        run: make release
+        uses: goreleaser/goreleaser-action@v6
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          version: "~> v2"
+          args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GH_RELEASER_TOKEN }}
           GITHUB_PERSONAL_AUTH_TOKEN: ${{ secrets.GH_RELEASER_TOKEN }}
