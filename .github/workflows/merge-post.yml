@@ -31,6 +31,10 @@ jobs:
           # Get tag without 'v' prefix
           TAG_VERSION=${GITHUB_REF#refs/tags/v}
 
+          # Checkout main branch
+          git fetch origin main
+          git checkout main
+
           # Update version in .cz.toml
           sed -i "s/^version = \".*\"/version = \"$TAG_VERSION\"/" .cz.toml
 
