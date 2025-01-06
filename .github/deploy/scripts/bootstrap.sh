@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -17,5 +17,5 @@ TX_INDEX_INDEXER=$(doppler secrets get TX_INDEXER --plain --project sonr --confi
 TX_INDEX_PSQL_CONN=$(doppler secrets get TX_PSQL_CONN --plain --project sonr --config test)
 
 # Run the node setup with all variables properly exported
-CLEAN=true KEY0_NAME=$ACC0 KEY0_MNEMONIC=$MNEM0 KEY1_NAME=$ACC1 KEY1_MNEMONIC=$MNEM1 CHAIN_ID=$CHAIN_ID TX_INDEX_INDEXER=$TX_INDEX_INDEXER TX_INDEX_PSQL_CONN=$TX_INDEX_PSQL_CONN sh scripts/test_node.sh
+CLEAN=true KEY0_NAME=$ACC0 KEY0_MNEMONIC=$MNEM0 KEY1_NAME=$ACC1 KEY1_MNEMONIC=$MNEM1 CHAIN_ID=$CHAIN_ID TX_INDEX_INDEXER=$TX_INDEX_INDEXER TX_INDEX_PSQL_CONN=$TX_INDEX_PSQL_CONN sh ./start.sh
 

@@ -147,13 +147,7 @@
       "url": "https://docs.tigerbeetle.com/coding/recipes/currency-exchange"
     },
     {
-      "keywords": [
-        "balance",
-        "tigerbeetle",
-        "oracle",
-        "conditional",
-        "transfers"
-      ],
+      "keywords": ["tigerbeetle", "conditional", "transfers"],
       "url": "https://docs.tigerbeetle.com/coding/recipes/balance-conditional-transfers"
     },
     {

@@ -3,21 +3,12 @@ version: "0.5"
 processes:
   IPFS:
     namespace: testnet
-    command: "ipfs daemon --mount"
+    command: "devbox run ipfs"
     ready_log_line: "Daemon is ready"
 
   Sonr:
     namespace: testnet
-    command: "task sonrd:start"
+    command: "devbox run sonrd"
     depends_on:
       IPFS:
         condition: process_log_ready
-
-  Hway:
-    namespace: testnet
-    command: "hway"
-    depends_on:
-      IPFS:
-        condition: process_log_ready
-      Sonr:
-        condition: process_started

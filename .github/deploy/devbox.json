@@ -1,6 +1,12 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.13.7/.schema/devbox.schema.json",
-  "packages": ["go@latest", "cargo@latest", "uv@latest", "bun@latest"],
+  "packages": [
+    "go@latest",
+    "cargo@latest",
+    "uv@latest",
+    "bun@latest",
+    "doppler@latest"
+  ],
   "env": {
     "PATH": "$HOME/.cargo/bin:$HOME/go/bin:$HOME/.local/bin:$HOME/.bun/bin:$PATH",
     "GITHUB_TOKEN": "$GITHUB_TOKEN",
@@ -11,7 +17,7 @@
   "shell": {
     "init_hook": [],
     "scripts": {
-      "test": ["echo \"Error: no test specified\" && exit 1"]
+      "sonrd": ["sh ./scripts/start_sonrd.sh"]
     }
   }
 }
