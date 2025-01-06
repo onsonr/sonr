@@ -1,4 +1,4 @@
-name: Perform Checks on PR
+name: PR Checks
 
 on:
   pull_request:
@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   verify-pr:
-    name: Verify PR
+    name: Test Lints
     if: github.event_name == 'pull_request'
     permissions:
       contents: read # for TimonVS/pr-labeler-action to read config file
@@ -31,7 +31,7 @@ jobs:
   test-builds:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    name: Run Build Tests
+    name: Test Builds
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -50,7 +50,7 @@ jobs:
   test-unit:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    name: Run Unit Tests
+    name: Test Unit
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -68,7 +68,7 @@ jobs:
   test-race:
     runs-on: ubuntu-latest
     if: github.event_name == 'merge_group'
-    name: Run Race Tests
+    name: Test Race
     continue-on-error: true
     steps:
       - name: Checkout repository
@@ -87,7 +87,7 @@ jobs:
   test-cover:
     runs-on: ubuntu-latest
     if: github.event_name == 'merge_group'
-    name: Run Coverage Tests
+    name: Test Coverage
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -105,7 +105,7 @@ jobs:
   validate-release:
     if: github.event_name == 'merge_group' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    name: Verify Release Config
+    name: Test Release
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
