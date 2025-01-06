@@ -343,10 +343,7 @@ release-check:
 	@RELEASE_DATE=$(RELEASE_DATE) goreleaser check
 
 validate-tag:
-	@npm install -g commitizen
-	@npm install -g cz-git
-	NEXT_VERSION
-	@RELEASE_DATE=$(RELEASE_DATE) goreleaser check
+	@sh ./scripts/validate_tag.sh
 ###############################################################################
 ###                                     help                                ###
 ###############################################################################

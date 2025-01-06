@@ -87,9 +87,9 @@ jobs:
           python-version: "3.x"
 
       - name: Version Check
-        run: |
-          chmod +x ./scripts/check_next_version.sh
-          ./scripts/check_next_version.sh
+        run: make validate-tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check GoReleaser Config
         run: make release-check
