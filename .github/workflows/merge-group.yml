@@ -1,0 +1,68 @@
+name: Merge Group
+
+on:
+  merge_group:
+
+permissions:
+  contents: read # for TimonVS/pr-labeler-action to read config file
+  pull-requests: write # for TimonVS/pr-labeler-action to add labels in PR
+
+jobs:
+  test-race:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'merge_group'
+    name: Test Race
+    continue-on-error: true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: onsonr/sonr
+          fetch-depth: 0
+          fetch-tags: true
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+          check-latest: true
+      - run: make test-race
+
+  test-cover:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'merge_group'
+    name: Test Coverage
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: onsonr/sonr
+          fetch-depth: 0
+          fetch-tags: true
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+          check-latest: true
+      - run: make test-cover
+
+  test-release:
+    runs-on: ubuntu-latest
+    name: Test Release
+    if: github.event_name == 'merge_group'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: onsonr/sonr
+          fetch-depth: 0
+          fetch-tags: true
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+          check-latest: true
+
+      - name: Release Dry Run
+        run: make release-dry
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

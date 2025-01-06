@@ -5,10 +5,6 @@ project_name: sonr
 before:
   hooks:
     - echo "Release date is {{ .Env.RELEASE_DATE }}"
-    - docker build -t ghcr.io/onsonr/sonr:latest .
-    - docker tag ghcr.io/onsonr/sonr:latest ghcr.io/onsonr/sonr:{{ .Tag }}
-    - docker push ghcr.io/onsonr/sonr:{{ .Tag }}
-    - docker push ghcr.io/onsonr/sonr:latest
 
 builds:
   - id: sonr

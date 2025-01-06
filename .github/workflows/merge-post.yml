@@ -1,4 +1,4 @@
-name: Bump Version on Merge
+name: Post Merge
 on:
   pull_request:
     types: [closed]
@@ -9,6 +9,7 @@ permissions:
 
 jobs:
   bump-version:
+    name: Cz Bump
     if: |
       github.event.pull_request.merged == true && 
       github.event.pull_request.user.login != 'dependabot[bot]' &&
@@ -26,6 +27,7 @@ jobs:
         with:
           push: false
           increment: patch
+          branch: main
 
       - name: Push using ssh
         run: |

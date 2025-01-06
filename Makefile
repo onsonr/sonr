@@ -342,6 +342,8 @@ release-check:
 	@go install github.com/goreleaser/goreleaser/v2@latest
 	@RELEASE_DATE=$(RELEASE_DATE) goreleaser check
 
+validate-tag:
+	@sh ./scripts/validate_tag.sh
 ###############################################################################
 ###                                     help                                ###
 ###############################################################################
