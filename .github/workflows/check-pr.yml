@@ -93,7 +93,7 @@ jobs:
 
       - name: Check if tag exists
         run: |
-          if git ls-remote --tags origin "refs/tags/v${{ steps.cz.outputs.version }}" | grep -q .; then
+          if git ls-remote --tags origin "refs/tags/v$REVISION" | grep -q .; then
             echo "::error::Tag v${DETERMINED_VERSION} already exists upstream"
             exit 1
           fi

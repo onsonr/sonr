@@ -342,6 +342,11 @@ release-check:
 	@go install github.com/goreleaser/goreleaser/v2@latest
 	@RELEASE_DATE=$(RELEASE_DATE) goreleaser check
 
+validate-tag:
+	@npm install -g commitizen
+	@npm install -g cz-git
+	NEXT_VERSION
+	@RELEASE_DATE=$(RELEASE_DATE) goreleaser check
 ###############################################################################
 ###                                     help                                ###
 ###############################################################################
