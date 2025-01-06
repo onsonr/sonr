@@ -24,7 +24,7 @@ jobs:
           buf_token: ${{ secrets.BUF_TOKEN }}
 
   container-push:
-    name: Publish Docker Images
+    name: Publish Dockers
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -45,7 +45,7 @@ jobs:
 
   docs-push:
     runs-on: ubuntu-latest
-    name: Publish Tech Docs
+    name: Publish Docs
     steps:
       - uses: actions/checkout@v4
       - name: Configure Git Credentials
