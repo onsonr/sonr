@@ -81,23 +81,15 @@ jobs:
           go-version: "1.23"
           check-latest: true
 
-      - name: Commitizen Dry Run
-        id: cz
-        uses: commitizen-tools/commitizen-action@master
+      - name: Install Python
+        uses: actions/setup-python@v4
         with:
-          push: false
-          dry_run: true
-          branch: main
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          increment: patch
+          python-version: "3.x"
 
-      - name: Check if tag exists
+      - name: Version Check
         run: |
-          if git ls-remote --tags origin "refs/tags/v$REVISION" | grep -q .; then
-            echo "::error::Tag v${DETERMINED_VERSION} already exists upstream"
-            exit 1
-          fi
-          echo "Tag v${DETERMINED_VERSION} does not exist - OK to proceed"
+          chmod +x ./scripts/check_next_version.sh
+          ./scripts/check_next_version.sh
 
       - name: Check GoReleaser Config
         run: make release-check
