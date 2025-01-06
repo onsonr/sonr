@@ -8,6 +8,13 @@ SDK_PACK := $(shell go list -m github.com/cosmos/cosmos-sdk | sed  's/ /\@/g')
 BINDIR ?= $(GOPATH)/bin
 SIMAPP = ./app
 
+# Fetch from env
+RELEASE_DATE ?= $(shell date +%Y).$(shell date +%V).$(shell date +%u)
+VERSION ?= $(shell echo $(shell git describe --tags) | sed 's/^v//')
+COMMIT ?= $(shell git log -1 --format='%H')
+OS ?= $(shell uname -s)
+ROOT ?= $(shell git rev-parse --show-toplevel)
+
 # for dockerized protobuf tools
 DOCKER := $(shell which docker)
 HTTPS_GIT := github.com/onsonr/sonr.git
@@ -110,6 +117,7 @@ release: fmt-date
 
 ########################################
 ### Tools & dependencies
+########################################
 
 go-mod-cache: go.sum
 	@echo "--> Download go modules to local cache"
@@ -135,12 +143,9 @@ clean:
 distclean: clean
 	rm -rf vendor/
 
-init-env:
-	@echo "Installing process-compose"
-	sh scripts/init_env.sh
-
 ########################################
 ### Testing
+########################################
 
 test: test-unit
 test-all: test-race test-cover test-system
@@ -310,6 +315,27 @@ sh-testnet: mod-tidy
 	CHAIN_ID="sonr-testnet-1" BLOCK_TIME="1000ms" CLEAN=true sh scripts/test_node.sh
 
 .PHONY: setup-testnet set-testnet-configs testnet testnet-basic sh-testnet dop-testnet
+
+###############################################################################
+###                                    extra utils                          ###
+###############################################################################
+
+status:
+	@gh run ls -L 3
+	@gum format -- "# Sonr ($OS-$VERSION)" "- ($(COMMIT)) $ROOT" "- $(RELEASE_DATE)"
+	@sleep 5
+
+release:
+	@go install github.com/goreleaser/goreleaser/v2@latest
+	@goreleaser release --clean
+
+release-dry:
+	@go install github.com/goreleaser/goreleaser/v2@latest
+	@goreleaser release --clean --dry-run --snapshot
+
+release-check:
+	@go install github.com/goreleaser/goreleaser/v2@latest
+	@goreleaser check
 
 ###############################################################################
 ###                                     help                                ###
