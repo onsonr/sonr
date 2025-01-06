@@ -121,3 +121,4 @@ jobs:
           REDDIT_SECRET: ${{ secrets.REDDIT_SECRET }}
           REDDIT_USERNAME: ${{ secrets.REDDIT_USERNAME }}
           REDDIT_PASSWORD: ${{ secrets.REDDIT_PASSWORD }}
+          RELEASE_DATE: ${{ env.RELEASE_DATE }}
