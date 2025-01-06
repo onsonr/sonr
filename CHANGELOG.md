@@ -475,7 +475,7 @@
 - **cta**: Fix typo in CTA title
 - change bento section title to reflect security focus
 - adjust hero image dimensions
-- **Input**: Change  type from  to
+- **Input**: Change type from to
 - update hero image height in config.pkl
 
 ### Refactor
@@ -507,7 +507,7 @@
 
 - remove old changelog entries
 - rename buf-publish.yml to publish-assets.yml
-- remove unused  field from
+- remove unused field from
 - remove unnecessary checkout in scheduled-release workflow
 - rename build ID to sonr
 - remove unnecessary release existence check
@@ -626,7 +626,7 @@
 - extract root command creation to separate file
 - move ipfs setup to function
 - remove unnecessary proxy config
-- rename  script to
+- rename script to
 - move DWN proxy server logic to separate file
 - use htmx instead of dwn for vault client
 - remove unused environment variables
@@ -634,7 +634,7 @@
 - use staking keeper in DID keeper
 - remove unused dependencies
 - remove unused image building workflow
-- add  field to
+- add field to
 - Update KeyKind Enum to have proper naming conventions
 - Update `DIDNamespace` to have proper naming convention
 - expose ports directly in docker-compose

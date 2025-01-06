@@ -336,7 +336,7 @@ release:
 
 release-dry:
 	@go install github.com/goreleaser/goreleaser/v2@latest
-	@RELEASE_DATE=$(RELEASE_DATE) goreleaser release --clean --snapshot
+	@RELEASE_DATE=$(RELEASE_DATE) goreleaser release --snapshot --clean --skip=publish
 
 release-check:
 	@go install github.com/goreleaser/goreleaser/v2@latest

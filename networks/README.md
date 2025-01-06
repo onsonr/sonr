@@ -2,6 +2,4 @@
 
 ### Prerequisites
 
-
-
 ### Running a Network

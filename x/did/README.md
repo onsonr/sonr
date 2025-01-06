@@ -9,6 +9,7 @@ The DID module maintains several key state structures:
 ### Controller State
 
 The Controller state represents a Sonr DWN Vault. It includes:
+
 - Unique identifier (number)
 - DID
 - Sonr address
@@ -22,6 +23,7 @@ The Controller state represents a Sonr DWN Vault. It includes:
 ### Assertion State
 
 The Assertion state includes:
+
 - DID
 - Controller
 - Subject
@@ -33,6 +35,7 @@ The Assertion state includes:
 ### Authentication State
 
 The Authentication state includes:
+
 - DID
 - Controller
 - Subject
@@ -44,6 +47,7 @@ The Authentication state includes:
 ### Verification State
 
 The Verification state includes:
+
 - DID
 - Controller
 - DID method
@@ -57,6 +61,7 @@ The Verification state includes:
 ## State Transitions
 
 State transitions are triggered by the following messages:
+
 - LinkAssertion
 - LinkAuthentication
 - UnlinkAssertion
@@ -89,6 +94,7 @@ The DID module provides the following query endpoints:
 ## Params
 
 The module parameters include:
+
 - Allowed public keys (map of KeyInfo)
 - Conveyance preference
 - Attestation formats
@@ -123,6 +129,7 @@ This module utilizes UCAN (User Controlled Authorization Networks) to provide a 
 ## Future Improvements
 
 Potential future improvements could include:
+
 1. Enhanced privacy features for DID operations, potentially leveraging UCAN capabilities for privacy-preserving authorization.
 2. Integration with more blockchain networks
 3. Support for additional key types and cryptographic algorithms
@@ -131,6 +138,7 @@ Potential future improvements could include:
 ## Tests
 
 Acceptance tests should cover all major functionality, including:
+
 - Creating and managing DIDs
 - Linking and unlinking assertions and authentications
 - Executing transactions with DIDs
@@ -154,6 +162,7 @@ A Verifiable Credential (VC) is a digital statement that can be cryptographicall
 ### Key Types
 
 The module supports various key types, including:
+
 - Role
 - Algorithm (e.g., ES256, EdDSA, ES256K)
 - Encoding (e.g., hex, base64, multibase)

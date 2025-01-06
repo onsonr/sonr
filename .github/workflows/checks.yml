@@ -16,12 +16,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Required to fetch all history for merging
-          
+
       - uses: TimonVS/pr-labeler-action@v5
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           configuration-path: .github/pr-labeler.yml # optional, .github/pr-labeler.yml is the default value
-
 
   test-builds:
     if: github.event_name == 'pull_request'

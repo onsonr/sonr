@@ -32,13 +32,11 @@ func (k Querier) Params(c context.Context, req *types.QueryParamsRequest) (*type
 // OriginExists implements types.QueryServer.
 func (k Querier) OriginExists(goCtx context.Context, req *types.QueryOriginExistsRequest) (*types.QueryOriginExistsResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("OriginExists is unimplemented")
 	return &types.QueryOriginExistsResponse{}, nil
 }
 
 // ResolveOrigin implements types.QueryServer.
 func (k Querier) ResolveOrigin(goCtx context.Context, req *types.QueryResolveOriginRequest) (*types.QueryResolveOriginResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("ResolveOrigin is unimplemented")
 	return &types.QueryResolveOriginResponse{}, nil
 }
