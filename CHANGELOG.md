@@ -1,3 +1,63 @@
+## Unreleased
+
+### Feat
+
+- integrate Trunk CI checks
+- simplify devnet and testnet configurations
+- add docs and CI workflow for publishing to onsonr.dev
+- automate release process using Taskfile and GitHub Actions
+- add Reddit release notification
+
+### Fix
+
+- pass working directory to goreleaser task
+- correct release name template syntax
+
+### Refactor
+
+- improve code structure and readability in DID module
+- Move devnet configuration to networks/devnet
+- move logger interface to appropriate package
+- Move network configurations to deploy directory
+- update import path for didcrypto package
+- remove devcontainer configuration
+- simplify release workflow and remove unnecessary Taskfile includes
+- improve release process using goreleaser and taskfile
+- simplify release workflow using a single task
+- improve release naming and environment variable handling
+- improve goreleaser archive and nfpms configuration
+
+## v0.6.1 (2024-12-30)
+
+### Feat
+
+- convert highway sink schema to SQLite
+- **scopes**: add Web Authentication API documentation
+- add install script for Sonr binaries
+
+### Fix
+
+- Handle only 500 errors in ErrorHandler
+- Return only on 500 errors in error handler
+- update sqlc queries to match schema and use SQLite conventions
+- Rename DecodeWasmContext to decodeWasmContext
+- resolve lint errors in WASMMiddleware function
+- prevent automatic version bumps from dependabot
+- correct merge workflow to increment patch version
+
+### Refactor
+
+- remove outdated scopes
+- remove unnecessary seed message
+- Update sqlc queries to match schema and sqlite conventions
+- move gateway and vault components to new locations
+- **scopes**: simplify scopes.json structure
+- **scopes**: rename and reorganize scopes
+- **api**: remove unused Allocate RPC from Query service
+- remove postgresql tasks
+- remove unused AI PR body generator step
+- simplify Taskfile and remove unused chain configurations
+
 ## v0.6.0 (2024-12-24)
 
 ### Feat
@@ -22,7 +82,7 @@
 - optimize GitHub Actions workflow triggers (#1204)
 - Move embed
 
-## v0.5.27 (2024-12-16)
+## v0.1.6 (2024-12-16)
 
 ## v0.5.26 (2024-12-13)
 
