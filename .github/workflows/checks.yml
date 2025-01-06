@@ -4,9 +4,13 @@ on:
   pull_request:
   merge_group:
 
+permissions:
+  contents: read # for TimonVS/pr-labeler-action to read config file
+  pull-requests: write # for TimonVS/pr-labeler-action to add labels in PR
+
 jobs:
-  tidy-pr:
-    name: Tidy PR
+  verify-pr:
+    name: Verify PR
     if: github.event_name == 'pull_request'
     permissions:
       contents: read # for TimonVS/pr-labeler-action to read config file
@@ -23,8 +27,6 @@ jobs:
           configuration-path: .github/pr-labeler.yml # optional, .github/pr-labeler.yml is the default value
       - name: Trunk Check
         uses: trunk-io/trunk-action@v1
-        with:
-          post-annotations: true # only for fork PRs
 
   test-builds:
     if: github.event_name == 'pull_request'
