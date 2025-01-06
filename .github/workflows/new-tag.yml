@@ -1,4 +1,4 @@
-name: Versioned Release
+name: New Tag
 
 on:
   pull_request:
@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   new-release:
-    name: Run GoReleaser on New Tag
+    name: Create Release
     if: startsWith(github.ref, 'refs/tags/')
     permissions: write-all
     runs-on: ubuntu-latest

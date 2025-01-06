@@ -1,4 +1,4 @@
-name: Publish Assets on Release
+name: New Release
 on:
   release:
     types: [published]
@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   buf_push:
-    name: Publish to buf.build/onsonr/sonr
+    name: Publish Protobufs
     runs-on: ubuntu-latest
     steps:
       # Run `git checkout`
@@ -24,7 +24,7 @@ jobs:
           buf_token: ${{ secrets.BUF_TOKEN }}
 
   container-push:
-    name: Publish Container Images
+    name: Publish Docker Images
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -45,7 +45,7 @@ jobs:
 
   docs-push:
     runs-on: ubuntu-latest
-    name: Publish Docs to onsonr.dev
+    name: Publish Tech Docs
     steps:
       - uses: actions/checkout@v4
       - name: Configure Git Credentials
