@@ -44,10 +44,6 @@ jobs:
           check-latest: true
       - name: Run Sonrd Build
         run: make build
-      - name: Run Hway Build
-        run: make build-hway
-      - name: Run Motr Build
-        run: make build-motr
 
   test-unit:
     if: github.event_name == 'pull_request'
