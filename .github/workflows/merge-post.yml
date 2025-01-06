@@ -21,8 +21,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          branch: main
           fetch-depth: 0
           ssh-key: "${{ secrets.COMMIT_KEY }}"
+          fetch-tags: true
 
       - name: Update Version
         run: |
