@@ -19,7 +19,6 @@ ROOT ?= $(shell git rev-parse --show-toplevel)
 DOCKER := $(shell which docker)
 HTTPS_GIT := github.com/onsonr/sonr.git
 
-export RELEASE_DATE="$(date +%Y).$(date +%V).$(date +%u)"
 export GO111MODULE = on
 
 # process build tags
@@ -320,22 +319,28 @@ sh-testnet: mod-tidy
 ###                                    extra utils                          ###
 ###############################################################################
 
+push-docker:
+	@docker build -t ghcr.io/onsonr/sonr:latest .
+	@docker tag ghcr.io/onsonr/sonr:latest ghcr.io/onsonr/sonr:$(VERSION)
+	@docker push ghcr.io/onsonr/sonr:latest
+	@docker push ghcr.io/onsonr/sonr:$(VERSION)
+
 status:
 	@gh run ls -L 3
 	@gum format -- "# Sonr ($OS-$VERSION)" "- ($(COMMIT)) $ROOT" "- $(RELEASE_DATE)"
-	@sleep 5
+	@sleep 3
 
 release:
 	@go install github.com/goreleaser/goreleaser/v2@latest
-	@goreleaser release --clean
+	@RELEASE_DATE=$(RELEASE_DATE) goreleaser release --clean
 
 release-dry:
 	@go install github.com/goreleaser/goreleaser/v2@latest
-	@goreleaser release --clean --dry-run --snapshot
+	@RELEASE_DATE=$(RELEASE_DATE) goreleaser release --clean --snapshot
 
 release-check:
 	@go install github.com/goreleaser/goreleaser/v2@latest
-	@goreleaser check
+	@RELEASE_DATE=$(RELEASE_DATE) goreleaser check
 
 ###############################################################################
 ###                                     help                                ###

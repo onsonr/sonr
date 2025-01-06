@@ -31,6 +31,8 @@ RUN LEDGER_ENABLED=false BUILD_TAGS=muslc LINK_STATICALLY=true make build \
 # --------------------------------------------------------
 FROM debian:11-slim
 
+LABEL org.opencontainers.image.source https://github.com/onsonr/sonr
+
 COPY --from=go-builder /code/build/sonrd /usr/bin/sonrd
 
 # Install dependencies for Debian 11

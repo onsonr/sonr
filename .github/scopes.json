@@ -2,9 +2,6 @@
   "scopes": [
     "core-chain",
     "core-ibc",
-    "sonr-hway",
-    "sonr-matrix",
-    "sonr-motr",
     "x-did",
     "x-dwn",
     "x-svc",

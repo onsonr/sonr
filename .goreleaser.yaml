@@ -2,10 +2,13 @@
 version: 2
 project_name: sonr
 
-hooks:
-  before:
-    - export RELEASE_DATE="$(date +%Y).$(date +%V).$(date +%u)"
-    - echo "Release date is $RELEASE_DATE"
+before:
+  hooks:
+    - echo "Release date is {{ .Env.RELEASE_DATE }}"
+    - docker build -t ghcr.io/onsonr/sonr:latest .
+    - docker tag ghcr.io/onsonr/sonr:latest ghcr.io/onsonr/sonr:{{ .Tag }}
+    - docker push ghcr.io/onsonr/sonr:{{ .Tag }}
+    - docker push ghcr.io/onsonr/sonr:latest
 
 builds:
   - id: sonr
@@ -77,7 +80,7 @@ brews:
       email: bot@goreleaser.com
     directory: Formula
     caveats: "Run a local sonr node and access it with the hway proxy"
-    homepage: "https://onsonr.dev"
+    homepage: "https://onson.dev"
     description: "Sonr is a decentralized, permissionless, and censorship-resistant identity network."
     dependencies:
       - name: ipfs
