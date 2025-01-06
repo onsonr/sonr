@@ -1,32 +1,3 @@
-## Unreleased
-
-### Feat
-
-- integrate Trunk CI checks
-- simplify devnet and testnet configurations
-- add docs and CI workflow for publishing to onsonr.dev
-- automate release process using Taskfile and GitHub Actions
-- add Reddit release notification
-
-### Fix
-
-- pass working directory to goreleaser task
-- correct release name template syntax
-
-### Refactor
-
-- improve code structure and readability in DID module
-- Move devnet configuration to networks/devnet
-- move logger interface to appropriate package
-- Move network configurations to deploy directory
-- update import path for didcrypto package
-- remove devcontainer configuration
-- simplify release workflow and remove unnecessary Taskfile includes
-- improve release process using goreleaser and taskfile
-- simplify release workflow using a single task
-- improve release naming and environment variable handling
-- improve goreleaser archive and nfpms configuration
-
 ## v0.6.1 (2024-12-30)
 
 ### Feat

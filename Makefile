@@ -319,6 +319,9 @@ sh-testnet: mod-tidy
 ###                                    extra utils                          ###
 ###############################################################################
 
+setup-env:
+	@sh scripts/setup_env.sh
+
 push-docker:
 	@docker build -t ghcr.io/onsonr/sonr:latest .
 	@docker tag ghcr.io/onsonr/sonr:latest ghcr.io/onsonr/sonr:$(VERSION)
@@ -330,16 +333,13 @@ status:
 	@gum format -- "# Sonr ($OS-$VERSION)" "- ($(COMMIT)) $ROOT" "- $(RELEASE_DATE)"
 	@sleep 3
 
-release:
-	@go install github.com/goreleaser/goreleaser/v2@latest
+release: setup-env
 	@RELEASE_DATE=$(RELEASE_DATE) goreleaser release --clean
 
-release-dry:
-	@go install github.com/goreleaser/goreleaser/v2@latest
+release-dry: setup-env
 	@RELEASE_DATE=$(RELEASE_DATE) goreleaser release --snapshot --clean --skip=publish
 
-release-check:
-	@go install github.com/goreleaser/goreleaser/v2@latest
+release-check: setup-env
 	@RELEASE_DATE=$(RELEASE_DATE) goreleaser check
 
 ###############################################################################
