@@ -25,18 +25,6 @@
       "url": "https://f1bonacc1.github.io/process-compose/configuration/"
     },
     {
-      "keywords": ["taskfile", "cli", "reference"],
-      "url": "https://taskfile.dev/reference/cli"
-    },
-    {
-      "keywords": [],
-      "url": "https://taskfile.dev/reference/schema"
-    },
-    {
-      "keywords": ["taskfile", "templating", "reference"],
-      "url": "https://taskfile.dev/reference/templating/"
-    },
-    {
       "keywords": ["mkdocs", "material", "reference"],
       "url": "https://squidfunk.github.io/mkdocs-material/reference/"
     },
