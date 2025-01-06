@@ -27,6 +27,7 @@ jobs:
         with:
           push: false
           increment: patch
+          branch: main
 
       - name: Push using ssh
         run: |

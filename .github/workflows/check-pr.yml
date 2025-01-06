@@ -87,13 +87,13 @@ jobs:
         with:
           push: false
           dry_run: true
-          github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: main
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          increment: patch
 
       - name: Check if tag exists
         run: |
-          DETERMINED_VERSION="${{ steps.cz.outputs.version }}"
-          if git ls-remote --tags origin "refs/tags/v${DETERMINED_VERSION}" | grep -q .; then
+          if git ls-remote --tags origin "refs/tags/v${{ steps.cz.outputs.version }}" | grep -q .; then
             echo "::error::Tag v${DETERMINED_VERSION} already exists upstream"
             exit 1
           fi
