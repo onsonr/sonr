@@ -104,7 +104,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: GoReleaser Dry Run
+      - name: GoReleaser Test
         run: make release-dry
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
