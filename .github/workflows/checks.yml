@@ -4,9 +4,13 @@ on:
   pull_request:
   merge_group:
 
+permissions:
+  contents: read # for TimonVS/pr-labeler-action to read config file
+  pull-requests: write # for TimonVS/pr-labeler-action to add labels in PR
+
 jobs:
-  tidy-pr:
-    name: Tidy PR
+  verify-pr:
+    name: Verify PR
     if: github.event_name == 'pull_request'
     permissions:
       contents: read # for TimonVS/pr-labeler-action to read config file
@@ -23,8 +27,6 @@ jobs:
           configuration-path: .github/pr-labeler.yml # optional, .github/pr-labeler.yml is the default value
       - name: Trunk Check
         uses: trunk-io/trunk-action@v1
-        with:
-          post-annotations: true # only for fork PRs
 
   test-builds:
     if: github.event_name == 'pull_request'
@@ -101,7 +103,7 @@ jobs:
       - run: make test-cover
 
   validate-release:
-    if: github.event_name == 'merge_group'
+    if: github.event_name == 'merge_group' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     name: Verify Release Config
     steps:
@@ -126,19 +128,11 @@ jobs:
           branch: main
 
       - name: Check GoReleaser Config
-        uses: goreleaser/goreleaser-action@v6
-        with:
-          distribution: goreleaser
-          version: latest
-          args: check
+        run: make release-check
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: GoReleaser Dry Run
-        uses: goreleaser/goreleaser-action@v6
-        with:
-          distribution: goreleaser
-          version: latest
-          args: release --snapshot --clean --skip=publish
+        run: make release-dry
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
