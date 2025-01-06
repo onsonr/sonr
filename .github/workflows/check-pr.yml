@@ -82,12 +82,22 @@ jobs:
           check-latest: true
 
       - name: Commitizen Dry Run
+        id: cz
         uses: commitizen-tools/commitizen-action@master
         with:
           push: false
           dry_run: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: main
+
+      - name: Check if tag exists
+        run: |
+          DETERMINED_VERSION="${{ steps.cz.outputs.version }}"
+          if git ls-remote --tags origin "refs/tags/v${DETERMINED_VERSION}" | grep -q .; then
+            echo "::error::Tag v${DETERMINED_VERSION} already exists upstream"
+            exit 1
+          fi
+          echo "Tag v${DETERMINED_VERSION} does not exist - OK to proceed"
 
       - name: Check GoReleaser Config
         run: make release-check
