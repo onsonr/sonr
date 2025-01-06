@@ -2,6 +2,7 @@ name: Check PR
 
 on:
   pull_request:
+  merge_group:
 
 permissions:
   contents: read # for TimonVS/pr-labeler-action to read config file
