@@ -45,9 +45,9 @@ jobs:
           check-latest: true
       - run: make test-cover
 
-  validate-tag:
+  test-release:
     runs-on: ubuntu-latest
-    name: Validate Tag
+    name: Test Release
     if: github.event_name == 'merge_group'
     steps:
       - name: Checkout repository
@@ -62,20 +62,7 @@ jobs:
           go-version: "1.23"
           check-latest: true
 
-      - name: Commitizen Dry Run
-        id: cz
-        uses: commitizen-tools/commitizen-action@master
-        with:
-          push: false
-          dry_run: true
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
-
-      - name: Check if tag exists
-        run: |
-          DETERMINED_VERSION="${{ steps.cz.outputs.version }}"
-          if git ls-remote --tags origin "refs/tags/v${DETERMINED_VERSION}" | grep -q .; then
-            echo "::error::Tag v${DETERMINED_VERSION} already exists upstream"
-            exit 1
-          fi
-          echo "Tag v${DETERMINED_VERSION} does not exist - OK to proceed"
+      - name: Release Dry Run
+        run: make release-dry
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

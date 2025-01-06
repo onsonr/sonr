@@ -67,7 +67,7 @@ jobs:
   validate-release:
     if: github.event_name == 'merge_group' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    name: Test Release
+    name: Test Version
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -93,10 +93,5 @@ jobs:
 
       - name: Check GoReleaser Config
         run: make release-check
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: GoReleaser Test
-        run: make release-dry
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
