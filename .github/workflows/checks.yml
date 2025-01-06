@@ -126,19 +126,11 @@ jobs:
           branch: main
 
       - name: Check GoReleaser Config
-        uses: goreleaser/goreleaser-action@v6
-        with:
-          distribution: goreleaser
-          version: latest
-          args: check
+        run: make release-check
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: GoReleaser Dry Run
-        uses: goreleaser/goreleaser-action@v6
-        with:
-          distribution: goreleaser
-          version: latest
-          args: release --snapshot --clean --skip=publish
+        run: make release-dry
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

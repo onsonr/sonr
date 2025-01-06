@@ -37,14 +37,8 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Install Task
-        uses: arduino/setup-task@v2
-        with:
-          version: 3.x
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Run GoReleaser
-        run: task release
+        run: make release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_RELEASER_TOKEN }}
           GITHUB_PERSONAL_AUTH_TOKEN: ${{ secrets.GH_RELEASER_TOKEN }}
