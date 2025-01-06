@@ -1,4 +1,4 @@
-name: New Release
+name: Post Release
 on:
   release:
     types: [published]
