@@ -8,14 +8,16 @@ SDK_PACK := $(shell go list -m github.com/cosmos/cosmos-sdk | sed  's/ /\@/g')
 BINDIR ?= $(GOPATH)/bin
 SIMAPP = ./app
 
-PC_PORT_NUM=42069
-PC_LOG_FILE=./sonr.log
-PC_SOCKET_PATH=/tmp/sonr-net.sock
+# Fetch from env
+RELEASE_DATE ?= $(shell date +%Y).$(shell date +%V).$(shell date +%u)
+VERSION ?= $(shell echo $(shell git describe --tags) | sed 's/^v//')
+COMMIT ?= $(shell git log -1 --format='%H')
+OS ?= $(shell uname -s)
+ROOT ?= $(shell git rev-parse --show-toplevel)
 
 # for dockerized protobuf tools
 DOCKER := $(shell which docker)
 HTTPS_GIT := github.com/onsonr/sonr.git
-PROCESS_COMPOSE := $(shell which process-compose)
 
 export GO111MODULE = on
 
@@ -107,8 +109,14 @@ install: go.sum
 install-hway: go.sum
 	go install -mod=readonly ./cmd/hway
 
+release: fmt-date
+	@go install github.com/goreleaser/goreleaser/v2@latest
+	RELEASE_DATE=$(RELEASE_DATE) goreleaser release --clean
+
+
 ########################################
 ### Tools & dependencies
+########################################
 
 go-mod-cache: go.sum
 	@echo "--> Download go modules to local cache"
@@ -134,12 +142,9 @@ clean:
 distclean: clean
 	rm -rf vendor/
 
-init-env:
-	@echo "Installing process-compose"
-	sh scripts/init_env.sh
-
 ########################################
 ### Testing
+########################################
 
 test: test-unit
 test-all: test-race test-cover test-system
@@ -309,6 +314,33 @@ sh-testnet: mod-tidy
 	CHAIN_ID="sonr-testnet-1" BLOCK_TIME="1000ms" CLEAN=true sh scripts/test_node.sh
 
 .PHONY: setup-testnet set-testnet-configs testnet testnet-basic sh-testnet dop-testnet
+
+###############################################################################
+###                                    extra utils                          ###
+###############################################################################
+
+push-docker:
+	@docker build -t ghcr.io/onsonr/sonr:latest .
+	@docker tag ghcr.io/onsonr/sonr:latest ghcr.io/onsonr/sonr:$(VERSION)
+	@docker push ghcr.io/onsonr/sonr:latest
+	@docker push ghcr.io/onsonr/sonr:$(VERSION)
+
+status:
+	@gh run ls -L 3
+	@gum format -- "# Sonr ($OS-$VERSION)" "- ($(COMMIT)) $ROOT" "- $(RELEASE_DATE)"
+	@sleep 3
+
+release:
+	@go install github.com/goreleaser/goreleaser/v2@latest
+	@RELEASE_DATE=$(RELEASE_DATE) goreleaser release --clean
+
+release-dry:
+	@go install github.com/goreleaser/goreleaser/v2@latest
+	@RELEASE_DATE=$(RELEASE_DATE) goreleaser release --snapshot --clean --skip=publish
+
+release-check:
+	@go install github.com/goreleaser/goreleaser/v2@latest
+	@RELEASE_DATE=$(RELEASE_DATE) goreleaser check
 
 ###############################################################################
 ###                                     help                                ###

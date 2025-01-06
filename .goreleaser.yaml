@@ -2,15 +2,15 @@
 version: 2
 project_name: sonr
 
+before:
+  hooks:
+    - echo "Release date is {{ .Env.RELEASE_DATE }}"
+    - docker build -t ghcr.io/onsonr/sonr:latest .
+    - docker tag ghcr.io/onsonr/sonr:latest ghcr.io/onsonr/sonr:{{ .Tag }}
+    - docker push ghcr.io/onsonr/sonr:{{ .Tag }}
+    - docker push ghcr.io/onsonr/sonr:latest
+
 builds:
-  - id: motr
-    main: ./cmd/motr
-    binary: app
-    goos:
-      - js
-    goarch:
-      - wasm
-    
   - id: sonr
     main: ./cmd/sonrd
     binary: sonrd
@@ -36,27 +36,6 @@ builds:
       - netgo
       - ledger
 
-  - id: hway
-    main: ./cmd/hway
-    binary: hway
-    goos:
-      - linux
-      - darwin
-    goarch:
-      - amd64
-      - arm64
-    mod_timestamp: "{{ .CommitTimestamp }}"
-    flags:
-      - -mod=readonly
-      - -trimpath
-    goamd64:
-      - v1
-    tags:
-      - netgo
-    ldflags:
-      - -X main.version={{.Version}}
-      - -X main.commit={{.Commit}}
-      - -X main.date={{.Date}}
 archives:
   - id: sonr
     builds: [sonr]
@@ -69,41 +48,7 @@ archives:
       - src: README*
     wrap_in_directory: true
 
-  - id: hway
-    builds: [hway]
-    name_template: >-
-      hway_{{ .Os }}_{{- if eq .Arch "amd64" }}x86_64
-      {{- else if eq .Arch "386" }}i386
-      {{- else }}{{ .Arch }}{{ end }}
-    format: tar.gz
-    files:
-      - src: README*
-    wrap_in_directory: true
-
 nfpms:
-  - id: hway
-    package_name: hway
-    file_name_template: "hway_{{ .Os }}_{{ .Arch }}{{ .ConventionalExtension }}"
-    builds: [hway]
-    vendor: Sonr
-    homepage: "https://onsonr.dev"
-    maintainer: "Sonr <support@onsonr.dev>"
-    description: "Sonr Highway is a decentralized, permissionless, and censorship-resistant identity network proxy."
-    license: "Apache 2.0"
-    formats:
-      - rpm
-      - deb
-      - apk
-    dependencies:
-      - ipfs
-    contents:
-      - src: README*
-        dst: /usr/share/doc/hway
-    bindir: /usr/bin
-    section: net
-    priority: optional
-    # Add these lines to match build config
-
   - id: sonr
     package_name: sonrd
     file_name_template: "sonrd_{{ .Os }}_{{ .Arch }}{{ .ConventionalExtension }}"
@@ -128,23 +73,6 @@ nfpms:
     # Add these lines to match build config
 
 brews:
-  - name: hway
-    ids: [hway]
-    commit_author:
-      name: goreleaserbot
-      email: bot@goreleaser.com
-    directory: Formula
-    caveats: "Run a local hway node and access it with the hway proxy"
-    homepage: "https://onsonr.dev"
-    description: "Sonr is a decentralized, permissionless, and censorship-resistant identity network."
-    dependencies:
-      - name: ipfs
-    repository:
-      owner: onsonr
-      name: homebrew-tap
-      branch: master
-      token: "{{ .Env.GITHUB_PERSONAL_AUTH_TOKEN }}"
-
   - name: sonr
     ids: [sonr]
     commit_author:
@@ -152,7 +80,7 @@ brews:
       email: bot@goreleaser.com
     directory: Formula
     caveats: "Run a local sonr node and access it with the hway proxy"
-    homepage: "https://onsonr.dev"
+    homepage: "https://onson.dev"
     description: "Sonr is a decentralized, permissionless, and censorship-resistant identity network."
     dependencies:
       - name: ipfs
@@ -166,7 +94,7 @@ release:
   github:
     owner: onsonr
     name: sonr
-  name_template: 'Release {{ .Env.RELEASE_DATE }}'
+  name_template: "{{ .Tag }} | {{ .Env.RELEASE_DATE }}"
   draft: false
   replace_existing_draft: true
   replace_existing_artifacts: true

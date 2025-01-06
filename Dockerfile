@@ -1,4 +1,4 @@
-FROM golang:1.22-alpine AS go-builder
+FROM golang:1.23-alpine AS go-builder
 
 SHELL ["/bin/sh", "-ecuxo", "pipefail"]
 
@@ -30,6 +30,8 @@ RUN LEDGER_ENABLED=false BUILD_TAGS=muslc LINK_STATICALLY=true make build \
 
 # --------------------------------------------------------
 FROM debian:11-slim
+
+LABEL org.opencontainers.image.source https://github.com/onsonr/sonr
 
 COPY --from=go-builder /code/build/sonrd /usr/bin/sonrd
 

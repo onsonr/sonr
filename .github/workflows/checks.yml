@@ -16,12 +16,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Required to fetch all history for merging
-          
+
       - uses: TimonVS/pr-labeler-action@v5
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           configuration-path: .github/pr-labeler.yml # optional, .github/pr-labeler.yml is the default value
-
+      - name: Trunk Check
+        uses: trunk-io/trunk-action@v1
+        with:
+          post-annotations: true # only for fork PRs
 
   test-builds:
     if: github.event_name == 'pull_request'
@@ -41,10 +44,6 @@ jobs:
           check-latest: true
       - name: Run Sonrd Build
         run: make build
-      - name: Run Hway Build
-        run: make build-hway
-      - name: Run Motr Build
-        run: make build-motr
 
   test-unit:
     if: github.event_name == 'pull_request'
