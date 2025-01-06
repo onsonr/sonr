@@ -1,36 +1,19 @@
-name: Check PR
+name: Merge Group
 
 on:
   pull_request:
+  merge_group:
 
 permissions:
   contents: read # for TimonVS/pr-labeler-action to read config file
   pull-requests: write # for TimonVS/pr-labeler-action to add labels in PR
 
 jobs:
-  verify-pr:
-    name: Test Lints
-    if: github.event_name == 'pull_request'
-    permissions:
-      contents: read # for TimonVS/pr-labeler-action to read config file
-      pull-requests: write # for TimonVS/pr-labeler-action to add labels in PR
+  test-race:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Required to fetch all history for merging
-
-      - uses: TimonVS/pr-labeler-action@v5
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          configuration-path: .github/pr-labeler.yml # optional, .github/pr-labeler.yml is the default value
-      - name: Trunk Check
-        uses: trunk-io/trunk-action@v1
-
-  test-builds:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    name: Test Builds
+    if: github.event_name == 'merge_group'
+    name: Test Race
+    continue-on-error: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -43,13 +26,12 @@ jobs:
         with:
           go-version: "1.23"
           check-latest: true
-      - name: Run Sonrd Build
-        run: make build
+      - run: make test-race
 
-  test-unit:
-    if: github.event_name == 'pull_request'
+  test-cover:
     runs-on: ubuntu-latest
-    name: Test Unit
+    if: github.event_name == 'merge_group'
+    name: Test Coverage
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -62,12 +44,12 @@ jobs:
         with:
           go-version: "1.23"
           check-latest: true
-      - run: make test-unit
+      - run: make test-cover
 
-  validate-release:
-    if: github.event_name == 'merge_group' || github.event_name == 'pull_request'
+  validate-tag:
     runs-on: ubuntu-latest
-    name: Test Release
+    name: Validate Tag
+    if: github.event_name == 'merge_group'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -82,6 +64,7 @@ jobs:
           check-latest: true
 
       - name: Commitizen Dry Run
+        id: cz
         uses: commitizen-tools/commitizen-action@master
         with:
           push: false
@@ -89,12 +72,11 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: main
 
-      - name: Check GoReleaser Config
-        run: make release-check
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: GoReleaser Dry Run
-        run: make release-dry
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check if tag exists
+        run: |
+          DETERMINED_VERSION="${{ steps.cz.outputs.version }}"
+          if git ls-remote --tags origin "refs/tags/v${DETERMINED_VERSION}" | grep -q .; then
+            echo "::error::Tag v${DETERMINED_VERSION} already exists upstream"
+            exit 1
+          fi
+          echo "Tag v${DETERMINED_VERSION} does not exist - OK to proceed"
