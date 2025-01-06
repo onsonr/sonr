@@ -21,6 +21,10 @@ jobs:
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           configuration-path: .github/pr-labeler.yml # optional, .github/pr-labeler.yml is the default value
+      - name: Trunk Check
+        uses: trunk-io/trunk-action@v1
+        with:
+          post-annotations: true # only for fork PRs
 
   test-builds:
     if: github.event_name == 'pull_request'
