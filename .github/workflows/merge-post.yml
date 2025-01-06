@@ -101,6 +101,10 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Fetch Release Date
+        run: |
+          echo "RELEASE_DATE=$(date +%Y).$(date +%V).$(date +%u)" >> $GITHUB_ENV
+
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
         if: startsWith(github.ref, 'refs/tags/')
