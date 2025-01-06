@@ -101,7 +101,7 @@ jobs:
       - run: make test-cover
 
   validate-release:
-    if: github.event_name == 'merge_group'
+    if: github.event_name == 'merge_group' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     name: Verify Release Config
     steps:
