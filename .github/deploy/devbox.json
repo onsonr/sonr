@@ -5,7 +5,8 @@
     "cargo@latest",
     "uv@latest",
     "bun@latest",
-    "doppler@latest"
+    "doppler@latest",
+    "go-task@latest"
   ],
   "env": {
     "PATH": "$HOME/.cargo/bin:$HOME/go/bin:$HOME/.local/bin:$HOME/.bun/bin:$PATH",
