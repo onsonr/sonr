@@ -5,6 +5,7 @@
     "cargo@latest",
     "uv@latest",
     "bun@latest",
+    "yarn@latest",
     "doppler@latest",
     "go-task@latest"
   ],
@@ -13,12 +14,14 @@
     "GITHUB_TOKEN": "$GITHUB_TOKEN",
     "GOPATH": "$HOME/go",
     "GOBIN": "$GOPATH/bin",
-    "GHQ_ROOT": "$CLONEDIR"
+    "GHQ_ROOT": "$CLONEDIR",
+    "PC_SOCK": "$HOME/.local/share/pc/sock"
   },
   "shell": {
     "init_hook": [],
     "scripts": {
-      "sonrd": ["sh ./scripts/start_sonrd.sh"]
+      "up": ["yarn starship start --config config.yaml"],
+      "down": ["yarn starship stop --config config.yaml"]
     }
   }
 }

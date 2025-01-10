@@ -87,12 +87,6 @@ else
 	go build -mod=readonly $(BUILD_FLAGS) -o build/sonrd ./cmd/sonrd
 endif
 
-build-motr: go.sum
-	GOOS=js GOARCH=wasm go build -o static/wasm/app.wasm ./cmd/motr/main.go
-
-build-hway: go.sum
-	go build -o build/hway ./cmd/hway
-
 build-windows-client: go.sum
 	GOOS=windows GOARCH=amd64 go build -mod=readonly $(BUILD_FLAGS) -o build/sonrd.exe ./cmd/sonrd
 
@@ -329,6 +323,12 @@ status:
 	@gh run ls -L 3
 	@gum format -- "# Sonr ($OS-$VERSION)" "- ($(COMMIT)) $ROOT" "- $(RELEASE_DATE)"
 	@sleep 3
+
+push-docker: 
+	@docker build -t ghcr.io/onsonr/sonr:$(VERSION) .
+	@docker tag ghcr.io/onsonr/sonr:$(VERSION) ghcr.io/onsonr/sonr:latest
+	@docker push ghcr.io/onsonr/sonr:$(VERSION)
+	@docker push ghcr.io/onsonr/sonr:latest
 
 release:
 	@go install github.com/goreleaser/goreleaser/v2@latest

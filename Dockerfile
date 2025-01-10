@@ -29,26 +29,20 @@ RUN LEDGER_ENABLED=false BUILD_TAGS=muslc LINK_STATICALLY=true make build \
   && (file /code/build/sonrd | grep "statically linked")
 
 # --------------------------------------------------------
-FROM debian:11-slim
+FROM alpine:3.17
 
-LABEL org.opencontainers.image.source https://github.com/onsonr/sonr
+LABEL org.opencontainers.image.title="sonr"
+LABEL org.opencontainers.image.authors="diDAO <hi@didao.xyz>"
+LABEL org.opencontainers.image.source=https://github.com/onsonr/sonr
 
 COPY --from=go-builder /code/build/sonrd /usr/bin/sonrd
 
-# Install dependencies for Debian 11
-RUN apt-get update && apt-get install -y \
-  curl \
-  make \
-  bash \
-  jq \
-  sed \
-  && rm -rf /var/lib/apt/lists/*
+# Set up dependencies
+ENV PACKAGES="curl make bash jq sed"
 
-COPY scripts/test_node.sh /usr/bin/test_node.sh 
+# Install minimum necessary dependencies
+RUN apk add --no-cache $PACKAGES
 
 WORKDIR /opt
 
-# rest server, tendermint p2p, tendermint rpc
-EXPOSE 1317 26656 26657 6060
 
-ENTRYPOINT ["/usr/bin/sonrd"]

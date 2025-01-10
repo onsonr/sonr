@@ -1,0 +1,52 @@
+name: sonr-testnet
+version: 0.2.20
+
+chains:
+  - id: sonr-test
+    name: custom
+    image: ghcr.io/onsonr/sonr:latest
+    home: /root/.sonr
+    binary: sonrd
+    prefix: idx
+    denom: usnr
+    coins: 100000000000000usnr,100000000000000snr
+    repo: https://github.com/onsonr/sonr
+    ports:
+      rest: 1317
+      rpc: 26657
+      faucet: 8001
+
+  - id: osmosis-1
+    name: osmosis
+    numValidators: 2
+    ports:
+      rest: 1313
+      rpc: 26653
+      faucet: 8003
+
+  - id: cosmoshub-4
+    name: cosmoshub
+    numValidators: 2
+    ports:
+      rest: 1319
+      rpc: 26659
+      faucet: 8009
+
+relayers:
+  - name: osmos-cosmos-sonr
+    type: hermes
+    replicas: 1
+    chains:
+      - osmosis-1
+      - cosmoshub-4
+      - sonr-testnet-1
+
+explorer:
+  enabled: true
+  ports:
+    rest: 3400
+
+registry:
+  enabled: true
+  ports:
+    rest: 3401
