@@ -6,16 +6,14 @@
     "uv@latest",
     "bun@latest",
     "yarn@latest",
-    "doppler@latest",
-    "go-task@latest"
+    "doppler@latest"
   ],
   "env": {
     "PATH": "$HOME/.cargo/bin:$HOME/go/bin:$HOME/.local/bin:$HOME/.bun/bin:$PATH",
     "GITHUB_TOKEN": "$GITHUB_TOKEN",
     "GOPATH": "$HOME/go",
     "GOBIN": "$GOPATH/bin",
-    "GHQ_ROOT": "$CLONEDIR",
-    "PC_SOCK": "$HOME/.local/share/pc/sock"
+    "GHQ_ROOT": "$CLONEDIR"
   },
   "shell": {
     "init_hook": [],

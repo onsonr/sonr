@@ -107,7 +107,6 @@ release: fmt-date
 	@go install github.com/goreleaser/goreleaser/v2@latest
 	RELEASE_DATE=$(RELEASE_DATE) goreleaser release --clean
 
-
 ########################################
 ### Tools & dependencies
 ########################################
@@ -344,6 +343,15 @@ release-check:
 
 validate-tag:
 	@sh ./scripts/validate_tag.sh
+
+deploy-up:
+	@echo "Starting deployment"
+	cd .github/deploy && devbox run up
+
+deploy-down:
+	@echo "Stopping deployment"
+	cd .github/deploy && devbox run down
+
 ###############################################################################
 ###                                     help                                ###
 ###############################################################################
