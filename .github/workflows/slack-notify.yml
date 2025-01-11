@@ -1,0 +1,32 @@
+name: Slack Notifications
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  issues:
+    types: [opened, closed, reopened]
+  discussion:
+    types: [created, answered]
+  release:
+    types: [published]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: sonr-github
+          SLACK_COLOR: ${{ github.event_name == 'pull_request' && github.event.pull_request.merged == true && 'good' || 'warning' }}
+          SLACK_ICON: https://github.com/onsonr.png?size=48
+          SLACK_MESSAGE: |
+            Repository: ${{ github.repository }}
+            Event: ${{ github.event_name }}
+            Actor: ${{ github.actor }}
+            Ref: ${{ github.ref }}
+          SLACK_TITLE: GitHub Activity
+          SLACK_USERNAME: GitHub Bot
