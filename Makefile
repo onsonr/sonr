@@ -344,13 +344,18 @@ release-check:
 validate-tag:
 	@sh ./scripts/validate_tag.sh
 
+deploy-deps:
+	@echo "Installing deploy dependencies"
+	npm install -g @starship-ci/cli
+	starship install
+
 deploy-up:
 	@echo "Starting deployment"
-	cd .github/deploy && devbox run up
+	starship start --config .github/deploy/config.yml
 
 deploy-down:
 	@echo "Stopping deployment"
-	cd .github/deploy && devbox run down
+	starship stop --config .github/deploy/config.yml
 
 ###############################################################################
 ###                                     help                                ###

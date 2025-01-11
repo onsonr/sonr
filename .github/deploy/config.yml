@@ -7,6 +7,7 @@ chains:
     image: ghcr.io/onsonr/sonr:latest
     home: /root/.sonr
     binary: sonrd
+    numValidators: 1
     prefix: idx
     denom: usnr
     coins: 100000000000000usnr,100000000000000snr
@@ -39,7 +40,7 @@ relayers:
     chains:
       - osmosis-1
       - cosmoshub-4
-      - sonr-testnet-1
+      - sonr-test
 
 explorer:
   enabled: true
