@@ -90,7 +90,7 @@ release:
   github:
     owner: onsonr
     name: sonr
-  name_template: "{{ .Tag }} | {{ .Env.RELEASE_DATE }}"
+  name_template: "{{ .Tag }}  [{{ .Env.RELEASE_DATE }}]"
   draft: false
   replace_existing_draft: true
   replace_existing_artifacts: true
