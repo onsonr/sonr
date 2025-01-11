@@ -44,5 +44,3 @@ ENV PACKAGES="curl make bash jq sed"
 RUN apk add --no-cache $PACKAGES
 
 WORKDIR /opt
-
-
