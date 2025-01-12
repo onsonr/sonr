@@ -349,11 +349,11 @@ deploy-deps:
 	npm install -g @starship-ci/cli
 	starship install
 
-deploy-up:
+up:
 	@echo "Starting deployment"
 	starship start --config .github/deploy/config.yml
 
-deploy-down:
+down:
 	@echo "Stopping deployment"
 	starship stop --config .github/deploy/config.yml
 

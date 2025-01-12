@@ -36,14 +36,6 @@ chains:
       rpc: 26659
       faucet: 8009
 
-  - id: evmos-1
-    name: evmos
-    numValidators: 1
-    ports:
-      rest: 1312
-      rpc: 26652
-      faucet: 8002
-
 relayers:
   - name: ibc-relayer
     type: hermes
@@ -52,7 +44,6 @@ relayers:
       - osmosis-1
       - cosmoshub-4
       - sonr-1
-      - evmos-1
 
 explorer:
   enabled: true
