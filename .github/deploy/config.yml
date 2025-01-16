@@ -28,29 +28,18 @@ chains:
       rpc: 26653
       faucet: 8003
 
-  - id: cosmoshub-4
-    name: cosmoshub
-    numValidators: 1
-    ports:
-      rest: 1319
-      rpc: 26659
-      faucet: 8009
-
 relayers:
-  - name: ibc-relayer
+  - name: hermes-osmo-atom-sonr
     type: hermes
+    image: ghcr.io/cosmology-tech/starship/hermes:1.10.0
     replicas: 1
     chains:
       - osmosis-1
-      - cosmoshub-4
       - sonr-1
-
-explorer:
-  enabled: true
-  ports:
-    rest: 3400
 
 registry:
   enabled: true
-  ports:
-    rest: 3401
+  image: ghcr.io/cosmology-tech/starship/registry:20230614-7173db2
+  resources:
+    cpu: 0.5
+    memory: 200M
