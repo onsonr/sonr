@@ -1,3 +1,4 @@
+#
 version: '3'
 includes:
   buf: .github/taskfiles/Buf.yml
