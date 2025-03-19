@@ -1,5 +1,7 @@
 # Aider related generated files
 .aider-context
+CONVENTIONS.md
+Taskfile.yml
 
 # Binaries
 .task
