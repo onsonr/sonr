@@ -34,12 +34,11 @@ builds:
 
 archives:
   - id: sonr
-    builds: [sonr]
     name_template: >-
       sonr_{{ .Os }}_{{- if eq .Arch "amd64" }}x86_64
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
-    format: tar.gz
+    formats: ["tar.gz"]
     files:
       - src: README*
     wrap_in_directory: true
@@ -48,7 +47,6 @@ nfpms:
   - id: sonr
     package_name: sonrd
     file_name_template: "sonrd_{{ .Os }}_{{ .Arch }}{{ .ConventionalExtension }}"
-    builds: [sonr]
     vendor: Sonr
     homepage: "https://onsonr.dev"
     maintainer: "Sonr <support@onsonr.dev>"

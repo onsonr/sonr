@@ -312,6 +312,20 @@ sh-testnet: mod-tidy
 ###                                    extra utils                          ###
 ###############################################################################
 
+can-release:
+	@echo "Checking if we can release..."
+	@git diff --exit-code
+	@git diff --cached --exit-code
+	@git tag -l | grep -q -F $(VERSION)
+	@test -z "$$(git ls-files --exclude-standard --others)" || (echo "There are uncommitted files. Please commit or stash them before release."; exit 1)
+
+should-release:
+	@echo "Checking if we should release..."
+	@git diff --exit-code
+	@git diff --cached --exit-code
+	@git tag -l | grep -q -F $(VERSION)
+	@test -z "$$(git ls-files --exclude-standard --others)" || (echo "There are uncommitted files. Please commit or stash them before release."; exit 1)
+
 push-docker:
 	@docker build -t ghcr.io/onsonr/sonr:latest .
 	@docker tag ghcr.io/onsonr/sonr:latest ghcr.io/onsonr/sonr:$(VERSION)
@@ -330,15 +344,12 @@ push-docker:
 	@docker push ghcr.io/onsonr/sonr:latest
 
 release:
-	@go install github.com/goreleaser/goreleaser/v2@latest
 	@RELEASE_DATE=$(RELEASE_DATE) goreleaser release --clean
 
 release-dry:
-	@go install github.com/goreleaser/goreleaser/v2@latest
 	@RELEASE_DATE=$(RELEASE_DATE) goreleaser release --snapshot --clean --skip=publish
 
 release-check:
-	@go install github.com/goreleaser/goreleaser/v2@latest
 	@RELEASE_DATE=$(RELEASE_DATE) goreleaser check
 
 validate-tag:
