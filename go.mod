@@ -1,4 +1,4 @@
-module github.com/onsonr/sonr
+module github.com/sonr-io/snrd
 
 go 1.23.4
 

@@ -11,8 +11,6 @@ import (
 	"github.com/multiformats/go-multicodec"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/onsonr/sonr/internal/didcrypto"
 )
 
 const (
