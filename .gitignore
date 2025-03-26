@@ -2,6 +2,7 @@
 .aider-context
 CONVENTIONS.md
 Taskfile.yml
+bin
 
 # Binaries
 .task

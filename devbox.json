@@ -1,0 +1,26 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.14.0/.schema/devbox.schema.json",
+  "packages": [
+    "buf@latest",
+    "go@latest",
+    "docker@latest",
+    "gum@latest",
+    "go-task@latest",
+    "goreleaser@latest",
+    "commitizen@latest"
+  ],
+  "env": {
+    "GOPATH": "$PWD",
+    "PATH": "$PATH:$PWD/bin"
+  },
+  "shell": {
+    "init_hook": [
+      "gh extension install valeriobelli/gh-milestone"
+    ],
+    "scripts": {
+      "test": [
+        "echo \"Error: no test specified\" && exit 1"
+      ]
+    }
+  }
+}
