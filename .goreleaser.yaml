@@ -8,8 +8,8 @@ before:
 
 builds:
   - id: sonr
-    main: ./cmd/sonrd
-    binary: sonrd
+    main: ./cmd/snrd
+    binary: snrd
     mod_timestamp: "{{ .CommitTimestamp }}"
     goos:
       - linux
@@ -24,7 +24,7 @@ builds:
       - -trimpath
     ldflags:
       - -X github.com/cosmos/cosmos-sdk/version.Name=sonr
-      - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
+      - -X github.com/cosmos/cosmos-sdk/version.AppName=snrd
       - -X github.com/cosmos/cosmos-sdk/version.Version={{.Version}}
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{.Commit}}
       - -X "github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger"
@@ -45,11 +45,11 @@ archives:
 
 nfpms:
   - id: sonr
-    package_name: sonrd
-    file_name_template: "sonrd_{{ .Os }}_{{ .Arch }}{{ .ConventionalExtension }}"
+    package_name: snrd
+    file_name_template: "sonr_{{ .Os }}_{{ .Arch }}{{ .ConventionalExtension }}"
     vendor: Sonr
-    homepage: "https://onsonr.dev"
-    maintainer: "Sonr <support@onsonr.dev>"
+    homepage: "https://sonr.io"
+    maintainer: "Sonr <support@sonr.io>"
     description: "Sonr is a decentralized, permissionless, and censorship-resistant identity network."
     license: "Apache 2.0"
     formats:
@@ -60,14 +60,14 @@ nfpms:
       - ipfs
     contents:
       - src: README*
-        dst: /usr/share/doc/sonrd
+        dst: /usr/share/doc/snrd
     bindir: /usr/bin
     section: net
     priority: optional
     # Add these lines to match build config
 
 brews:
-  - name: sonr
+  - name: snrd
     ids: [sonr]
     commit_author:
       name: goreleaserbot
@@ -79,15 +79,15 @@ brews:
     dependencies:
       - name: ipfs
     repository:
-      owner: onsonr
+      owner: sonr-io
       name: homebrew-tap
       branch: master
       token: "{{ .Env.GITHUB_PERSONAL_AUTH_TOKEN }}"
 
 release:
   github:
-    owner: onsonr
-    name: sonr
+    owner: sonr-io
+    name: snrd
   name_template: "{{ .Tag }}  [{{ .Env.RELEASE_DATE }}]"
   draft: false
   replace_existing_draft: true
