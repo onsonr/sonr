@@ -1,3 +1,9 @@
+## v0.6.5 (2025-03-27)
+
+### Refactor
+
+- streamline release process by removing redundant version display
+
 ## v0.6.4 (2025-03-27)
 
 ### Feat
