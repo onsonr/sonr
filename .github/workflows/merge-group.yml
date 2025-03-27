@@ -40,20 +40,3 @@ jobs:
           go-version: "1.23"
           check-latest: true
       - run: make test-cover
-
-  test-release:
-    runs-on: ubuntu-latest
-    name: Test Release
-    if: github.event_name == 'merge_group'
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          fetch-tags: true
-      - name: Install devbox
-        uses: jetify-com/devbox-install-action@v0.12.0
-      - name: Release Dry Run
-        run: make release-dry
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

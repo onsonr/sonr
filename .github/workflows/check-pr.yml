@@ -61,16 +61,3 @@ jobs:
           go-version: "1.23"
           check-latest: true
       - run: make test-unit
-
-  validate-release:
-    if: github.event_name == 'merge_group' || github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    name: Test Version
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          fetch-tags: true
-      - name: Install devbox
-        uses: jetify-com/devbox-install-action@v0.12.0
