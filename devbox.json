@@ -20,8 +20,7 @@
     "scripts": {
       "release": [
         "doppler secrets download --no-file --format env > .env",
-        "task cz:bump",
-        "task release:next"
+        "task -t .taskfile.dist.yml bump"
       ]
     }
   }
