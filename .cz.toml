@@ -5,5 +5,3 @@ version_scheme = "semver"
 version_provider = "scm"
 update_changelog_on_bump = true
 major_version_zero = true
-pre_bump_hooks = ["make test"]
-post_bump_hooks = ["make release"]
