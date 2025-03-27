@@ -83,11 +83,11 @@ ifeq ($(OS),Windows_NT)
 	$(error wasmd server not supported. Use "make build-windows-client" for client)
 	exit 1
 else
-	go build -mod=readonly $(BUILD_FLAGS) -o bin/snrd ./cmd/snrd
+	go build -mod=readonly $(BUILD_FLAGS) -o bin/snrd .
 endif
 
 build-windows-client: go.sum
-	GOOS=windows GOARCH=amd64 go build -mod=readonly $(BUILD_FLAGS) -o bin/snrd.exe ./cmd/snrd
+	GOOS=windows GOARCH=amd64 go build -mod=readonly $(BUILD_FLAGS) -o bin/snrd.exe .
 
 build-contract-tests-hooks:
 ifeq ($(OS),Windows_NT)
@@ -97,7 +97,7 @@ else
 endif
 
 install: go.sum
-	go install -mod=readonly $(BUILD_FLAGS) ./cmd/snrd
+	go install -mod=readonly $(BUILD_FLAGS) .
 
 release: fmt-date
 	@go install github.com/goreleaser/goreleaser/v2@latest
@@ -118,7 +118,7 @@ go.sum: go.mod
 draw-deps:
 	@# requires brew install graphviz or apt-get install graphviz
 	go install github.com/RobotsAndPencils/goviz@latest
-	@goviz -i ./cmd/snrd -d 2 | dot -Tpng -o dependency-graph.png
+	@goviz -i . -d 2 | dot -Tpng -o dependency-graph.png
 
 clean:
 	rm -rf .aider*
@@ -318,8 +318,11 @@ push-docker:
 	@docker push ghcr.io/onsonr/sonr:$(VERSION)
 	@docker push ghcr.io/onsonr/sonr:latest
 
-bump:
+release:
 	@devbox run cz:bump
+
+release-dry:
+	@devbox run release:dry
 
 deploy-deps:
 	@echo "Installing deploy dependencies"

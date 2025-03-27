@@ -69,7 +69,7 @@ brews:
       email: bot@goreleaser.com
     directory: Formula
     caveats: "Run a local sonr node and access it with the hway proxy"
-    homepage: "https://onsonr.dev"
+    homepage: "https://sonr.io"
     description: "Sonr is a decentralized, permissionless, and censorship-resistant identity network."
     dependencies:
       - name: ipfs

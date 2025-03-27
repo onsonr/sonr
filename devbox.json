@@ -11,7 +11,7 @@
     "doppler@latest"
   ],
   "env": {
-    "GOPATH": "$PWD",
+    "GOPATH": "$HOME/go",
     "PATH": "$PATH:$PWD/bin",
     "DOPPLER_TOKEN": "$DOPPLER_SONR_RELEASE_TOKEN"
   },
@@ -34,10 +34,6 @@
         "export DOCKER_USERNAME=$(doppler secrets get DOCKER_USERNAME)",
         "export DOCKER_PASSWORD=$(doppler secrets get DOCKER_PASSWORD)",
         "export TELEGRAM_TOKEN=$(doppler secrets get TELEGRAM_TOKEN)",
-        "export REDDIT_APP_ID=$(doppler secrets get REDDIT_APP_ID)",
-        "export REDDIT_SECRET=$(doppler secrets get REDDIT_SECRET)",
-        "export REDDIT_USERNAME=$(doppler secrets get REDDIT_USERNAME)",
-        "export REDDIT_PASSWORD=$(doppler secrets get REDDIT_PASSWORD)",
         "goreleaser release --clean"
       ],
       "release:check": [
@@ -52,6 +48,8 @@
         "buf push --label v$TAG_CURRENT"
       ],
       "push:docker": [
+        "export DOCKER_USERNAME=$(doppler secrets get DOCKER_USERNAME)",
+        "export DOCKER_PASSWORD=$(doppler secrets get DOCKER_PASSWORD)",
         "docker build -t ghcr.io/sonr-io/snrd:latest .",
         "docker tag ghcr.io/sonr-io/snrd:latest ghcr.io/sonr-io/snrd:$TAG_CURRENT",
         "docker push ghcr.io/sonr-io/snrd:latest",
