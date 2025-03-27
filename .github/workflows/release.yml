@@ -1,10 +1,6 @@
 name: Post Merge
 on:
-  pull_request:
-    types: [closed]
   push:
-    tags:
-      - v*
     branches:
       - main
 
@@ -15,10 +11,6 @@ permissions:
 jobs:
   publish-version:
     name: Publish Version
-    if: |
-      github.event.pull_request.merged == true && 
-      github.event.pull_request.user.login != 'dependabot[bot]' &&
-      github.event.pull_request.user.login != 'dependabot-preview[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Check out
