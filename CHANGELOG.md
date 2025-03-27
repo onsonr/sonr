@@ -2,6 +2,14 @@
 
 ### Feat
 
+- enable GitHub Actions to trigger releases
+- enhance development environment with ripgrep and gh-milestone (#1252)
+- enhance release process with Doppler integration (#1251)
+
+## v0.6.4 (2025-03-27)
+
+### Feat
+
 - enhance release process with dynamic version display and streamlined automation
 - enhance release process with real-time version feedback
 - improve release process with interactive feedback
