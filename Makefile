@@ -9,7 +9,6 @@ BINDIR ?= $(GOPATH)/bin
 SIMAPP = ./app
 
 # Fetch from env
-RELEASE_DATE ?= $(shell date +%Y).$(shell date +%V).$(shell date +%u)
 VERSION ?= $(shell echo $(shell git describe --tags) | sed 's/^v//')
 COMMIT ?= $(shell git log -1 --format='%H')
 OS ?= $(shell uname -s)
@@ -84,24 +83,21 @@ ifeq ($(OS),Windows_NT)
 	$(error wasmd server not supported. Use "make build-windows-client" for client)
 	exit 1
 else
-	go build -mod=readonly $(BUILD_FLAGS) -o build/snrd ./cmd/snrd
+	go build -mod=readonly $(BUILD_FLAGS) -o bin/snrd ./cmd/snrd
 endif
 
 build-windows-client: go.sum
-	GOOS=windows GOARCH=amd64 go build -mod=readonly $(BUILD_FLAGS) -o build/snrd.exe ./cmd/snrd
+	GOOS=windows GOARCH=amd64 go build -mod=readonly $(BUILD_FLAGS) -o bin/snrd.exe ./cmd/snrd
 
 build-contract-tests-hooks:
 ifeq ($(OS),Windows_NT)
-	go build -mod=readonly $(BUILD_FLAGS) -o build/contract_tests.exe ./cmd/contract_tests
+	go build -mod=readonly $(BUILD_FLAGS) -o bin/contract_tests.exe ./cmd/contract_tests
 else
-	go build -mod=readonly $(BUILD_FLAGS) -o build/contract_tests ./cmd/contract_tests
+	go build -mod=readonly $(BUILD_FLAGS) -o bin/contract_tests ./cmd/contract_tests
 endif
 
 install: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/snrd
-
-install-hway: go.sum
-	go install -mod=readonly ./cmd/hway
 
 release: fmt-date
 	@go install github.com/goreleaser/goreleaser/v2@latest
@@ -129,7 +125,7 @@ clean:
 	rm -rf static
 	rm -rf .out
 	rm -rf hway.db
-	rm -rf snapcraft-local.yaml build/
+	rm -rf snapcraft-local.yaml bin/
 	rm -rf build
 
 distclean: clean
@@ -311,27 +307,6 @@ sh-testnet: mod-tidy
 ###############################################################################
 ###                                    extra utils                          ###
 ###############################################################################
-
-can-release:
-	@echo "Checking if we can release..."
-	@git diff --exit-code
-	@git diff --cached --exit-code
-	@git tag -l | grep -q -F $(VERSION)
-	@test -z "$$(git ls-files --exclude-standard --others)" || (echo "There are uncommitted files. Please commit or stash them before release."; exit 1)
-
-should-release:
-	@echo "Checking if we should release..."
-	@git diff --exit-code
-	@git diff --cached --exit-code
-	@git tag -l | grep -q -F $(VERSION)
-	@test -z "$$(git ls-files --exclude-standard --others)" || (echo "There are uncommitted files. Please commit or stash them before release."; exit 1)
-
-push-docker:
-	@docker build -t ghcr.io/onsonr/sonr:latest .
-	@docker tag ghcr.io/onsonr/sonr:latest ghcr.io/onsonr/sonr:$(VERSION)
-	@docker push ghcr.io/onsonr/sonr:latest
-	@docker push ghcr.io/onsonr/sonr:$(VERSION)
-
 status:
 	@gh run ls -L 3
 	@gum format -- "# Sonr ($OS-$VERSION)" "- ($(COMMIT)) $ROOT" "- $(RELEASE_DATE)"
@@ -343,17 +318,8 @@ push-docker:
 	@docker push ghcr.io/onsonr/sonr:$(VERSION)
 	@docker push ghcr.io/onsonr/sonr:latest
 
-release:
-	@RELEASE_DATE=$(RELEASE_DATE) goreleaser release --clean
-
-release-dry:
-	@RELEASE_DATE=$(RELEASE_DATE) goreleaser release --snapshot --clean --skip=publish
-
-release-check:
-	@RELEASE_DATE=$(RELEASE_DATE) goreleaser check
-
-validate-tag:
-	@sh ./scripts/validate_tag.sh
+bump:
+	@devbox run bump
 
 deploy-deps:
 	@echo "Installing deploy dependencies"

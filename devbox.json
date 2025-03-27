@@ -13,17 +13,49 @@
   "env": {
     "GOPATH": "$PWD",
     "PATH": "$PATH:$PWD/bin",
-    "DOPPLER_TOKEN": "$DOPPLER_TOKEN",
-    "GITHUB_TOKEN": "$(doppler secret -g github_token)",
-    "GITLAB_TOKEN": "$(doppler secret -g gitlab_token)"
+    "DOPPLER_TOKEN": "$DOPPLER_SONR_RELEASE_TOKEN"
   },
   "shell": {
     "init_hook": [
-      "gh extension install valeriobelli/gh-milestone"
+      "export TAG_CURRENT=$(cz version -p)",
+      "export TAG_NEXT=$(cz bump --get-next)",
+      "export BUMP_INCREMENT=PATCH",
+      "export RELEASE_DATE=$(date +%Y).$(date +%V).$(date +%u)",
+      "echo $TAG_CURRENT",
+      "echo $TAG_NEXT",
+      "echo $RELEASE_DATE"
     ],
     "scripts": {
-      "test": [
-        "echo \"Error: no test specified\" && exit 1"
+      "bump": [
+        "cz bump --yes --increment $BUMP_INCREMENT"
+      ],
+      "release:go": [
+        "export GITHUB_TOKEN=$(doppler secrets get GITHUB_TOKEN)",
+        "export DOCKER_USERNAME=$(doppler secrets get DOCKER_USERNAME)",
+        "export DOCKER_PASSWORD=$(doppler secrets get DOCKER_PASSWORD)",
+        "export TELEGRAM_TOKEN=$(doppler secrets get TELEGRAM_TOKEN)",
+        "export REDDIT_APP_ID=$(doppler secrets get REDDIT_APP_ID)",
+        "export REDDIT_SECRET=$(doppler secrets get REDDIT_SECRET)",
+        "export REDDIT_USERNAME=$(doppler secrets get REDDIT_USERNAME)",
+        "export REDDIT_PASSWORD=$(doppler secrets get REDDIT_PASSWORD)",
+        "goreleaser release --clean"
+      ],
+      "release:check": [
+        "goreleaser check"
+      ],
+      "release:dry": [
+        "goreleaser release --snapshot --clean --skip=publish"
+      ],
+      "push:buf": [
+        "cd proto",
+        "buf build",
+        "buf push --label v$TAG_CURRENT"
+      ],
+      "push:docker": [
+        "docker build -t ghcr.io/sonr-io/snrd:latest .",
+        "docker tag ghcr.io/sonr-io/snrd:latest ghcr.io/sonr-io/snrd:$TAG_CURRENT",
+        "docker push ghcr.io/sonr-io/snrd:latest",
+        "docker push ghcr.io/sonr-io/snrd:$TAG_CURRENT"
       ]
     }
   }
