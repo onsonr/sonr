@@ -1,11 +1,6 @@
 # yaml-language-server: $schema=https://goreleaser.com/static/schema-pro.json
 version: 2
 project_name: sonr
-
-before:
-  hooks:
-    - echo "Release date is {{ .Env.RELEASE_DATE }}"
-
 builds:
   - id: sonr
     main: ./cmd/snrd
@@ -74,7 +69,7 @@ brews:
       email: bot@goreleaser.com
     directory: Formula
     caveats: "Run a local sonr node and access it with the hway proxy"
-    homepage: "https://onson.dev"
+    homepage: "https://onsonr.dev"
     description: "Sonr is a decentralized, permissionless, and censorship-resistant identity network."
     dependencies:
       - name: ipfs
@@ -88,7 +83,7 @@ release:
   github:
     owner: sonr-io
     name: snrd
-  name_template: "{{ .Tag }}  [{{ .Env.RELEASE_DATE }}]"
+  name_template: "{{ .Tag }}"
   draft: false
   replace_existing_draft: true
   replace_existing_artifacts: true
