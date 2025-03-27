@@ -1,3 +1,9 @@
+## v0.6.5 (2025-03-26)
+
+### Feat
+
+- enable commit-less version bumping
+
 ## v0.6.4 (2025-03-26)
 
 ### Feat
