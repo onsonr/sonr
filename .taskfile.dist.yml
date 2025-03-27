@@ -35,6 +35,8 @@ tasks:
         msg: goreleaser check failed
       - sh: git diff --exit-code
         msg: git state is dirty
+      - sh: cz bump --dry-run --increment PATCH
+        msg: cz bump test failed
     vars:
       BUMP_INCREMENT:
         sh: |
@@ -45,11 +47,12 @@ tasks:
           fi
     cmds:
       - defer: rm -rf .env
-      - gum spin --title "Running goreleaser dry build..." -- goreleaser release --snapshot --clean --skip=publish
       - rm -rf dist
+      - gum format "# Bump Version"
       - cz bump --yes --increment {{.BUMP_INCREMENT}} --allow-no-commit
       - task: publish:buf
       - task: publish:docker
+      - gum format "# Run GoReleaser"
       - goreleaser release --clean
 
   publish:buf:
@@ -60,23 +63,23 @@ tasks:
         sh: cz version -p
       TAG: v{{.VERSION}}
     cmds:
+      - gum format "# Publish Protobuf Schemas"
       - buf build
       - buf push --label {{.TAG}}
 
   publish:docker:
     internal: true
     vars:
+      GITHUB_ACTOR: prnk28
       VERSION:
         sh: cz version -p
     cmds:
-      - docker build . -t snrd
-      - for:
-          matrix:
-            HUB: ["ghcr.io/sonr-io", "onsonr"]
-            TAG: ["latest", "{{.VERSION}}"]
-        cmd: docker tag snrd "{{.ITEM.HUB}}/snrd/{{.ITEM.TAG}}"
-      - for:
-          matrix:
-            HUB: ["ghcr.io/sonr-io", "onsonr"]
-            TAG: ["latest", "{{.VERSION}}"]
-        cmd: docker push "{{.ITEM.HUB}}/snrd/{{.ITEM.TAG}}"
+      - gum format "# Publish Docker Images"
+      - gum spin --title "Running docker build..." -- docker build . -t onsonr/snrd:latest
+      - docker tag onsonr/snrd:latest ghcr.io/sonr-io/snrd:latest ghcr.io/sonr-io/snrd:{{.VERSION}} onsonr/snrd:{{.VERSION}}
+      - docker login -u {{.env.DOCKER_USERNAME}} -p {{.env.DOCKER_PASSWORD}}
+      - docker login ghcr.io -u {{.GITHUB_ACTOR}} -p {{.env.GITHUB_PAT_TOKEN}}
+      - docker push ghcr.io/sonr-io/snrd:latest
+      - docker push ghcr.io/sonr-io/snrd:{{.VERSION}}
+      - docker push onsonr/snrd:latest
+      - docker push onsonr/snrd:{{.VERSION}}
