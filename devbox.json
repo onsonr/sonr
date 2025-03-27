@@ -7,11 +7,15 @@
     "gum@latest",
     "go-task@latest",
     "goreleaser@latest",
-    "commitizen@latest"
+    "commitizen@latest",
+    "doppler@latest"
   ],
   "env": {
     "GOPATH": "$PWD",
-    "PATH": "$PATH:$PWD/bin"
+    "PATH": "$PATH:$PWD/bin",
+    "DOPPLER_TOKEN": "$DOPPLER_TOKEN",
+    "GITHUB_TOKEN": "$(doppler secret -g github_token)",
+    "GITLAB_TOKEN": "$(doppler secret -g gitlab_token)"
   },
   "shell": {
     "init_hook": [
