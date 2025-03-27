@@ -45,7 +45,7 @@ tasks:
           fi
     cmds:
       - defer: rm -rf .env
-      - gum spin "Running goreleaser dry build..." -- goreleaser release --snapshot --clean --skip=publish
+      - gum spin --title "Running goreleaser dry build..." -- goreleaser release --snapshot --clean --skip=publish
       - rm -rf dist
       - cz bump --yes --increment {{.BUMP_INCREMENT}} --allow-no-commit
       - task: publish:buf
