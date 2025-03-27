@@ -50,6 +50,7 @@ tasks:
       - rm -rf dist
       - gum format "# [1/4] Bump Version"
       - gum spin --title "Running cz bump..." -- cz bump --yes --increment {{.BUMP_INCREMENT}} --allow-no-commit
+      - gum format "- New version $(cz version -p)"
       - task: publish:buf
       - task: publish:docker
       - gum format "# [4/4] Run GoReleaser"
