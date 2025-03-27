@@ -8,14 +8,18 @@
     "go-task@latest",
     "goreleaser@latest",
     "commitizen@latest",
-    "doppler@latest"
+    "doppler@latest",
+    "ripgrep@latest"
   ],
   "env": {
-    "GOPATH": "$HOME/go",
-    "PATH": "$PATH:$PWD/bin",
+    "GOPATH":        "$HOME/go",
+    "PATH":          "$PATH:$PWD/bin",
     "DOPPLER_TOKEN": "$DOPPLER_SONR_RELEASE_TOKEN"
   },
   "shell": {
+    "init_hook": [
+      "gh extension install valeriobelli/gh-milestone"
+    ],
     "scripts": {
       "release": [
         "doppler secrets download --no-file --format env > .env",
