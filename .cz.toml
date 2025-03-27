@@ -5,5 +5,5 @@ version_scheme = "semver"
 version_provider = "scm"
 update_changelog_on_bump = true
 major_version_zero = true
-pre_bump_hooks = ["devbox run release:check"]
-post_bump_hooks = ["devbox run push:buf", "devbox run push:docker", "devbox run release:go"]
+pre_bump_hooks = ["task release:dry"]
+post_bump_hooks = ["task publish:buf", "task publish:docker"] 

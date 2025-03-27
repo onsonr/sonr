@@ -13,47 +13,15 @@
   "env": {
     "GOPATH": "$HOME/go",
     "PATH": "$PATH:$PWD/bin",
-    "DOPPLER_TOKEN": "$DOPPLER_SONR_RELEASE_TOKEN"
+    "DOPPLER_TOKEN": "$DOPPLER_SONR_RELEASE_TOKEN",
+    "GITHUB_TOKEN": "$GITHUB_TOKEN"
   },
   "shell": {
-    "init_hook": [
-      "export TAG_CURRENT=$(cz version -p)",
-      "export TAG_NEXT=$(cz bump --get-next)",
-      "export BUMP_INCREMENT=PATCH",
-      "export RELEASE_DATE=$(date +%Y).$(date +%V).$(date +%u)",
-      "echo $TAG_CURRENT",
-      "echo $TAG_NEXT",
-      "echo $RELEASE_DATE"
-    ],
     "scripts": {
-      "cz:bump": [
-        "cz bump --yes --increment $BUMP_INCREMENT --allow-no-commit"
-      ],
-      "release:go": [
-        "export GITHUB_TOKEN=$(doppler secrets get GITHUB_TOKEN)",
-        "export DOCKER_USERNAME=$(doppler secrets get DOCKER_USERNAME)",
-        "export DOCKER_PASSWORD=$(doppler secrets get DOCKER_PASSWORD)",
-        "export TELEGRAM_TOKEN=$(doppler secrets get TELEGRAM_TOKEN)",
-        "goreleaser release --clean"
-      ],
-      "release:check": [
-        "goreleaser check"
-      ],
-      "release:dry": [
-        "goreleaser release --snapshot --clean --skip=publish"
-      ],
-      "push:buf": [
-        "cd proto",
-        "buf build",
-        "buf push --label v$TAG_CURRENT"
-      ],
-      "push:docker": [
-        "export DOCKER_USERNAME=$(doppler secrets get DOCKER_USERNAME)",
-        "export DOCKER_PASSWORD=$(doppler secrets get DOCKER_PASSWORD)",
-        "docker build -t ghcr.io/sonr-io/snrd:latest .",
-        "docker tag ghcr.io/sonr-io/snrd:latest ghcr.io/sonr-io/snrd:$TAG_CURRENT",
-        "docker push ghcr.io/sonr-io/snrd:latest",
-        "docker push ghcr.io/sonr-io/snrd:$TAG_CURRENT"
+      "release": [
+        "doppler secrets download --no-file --format env > .env",
+        "task cz:bump",
+        "task release:next"
       ]
     }
   }

@@ -76,7 +76,7 @@ brews:
       owner: sonr-io
       name: homebrew-tap
       branch: master
-      token: "{{ .Env.GITHUB_PERSONAL_AUTH_TOKEN }}"
+      token: "{{ .Env.GITHUB_PAT_TOKEN }}"
 
 release:
   github:
