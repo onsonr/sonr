@@ -40,7 +40,7 @@ jobs:
 
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.23"
+          go-version: "1.24"
           check-latest: true
       - name: Run Sonrd Build
         run: make build
@@ -58,6 +58,6 @@ jobs:
 
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.23"
+          go-version: "1.24"
           check-latest: true
       - run: make test-unit
