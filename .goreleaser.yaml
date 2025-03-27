@@ -3,7 +3,6 @@ version: 2
 project_name: sonr
 builds:
   - id: sonr
-    main: ./cmd/snrd
     binary: snrd
     mod_timestamp: "{{ .CommitTimestamp }}"
     goos:
