@@ -32,7 +32,7 @@ message Capability {
   string name = 1;
   string parent = 2;
   string description = 3;
-  repeated string resources = 4;
+  string command = 4;
 }
 
 // Resource reprensents the available resources of a decentralized web node
@@ -40,7 +40,6 @@ message Resource {
   string kind = 1;
   string template = 2;
 }
-
 
 // Document defines a DID document
 message Document {

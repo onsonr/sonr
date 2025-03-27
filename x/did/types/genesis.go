@@ -79,14 +79,11 @@ func (c *Capability) Equal(that *Capability) bool {
 	if c.Parent != that.Parent {
 		return false
 	}
-	// TODO: check description
-	if len(c.Resources) != len(that.Resources) {
+	if c.Command != that.Command {
 		return false
 	}
-	for i := range c.Resources {
-		if c.Resources[i] != that.Resources[i] {
-			return false
-		}
+	if c.Description != that.Description {
+		return false
 	}
 	return true
 }
