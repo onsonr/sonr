@@ -319,7 +319,7 @@ push-docker:
 	@docker push ghcr.io/onsonr/sonr:latest
 
 bump:
-	@devbox run bump
+	@devbox run cz:bump
 
 deploy-deps:
 	@echo "Installing deploy dependencies"
