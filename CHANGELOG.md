@@ -1,3 +1,9 @@
+## v0.6.7 (2025-03-26)
+
+### Feat
+
+- upgrade to go 1.24 and align binary name
+
 ## v0.6.6 (2025-03-26)
 
 ### Feat
