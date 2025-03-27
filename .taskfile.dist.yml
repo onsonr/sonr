@@ -48,11 +48,11 @@ tasks:
     cmds:
       - defer: rm -rf .env
       - rm -rf dist
-      - gum format "# Bump Version"
+      - gum format "# [1/4] Bump Version"
       - cz bump --yes --increment {{.BUMP_INCREMENT}} --allow-no-commit
       - task: publish:buf
       - task: publish:docker
-      - gum format "# Run GoReleaser"
+      - gum format "# [4/4] Run GoReleaser"
       - goreleaser release --clean
 
   publish:buf:
@@ -63,7 +63,7 @@ tasks:
         sh: cz version -p
       TAG: v{{.VERSION}}
     cmds:
-      - gum format "# Publish Protobuf Schemas"
+      - gum format "# [2/4] Publish Protobuf Schemas"
       - buf build
       - buf push --label {{.TAG}}
 
@@ -74,9 +74,8 @@ tasks:
       VERSION:
         sh: cz version -p
     cmds:
-      - gum format "# Publish Docker Images"
-      - gum spin --title "Running docker build..." -- docker build . -t onsonr/snrd:latest
-      - docker tag onsonr/snrd:latest ghcr.io/sonr-io/snrd:latest ghcr.io/sonr-io/snrd:{{.VERSION}} onsonr/snrd:{{.VERSION}}
+      - gum format "# [3/4] Publish Docker Images"
+      - gum spin --title "Running docker build..." -- docker build . -t onsonr/snrd:latest -t onsonr/snrd:{{.VERSION}} -t ghcr.io/sonr-io/snrd:latest -t ghcr.io/sonr-io/snrd:{{.VERSION}}
       - docker login -u {{.env.DOCKER_USERNAME}} -p {{.env.DOCKER_PASSWORD}}
       - docker login ghcr.io -u {{.GITHUB_ACTOR}} -p {{.env.GITHUB_PAT_TOKEN}}
       - docker push ghcr.io/sonr-io/snrd:latest
