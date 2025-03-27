@@ -30,5 +30,5 @@ jobs:
         uses: jetify-com/devbox-install-action@v0.12.0
       - name: Push using ssh
         run: devbox run release
-        with:
+        env:
           DOPPLER_SONR_RELEASE_TOKEN: ${{ secrets.DOPPLER_RELEASE_TOKEN }}
