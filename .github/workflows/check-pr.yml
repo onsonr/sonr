@@ -74,5 +74,3 @@ jobs:
           fetch-tags: true
       - name: Install devbox
         uses: jetify-com/devbox-install-action@v0.12.0
-      - name: Run Goreleaser Check
-        run: devbox run release:check
