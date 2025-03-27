@@ -13,8 +13,7 @@
   "env": {
     "GOPATH": "$HOME/go",
     "PATH": "$PATH:$PWD/bin",
-    "DOPPLER_TOKEN": "$DOPPLER_SONR_RELEASE_TOKEN",
-    "GITHUB_TOKEN": "$GITHUB_TOKEN"
+    "DOPPLER_TOKEN": "$DOPPLER_SONR_RELEASE_TOKEN"
   },
   "shell": {
     "scripts": {

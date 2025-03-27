@@ -1,5 +1,4 @@
 # https://taskfile.dev
-
 version: "3"
 silent: true
 dotenv:
@@ -30,6 +29,8 @@ tasks:
     silent: true
 
   bump:
+    dotenv:
+      - .env
     preconditions:
       - sh: goreleaser check
         msg: goreleaser check failed
@@ -46,10 +47,8 @@ tasks:
             echo "PATCH"
           fi
     cmds:
-      - defer: rm -rf .env
-      - rm -rf dist
       - gum format "# [1/4] Bump Version"
-      - gum spin --title "Running cz bump..." -- cz bump --yes --increment {{.BUMP_INCREMENT}} --allow-no-commit
+      - cz bump --yes --increment {{.BUMP_INCREMENT}} --allow-no-commit
       - task: publish:buf
       - task: publish:docker
       - gum format "# [4/4] Run GoReleaser"
