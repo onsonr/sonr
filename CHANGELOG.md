@@ -1,3 +1,11 @@
+## v0.6.6 (2025-03-26)
+
+### Feat
+
+- streamline build process by removing release target
+- streamline build process and configuration
+- streamline release process and update project metadata
+
 ## v0.6.5 (2025-03-26)
 
 ### Feat
