@@ -99,10 +99,6 @@ endif
 install: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) .
 
-release: fmt-date
-	@go install github.com/goreleaser/goreleaser/v2@latest
-	RELEASE_DATE=$(RELEASE_DATE) goreleaser release --clean
-
 ########################################
 ### Tools & dependencies
 ########################################
