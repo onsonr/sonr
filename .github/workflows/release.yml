@@ -32,3 +32,4 @@ jobs:
         run: devbox run release
         env:
           DOPPLER_SONR_RELEASE_TOKEN: ${{ secrets.DOPPLER_RELEASE_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
