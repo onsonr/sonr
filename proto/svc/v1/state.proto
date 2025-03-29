@@ -55,3 +55,34 @@ message Metadata {
   // Controller of the alias
   string controller = 4;
 }
+
+message Record {
+  option (cosmos.orm.v1.table) = {
+    id: 3
+    primary_key: {fields: "id"}
+    index: {
+      id: 1
+      fields: "subject,origin"
+      unique: true
+    }
+  };
+
+  // The unique identifier of the record
+  string id = 1;
+
+  // The record of the DID
+  string subject = 2;
+
+  // Origin of the record
+  string origin = 3;
+
+  // Controller of the record
+  string controller = 4;
+
+  // The type of the record
+  string type = 5;
+
+  // The value of the record
+  string value = 6;
+}
+

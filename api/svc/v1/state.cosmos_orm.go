@@ -326,9 +326,167 @@ func NewMetadataTable(db ormtable.Schema) (MetadataTable, error) {
 	return metadataTable{table}, nil
 }
 
+type RecordTable interface {
+	Insert(ctx context.Context, record *Record) error
+	Update(ctx context.Context, record *Record) error
+	Save(ctx context.Context, record *Record) error
+	Delete(ctx context.Context, record *Record) error
+	Has(ctx context.Context, id string) (found bool, err error)
+	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	Get(ctx context.Context, id string) (*Record, error)
+	HasBySubjectOrigin(ctx context.Context, subject string, origin string) (found bool, err error)
+	// GetBySubjectOrigin returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetBySubjectOrigin(ctx context.Context, subject string, origin string) (*Record, error)
+	List(ctx context.Context, prefixKey RecordIndexKey, opts ...ormlist.Option) (RecordIterator, error)
+	ListRange(ctx context.Context, from, to RecordIndexKey, opts ...ormlist.Option) (RecordIterator, error)
+	DeleteBy(ctx context.Context, prefixKey RecordIndexKey) error
+	DeleteRange(ctx context.Context, from, to RecordIndexKey) error
+
+	doNotImplement()
+}
+
+type RecordIterator struct {
+	ormtable.Iterator
+}
+
+func (i RecordIterator) Value() (*Record, error) {
+	var record Record
+	err := i.UnmarshalMessage(&record)
+	return &record, err
+}
+
+type RecordIndexKey interface {
+	id() uint32
+	values() []interface{}
+	recordIndexKey()
+}
+
+// primary key starting index..
+type RecordPrimaryKey = RecordIdIndexKey
+
+type RecordIdIndexKey struct {
+	vs []interface{}
+}
+
+func (x RecordIdIndexKey) id() uint32            { return 0 }
+func (x RecordIdIndexKey) values() []interface{} { return x.vs }
+func (x RecordIdIndexKey) recordIndexKey()       {}
+
+func (this RecordIdIndexKey) WithId(id string) RecordIdIndexKey {
+	this.vs = []interface{}{id}
+	return this
+}
+
+type RecordSubjectOriginIndexKey struct {
+	vs []interface{}
+}
+
+func (x RecordSubjectOriginIndexKey) id() uint32            { return 1 }
+func (x RecordSubjectOriginIndexKey) values() []interface{} { return x.vs }
+func (x RecordSubjectOriginIndexKey) recordIndexKey()       {}
+
+func (this RecordSubjectOriginIndexKey) WithSubject(subject string) RecordSubjectOriginIndexKey {
+	this.vs = []interface{}{subject}
+	return this
+}
+
+func (this RecordSubjectOriginIndexKey) WithSubjectOrigin(subject string, origin string) RecordSubjectOriginIndexKey {
+	this.vs = []interface{}{subject, origin}
+	return this
+}
+
+type recordTable struct {
+	table ormtable.Table
+}
+
+func (this recordTable) Insert(ctx context.Context, record *Record) error {
+	return this.table.Insert(ctx, record)
+}
+
+func (this recordTable) Update(ctx context.Context, record *Record) error {
+	return this.table.Update(ctx, record)
+}
+
+func (this recordTable) Save(ctx context.Context, record *Record) error {
+	return this.table.Save(ctx, record)
+}
+
+func (this recordTable) Delete(ctx context.Context, record *Record) error {
+	return this.table.Delete(ctx, record)
+}
+
+func (this recordTable) Has(ctx context.Context, id string) (found bool, err error) {
+	return this.table.PrimaryKey().Has(ctx, id)
+}
+
+func (this recordTable) Get(ctx context.Context, id string) (*Record, error) {
+	var record Record
+	found, err := this.table.PrimaryKey().Get(ctx, &record, id)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &record, nil
+}
+
+func (this recordTable) HasBySubjectOrigin(ctx context.Context, subject string, origin string) (found bool, err error) {
+	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
+		subject,
+		origin,
+	)
+}
+
+func (this recordTable) GetBySubjectOrigin(ctx context.Context, subject string, origin string) (*Record, error) {
+	var record Record
+	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &record,
+		subject,
+		origin,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &record, nil
+}
+
+func (this recordTable) List(ctx context.Context, prefixKey RecordIndexKey, opts ...ormlist.Option) (RecordIterator, error) {
+	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
+	return RecordIterator{it}, err
+}
+
+func (this recordTable) ListRange(ctx context.Context, from, to RecordIndexKey, opts ...ormlist.Option) (RecordIterator, error) {
+	it, err := this.table.GetIndexByID(from.id()).ListRange(ctx, from.values(), to.values(), opts...)
+	return RecordIterator{it}, err
+}
+
+func (this recordTable) DeleteBy(ctx context.Context, prefixKey RecordIndexKey) error {
+	return this.table.GetIndexByID(prefixKey.id()).DeleteBy(ctx, prefixKey.values()...)
+}
+
+func (this recordTable) DeleteRange(ctx context.Context, from, to RecordIndexKey) error {
+	return this.table.GetIndexByID(from.id()).DeleteRange(ctx, from.values(), to.values())
+}
+
+func (this recordTable) doNotImplement() {}
+
+var _ RecordTable = recordTable{}
+
+func NewRecordTable(db ormtable.Schema) (RecordTable, error) {
+	table := db.GetTable(&Record{})
+	if table == nil {
+		return nil, ormerrors.TableNotFound.Wrap(string((&Record{}).ProtoReflect().Descriptor().FullName()))
+	}
+	return recordTable{table}, nil
+}
+
 type StateStore interface {
 	DomainTable() DomainTable
 	MetadataTable() MetadataTable
+	RecordTable() RecordTable
 
 	doNotImplement()
 }
@@ -336,6 +494,7 @@ type StateStore interface {
 type stateStore struct {
 	domain   DomainTable
 	metadata MetadataTable
+	record   RecordTable
 }
 
 func (x stateStore) DomainTable() DomainTable {
@@ -344,6 +503,10 @@ func (x stateStore) DomainTable() DomainTable {
 
 func (x stateStore) MetadataTable() MetadataTable {
 	return x.metadata
+}
+
+func (x stateStore) RecordTable() RecordTable {
+	return x.record
 }
 
 func (stateStore) doNotImplement() {}
@@ -361,8 +524,14 @@ func NewStateStore(db ormtable.Schema) (StateStore, error) {
 		return nil, err
 	}
 
+	recordTable, err := NewRecordTable(db)
+	if err != nil {
+		return nil, err
+	}
+
 	return stateStore{
 		domainTable,
 		metadataTable,
+		recordTable,
 	}, nil
 }
