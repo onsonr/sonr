@@ -7,6 +7,7 @@ import (
 // DefaultParams returns default module parameters.
 func DefaultParams() Params {
 	return Params{
+		Attenuations: DefaultAttenuations(),
 		AllowedOperators: []string{ // TODO:
 			"localhost",
 			"didao.xyz",
@@ -29,4 +30,36 @@ func (p Params) String() string {
 func (p Params) Validate() error {
 	// TODO:
 	return nil
+}
+
+// DefaultAttenuations returns the default Attenuation
+func DefaultAttenuations() []*Attenuation {
+	return []*Attenuation{
+		{
+			Resource: &Resource{
+				Kind:     "dwn",
+				Template: "{id}",
+			},
+			Capabilities: []*Capability{
+				{
+					Name:        "sign",
+					Parent:      "/vault",
+					Command:     "/vault/sign",
+					Description: "Sign an arbitrary payload",
+				},
+				{
+					Name:        "verify",
+					Parent:      "/vault",
+					Command:     "/vault/verify",
+					Description: "Verify a signature",
+				},
+				{
+					Name:        "refresh",
+					Parent:      "/vault",
+					Command:     "/vault/refresh",
+					Description: "Refresh the Session KeyShares",
+				},
+			},
+		},
+	}
 }
